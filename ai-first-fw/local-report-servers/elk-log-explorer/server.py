@@ -628,8 +628,6 @@ class LogExplorerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html", "/report.html"):
             report_file = SCRIPT_DIR / "report.html"
-            if not report_file.exists():
-                report_file = REPO_ROOT / "elk_logs_viewer.html"
             content = report_file.read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
