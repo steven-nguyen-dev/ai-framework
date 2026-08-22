@@ -23,4 +23,4 @@ skill and belongs one level up.
 ## Invocation mode
 
 - **Model-invoked** (`lv1-diagram-maker`): Automatically discovered and invoked by AI models whenever generating, editing, or styling Mermaid diagrams.
-- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (such as `lv1-architecture-review`, `lv1-prompt-builder`, `lotteon-api-extractor`, `naver-api-extractor`, `lv1-doc-writer`) that run only when explicitly typed by the human.
+- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (such as `lv1-architecture-review`, `lv1-prompt-builder`, `glossary-maker`, `lotteon-api-extractor`, `naver-api-extractor`, `lv1-doc-writer`) that run only when explicitly typed by the human.

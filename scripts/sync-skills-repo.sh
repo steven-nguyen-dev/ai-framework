@@ -45,8 +45,8 @@ cat << 'MARKETPLACE_EOF' > "$TMP_DIR/.claude-plugin/marketplace.json"
     },
     {
       "name": "ai-first-fw-utilities",
-      "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, naver-api-extractor, and lotteon-api-extractor.",
-      "version": "1.0.0",
+      "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, glossary-maker, naver-api-extractor, and lotteon-api-extractor.",
+      "version": "1.1.1",
       "source": "./utilities"
     }
   ]
@@ -144,6 +144,7 @@ npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/lv1-dia
 npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/lv1-architecture-review
 npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/lv1-doc-writer
 npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/lv1-prompt-builder
+npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/glossary-maker
 npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/naver-api-extractor
 npx skills add nguyennguyen-anchanto/ai-first-framework-skills/utilities/lotteon-api-extractor
 ```
@@ -211,6 +212,7 @@ Add the skill directory paths to your agent configuration (`~/.gemini/config/ski
 * **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
 * **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.
 * **`lv1-prompt-builder`**: Compiles structured, context-rich system prompts for subagent workflows.
+* **`glossary-maker`**: Scans a repository and compiles an ISO 704:2022 standardized `GLOSSARY.md` terminology reference.
 * **`naver-api-extractor` & `lotteon-api-extractor`**: Automated extractors and parsers for third-party marketplace APIs.
 
 ---
@@ -230,7 +232,7 @@ README_EOF
 
 # 6. Commit and push to skills repository
 git add -A
-git commit -m "feat(skills): publish user-facing lifecycle skills and standalone utilities v1.0.0"
+git commit -m "feat(skills): publish user-facing lifecycle skills and standalone utilities v1.1.1"
 echo "🚀 Pushing to nguyennguyen-anchanto/ai-first-framework-skills..."
 git push origin main --force
 
