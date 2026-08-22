@@ -69,7 +69,7 @@ def get_data(force_refresh: bool = False) -> dict:
         return CACHED_DATA
 
 
-def generate_static_report() -> str:
+def generate_static_report(force_refresh: bool = False) -> str:
     """Renders report.html with current scan data and theme styles inlined for universal portability."""
     template_path = os.path.join(HERE, "report.html")
     if not os.path.isfile(template_path):
@@ -88,7 +88,7 @@ def generate_static_report() -> str:
         except Exception:
             pass
 
-    data = get_data()
+    data = get_data(force_refresh=force_refresh)
     data_json = json.dumps(data)
     return html.replace("__REPORT_DATA_JSON__", data_json)
 
@@ -162,7 +162,7 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
             super().do_HEAD()
 
     def _serve_dashboard(self):
-        content = generate_static_report()
+        content = generate_static_report(force_refresh=True)
         data = content.encode("utf-8")
         self.send_response(HTTPStatus.OK)
         self.send_header("Content-Type", "text/html; charset=utf-8")

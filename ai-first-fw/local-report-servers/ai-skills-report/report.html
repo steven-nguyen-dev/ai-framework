@@ -1606,51 +1606,6 @@
     }
 
     // Action Helpers
-    async function triggerUninstallSkill(skillName, target = 'all') {
-      openConfirmModal({
-        title: `Uninstall Skill: ${skillName}`,
-        body: `Are you sure you want to uninstall <strong>${skillName}</strong> from target: <code>${target}</code>? (Symlinks will be safely unlinked; real directories backed up to .backups/)`,
-        confirmText: '🗑️ Uninstall',
-        onConfirm: async () => {
-          try {
-            const resp = await fetch('/api/skill/uninstall', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: skillName, targets: [target] }),
-            });
-            const data = await resp.json();
-            if (data.success) {
-              showToast(`Skill '${skillName}' uninstalled successfully.`, 'success');
-              await syncData();
-            } else {
-              showToast(`Uninstall failed: ${data.message || 'Error'}`, 'error');
-            }
-          } catch (e) {
-            showToast(`Error uninstalling skill: ${e.message}`, 'error');
-          }
-        }
-      });
-    }
-
-    async function triggerInstallSkill(skillName, target = 'all') {
-      try {
-        const resp = await fetch('/api/skill/install', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: skillName, targets: [target] }),
-        });
-        const data = await resp.json();
-        if (data.success) {
-          showToast(`Skill '${skillName}' installed across target surfaces!`, 'success');
-          await syncData();
-        } else {
-          showToast(`Install failed: ${data.message || 'Error'}`, 'error');
-        }
-      } catch (e) {
-        showToast(`Error installing skill: ${e.message}`, 'error');
-      }
-    }
-
     function openAddMarketplaceModal() {
       document.getElementById('mpSourceInput').value = '';
       document.getElementById('mpNameInput').value = '';
@@ -1796,9 +1751,6 @@
               <div class="item-name">${skill.name}</div>
               <div style="margin-top: 4px;">${getSourceBadge(skill)}</div>
             </div>
-            <button class="btn-icon-uninstall" onclick="triggerUninstallSkill('${skill.name}', '${targetKey}')" title="Uninstall Skill">
-              🗑️
-            </button>
           </div>
           
           <div class="item-desc-wrapper">
