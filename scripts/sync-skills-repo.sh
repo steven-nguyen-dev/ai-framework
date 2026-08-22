@@ -19,17 +19,19 @@ git config user.name "Nguyen Nguyen"
 git config user.email "nguyennguyen-anchanto@users.noreply.github.com"
 git remote add origin "$TARGET_REMOTE"
 
-# 2. Copy user-facing skills and utilities
-mkdir -p "$TMP_DIR/skills" "$TMP_DIR/utilities" "$TMP_DIR/.claude-plugin"
+# 2. Copy user-facing skills, utilities, local report servers, and local MCPs
+mkdir -p "$TMP_DIR/skills" "$TMP_DIR/utilities" "$TMP_DIR/local-report-servers" "$TMP_DIR/local-mcps" "$TMP_DIR/.claude-plugin"
 cp -R "$MONOREPO_ROOT/ai-first-fw/skills/"* "$TMP_DIR/skills/"
 cp -R "$MONOREPO_ROOT/ai-first-fw/utilities/"* "$TMP_DIR/utilities/"
+cp -R "$MONOREPO_ROOT/ai-first-fw/local-report-servers/"* "$TMP_DIR/local-report-servers/"
+cp -R "$MONOREPO_ROOT/ai-first-fw/local-mcps/"* "$TMP_DIR/local-mcps/"
 
 # 3. Create .claude-plugin/marketplace.json
 cat << 'MARKETPLACE_EOF' > "$TMP_DIR/.claude-plugin/marketplace.json"
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ai-first-framework-skills",
-  "description": "AI-First Software Engineering Framework: Core Lifecycle Skills and Standalone Utilities",
+  "description": "AI-First Software Engineering Framework: Core Lifecycle Skills, Standalone Utilities, and Local Engineering Dashboards",
   "owner": {
     "name": "Nguyen Nguyen",
     "email": "nguyennguyen-anchanto@users.noreply.github.com"
@@ -62,17 +64,56 @@ GITIGNORE_EOF
 
 # 5. Create user-facing README.md
 cat << 'README_EOF' > "$TMP_DIR/README.md"
-# 🧩 AI-First Framework Skills & Utilities
+# 🧩 AI-First Framework: Skills, Dashboards & Local Servers
 
-A production-ready collection of review-driven, specification-first engineering skills and standalone utilities for **Claude Code**, **Claude Cowork**, **Google Antigravity 2.0**, and **Gemini**.
+A production-ready toolkit of review-driven engineering skills, standalone utilities, and 1-click local engineering report servers for **Claude Code**, **Claude Cowork**, **Google Antigravity 2.0**, **Gemini**, and **Engineering Teams**.
 
 ---
 
-## 🚀 1-Command Installation
+## 📊 Local Report Servers & Standalone macOS Applications
+
+Every report server comes pre-packaged with a **1-click macOS `.app` installer**, double-clickable terminal launchers, and distribution `.zip` archives.
+
+| Server / Dashboard | Port | Distribution Package | Key Features |
+| :--- | :--- | :--- | :--- |
+| **Central Reports Portal** | `24000` | Run `python3 local-report-servers/portal.py` | Web-based management dashboard to monitor, start, and stop all local report servers |
+| **[Daily Work Reports](local-report-servers/daily-report)** | `24001` | [`daily-report-1.0.0.zip`](local-report-servers/daily-report/daily-report-1.0.0.zip) | Daily engineering activity aggregator, timeline log viewer, and on-going matters tracker |
+| **[JPluger PR Stats](local-report-servers/jpluger-pr-stats)** | `24002` | [`jpluger-pr-stats-1.0.0.zip`](local-report-servers/jpluger-pr-stats/jpluger-pr-stats-1.0.0.zip) | GitHub pull request triage, review coverage breakdown, aging analysis, and monthly velocity |
+| **[AI Skills & Plugins](local-report-servers/ai-skills-report)** | `24003` | [`ai-skills-report-1.0.0.zip`](local-report-servers/ai-skills-report/ai-skills-report-1.0.0.zip) | Universal AI skills registry, marketplace manager, and multi-agent environment inspector |
+| **[ELK AI Log Explorer](local-report-servers/elk-log-explorer)** | `24004` | [`elk-log-explorer-1.0.0.zip`](local-report-servers/elk-log-explorer/elk-log-explorer-1.0.0.zip) | Dark-themed Kibana log explorer with multi-agent AI natural language query translator |
+
+---
+
+### 🚀 1-Step Installation for Local Servers (macOS)
+
+Download any server's `.zip` file into your **`~/Downloads`** folder, open **Terminal.app**, and copy & paste the single command:
+
+#### Option 1: Install as a native macOS Application (`/Applications`)
+```bash
+# Daily Work Reports
+unzip -o ~/Downloads/daily-report-1.0.0.zip -d ~/Downloads/daily-report && cd ~/Downloads/daily-report && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
+
+# JPluger PR Stats
+unzip -o ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads/jpluger-pr-stats && cd ~/Downloads/jpluger-pr-stats && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
+
+# AI Skills & Plugins Registry
+unzip -o ~/Downloads/ai-skills-report-1.0.0.zip -d ~/Downloads/ai-skills-report && cd ~/Downloads/ai-skills-report && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
+
+# ELK AI Log Explorer
+unzip -o ~/Downloads/elk-log-explorer-1.0.0.zip -d ~/Downloads/elk-log-explorer && cd ~/Downloads/elk-log-explorer && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
+```
+
+#### Option 2: Launch via Central Reports Portal
+```bash
+python3 local-report-servers/portal.py
+# Opens http://localhost:24000 to manage and start all servers with 1 click
+```
+
+---
+
+## 🛠️ AI Skills & Utilities Installation
 
 ### Claude Code & Claude Cowork (Plugin Marketplace)
-
-Add this repository to your plugin marketplace and install the skills in one step:
 
 ```bash
 # 1. Register the marketplace
@@ -88,8 +129,6 @@ plugin install ai-first-fw-utilities@ai-first-framework-skills
 ---
 
 ### Direct Installation (`npx skills`)
-
-Install individual skills directly into your local workspace using the `skills` CLI:
 
 ```bash
 # Core Lifecycle Skills
@@ -127,8 +166,6 @@ Add the skill directory paths to your agent configuration (`~/.gemini/config/ski
 ---
 
 ## 🛡️ Core Lifecycle Skills (`skills/`)
-
-The core skills guide autonomous AI agents through a gated engineering lifecycle:
 
 | Skill | Gate / Phase | Purpose |
 | :--- | :--- | :--- |
@@ -170,13 +207,18 @@ The core skills guide autonomous AI agents through a gated engineering lifecycle
 
 ## ⚡ Standalone Utility Skills (`utilities/`)
 
-Independent skills for specific engineering tasks:
-
 * **`lv1-diagram-maker`**: Creates clean, professional Mermaid architecture and sequence diagrams using muted-dark aesthetics.
 * **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
 * **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.
 * **`lv1-prompt-builder`**: Compiles structured, context-rich system prompts for subagent workflows.
 * **`naver-api-extractor` & `lotteon-api-extractor`**: Automated extractors and parsers for third-party marketplace APIs.
+
+---
+
+## 🔌 Local MCP Servers (`local-mcps/`)
+
+* **`jira`**: FastMCP server for Jira issue metadata extraction, acceptance criteria parsing, and batch attachment analysis.
+* **`kibana`**: FastMCP server for Kibana Observability & Logs with embedded KQL parser and session cookie auth.
 
 ---
 
