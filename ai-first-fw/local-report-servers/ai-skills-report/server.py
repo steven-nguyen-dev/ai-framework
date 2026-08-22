@@ -32,6 +32,15 @@ except ImportError:
 HERE = os.path.dirname(os.path.abspath(__file__))
 THEME_DIR = os.path.abspath(os.path.join(HERE, "../../local-theme"))
 
+def _read_version() -> str:
+    try:
+        with open(os.path.join(HERE, "VERSION"), "r", encoding="utf-8") as f:
+            return f.read().strip() or "1.0.0"
+    except Exception:
+        return "1.0.0"
+
+__version__ = _read_version()
+
 from scanner import (
     add_marketplace,
     install_all_canonical_skills,

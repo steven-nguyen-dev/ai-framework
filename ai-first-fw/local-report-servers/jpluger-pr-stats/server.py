@@ -27,6 +27,16 @@ except ImportError:
     _Server = HTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+def _read_version() -> str:
+    try:
+        with open(os.path.join(HERE, "VERSION"), "r", encoding="utf-8") as f:
+            return f.read().strip() or "1.0.0"
+    except Exception:
+        return "1.0.0"
+
+__version__ = _read_version()
+
 from fetcher import check_gh_installed, fetch_all, generate_static_report, load_cached_data
 
 DATA_LOCK = threading.Lock()

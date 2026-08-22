@@ -2,8 +2,9 @@
 set -e
 
 APP_NAME="Daily Work Report"
-BUNDLE_NAME="${APP_NAME}.app"
 HERE="$(cd "$(dirname "$0")" && pwd)"
+APP_VERSION="$(cat "${HERE}/VERSION" 2>/dev/null || echo "1.0.0")"
+BUNDLE_NAME="${APP_NAME}.app"
 
 TARGET_DIR="/Applications"
 if [ ! -w "$TARGET_DIR" ]; then
@@ -12,13 +13,13 @@ if [ ! -w "$TARGET_DIR" ]; then
 fi
 
 APP_PATH="${TARGET_DIR}/${BUNDLE_NAME}"
-echo "Installing ${APP_NAME} to ${APP_PATH}..."
+echo "Installing ${APP_NAME} v${APP_VERSION} to ${APP_PATH}..."
 
 rm -rf "$APP_PATH"
 mkdir -p "${APP_PATH}/Contents/MacOS"
 mkdir -p "${APP_PATH}/Contents/Resources/app"
 
-cat << 'PLIST' > "${APP_PATH}/Contents/Info.plist"
+cat << PLIST > "${APP_PATH}/Contents/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -36,7 +37,9 @@ cat << 'PLIST' > "${APP_PATH}/Contents/Info.plist"
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>${APP_VERSION}</string>
+    <key>CFBundleVersion</key>
+    <string>${APP_VERSION}</string>
     <key>LSMinimumSystemVersion</key>
     <string>11.0</string>
 </dict>

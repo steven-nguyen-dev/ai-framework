@@ -11,4 +11,5 @@ fi
 
 chmod +x "$SCRIPT_DIR"/*.sh "$SCRIPT_DIR"/*.command "$SCRIPT_DIR"/*.py 2>/dev/null || true
 echo "✔ Permissions configured."
+python3 "$SCRIPT_DIR/server.py" --export >/dev/null 2>&1 || true
 echo "✔ Setup complete."

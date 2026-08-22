@@ -212,9 +212,19 @@ class ManagedReportServer:
                 else:
                     uptime_str = f"{sec // 3600}h {(sec % 3600) // 60}m"
 
+            version_file = os.path.join(self.folder_path, "VERSION")
+            version_str = "1.0.0"
+            if os.path.isfile(version_file):
+                try:
+                    with open(version_file, "r", encoding="utf-8") as vf:
+                        version_str = vf.read().strip() or "1.0.0"
+                except Exception:
+                    pass
+
             return {
                 "key": self.key,
                 "name": self.name,
+                "version": version_str,
                 "description": self.description,
                 "port": self.port,
                 "host": self.host,
@@ -736,6 +746,7 @@ function render() {
           <div class="server-title-row">
             <span class="server-name">${s.name}</span>
             <span class="server-port-tag">:${s.port}</span>
+            ${s.version ? `<span class="server-port-tag" style="background:var(--surface);color:var(--muted)">v${s.version}</span>` : ''}
           </div>
           <div class="server-desc">${s.description}</div>
           <div class="server-status-row">

@@ -19,18 +19,20 @@ Every shareable server directory must contain the following manifest:
 
 ```
 <server-name>/
+├── VERSION                  # Version single source of truth (e.g. 1.0.0)
 ├── Install.command          # Double-click Finder installer
 ├── Start.command            # Double-click Finder launcher
 ├── setup.sh                 # Environment & dependency verifier
 ├── install_app.sh           # Native macOS Application installer (.app bundle)
 ├── start.sh                 # Terminal launcher with auto browser opening
 ├── uninstall_app.sh         # Application uninstaller
+├── package.sh               # Portable distribution packaging script
 ├── appIcon.icns             # High-resolution macOS application icon
 ├── server.py                # Python HTTP server (machine-independent, handles --port & --export)
 ├── report.html / template   # UI template using shared dark theme tokens
 ├── <server-name>.html       # Pre-generated 100% self-contained offline export
 ├── README.md                # Executive 1-Step Installation & Launch documentation
-└── <server-name>-1.0.0.zip  # Pre-packaged distribution archive
+└── <server-name>-<ver>.zip  # Pre-packaged distribution archive
 ```
 
 ---
@@ -160,7 +162,7 @@ Download **[`<server-name>-1.0.0.zip`](./<server-name>-1.0.0.zip)** into your **
 Unzips, runs setup verification, and installs **`<App Name>.app`** directly into your **`/Applications`** folder:
 
 ```bash
-unzip ~/Downloads/<server-name>-1.0.0.zip -d ~/Downloads && cd ~/Downloads/<server-name> && chmod +x *.sh && ./setup.sh && ./install_app.sh
+unzip -o ~/Downloads/<server-name>-1.0.0.zip -d ~/Downloads/<server-name> && cd ~/Downloads/<server-name> && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
 ```
 
 **How to open once installed:**
@@ -174,7 +176,7 @@ unzip ~/Downloads/<server-name>-1.0.0.zip -d ~/Downloads && cd ~/Downloads/<serv
 Unzips, runs setup verification, and starts the server on **`http://localhost:<PORT>`**:
 
 ```bash
-unzip ~/Downloads/<server-name>-1.0.0.zip -d ~/Downloads && cd ~/Downloads/<server-name> && chmod +x *.sh && ./setup.sh && ./start.sh
+unzip -o ~/Downloads/<server-name>-1.0.0.zip -d ~/Downloads/<server-name> && cd ~/Downloads/<server-name> && chmod +x *.sh *.command *.py && ./setup.sh && ./start.sh
 ```
 
 * Automatically opens your default web browser to the dashboard.
@@ -241,17 +243,21 @@ Then re-run your chosen command above.
 
 The distribution `.zip` archive **must reside strictly inside the server directory** (e.g. `elk-log-explorer/elk-log-explorer-1.0.0.zip`). Never copy or leave stray zip files in parent or root directories.
 
-Run the standard packaging command to generate clean, portable archives without cache or temporary files:
+Always package archives flat from inside the server folder so extracting to a named directory (`unzip -o <pkg>.zip -d <target>`) does not create duplicate nested folders.
+
+Run the server's `./package.sh` helper, or use the dynamic packaging command:
 
 ```bash
-cd local-report-servers && \
-rm -f <server-name>/<server-name>-1.0.0.zip && \
-zip -r <server-name>/<server-name>-1.0.0.zip <server-name>/ \
-  -x "<server-name>/__pycache__/*" \
-  -x "<server-name>/*.pyc" \
-  -x "<server-name>/*.zip" \
-  -x "<server-name>/.DS_Store" \
-  -x "<server-name>/.*"
+cd local-report-servers/<server-name> && ./package.sh
+# Or manually:
+VERSION="$(cat VERSION 2>/dev/null || echo "1.0.0")" && \
+rm -f <server-name>-*.zip && \
+zip -r "<server-name>-${VERSION}.zip" . \
+  -x "__pycache__/*" \
+  -x "*.pyc" \
+  -x "*.zip" \
+  -x ".DS_Store" \
+  -x ".*"
 ```
 
 ---

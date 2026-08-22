@@ -14,7 +14,7 @@ Download **[`jpluger-pr-stats-1.0.0.zip`](./jpluger-pr-stats-1.0.0.zip)** into y
 Unzips, runs setup, prompts for GitHub login, and installs **`JPluger PR Stats.app`** directly into your **`/Applications`** folder:
 
 ```bash
-unzip ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads && cd ~/Downloads/jpluger-pr-stats && chmod +x *.sh && ./setup.sh && ./install_app.sh
+unzip -o ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads/jpluger-pr-stats && cd ~/Downloads/jpluger-pr-stats && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
 ```
 
 **How to open once installed:**
@@ -28,7 +28,7 @@ unzip ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads && cd ~/Downloads/jp
 Unzips, runs setup, prompts for GitHub login, and starts the server on **`http://localhost:24002`**:
 
 ```bash
-unzip ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads && cd ~/Downloads/jpluger-pr-stats && chmod +x *.sh && ./setup.sh && ./start.sh
+unzip -o ~/Downloads/jpluger-pr-stats-1.0.0.zip -d ~/Downloads/jpluger-pr-stats && cd ~/Downloads/jpluger-pr-stats && chmod +x *.sh *.command *.py && ./setup.sh && ./start.sh
 ```
 
 * Automatically opens your default web browser to the dashboard.

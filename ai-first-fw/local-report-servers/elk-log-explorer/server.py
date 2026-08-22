@@ -25,12 +25,27 @@ from typing import Any, Dict, List, Optional
 
 # Path resolution
 SCRIPT_DIR = Path(__file__).resolve().parent
+
+def _read_version() -> str:
+    try:
+        v_file = SCRIPT_DIR / "VERSION"
+        if v_file.exists():
+            return v_file.read_text(encoding="utf-8").strip() or "1.0.0"
+    except Exception:
+        pass
+    return "1.0.0"
+
+__version__ = _read_version()
+
+# Ensure local script dir is in sys.path for kql.py
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
 REPO_ROOT = SCRIPT_DIR.parent.parent.parent
 LOCAL_THEME_DIR = REPO_ROOT / "ai-first-fw" / "local-theme"
 KIBANA_MCP_DIR = REPO_ROOT / "ai-first-fw" / "local-mcps" / "kibana"
 
-# Ensure KQL parser is available
-if KIBANA_MCP_DIR.exists():
+if KIBANA_MCP_DIR.exists() and str(KIBANA_MCP_DIR) not in sys.path:
     sys.path.insert(0, str(KIBANA_MCP_DIR))
 
 try:
@@ -38,15 +53,16 @@ try:
 except ImportError:
     kql = None
 
-# Load credentials from kibana .env if available
-_ENV_FILE = KIBANA_MCP_DIR / ".env"
-if _ENV_FILE.exists():
-    with open(_ENV_FILE, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip())
+# Load credentials from local .env or fallback to kibana MCP .env
+for env_path in [SCRIPT_DIR / ".env", KIBANA_MCP_DIR / ".env"]:
+    if env_path.exists():
+        with open(env_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+        break
 
 DEFAULT_INDEX_PATTERN = os.environ.get("KIBANA_INDEX_PATTERN", "logs-*-*,logs-*,filebeat-*")
 KIBANA_URL = os.environ.get("KIBANA_URL", "https://apac-elk.anchanto.com:5601").rstrip("/")
@@ -622,10 +638,11 @@ class LogExplorerHandler(BaseHTTPRequestHandler):
             self.wfile.write(content)
             return
 
-        if self.path in ("/api/capabilities", "/api/agents"):
+        if self.path in ("/api/status", "/api/capabilities", "/api/agents"):
             agents = get_installed_agents()
             self.send_json({
                 "success": True,
+                "version": __version__,
                 "agents": agents,
                 "direct_kql": True,
                 "has_ai": len(agents) > 0,
@@ -696,7 +713,16 @@ def main():
         print("[Export] Building self-contained offline export...")
         return
 
-    server = HTTPServer((args.host, args.port), LogExplorerHandler)
+    try:
+        server = HTTPServer((args.host, args.port), LogExplorerHandler)
+    except OSError as e:
+        if e.errno == 48:
+            print(f"\n❌ Error: Port {args.port} is already in use!")
+            print(f"  • Free port with: kill -9 $(lsof -ti :{args.port})")
+            print(f"  • Or run on another port: python3 server.py --port <NEW_PORT>\n")
+            sys.exit(1)
+        raise
+
     url = f"http://{args.host}:{args.port}"
     print(f"\n=======================================================")
     print(f"🚀 ELK AI Log Explorer Server running at:")

@@ -29,21 +29,37 @@ except ImportError:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-# Default candidate workspace locations
-CANDIDATE_WORKSPACES = [
-    os.path.abspath(os.path.join(HERE, "../../../project-workspace")),
-    "/Users/nguyennguyen.anchanto/Projects/project-workspace",
-]
+def _read_version() -> str:
+    try:
+        with open(os.path.join(HERE, "VERSION"), "r", encoding="utf-8") as f:
+            return f.read().strip() or "1.0.0"
+    except Exception:
+        return "1.0.0"
 
-FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0f1115"/><path d="M7 26V9C7 7.34 8.34 6 10 6H22C23.66 6 25 7.34 25 9V26" fill="none" stroke="#4f8cff" stroke-width="2" stroke-linecap="round"/><path d="M11 11H21M11 16H21M11 21H17" stroke="#3fb97d" stroke-width="2" stroke-linecap="round"/><circle cx="21" cy="21" r="2.5" fill="#4f8cff"/></svg>"""
+__version__ = _read_version()
 
 
 def find_default_workspace() -> str:
-    """Finds the default project workspace directory."""
-    for ws in CANDIDATE_WORKSPACES:
-        if os.path.isdir(ws) and os.path.isdir(os.path.join(ws, "daily-reports")):
+    """Finds the default project workspace directory dynamically across any machine."""
+    candidates = [
+        os.getenv("WORKSPACE"),
+        os.getenv("PROJECT_WORKSPACE"),
+        os.path.abspath(os.path.join(HERE, "../../../project-workspace")),
+        os.path.abspath(os.path.join(Path.home(), "Projects/project-workspace")),
+        os.path.abspath(os.path.join(Path.home(), "Projects")),
+        os.path.abspath(os.path.join(HERE, "../../..")),
+        os.getcwd(),
+    ]
+    for ws in candidates:
+        if ws and os.path.isdir(ws) and os.path.isdir(os.path.join(ws, "daily-reports")):
             return ws
-    return CANDIDATE_WORKSPACES[0]
+    for ws in candidates:
+        if ws and os.path.isdir(ws):
+            return ws
+    return os.path.abspath(os.path.join(Path.home(), "Projects"))
+
+
+FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0f1115"/><path d="M7 26V9C7 7.34 8.34 6 10 6H22C23.66 6 25 7.34 25 9V26" fill="none" stroke="#4f8cff" stroke-width="2" stroke-linecap="round"/><path d="M11 11H21M11 16H21M11 21H17" stroke="#3fb97d" stroke-width="2" stroke-linecap="round"/><circle cx="21" cy="21" r="2.5" fill="#4f8cff"/></svg>"""
 
 
 class DailyReportHandler(SimpleHTTPRequestHandler):
@@ -124,6 +140,7 @@ class DailyReportHandler(SimpleHTTPRequestHandler):
         payload = {
             "status": "ok",
             "server": "daily-report",
+            "version": __version__,
             "port": self.server.server_port,
             "workspace_dir": self.workspace_dir,
             "reports_dir": self.reports_dir,
@@ -218,6 +235,20 @@ class DailyReportHandler(SimpleHTTPRequestHandler):
         sys.stderr.write(f"[{self.log_date_time_string()}] {msg}\n")
 
 
+def export_report(output_file: str = None) -> str:
+    """Generates standalone static report HTML file."""
+    src_file = os.path.join(HERE, "today-report.html")
+    dest_file = output_file or os.path.join(HERE, "daily-report.html")
+    if os.path.exists(src_file):
+        with open(src_file, "r", encoding="utf-8") as f:
+            content = f.read()
+        with open(dest_file, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"✔ Static report exported to: {dest_file}")
+        return dest_file
+    return ""
+
+
 def run_server(port: int = 24001, host: str = "127.0.0.1", workspace_dir: str = None, reports_dir: str = None, matters_dir: str = None):
     ws = workspace_dir or find_default_workspace()
     r_dir = reports_dir or os.path.join(ws, "daily-reports")
@@ -232,7 +263,15 @@ def run_server(port: int = 24001, host: str = "127.0.0.1", workspace_dir: str = 
         return DailyReportHandler(*args, workspace_dir=ws, reports_dir=r_dir, matters_dir=m_dir, **kwargs)
 
     server_address = (host, port)
-    httpd = CustomServer(server_address, handler_factory)
+    try:
+        httpd = CustomServer(server_address, handler_factory)
+    except OSError as e:
+        if e.errno == 48:
+            print(f"\n❌ Error: Port {port} is already in use!")
+            print(f"  • Free port with: kill -9 $(lsof -ti :{port})")
+            print(f"  • Or run on another port: python3 server.py --port <NEW_PORT>\n")
+            sys.exit(1)
+        raise
 
     print("\n=======================================================")
     print("  Daily Report Live Server running at:")
@@ -253,11 +292,16 @@ def run_server(port: int = 24001, host: str = "127.0.0.1", workspace_dir: str = 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Live Report Server for Daily Work Reports")
-    parser.add_argument("--port", type=int, default=24001, help="HTTP port (default: 24001)")
-    parser.add_argument("--host", default="127.0.0.1", help="Host/bind address (default: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=int(os.getenv("PORT", "24001")), help="HTTP port (default: 24001)")
+    parser.add_argument("--host", default=os.getenv("HOST", "127.0.0.1"), help="Host/bind address (default: 127.0.0.1)")
     parser.add_argument("--workspace", default=None, help="Project workspace root directory")
     parser.add_argument("--reports-dir", default=None, help="Daily reports directory path")
     parser.add_argument("--matters-dir", default=None, help="Matters directory path")
+    parser.add_argument("--export", action="store_true", help="Generate standalone static HTML report and exit")
     args = parser.parse_args()
+
+    if args.export:
+        export_report()
+        sys.exit(0)
 
     run_server(port=args.port, host=args.host, workspace_dir=args.workspace, reports_dir=args.reports_dir, matters_dir=args.matters_dir)

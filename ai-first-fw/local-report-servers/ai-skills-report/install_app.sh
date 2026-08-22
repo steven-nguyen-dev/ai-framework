@@ -48,10 +48,12 @@ echo "  • Creating Application Bundle structure..."
 mkdir -p "${APP_PATH}/Contents/MacOS"
 mkdir -p "${APP_PATH}/Contents/Resources/app"
 
+APP_VERSION="$(cat "${HERE}/VERSION" 2>/dev/null || echo "1.0.0")"
+
 # ------------------------------------------------------------------------------
 # 3. Create Info.plist
 # ------------------------------------------------------------------------------
-cat << 'PLIST' > "${APP_PATH}/Contents/Info.plist"
+cat << PLIST > "${APP_PATH}/Contents/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -73,9 +75,9 @@ cat << 'PLIST' > "${APP_PATH}/Contents/Info.plist"
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>${APP_VERSION}</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>${APP_VERSION}</string>
     <key>LSMinimumSystemVersion</key>
     <string>10.13</string>
     <key>NSHighResolutionCapable</key>

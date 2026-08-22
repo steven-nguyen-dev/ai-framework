@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today's Report</title>
+<base id="baseTag" href="./">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.umd.min.js"></script>
+<!-- Chart.js was dropped 2026-08-11: the carry-forward visual is now HTML, because a
+     <canvas> cannot hold the matter link or render the reason's inline code. -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+  :root{
+    --bg: #020617;
+    --panel: #0f172a;
+    --surface: #1e293b;
+    --border: #1e293b;
+    --border-hover: #334155;
+    --text: #f8fafc;
+    --text-sec: #cbd5e1;
+    --muted: #94a3b8;
+    --accent: #60a5fa;
+    --accent-bg: rgba(59, 130, 246, 0.15);
+    --accent-border: rgba(96, 165, 250, 0.35);
+    --warn: #fbbf24;
+    --warn-bg: rgba(245, 158, 11, 0.15);
+    --warn-border: rgba(251, 191, 36, 0.35);
+    --bad: #f87171;
+    --bad-bg: rgba(239, 68, 68, 0.15);
+    --bad-border: rgba(248, 113, 113, 0.35);
+    --ok: #34d399;
+    --ok-bg: rgba(16, 185, 129, 0.15);
+    --ok-border: rgba(52, 211, 153, 0.35);
+    --neutral-bg: rgba(51, 65, 85, 0.4);
+    --neutral-border: rgba(100, 116, 139, 0.35);
+
+    /* Type scale */
+    --fs-1: 11px;  /* badges, tags */
+    --fs-2: 12px;  /* buttons, meta */
+    --fs-3: 13px;  /* table, chart heading, date input */
+    --fs-4: 14px;  /* body base */
+    --fs-5: 16px;  /* content h2 */
+    --fs-6: 19px;  /* content h1 */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;font-size:var(--fs-4)}
+  header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  header h1{font-size:var(--fs-2);margin:0;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
+  .datebox{display:flex;align-items:center;gap:6px}
+  .datebox button{background:var(--surface);border:1px solid var(--border-hover);color:var(--text);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:var(--fs-4);transition:all .15s}
+  .datebox button:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+  .datebox input[type=date]{background:var(--surface);border:1px solid var(--border-hover);color:var(--text);border-radius:6px;padding:4px 8px;font-size:var(--fs-3);font-family:'JetBrains Mono',monospace}
+  .badge{font-size:var(--fs-1);padding:2px 8px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.02em}
+  .badge.open{color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-border)}
+  .badge.closed{color:var(--text-sec);background:var(--neutral-bg);border:1px solid var(--neutral-border)}
+  .spacer{flex:1}
+  #meta{font-size:var(--fs-2);color:var(--muted);font-family:'JetBrains Mono',monospace}
+  #serverBtn{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);border-radius:6px;padding:4px 11px;cursor:pointer;font-size:var(--fs-2);font-family:'JetBrains Mono',monospace;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:all .15s ease}
+  #serverBtn:hover{border-color:var(--accent);background:rgba(96,165,250,.25)}
+  #serverBtn.online{color:var(--ok);border-color:var(--ok-border);background:var(--ok-bg)}
+  #serverBtn.online:hover{background:rgba(52,211,153,.25)}
+  #serverBtn .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block}
+  #serverBtn.online .dot{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+  #serverBtn.offline .dot{background:var(--bad)}
+  #refreshBtn{background:var(--surface);border:1px solid var(--border-hover);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:var(--fs-2);transition:all .15s}
+  #refreshBtn:hover{color:var(--text);border-color:var(--accent)}
+  main{max-width:960px;margin:0 auto;padding:24px 20px 80px}
+  #status{padding:14px 16px;border-radius:8px;margin-bottom:18px;font-size:var(--fs-4)}
+  #status.error{background:var(--bad-bg);border:1px solid var(--bad-border);color:#fca5a5}
+  #status.loading{background:var(--panel);border:1px solid var(--border);color:var(--muted)}
+  .server-box{margin-top:10px;background:var(--panel);border:1px solid var(--border-hover);border-radius:8px;padding:14px 16px}
+  .server-box p{margin:0 0 8px;font-size:var(--fs-3);color:var(--text)}
+  .server-cmd-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .server-cmd-row code{background:var(--bg);padding:6px 10px;border-radius:6px;border:1px solid var(--border-hover);font-size:var(--fs-3);color:var(--text);flex:1;min-width:200px;font-family:'JetBrains Mono',monospace}
+  .btn-action{background:var(--accent);color:#020617;border:none;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:var(--fs-2);font-weight:600;font-family:'JetBrains Mono',monospace;display:inline-flex;align-items:center;gap:5px}
+  .btn-action:hover{opacity:.9}
+  .btn-sec{background:var(--surface);border:1px solid var(--border-hover);color:var(--text);border-radius:6px;padding:5px 11px;cursor:pointer;font-size:var(--fs-2);font-family:'JetBrains Mono',monospace;display:inline-flex;align-items:center;gap:4px;text-decoration:none;transition:all .15s}
+  .btn-sec:hover{border-color:var(--accent);color:var(--accent)}
+  .server-status-line{font-size:var(--fs-2);color:var(--muted);display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace}
+  .server-status-line .dot{width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  #toast{position:fixed;bottom:24px;right:24px;z-index:100;background:var(--panel);border:1px solid var(--border-hover);border-radius:8px;padding:12px 18px;font-size:var(--fs-3);color:var(--text);box-shadow:0 12px 32px rgba(0,0,0,.6);display:none;align-items:center;gap:8px;max-width:440px;line-height:1.4}
+  #toast.show{display:flex;animation:toastIn .2s ease}
+  #toast.success{border-color:var(--ok);border-left:4px solid var(--ok)}
+  #toast.info{border-color:var(--accent);border-left:4px solid var(--accent)}
+  #toast.warn{border-color:var(--warn);border-left:4px solid var(--warn)}
+  @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  
+  /* On-going matters */
+  #ongoing{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-top:24px;display:none}
+  #ongoing h2{font-size:var(--fs-3);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 4px;font-family:'JetBrains Mono',monospace}
+  #ongoing .src{font-size:var(--fs-1);color:var(--muted);margin:0 0 14px}
+  #ongoing .row{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+  #ongoing .row:last-child{border-bottom:none}
+  #ongoing .slug{flex:none;min-width:190px;font-size:var(--fs-3);color:var(--accent);text-decoration:none;font-weight:600;font-family:'JetBrains Mono',monospace}
+  #ongoing .slug:hover{text-decoration:underline}
+  #ongoing .st{flex:none;font-size:var(--fs-1);padding:2px 8px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:.02em;text-transform:uppercase;background:var(--neutral-bg);border:1px solid var(--neutral-border);color:var(--text-sec)}
+  #ongoing .st.active{color:var(--ok);background:var(--ok-bg);border-color:var(--ok-border)}
+  #ongoing .st[data-s="at-risk"]{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-border)}
+  #ongoing .st[data-s="blocked"]{color:var(--bad);background:var(--bad-bg);border-color:var(--bad-border)}
+  #ongoing .line{flex:1;min-width:0;font-size:var(--fs-3);color:var(--text-sec)}
+  #ongoing .line.gap{color:var(--warn)}
+  
+  /* Member actions */
+  #members{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-top:24px;display:none}
+  #members h2{font-size:var(--fs-3);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 4px;font-family:'JetBrains Mono',monospace}
+  #members .src{font-size:var(--fs-1);color:var(--muted);margin:0 0 14px}
+  #members .empty{font-size:var(--fs-3);color:var(--warn)}
+  #membersBox p{font-size:var(--fs-3);font-weight:600;color:var(--text);margin:14px 0 4px}
+  #membersBox p:first-child{margin-top:0}
+  #membersBox ul{margin:0;padding-left:20px}
+  #membersBox li{font-size:var(--fs-3);color:var(--text-sec);margin:4px 0}
+  #membersBox code{background:var(--surface);border:1px solid var(--border-hover);padding:2px 6px;border-radius:4px;font-size:.92em;font-family:'JetBrains Mono',monospace}
+  #membersBox a{color:var(--accent);text-decoration:none}
+  
+  /* Carry-forward visual */
+  #chartWrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-top:24px;display:none}
+  #chartWrap h2{font-size:var(--fs-3);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 6px;font-family:'JetBrains Mono',monospace}
+  #chartWrap .src{font-size:var(--fs-2);color:var(--muted);margin:-2px 0 16px}
+  #chartBox{position:relative;display:flex;flex-direction:column;gap:14px}
+  .cf-row{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:baseline}
+  .cf-name{font-size:var(--fs-4);font-weight:600;color:var(--text)}
+  .cf-name .mk{margin-right:6px}
+  .cf-age{font-size:var(--fs-3);color:var(--muted);font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cf-bar{grid-column:1/-1;height:7px;border-radius:999px;background:var(--surface);overflow:hidden}
+  .cf-bar i{display:block;height:100%;border-radius:999px}
+  .cf-meta{grid-column:1/-1;font-size:var(--fs-3);color:var(--muted);line-height:1.5}
+  .cf-meta a{color:var(--accent);text-decoration:none}
+  .cf-meta a:hover{text-decoration:underline}
+  .cf-meta code{background:var(--surface);border:1px solid var(--border-hover);padding:1px 5px;border-radius:4px;font-size:.92em;font-family:'JetBrains Mono',monospace}
+  .cf-meta .sep{opacity:.5;margin:0 6px}
+  .cf-scale{font-size:var(--fs-2);color:var(--muted);text-align:right;margin-top:-2px;font-family:'JetBrains Mono',monospace}
+  
+  /* Markdown Content */
+  #content{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:26px 30px;font-size:var(--fs-4)}
+  #content h1{font-size:var(--fs-6);border-bottom:1px solid var(--border);padding-bottom:12px;font-weight:700;color:var(--text)}
+  #content h2{font-size:var(--fs-5);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-top:30px;font-family:'JetBrains Mono',monospace;font-weight:700}
+  #content table{border-collapse:collapse;width:100%;font-size:var(--fs-3);margin:12px 0}
+  #content th,#content td{border:1px solid var(--border);padding:8px 12px;text-align:left;vertical-align:top}
+  #content th{background:var(--surface);color:var(--muted);font-family:'JetBrains Mono',monospace;font-weight:600;font-size:var(--fs-2);text-transform:uppercase}
+  #content code{background:var(--surface);border:1px solid var(--border-hover);padding:2px 6px;border-radius:4px;font-size:.9em;font-family:'JetBrains Mono',monospace;color:var(--text)}
+  #content pre{background:#020617;border:1px solid var(--border);padding:14px;border-radius:8px;overflow-x:auto}
+  #content a{color:var(--accent);text-decoration:none}
+  #content a:hover{text-decoration:underline}
+  #content li{margin:4px 0}
+  
+  /* GFM task-list checkboxes */
+  #content input[type=checkbox]{
+    -webkit-appearance:none;appearance:none;
+    width:14px;height:14px;margin:0 8px 0 -22px;vertical-align:-2px;
+    border:1.5px solid var(--muted);border-radius:4px;background:transparent;
+    position:relative;cursor:default;transition:all .15s}
+  #content input[type=checkbox]:checked{border-color:var(--accent);background:var(--accent)}
+  #content input[type=checkbox]:checked::after{
+    content:"";position:absolute;left:4px;top:1px;
+    width:3px;height:7px;border:solid #020617;border-width:0 2px 2px 0;
+    transform:rotate(45deg)}
+  #content li:has(> input[type=checkbox]:checked){color:var(--muted)}
+  #content li:has(> input[type=checkbox]:checked) strong{font-weight:600;color:var(--muted)}
+  #content ul:has(> li > input[type=checkbox]){list-style:none;padding-left:22px}
+  #content blockquote{border-left:3px solid var(--accent);background:var(--accent-bg);margin:12px 0;padding:8px 14px;color:var(--text-sec);border-radius:0 6px 6px 0}
+  #content hr{border:none;border-top:1px solid var(--border);margin:26px 0}
+  .mermaid{background:#fff;border-radius:8px;padding:12px}
+  #empty{color:var(--muted);font-size:var(--fs-4)}
+
+  /* Sleek Scrollbars */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Daily Report</h1>
+  <div class="datebox">
+    <button id="prevBtn" title="Previous day">&larr;</button>
+    <input type="date" id="dateInput">
+    <button id="nextBtn" title="Next day">&rarr;</button>
+    <button id="todayBtn" title="Jump to today (ICT)">Today</button>
+  </div>
+  <span id="statusBadge" class="badge"></span>
+  <div class="spacer"></div>
+  <span id="meta"></span>
+  <button id="serverBtn" title="Start or connect to local report server">⚡ Start Server</button>
+  <button id="refreshBtn">&#8635; Refresh</button>
+</header>
+<main>
+  <div id="status" class="loading">Loading&hellip;</div>
+  <div id="content"></div>
+  <div id="chartWrap"><h2>Carry-forward</h2>
+    <p class="src">the whole section, rendered as bars &mdash; the list above it is hidden so the same items are not on screen twice</p>
+    <div id="chartBox"></div></div>
+  <div id="ongoing">
+    <h2>On-going matters</h2>
+    <p class="src">each matter&rsquo;s <code>summary:</code> field (&le;72 chars), or the full first sentence of its <code>## Current state</code> where it has none &mdash; read live from the matter file, not stored in the report</p>
+    <div id="ongoingRows"></div>
+  </div>
+  <!-- Member actions renders LAST, below On-going matters (Steve, 2026-08-13). In the file the
+       section sits third, after Carry-forward; here it sits below the derived blocks, so the
+       page reads: Steve's actions → his shortfall → the matters around him → his pod's day. -->
+  <div id="members">
+    <h2>Member actions</h2>
+    <p class="src">the VN pod&rsquo;s day, typed by Steve &mdash; verbatim, and nothing carries forward</p>
+    <div id="membersBox"></div>
+  </div>
+</main>
+<div id="toast"></div>
+
+<script>
+const TZ = 'Asia/Ho_Chi_Minh';
+let viewingToday = true;
+let mermaidLoaded = false;
+let lastRaw = null; // cached fetched markdown
+
+function icDateStr(d){
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(d);
+  const get = t => parts.find(p=>p.type===t).value;
+  return `${get('year')}-${get('month')}-${get('day')}`;
+}
+function todayICT(){ return icDateStr(new Date()); }
+
+function shiftDate(dateStr, deltaDays){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m-1, d));
+  dt.setUTCDate(dt.getUTCDate() + deltaDays);
+  return dt.toISOString().slice(0,10);
+}
+
+function reportsBaseURL(){
+  if(location.protocol === 'file:'){
+    return new URL('../daily-reports/', location.href);
+  }
+  return new URL('/daily-reports/', location.origin);
+}
+function reportURL(dateStr){
+  return new URL(dateStr + '_daily-report.md', reportsBaseURL()).toString();
+}
+
+function parseFrontmatter(raw){
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if(!m) return { body: raw, meta: {} };
+  const meta = {};
+  m[1].split('\n').forEach(line=>{
+    const mm = line.match(/^([A-Za-z_]+):\s*(.*)$/);
+    if(mm) meta[mm[1]] = mm[2].trim();
+  });
+  return { body: raw.slice(m[0].length), meta };
+}
+
+// The Carry-forward section IS the visual. Steve, 2026-08-11: "Can I have only the
+// visualize section rendered?" — the `## Carry-forward` list and the age chart were the
+// same two items on screen twice. The list is now hidden from #content and everything it
+// carried is rendered here instead, so nothing is lost: the marker, the reason it did not
+// land, the matter link and the original carry date.
+//
+// ⚠ Rule 13: a Carry-forward line's REASON is written nowhere else in the workspace. If
+// this parser drops it, it is gone from the viewer entirely — hence the raw-line fallback
+// at the bottom of parseCarryForward, which shows the line verbatim rather than nothing.
+const CF_HEADING = /^##[ \t]+(?:Carry-forward|Remaining)[ \t]*$/m;
+const MA_HEADING = /^##[ \t]+Member actions[ \t]*$/m;
+
+function carryForwardBody(raw){
+  const m = raw.match(CF_HEADING);
+  if(!m) return null;
+  const after = raw.slice(m.index + m[0].length);
+  const next = after.match(/^##[ \t]+/m);
+  return next ? after.slice(0, next.index) : after;
+}
+
+function parseCarryForward(raw){
+  const body = carryForwardBody(raw);
+  if(!body) return [];
+  const items = [];
+  const reAge = /`?carried:\s*(\d{8})\s*\((\d+)d\)`?/;
+  body.split('\n').forEach(line => {
+    if(!/^\s*-\s*\[[ x]\]/.test(line)) return;
+    const age = line.match(reAge);
+    // Strip the bullet and checkbox; keep the rest of the line intact.
+    let rest = line.replace(/^\s*-\s*\[[ x]\]\s*/, '').trim();
+    if(age) rest = rest.replace(age[0], '').replace(/\s*[—-]\s*$/, '').trim();
+
+    // A leading emoji marker (⛔ 🚨 ✅ ❓) is the status flag, not part of the name.
+    let marker = '';
+    const mk = rest.match(/^(\p{Extended_Pictographic}️?)\s*/u);
+    if(mk){ marker = mk[1]; rest = rest.slice(mk[0].length); }
+
+    // Shape: **Name** — reason — [matter](href).
+    // ⚠ Take the bold run FIRST, then split the remainder. Splitting on the em-dash first
+    // breaks any name that contains one — "**Amazon cross border — analysis**" parsed as
+    // name "Amazon cross border" with reason "analysis** — …".
+    let name, tail;
+    const bold = rest.match(/^\*\*([\s\S]+?)\*\*\s*/);
+    if(bold){ name = bold[1].trim(); tail = rest.slice(bold[0].length).replace(/^\s*—\s*/, ''); }
+    else { const bits = rest.split(/\s+—\s+/); name = (bits.shift() || rest).trim(); tail = bits.join(' — '); }
+    const parts = tail ? tail.split(/\s+—\s+/) : [];
+    let matter = '', reason = '';
+    const leftovers = [];
+    parts.forEach(seg => {
+      const link = seg.match(/^\[([^\]]+)\]\(([^)]*)\)$/);
+      if(link && !matter) matter = seg; else leftovers.push(seg);
+    });
+    reason = leftovers.join(' — ').trim();
+
+    items.push({
+      name, marker, reason, matter,
+      age: age ? parseInt(age[2], 10) : null,
+      since: age ? age[1] : null,
+      raw: (name || reason) ? '' : line.trim()   // fallback: nothing parsed
+    });
+  });
+  return items;
+}
+
+function fmtSince(yyyymmdd){
+  if(!yyyymmdd) return '';
+  return yyyymmdd.slice(6,8) + '/' + yyyymmdd.slice(4,6);
+}
+
+function renderChart(items){
+  const wrap = document.getElementById('chartWrap');
+  const box  = document.getElementById('chartBox');
+  if(!items.length){ wrap.style.display = 'none'; box.innerHTML = ''; return; }
+  wrap.style.display = 'block';
+
+  // Oldest first — the age is the argument for doing something about it.
+  items = items.slice().sort((a,b) => (b.age ?? -1) - (a.age ?? -1));
+  const max = Math.max(...items.map(i => i.age ?? 0), 1);
+  // Same bands the bar chart used: 7d red, 5d amber, else blue.
+  const colour = a => a >= 7 ? 'var(--bad)' : (a >= 5 ? 'var(--warn)' : 'var(--accent)');
+  const inline = md => { try { return marked.parseInline(md); } catch(e){ return md; } };
+
+  box.innerHTML = items.map(i => {
+    if(i.raw) return '<div class="cf-row"><div class="cf-meta">' + inline(i.raw) + '</div></div>';
+    const pct = i.age == null ? 0 : Math.max(4, Math.round(i.age / max * 100));
+    const meta = [
+      i.reason ? inline(i.reason) : '',
+      i.matter ? inline(i.matter) : '',
+      i.since  ? 'carried since ' + fmtSince(i.since) : ''
+    ].filter(Boolean).join('<span class="sep">·</span>');
+    return '<div class="cf-row">' +
+      '<div class="cf-name">' + (i.marker ? '<span class="mk">' + i.marker + '</span>' : '') + inline(i.name) + '</div>' +
+      '<div class="cf-age">' + (i.age == null ? '—' : i.age + 'd') + '</div>' +
+      '<div class="cf-bar"><i style="width:' + pct + '%;background:' + colour(i.age ?? 0) + '"></i></div>' +
+      (meta ? '<div class="cf-meta">' + meta + '</div>' : '') +
+    '</div>';
+  }).join('') + '<div class="cf-scale">bar length = days carried, longest ' + max + 'd</div>';
+}
+
+async function renderMermaidBlocks(){
+  const blocks = document.querySelectorAll('#content code.language-mermaid');
+  if(!blocks.length) return;
+  try{
+    await ensureMermaid();
+    for(const block of blocks){
+      const pre = block.parentElement;
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = block.textContent;
+      pre.replaceWith(div);
+    }
+    window.__mermaid.run({ nodes: document.querySelectorAll('#content .mermaid') });
+  }catch(e){
+    console.warn('mermaid render skipped:', e);
+  }
+}
+
+function setStatus(kind, msg, isHtml = false){
+  const el = document.getElementById('status');
+  if(!msg){ el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.className = kind;
+  if(isHtml){
+    el.innerHTML = msg;
+  } else {
+    el.textContent = msg;
+  }
+}
+
+// Accepts either a YAML flow list [a, b] or a quoted string "a, b" — strip both
+// the brackets and the surrounding quotes, and any stray quote left on an item.
+function matterSlugs(meta){
+  if(!meta.matters) return [];
+  return meta.matters
+    .replace(/^\s*[\["']+|[\]"']+\s*$/g, '')
+    .split(',')
+    .map(s => s.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean);
+}
+
+// ── On-going matters ──────────────────────────────────────────────────────────
+// daily-reports/README.md: a matter needing actions day after day is not a daily action, and its
+// status is NEVER written into the report. This block derives it at display time from the
+// matter file itself, so the matter stays the single writer (one home per activity) and the line
+// cannot go stale. Nothing here is cached to disk.
+
+function summaryField(md){
+  const fm = md.match(/^---\n([\s\S]*?)\n---/);
+  if(!fm) return null;
+  const m = fm[1].match(/^summary:\s*(.+?)\s*$/m);
+  if(!m) return null;
+  return m[1].replace(/^["']|["']$/g, '').trim() || null;
+}
+
+function firstSentenceOfCurrentState(md){
+  const m = md.match(/^## Current state[ \t]*$([\s\S]*?)(?=^## |$(?![\s\S]))/m);
+  if(!m) return null;                       // no such heading in this file — a fact about the file
+  // First PARAGRAPH, not first line: Current state is hard-wrapped, so a line-based read
+  // truncates mid-clause on a trailing em dash.
+  const para = [];
+  for(const raw of m[1].split('\n')){
+    const t = raw.trim();
+    if(!t){ if(para.length) break; else continue; }
+    if(t.startsWith('|') || t.startsWith('<!--') || t.startsWith('#')){ if(para.length) break; else continue; }
+    para.push(t);
+  }
+  if(!para.length) return '';
+  let t = para.join(' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')  // [text](url) -> text
+    .replace(/[*_`~]/g, '')                   // bold, italics, code ticks, strikethrough
+    .replace(/^[^\w(]*\s*/, '')               // leading marker emoji (✅ ⛔ ➡ …)
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Sentence end: 20+ chars in, so "A4." or an initial can't end it prematurely.
+  const s = t.match(/^(.{20,}?[.!?])(\s|$)/);
+  // No trim, no truncate (Steve, 2026-08-13). The 220-char cut that used to live here is gone.
+  return s ? s[1] : t;
+}
+
+async function renderOngoing(slugs){
+  const wrap = document.getElementById('ongoing');
+  const rows = document.getElementById('ongoingRows');
+  rows.innerHTML = '';
+  if(!slugs.length){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  const results = await Promise.all(slugs.map(async slug => {
+    const url = location.protocol === 'file:'
+      ? new URL('../matters/' + slug + '/README.md', reportsBaseURL()).toString()
+      : new URL('/matters/' + slug + '/README.md', location.origin).toString();
+    try{
+      const res = await fetch(url, { cache: 'no-store' });
+      if(!res.ok) return { slug, url, err: 'HTTP ' + res.status };
+      const md  = await res.text();
+      const st  = md.match(/^status:\s*(.+)$/m);
+      // `summary:` first (≤72 chars); the full first sentence of ## Current state only when
+      // the matter has no such field.
+      const sum = summaryField(md);
+      return {
+        slug, url,
+        status: st ? st[1].trim() : null,
+        line:   sum || firstSentenceOfCurrentState(md),
+        src:    sum ? 'summary' : 'state'
+      };
+    }catch(e){
+      return { slug, url, err: e.message };
+    }
+  }));
+
+  results.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    const a = document.createElement('a');
+    a.className = 'slug'; a.href = r.url; a.textContent = r.slug;
+    row.appendChild(a);
+
+    if(r.status){
+      const st = document.createElement('span');
+      st.className = 'st' + (r.status === 'active' ? ' active' : '');
+      st.dataset.s = r.status;
+      st.textContent = r.status;
+      row.appendChild(st);
+    }
+
+    const line = document.createElement('span');
+    line.className = 'line';
+    // Each of these is a statement about the FILE, never about the work (never invent — CLAUDE.md).
+    if(r.err){
+      line.className += ' gap';
+      line.textContent = 'could not read this matter file — ' + r.err;
+    } else if(r.line === null){
+      line.className += ' gap';
+      line.textContent = 'this file has no "## Current state" heading — nowhere to read a status from';
+    } else if(r.line === ''){
+      line.className += ' gap';
+      line.textContent = '"## Current state" is present but empty';
+    } else {
+      line.textContent = r.line;
+    }
+    row.appendChild(line);
+    rows.appendChild(row);
+  });
+}
+
+// Cut one `## Heading` section out of the body: returns the section's own text and the body
+// without it. Stops at the next `## `, never at EOF.
+function cutSection(body, re){
+  const m = body.match(re);
+  if(!m) return { rest: body, section: null };
+  const after = body.slice(m.index + m[0].length);
+  const next  = after.match(/^##[ \t]+/m);
+  return {
+    rest:    body.slice(0, m.index) + (next ? after.slice(next.index) : ''),
+    section: next ? after.slice(0, next.index) : after
+  };
+}
+
+function renderMembers(section){
+  const wrap = document.getElementById('members');
+  const box  = document.getElementById('membersBox');
+  if(section === null){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  const t = section.trim();
+  box.innerHTML = t
+    ? marked.parse(t)
+    : '<p class="empty">empty — Steve recorded no member actions for this day</p>';
+}
+
+// Re-render currently cached data.
+function render(){
+  if(lastRaw === null) return; // nothing loaded yet (still loading, or errored)
+  const { body, meta } = parseFrontmatter(lastRaw);
+
+  let shown = body;
+  const ma = cutSection(shown, MA_HEADING);
+  shown = ma.rest;
+  const cf = cutSection(shown, CF_HEADING);
+  shown = cf.rest;
+
+  document.getElementById('content').innerHTML = marked.parse(shown.trimEnd());
+  renderMembers(ma.section);
+  renderChart(parseCarryForward(body));
+  renderMermaidBlocks();
+  renderOngoing(matterSlugs(meta));
+}
+
+const SERVER_PORT = 24001;
+const SERVER_CMD = 'python3 server.py';
+const LOCALHOST_URL = `http://localhost:${SERVER_PORT}/`;
+let pollInterval = null;
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function showToast(msg, type = 'info', duration = 4000){
+  const toast = document.getElementById('toast');
+  if(!toast) return;
+  toast.className = `show ${type}`;
+  toast.innerHTML = msg;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.className = '';
+  }, duration);
+}
+
+async function copyServerCommand(){
+  const cmd = SERVER_CMD;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(cmd);
+    } else {
+      throw new Error('Fallback clipboard');
+    }
+  }catch(e){
+    const input = document.createElement('input');
+    input.value = cmd;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
+  showToast(`📋 Copied <code>${cmd}</code> to clipboard! Run in terminal.`, 'success');
+}
+
+async function pingServer(){
+  try{
+    const res = await fetch(`http://127.0.0.1:${SERVER_PORT}/api/status`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-store'
+    });
+    return res.ok;
+  }catch(e){
+    try{
+      await fetch(`http://127.0.0.1:${SERVER_PORT}/`, {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-store'
+      });
+      return true;
+    }catch(err){
+      return false;
+    }
+  }
+}
+
+async function updateServerStatusUI(){
+  const isUp = await pingServer();
+  const btn = document.getElementById('serverBtn');
+  if(btn){
+    if(isUp){
+      btn.className = 'online';
+      btn.innerHTML = `<span class="dot"></span> Server Active`;
+      btn.title = `Report server is active on port ${SERVER_PORT}. Click to reload.`;
+    } else {
+      btn.className = 'offline';
+      btn.innerHTML = `⚡ Start Server`;
+      btn.title = `Start report server (${SERVER_CMD})`;
+    }
+  }
+  return isUp;
+}
+
+function startServerPolling(targetUrl){
+  if(pollInterval) clearInterval(pollInterval);
+  const statusMsg = document.getElementById('serverPollStatus');
+  const redirectLink = document.getElementById('serverRedirectLink');
+
+  pollInterval = setInterval(async () => {
+    const isUp = await pingServer();
+    if(isUp){
+      clearInterval(pollInterval);
+      pollInterval = null;
+      updateServerStatusUI();
+      if(statusMsg) statusMsg.innerHTML = '<span style="color:var(--ok)">● Server detected online!</span>';
+      if(redirectLink) redirectLink.style.display = 'inline-flex';
+      showToast(`🟢 Server is online!`, 'success', 2000);
+
+      if(location.protocol === 'file:' && targetUrl){
+        setTimeout(() => { location.href = targetUrl; }, 600);
+      } else {
+        setTimeout(() => { load(document.getElementById('dateInput').value); }, 400);
+      }
+    }
+  }, 1500);
+}
+
+async function handleServerButtonClick(){
+  const isUp = await pingServer();
+  const currentDate = document.getElementById('dateInput').value || todayICT();
+  const targetUrl = `${LOCALHOST_URL}?date=${encodeURIComponent(currentDate)}`;
+
+  if(isUp){
+    if(location.protocol === 'file:'){
+      showToast(`🟢 Server is running! Opening localhost…`, 'success', 1500);
+      setTimeout(() => { location.href = targetUrl; }, 400);
+    } else {
+      showToast(`🟢 Server is active on port ${SERVER_PORT}`, 'info', 2000);
+      load(currentDate);
+    }
+    updateServerStatusUI();
+    return;
+  }
+
+  await copyServerCommand();
+  showToast(`⚡ Command <code>${SERVER_CMD}</code> copied! Paste into terminal. Listening for server…`, 'info', 6000);
+  startServerPolling(targetUrl);
+}
+
+function showServerError(err, dateStr){
+  const isFile = location.protocol === 'file:';
+  const currentDate = dateStr || document.getElementById('dateInput').value || todayICT();
+  const targetUrl = `${LOCALHOST_URL}?date=${encodeURIComponent(currentDate)}`;
+
+  const html = `
+    <div class="server-error-wrap">
+      <div><strong>Can't reach the report over the network</strong> (${escapeHtml(err.message)}).</div>
+      <div class="server-box">
+        <p>${isFile
+          ? `Browsers block <code>fetch()</code> requests when opened directly as a <code>file://</code> URL.`
+          : `The report server is not currently running on port ${SERVER_PORT}.`} Run the server script in <code>ai-first-fw/local-report-servers/daily-report</code> to view reports:</p>
+        <div class="server-cmd-row">
+          <code>${SERVER_CMD}</code>
+          <button type="button" class="btn-sec" onclick="copyServerCommand()">📋 Copy Command</button>
+          <button type="button" class="btn-action" onclick="handleServerButtonClick()">⚡ Start Server</button>
+        </div>
+        <div id="serverPollStatus" class="server-status-line">
+          <span class="dot"></span> <span>Checking http://localhost:${SERVER_PORT}…</span>
+        </div>
+        <div style="margin-top:8px">
+          <a id="serverRedirectLink" class="btn-sec" href="${targetUrl}" style="display:none;color:var(--ok);border-color:var(--ok)">
+            &rarr; Open via Localhost (${targetUrl})
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+  setStatus('error', html, true);
+  startServerPolling(targetUrl);
+  updateServerStatusUI();
+}
+
+// `silent` is for the background poll: fetch quietly, and if the file is byte-identical
+// to what is already on screen, change NOTHING.
+async function load(dateStr, { silent = false } = {}){
+  document.getElementById('dateInput').value = dateStr;
+  viewingToday = (dateStr === todayICT());
+
+  if(!silent){
+    setStatus('loading', `Loading ${dateStr}…`);
+    document.getElementById('content').innerHTML = '';
+    document.getElementById('chartWrap').style.display = 'none';
+    document.getElementById('ongoing').style.display = 'none';
+    document.getElementById('members').style.display = 'none';
+    document.getElementById('statusBadge').textContent = '';
+    lastRaw = null;
+  }
+
+  const url = reportURL(dateStr);
+  document.getElementById('baseTag').href = reportsBaseURL().toString();
+
+  let res;
+  try{
+    res = await fetch(url, { cache: 'no-store' });
+  }catch(e){
+    if(silent) return;   // transient network blip — keep showing what we have
+    showServerError(e, dateStr);
+    return;
+  }
+  if(res.status === 404){
+    if(silent) return;
+    setStatus('error', `No daily report for ${dateStr} yet.`);
+    return;
+  }
+  if(!res.ok){
+    if(silent) return;
+    setStatus('error', `Failed to load ${dateStr}'s report — HTTP ${res.status}.`);
+    return;
+  }
+  const raw = await res.text();
+  if(silent && raw === lastRaw) return;   // nothing changed — no repaint at all
+  lastRaw = raw;
+  const { meta } = parseFrontmatter(raw);
+
+  setStatus(null);
+  if(meta.status){
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = meta.status;
+    badge.className = 'badge ' + meta.status;
+  }
+  const lastMod = res.headers.get('Last-Modified');
+  document.getElementById('meta').textContent = lastMod ? `file updated ${new Date(lastMod).toLocaleString()}` : '';
+
+  render();
+  updateServerStatusUI();
+}
+
+document.getElementById('prevBtn').onclick = () => load(shiftDate(document.getElementById('dateInput').value, -1));
+document.getElementById('nextBtn').onclick = () => load(shiftDate(document.getElementById('dateInput').value, 1));
+document.getElementById('todayBtn').onclick = () => load(todayICT());
+document.getElementById('refreshBtn').onclick = () => load(document.getElementById('dateInput').value);
+document.getElementById('serverBtn').onclick = handleServerButtonClick;
+document.getElementById('dateInput').onchange = (e) => load(e.target.value);
+
+// initial load: URL ?date= override, else today in ICT
+const qp = new URLSearchParams(location.search);
+load(qp.get('date') || todayICT());
+updateServerStatusUI();
+
+// Hourly silent refresh
+const REFRESH_MS = 60 * 60 * 1000;
+setInterval(() => {
+  if(viewingToday) load(todayICT(), { silent: true });
+  updateServerStatusUI();
+}, REFRESH_MS);
+</script>
+</body>
+</html>

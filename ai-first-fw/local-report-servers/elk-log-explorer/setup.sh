@@ -9,10 +9,15 @@ if ! command -v python3 &>/dev/null; then
     exit 1
 fi
 
-KIBANA_DIR="$SCRIPT_DIR/../../local-mcps/kibana"
-if [ -d "$KIBANA_DIR" ] && [ ! -f "$KIBANA_DIR/.env" ] && [ -f "$KIBANA_DIR/.env.sample" ]; then
-    cp "$KIBANA_DIR/.env.sample" "$KIBANA_DIR/.env"
-    echo "✔ Created $KIBANA_DIR/.env from .env.sample"
+# 1. Setup local .env from .env.sample if not present
+if [ ! -f "$SCRIPT_DIR/.env" ]; then
+    if [ -f "$SCRIPT_DIR/.env.sample" ]; then
+        cp "$SCRIPT_DIR/.env.sample" "$SCRIPT_DIR/.env"
+        echo "✔ Created $SCRIPT_DIR/.env from .env.sample"
+    elif [ -f "$SCRIPT_DIR/../../local-mcps/kibana/.env" ]; then
+        cp "$SCRIPT_DIR/../../local-mcps/kibana/.env" "$SCRIPT_DIR/.env"
+        echo "✔ Copied .env from local-mcps/kibana"
+    fi
 fi
 
 chmod +x "$SCRIPT_DIR"/*.sh "$SCRIPT_DIR"/*.command "$SCRIPT_DIR"/*.py 2>/dev/null || true
