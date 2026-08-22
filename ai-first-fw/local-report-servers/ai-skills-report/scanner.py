@@ -341,6 +341,79 @@ def scan_claude_app_cowork() -> tuple[list[PluginItem], list[SkillItem], dict[st
     if not app_supp.is_dir():
         return plugins, skills, metadata
 
+    seen_plugin_names: set[str] = set()
+    sessions_root = app_supp / "local-agent-mode-sessions"
+    if sessions_root.is_dir():
+        for manifest_file in sessions_root.rglob("rpm/manifest.json"):
+            rpm_dir = manifest_file.parent
+            try:
+                m_data = json.loads(manifest_file.read_text(encoding="utf-8"))
+                for p_meta in m_data.get("plugins", []):
+                    p_id = p_meta.get("id")
+                    p_name = p_meta.get("name", p_id)
+                    if p_name in seen_plugin_names:
+                        continue
+                    seen_plugin_names.add(p_name)
+                    p_display = p_meta.get("displayName", p_name)
+                    mp_name = p_meta.get("marketplaceName", "Cowork Registry")
+                    p_dir = rpm_dir / p_id if p_id else None
+                    if not p_dir or not p_dir.is_dir():
+                        continue
+
+                    # Read plugin manifest
+                    p_manifest = {}
+                    p_json_file = p_dir / ".claude-plugin/plugin.json"
+                    if not p_json_file.is_file():
+                        p_json_file = p_dir / "plugin.json"
+                    if p_json_file.is_file():
+                        try:
+                            p_manifest = json.loads(p_json_file.read_text(encoding="utf-8"))
+                        except Exception:
+                            pass
+
+                    p_version = p_manifest.get("version", "1.0.0")
+                    p_desc = p_manifest.get("description", p_display)
+
+                    contained_skills: list[SkillItem] = []
+                    for s_md in p_dir.rglob("SKILL.md"):
+                        s_name, s_desc, fm = extract_skill_info_from_file(s_md)
+                        contained_skills.append(SkillItem(
+                            id=f"claude:cowork:{p_name}:{s_name}",
+                            name=s_name,
+                            description=s_desc,
+                            section="claude",
+                            subsection="app_cowork",
+                            source_type="desktop_extension",
+                            source_label=f"Cowork Plugin ({mp_name})",
+                            path=str(s_md),
+                            plugin_name=p_name,
+                            version=fm.get("version") or p_version,
+                            marketplace=mp_name,
+                            metadata={"frontmatter": fm, "scope": "cowork"},
+                        ))
+
+                    plugins.append(PluginItem(
+                        id=f"claude:cowork:rpm:{p_id}",
+                        name=p_name,
+                        description=p_desc,
+                        section="claude",
+                        subsection="app_cowork",
+                        source_type="desktop_extension",
+                        source_label=f"Cowork Plugin ({mp_name})",
+                        version=p_version,
+                        marketplace=mp_name,
+                        repo_url=p_manifest.get("repository") or p_manifest.get("homepage"),
+                        commit_sha=None,
+                        install_path=str(p_dir),
+                        skills_count=len(contained_skills),
+                        skills=contained_skills,
+                        metadata=p_meta,
+                    ))
+                    skills.extend(contained_skills)
+            except Exception:
+                pass
+
+    # 2. Legacy extensions if present
     ext_file = app_supp / "extensions-installations.json"
     if ext_file.is_file():
         try:
@@ -355,7 +428,7 @@ def scan_claude_app_cowork() -> tuple[list[PluginItem], list[SkillItem], dict[st
                 ext_desc = manifest.get("description", "")
                 version = info.get("version")
                 hash_val = info.get("hash")
-                
+
                 if ext_id.startswith("ant.dir.ant"):
                     src_label = "Anthropic Directory (Official)"
                 elif ext_id.startswith("ant.dir.gh"):
@@ -417,6 +490,10 @@ def scan_claude_app_cowork() -> tuple[list[PluginItem], list[SkillItem], dict[st
                     p_desc = manifest.get("description", p_desc)
                 except Exception:
                     pass
+
+            if p_name in seen_plugin_names:
+                continue
+            seen_plugin_names.add(p_name)
 
             contained_skills: list[SkillItem] = []
             for root, _, files in os.walk(item, followlinks=True):
@@ -1173,6 +1250,91 @@ def remove_marketplace(name: str) -> dict[str, Any]:
     return {"success": True, "marketplace": name, "message": f"Marketplace '{name}' removed successfully."}
 
 
+def sync_cowork_plugins() -> list[str]:
+    """Syncs ai-first-fw-skills and ai-first-fw-utilities to Claude Desktop Cowork sessions."""
+    synced = []
+    app_supp = HOME / "Library/Application Support/Claude"
+    sessions_root = app_supp / "local-agent-mode-sessions"
+    if not sessions_root.is_dir():
+        return synced
+
+    workspace = WORKSPACE
+    for manifest_file in sessions_root.rglob("rpm/manifest.json"):
+        base_rpm = manifest_file.parent
+        try:
+            manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
+            plugins_list = manifest_data.get("plugins", [])
+
+            # Sync ai-first-fw-skills
+            skills_plugin_id = "plugin_01AiFirstFwSkills001"
+            skills_dest = base_rpm / skills_plugin_id
+            skills_src = workspace / "ai-first-fw/skills"
+            if skills_src.is_dir():
+                skills_dest.mkdir(parents=True, exist_ok=True)
+                (skills_dest / ".claude-plugin").mkdir(exist_ok=True)
+                if (skills_src / "plugin.json").is_file():
+                    shutil.copy2(skills_src / "plugin.json", skills_dest / ".claude-plugin/plugin.json")
+                skills_folder = skills_dest / "skills"
+                skills_folder.mkdir(exist_ok=True)
+                for item in skills_src.iterdir():
+                    if item.is_dir() and (item / "SKILL.md").is_file():
+                        tgt = skills_folder / item.name
+                        if tgt.exists():
+                            shutil.rmtree(tgt)
+                        shutil.copytree(item, tgt)
+
+            # Sync ai-first-fw-utilities
+            utils_plugin_id = "plugin_01AiFirstUtilities01"
+            utils_dest = base_rpm / utils_plugin_id
+            utils_src = workspace / "ai-first-fw/utilities"
+            if utils_src.is_dir():
+                utils_dest.mkdir(parents=True, exist_ok=True)
+                (utils_dest / ".claude-plugin").mkdir(exist_ok=True)
+                if (utils_src / "plugin.json").is_file():
+                    shutil.copy2(utils_src / "plugin.json", utils_dest / ".claude-plugin/plugin.json")
+                utils_folder = utils_dest / "skills"
+                utils_folder.mkdir(exist_ok=True)
+                for item in utils_src.iterdir():
+                    if item.is_dir() and (item / "SKILL.md").is_file():
+                        tgt = utils_folder / item.name
+                        if tgt.exists():
+                            shutil.rmtree(tgt)
+                        shutil.copytree(item, tgt)
+
+            # Update manifest entries
+            now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+            plugins_list = [p for p in plugins_list if p.get("id") not in (skills_plugin_id, utils_plugin_id) and p.get("name") not in ("ai-first-fw-skills", "ai-first-fw-utilities")]
+            plugins_list.append({
+                "id": skills_plugin_id,
+                "name": "ai-first-fw-skills",
+                "displayName": "AI-First Framework Skills",
+                "updatedAt": now_iso,
+                "updatedAtVerified": True,
+                "marketplaceId": "marketplace_01LNsYsJd9mUgNiuPMytEouf",
+                "marketplaceName": "ai-framework",
+                "installedBy": "user",
+                "installationPreference": "available"
+            })
+            plugins_list.append({
+                "id": utils_plugin_id,
+                "name": "ai-first-fw-utilities",
+                "displayName": "AI-First Framework Utilities",
+                "updatedAt": now_iso,
+                "updatedAtVerified": True,
+                "marketplaceId": "marketplace_01LNsYsJd9mUgNiuPMytEouf",
+                "marketplaceName": "ai-framework",
+                "installedBy": "user",
+                "installationPreference": "available"
+            })
+            manifest_data["plugins"] = plugins_list
+            manifest_data["lastUpdated"] = int(time.time() * 1000)
+            manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
+            synced.append(str(base_rpm))
+        except Exception:
+            pass
+    return synced
+
+
 def sync_and_update_all_marketplaces() -> dict[str, Any]:
     """Pulls down the latest updates from all registered marketplaces and updates all installed plugins."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
@@ -1322,12 +1484,14 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
 
     # 3. Clean any legacy symlinks to maintain zero symlink footprint
     cleaned_symlinks = clean_legacy_symlinks()
+    cowork_synced = sync_cowork_plugins()
 
     return {
         "success": True,
         "marketplaces_updated": marketplaces_updated,
         "plugins_updated": plugins_updated,
         "cleaned_legacy_symlinks": len(cleaned_symlinks),
+        "cowork_sessions_synced": len(cowork_synced),
         "errors": errors,
     }
 
