@@ -44,15 +44,12 @@ __version__ = _read_version()
 
 from scanner import (
     add_marketplace,
-    install_all_canonical_skills,
-    install_skill_to_targets,
+    clean_legacy_symlinks,
     remove_marketplace,
     scan_all,
     sync_and_update_all_marketplaces,
     toggle_mcp_target,
-    uninstall_all_canonical_skills,
     uninstall_plugin_item,
-    uninstall_skill_from_targets,
 )
 
 DATA_LOCK = threading.Lock()
@@ -139,14 +136,6 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
             self._handle_refresh()
         elif path in ("/api/sync", "/api/marketplace/sync_down", "/api/skills/sync_down"):
             self._handle_sync_marketplaces()
-        elif path == "/api/skill/install":
-            self._handle_install_skill(payload)
-        elif path == "/api/skill/uninstall":
-            self._handle_uninstall_skill(payload)
-        elif path == "/api/skills/install_all":
-            self._handle_install_all_skills()
-        elif path == "/api/skills/uninstall_all":
-            self._handle_uninstall_all_skills()
         elif path == "/api/plugin/uninstall":
             self._handle_uninstall_plugin(payload)
         elif path == "/api/marketplace/add":
@@ -217,38 +206,6 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
             "sync_details": sync_res,
             "data": data,
         })
-
-    def _handle_install_skill(self, payload: dict):
-        skill_name = payload.get("name")
-        targets = payload.get("targets", ["all"])
-        if not skill_name:
-            self._send_json({"success": False, "message": "Missing skill 'name' in request"}, status=HTTPStatus.BAD_REQUEST)
-            return
-
-        res = install_skill_to_targets(skill_name, targets, force=True)
-        get_data(force_refresh=True)
-        self._send_json(res)
-
-    def _handle_uninstall_skill(self, payload: dict):
-        skill_name = payload.get("name")
-        targets = payload.get("targets", ["all"])
-        if not skill_name:
-            self._send_json({"success": False, "message": "Missing skill 'name' in request"}, status=HTTPStatus.BAD_REQUEST)
-            return
-
-        res = uninstall_skill_from_targets(skill_name, targets, force=True)
-        get_data(force_refresh=True)
-        self._send_json(res)
-
-    def _handle_install_all_skills(self):
-        res = install_all_canonical_skills()
-        get_data(force_refresh=True)
-        self._send_json(res)
-
-    def _handle_uninstall_all_skills(self):
-        res = uninstall_all_canonical_skills()
-        get_data(force_refresh=True)
-        self._send_json(res)
 
     def _handle_uninstall_plugin(self, payload: dict):
         plugin_id = payload.get("plugin_id")

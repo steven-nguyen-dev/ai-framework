@@ -1742,43 +1742,6 @@
       });
     }
 
-    async function triggerInstallAll() {
-      openConfirmModal({
-        title: `Install All Skills to All Agent Surfaces`,
-        body: `This will symlink every canonical skill (AI-First FW and Utility skills) into all detected agent directories (Claude CLI, Antigravity 2.0 App, Antigravity IDE, Antigravity CLI).`,
-        confirmText: '⚡ Install All',
-        confirmClass: 'btn-action-install',
-        onConfirm: async () => {
-          try {
-            const resp = await fetch('/api/skills/install_all', { method: 'POST' });
-            const data = await resp.json();
-            showToast(`Successfully installed ${data.count || 0} skills to all surfaces!`, 'success');
-            await syncData();
-          } catch (e) {
-            showToast(`Install all failed: ${e.message}`, 'error');
-          }
-        }
-      });
-    }
-
-    async function triggerUninstallAll() {
-      openConfirmModal({
-        title: `Uninstall All Skills from All Surfaces`,
-        body: `This will remove all canonical symlinks from all target agent directories. Original repository files remain untouched.`,
-        confirmText: '🗑️ Uninstall All',
-        onConfirm: async () => {
-          try {
-            const resp = await fetch('/api/skills/uninstall_all', { method: 'POST' });
-            const data = await resp.json();
-            showToast(`Uninstalled skills across surfaces.`, 'success');
-            await syncData();
-          } catch (e) {
-            showToast(`Uninstall all failed: ${e.message}`, 'error');
-          }
-        }
-      });
-    }
-
     async function triggerPublishUpstream() {
       openConfirmModal({
         title: `Publish & Sync Upstream Marketplace`,

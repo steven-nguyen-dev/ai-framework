@@ -962,136 +962,27 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
 
 
 # ==============================================================================
-# 4. Install & Uninstall Management Engine
+# 4. Official Plugin & Marketplace Management (Zero Symlinks Standard)
 # ==============================================================================
 
-@dataclass
-class TargetSurfaceDef:
-    key: str
-    label: str
-    skills_dir: Path
-    creatable: bool = True
-
-TARGETS = [
-    TargetSurfaceDef(key="claude", label="Claude CLI", skills_dir=HOME / ".claude/skills"),
-    TargetSurfaceDef(key="agy", label="Antigravity App", skills_dir=HOME / ".gemini/config/skills"),
-    TargetSurfaceDef(key="agy-ide", label="Antigravity IDE", skills_dir=HOME / ".gemini/antigravity/skills"),
-    TargetSurfaceDef(key="agy-cli", label="Antigravity CLI", skills_dir=HOME / ".gemini/antigravity-cli/skills"),
-]
-
-
-def get_canonical_skill_dirs() -> list[Path]:
-    """Finds all canonical skill folders in workspace."""
-    dirs = []
-    for parent_sub in ["ai-first-fw/skills", "ai-first-fw/utilities", "skills", "utilities"]:
-        parent = WORKSPACE / parent_sub
-        if parent.is_dir():
-            for child in parent.iterdir():
-                if child.name.startswith(".") or not child.is_dir():
-                    continue
-                if (child / "SKILL.md").is_file():
-                    if child not in dirs:
-                        dirs.append(child)
-    return dirs
-
-
-def install_skill_to_targets(skill_name: str, target_keys: list[str] | None = None, force: bool = True) -> dict[str, Any]:
-    """Installs/symlinks a skill from known plugin/workspace sources to target agent directories."""
-    src: Path | None = None
-
-    # Search in canonical workspace directories
-    for cand_dir in get_canonical_skill_dirs():
-        if cand_dir.name == skill_name:
-            src = cand_dir
-            break
-
-    # Search in workspace .agents/skills or .claude/skills
-    if not src:
-        for ws_dir in [WORKSPACE / ".agents/skills" / skill_name, WORKSPACE / ".claude/skills" / skill_name, WORKSPACE / ".gemini/skills" / skill_name]:
-            if ws_dir.is_dir() and (ws_dir / "SKILL.md").is_file():
-                src = ws_dir
-                break
-
-    # Search in all discovered installed plugins
-    if not src:
-        for p in [*scan_claude_cli_plugins(), *scan_antigravity_cli_plugins()]:
-            for s in p.skills:
-                if s.name == skill_name:
-                    cand = Path(s.path)
-                    src = cand.parent if cand.is_file() else cand
-                    break
-            if src:
-                break
-
-    if not src:
-        return {"success": False, "message": f"Skill source folder for '{skill_name}' not found."}
-
-    results = []
-    target_list = [t for t in TARGETS if (not target_keys or t.key in target_keys or "all" in target_keys)]
-
-    for t in target_list:
-        if not t.skills_dir.parent.is_dir() and not t.creatable:
-            continue
-        t.skills_dir.mkdir(parents=True, exist_ok=True)
-        dest = t.skills_dir / skill_name
-
-        if dest.is_symlink() or dest.exists():
-            if dest.is_symlink():
-                dest.unlink()
-            elif force:
-                back_up(dest, t.key)
-            else:
-                results.append({"target": t.key, "status": "skipped", "message": "Real file exists (use force)"})
-                continue
-
-        tmp = dest.with_name(f".{skill_name}.installing-{os.getpid()}")
-        if tmp.is_symlink() or tmp.exists():
-            tmp.unlink()
-        tmp.symlink_to(src, target_is_directory=True)
-        os.replace(tmp, dest)
-        results.append({"target": t.key, "status": "installed", "path": str(dest)})
-
-    return {"success": True, "skill": skill_name, "results": results}
-
-
-def uninstall_skill_from_targets(skill_name: str, target_keys: list[str] | None = None, force: bool = True) -> dict[str, Any]:
-    """Uninstalls a skill from target agent directories (unlinks symlinks, backups real dirs)."""
-    results = []
-    target_list = [t for t in TARGETS if (not target_keys or t.key in target_keys or "all" in target_keys)]
-
-    for t in target_list:
-        dest = t.skills_dir / skill_name
-        if not dest.is_symlink() and not dest.exists():
-            continue
-
-        if dest.is_symlink():
-            dest.unlink()
-            results.append({"target": t.key, "status": "removed", "path": str(dest)})
-        elif force:
-            moved = back_up(dest, t.key)
-            results.append({"target": t.key, "status": "backed_up", "path": str(moved)})
-        else:
-            results.append({"target": t.key, "status": "skipped", "message": "Real directory (pass force)"})
-
-    return {"success": True, "skill": skill_name, "results": results}
-
-
-def install_all_canonical_skills() -> dict[str, Any]:
-    """Installs all AI-First FW & Utility skills to all available agent surfaces."""
-    installed = []
-    for skill_dir in get_canonical_skill_dirs():
-        res = install_skill_to_targets(skill_dir.name, target_keys=["all"], force=True)
-        installed.append(res)
-    return {"success": True, "count": len(installed), "details": installed}
-
-
-def uninstall_all_canonical_skills() -> dict[str, Any]:
-    """Uninstalls all AI-First FW & Utility skills from all surfaces."""
-    uninstalled = []
-    for skill_dir in get_canonical_skill_dirs():
-        res = uninstall_skill_from_targets(skill_dir.name, target_keys=["all"], force=True)
-        uninstalled.append(res)
-    return {"success": True, "count": len(uninstalled), "details": uninstalled}
+def clean_legacy_symlinks() -> list[str]:
+    """Removes any obsolete manual symlinks to enforce the strict official plugin standard."""
+    cleaned = []
+    for d in [
+        HOME / ".claude/skills",
+        HOME / ".gemini/config/skills",
+        HOME / ".gemini/antigravity/skills",
+        HOME / ".gemini/antigravity-cli/skills",
+    ]:
+        if d.is_dir():
+            for item in d.iterdir():
+                if item.is_symlink():
+                    try:
+                        item.unlink()
+                        cleaned.append(str(item))
+                    except Exception:
+                        pass
+    return cleaned
 
 
 def uninstall_plugin_item(plugin_id: str, install_path_str: str) -> dict[str, Any]:
@@ -1440,14 +1331,14 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
         except Exception as e:
             errors.append(f"Failed updating installed plugins: {e}")
 
-    # 3. Refresh local workspace symlinks as well
-    local_refresh_res = install_all_canonical_skills()
+    # 3. Clean any legacy symlinks to maintain zero symlink footprint
+    cleaned_symlinks = clean_legacy_symlinks()
 
     return {
         "success": True,
         "marketplaces_updated": marketplaces_updated,
         "plugins_updated": plugins_updated,
-        "local_skills_refreshed": local_refresh_res.get("count", 0),
+        "cleaned_legacy_symlinks": len(cleaned_symlinks),
         "errors": errors,
     }
 
