@@ -1,0 +1,10 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T09:14:10.140887+00:00",
+    "returned_at": "2026-08-17T09:14:10.155804+00:00"
+  }
+]

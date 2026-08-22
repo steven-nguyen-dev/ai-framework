@@ -1,0 +1,10 @@
+[
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:50:19.067718+00:00",
+    "returned_at": "2026-08-19T09:50:19.085560+00:00"
+  }
+]

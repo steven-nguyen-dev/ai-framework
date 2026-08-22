@@ -1,0 +1,170 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:19:32.961834+00:00",
+    "returned_at": "2026-08-17T10:19:33.044804+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. Shopee - order_adjustment pricing",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:19:40.165555+00:00",
+    "returned_at": "2026-08-17T10:19:40.205495+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Lazada - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:19:47.322630+00:00",
+    "returned_at": "2026-08-17T10:19:47.360508+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. TikTok - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:19:54.497179+00:00",
+    "returned_at": "2026-08-17T10:19:54.533302+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:01.649878+00:00",
+    "returned_at": "2026-08-17T10:20:01.679544+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:08.770475+00:00",
+    "returned_at": "2026-08-17T10:20:08.794913+00:00"
+  },
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:15.918200+00:00",
+    "returned_at": "2026-08-17T10:20:15.953648+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:23.101242+00:00",
+    "returned_at": "2026-08-17T10:20:23.141475+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:30.253076+00:00",
+    "returned_at": "2026-08-17T10:20:30.273622+00:00"
+  },
+  {
+    "id": "N10",
+    "name": "N10. Eton 500 - retry then recover",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:20:37.397778+00:00",
+    "returned_at": "2026-08-17T10:20:37.429641+00:00"
+  },
+  {
+    "id": "N11",
+    "name": "N11. Eton 400 generic - reported unsynchronized",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:22:27.552109+00:00",
+    "returned_at": "2026-08-17T10:22:27.586838+00:00"
+  },
+  {
+    "id": "N12",
+    "name": "N12. Pricing rejected - retried alone, then the order stands",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T10:22:34.751085+00:00",
+    "returned_at": "2026-08-17T10:22:34.781992+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:05.049440+00:00",
+    "returned_at": "2026-08-17T10:23:05.064437+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:12.385642+00:00",
+    "returned_at": "2026-08-17T10:23:12.400840+00:00"
+  },
+  {
+    "id": "N15",
+    "name": "N15. Shopee quantity above one - per-unit amounts multiplied out",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:19.585254+00:00",
+    "returned_at": "2026-08-17T10:23:19.600670+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:26.762933+00:00",
+    "returned_at": "2026-08-17T10:23:26.774802+00:00"
+  },
+  {
+    "id": "N17",
+    "name": "N17. Blank item_sku - no line inherits another's prices",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:34.003215+00:00",
+    "returned_at": "2026-08-17T10:23:34.013713+00:00"
+  },
+  {
+    "id": "K1",
+    "name": "K1. Shopee kit - explodes into components",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:41.221584+00:00",
+    "returned_at": "2026-08-17T10:23:41.231711+00:00"
+  },
+  {
+    "id": "K2",
+    "name": "K2. TikTok kit - line_item_details carrier",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:48.387936+00:00",
+    "returned_at": "2026-08-17T10:23:48.399714+00:00"
+  },
+  {
+    "id": "K3",
+    "name": "K3. Kit and plain item in one order",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:23:55.618448+00:00",
+    "returned_at": "2026-08-17T10:23:55.628314+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 0,
+    "controller_body": "<urlopen error [Errno 61] Connection refused>",
+    "fired_at": "2026-08-17T10:24:02.778764+00:00",
+    "returned_at": "2026-08-17T10:24:02.792801+00:00"
+  }
+]

@@ -1,0 +1,74 @@
+{
+  "name": "createOrder flow 2 (Anchanto OMS -> Eton WMS)",
+  "at": "2026-08-19T09:50:19.067718+00:00",
+  "run": "run-20260819-165019",
+  "suite": "flow2",
+  "summary": {
+    "fail": 1
+  },
+  "evidence": {
+    "status": "complete",
+    "mock log": "missing",
+    "database": "captured",
+    "pushUnsynchronizedOrder delta": 0,
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  },
+  "cases": [
+    {
+      "id": "N14",
+      "name": "Pricing payload - every property named once",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Name every pricing property once: 15",
+      "actual": "Send the order to Eton: expected 1, got 0, Write the order to the database: expected 1, got 0, Send the price detail to Eton: expected 1, got 0",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        }
+      ],
+      "verdict": "fail",
+      "note": "N2 proves the Shopee carrier is found and mapped; this proves what the mapping serialises to. Both price DTOs first named their fields for the wire, so Jackson treated each field and its getter as two properties and sent all 15 values twice \u2014 30 keys, plus a doubled Items array with 8 doubled keys per line. Eton accepted it because ASP.NET binding is case-insensitive and last-wins, so nothing failed and nothing in the old suite could see it. Only the wire shows it.",
+      "given": "The same shopee_vn order as N2, judged on the body of the pricing push rather than on whether the push happened.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "The pushed body carries exactly 15 top-level properties \u2014 the count PricingComponentModel declares in eton-swagger.json.",
+        "Not one lowercase-initial key: Items and never items, OrderBasePrice and never orderBasePrice."
+      ],
+      "detail": {
+        "order_id": "92000014",
+        "order_number": "SO-ETON-CO-N14-PAYLOAD-SHAPE"
+      },
+      "calls": []
+    }
+  ]
+}

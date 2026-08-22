@@ -1,0 +1,550 @@
+{
+  "token_grants": [
+    {
+      "kind": "oauth_token",
+      "grant_type": "authorization_code",
+      "client_id": "jpluger-smoke",
+      "code": "9c4d1f7a3b8e",
+      "redirect_uri": "https://jplugger-dev.selluseller.com:3004/jpluger/mp/callback"
+    }
+  ],
+  "created_orders": [
+    "SO-SMOKE-001",
+    "SO-SMOKE-001-B"
+  ],
+  "order_pushes": [
+    {
+      "kind": "order_create",
+      "order_number": "SO-SMOKE-001",
+      "store_code": "SMOKE_STORE_01",
+      "marketplace_code": "tiktok",
+      "order_total": 262000.0,
+      "is_historical_order": false,
+      "items": [
+        {
+          "sku": "CSKU-SMOKE-001",
+          "item_quantity": 2
+        }
+      ]
+    },
+    {
+      "kind": "acknowledge",
+      "order_number": "SO-SMOKE-001",
+      "order_id": 90114455,
+      "status": "Acknowledged",
+      "full_cancellation": false
+    },
+    {
+      "kind": "unsynchronized",
+      "order_number": "SO-SMOKE-001",
+      "order_number_camel": "SO-SMOKE-001",
+      "event_type": "CREATE_ORDER",
+      "error_message": "downstream rejected the order"
+    },
+    {
+      "kind": "cancelled_order_stock",
+      "order_id": 90114455,
+      "putaway_method": "AUTO",
+      "items": [
+        {
+          "line_item_id": "55510011",
+          "sellable": 1,
+          "damaged": 1
+        }
+      ]
+    },
+    {
+      "kind": "order_update",
+      "order_id": "90114455",
+      "order_number_camel": "SO-SMOKE-001",
+      "is_order_item_change": true,
+      "order_total": 270000.0
+    },
+    {
+      "kind": "cancel",
+      "order_id": "90114455",
+      "cancellation_reason": "OUT_OF_STOCK",
+      "marketplace_code": "tiktok",
+      "items": [
+        {
+          "id": 55510011,
+          "reason": "OUT_OF_STOCK",
+          "item_quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "confirm_payment",
+      "order_id": "90114455",
+      "payment_method": "cash on delivery",
+      "payment_total": 262000.0
+    },
+    {
+      "kind": "approve_or_reject",
+      "order_id": "90114455",
+      "status": "APPROVED",
+      "is_mp_unpaid": false,
+      "line_item_ids": [
+        {
+          "id": 55510011,
+          "sku": "CSKU-SMOKE-001",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "kind": "mark_complete",
+      "order_id": "90114455",
+      "marketplace_code": "tiktok",
+      "line_item_ids": [
+        {
+          "id": 55510011,
+          "sku": "CSKU-SMOKE-001"
+        }
+      ]
+    },
+    {
+      "kind": "revert_cancellation",
+      "order_id": "90114455",
+      "line_items_status": [
+        {
+          "item_id": 55510011,
+          "quantity": 1,
+          "reason": "RESTOCKED"
+        }
+      ]
+    },
+    {
+      "kind": "serial_validation",
+      "order_id": "90114455",
+      "shipment_number": "SHIP-SMOKE-001",
+      "items": [
+        {
+          "sku": "CSKU-SMOKE-001",
+          "serial_validation_status": "VALID"
+        }
+      ]
+    },
+    {
+      "kind": "update_delta_order",
+      "order_id": "90114455",
+      "order_number_camel": "SO-SMOKE-001",
+      "items": [
+        {
+          "line_item_id": 55510011,
+          "item_sku": "CSKU-SMOKE-001",
+          "item_quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "update_status",
+      "order_id": "90114455",
+      "new_status": "Packed",
+      "wms_status": "PICKED",
+      "tracking_number": "JNE0099887766",
+      "return_type": "<absent>"
+    }
+  ],
+  "shipping_pushes": [
+    {
+      "kind": "async_shipping_details",
+      "tracking_number": "JNE0099887766",
+      "status": "Shipped",
+      "items": [
+        {
+          "id": 55510011,
+          "item_quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "return_create",
+      "return_order_number": "RET-SMOKE-001",
+      "order_id": 90114455,
+      "items": [
+        {
+          "line_item_id": 55510011,
+          "quantity": 1,
+          "reason": "DAMAGED"
+        }
+      ]
+    },
+    {
+      "kind": "shipping_details",
+      "order_id": 90114455,
+      "tracking_number": "JNE0099887766",
+      "status": "Shipped",
+      "shipping_lable_source": "URL",
+      "update_invoice_only": false
+    },
+    {
+      "kind": "manifest_upload",
+      "number": "MAN-SMOKE-001",
+      "status": "GENERATED",
+      "orders": [
+        {
+          "order_number": "SO-SMOKE-001",
+          "line_item_details": [
+            {
+              "id": 55510011
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "returns": [
+    "RET-SMOKE-001"
+  ],
+  "created_inventory_products": [
+    "ISKU-SMOKE-001",
+    "ISKU-SMOKE-001-B"
+  ],
+  "stock_pushes": [
+    {
+      "kind": "inventory_create",
+      "inventory_sku": "ISKU-SMOKE-001",
+      "total_stock": 42,
+      "sellable": 40
+    },
+    {
+      "kind": "async_update_stocks_v1",
+      "first_seller_sku": "SKU-SMOKE-1001",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 42,
+          "inventories": {
+            "inventory": [
+              {
+                "warehouse_code": "WH-SG-01",
+                "quantity": 42
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "kind": "bulk_update_product",
+      "payload_type": "INVENTORY_PRODUCT",
+      "first_inventory_sku": "ISKU-SMOKE-001"
+    },
+    {
+      "kind": "sync_failed_status",
+      "store_code": "SMOKE_STORE_01",
+      "data": [
+        {
+          "product_ids": [
+            884213
+          ],
+          "error_message": "listing rejected"
+        }
+      ]
+    },
+    {
+      "kind": "update_delta_stocks_v1",
+      "warehouse_code": "WH-SG-01",
+      "seller_code": "SELLER-8891",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": -2
+        }
+      ]
+    },
+    {
+      "kind": "update_stocks_v1_patch",
+      "warehouse_code": "WH-SG-01",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 42
+        }
+      ]
+    },
+    {
+      "kind": "update_stocks_v1_post",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 42
+        }
+      ]
+    },
+    {
+      "kind": "inventory_update",
+      "id": "884213",
+      "inventory_sku": "ISKU-SMOKE-001",
+      "total_stock": 60
+    },
+    {
+      "kind": "stock_location_create",
+      "inventory_product_id": "884213",
+      "location_id": 5501,
+      "quantity": 12
+    },
+    {
+      "kind": "stock_location_update",
+      "inventory_product_id": "884213",
+      "id": "5501",
+      "version": 2,
+      "quantity": 10
+    },
+    {
+      "kind": "update_stocks_v2",
+      "exclude_buffer_stock": false,
+      "first_seller_sku": "SKU-SMOKE-1001",
+      "first_seller_sku_camel": "<absent>",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 42,
+          "force_sync": false,
+          "upc": "0123456789012"
+        }
+      ]
+    },
+    {
+      "kind": "async_update_stocks_v2",
+      "first_seller_sku": "SKU-SMOKE-1001",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 7
+        }
+      ]
+    },
+    {
+      "kind": "update_delta_stocks_v2",
+      "first_seller_sku": "SKU-SMOKE-1001",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": -3
+        }
+      ]
+    },
+    {
+      "kind": "update_stocks_v2",
+      "exclude_buffer_stock": null,
+      "first_seller_sku": "SKU-SMOKE-1001",
+      "first_seller_sku_camel": "<absent>",
+      "skus": [
+        {
+          "seller_sku": "SKU-SMOKE-1001",
+          "quantity": 42
+        }
+      ]
+    }
+  ],
+  "created_catalogues": [
+    "CSKU-SMOKE-001"
+  ],
+  "catalogue_pushes": [
+    {
+      "kind": "catalogue_create",
+      "sku": "CSKU-SMOKE-001",
+      "store_code": "SMOKE_STORE_01",
+      "price": 19.9,
+      "selling_price": 16.9
+    },
+    {
+      "kind": "catalogue_update_price",
+      "sku": "CSKU-SMOKE-001",
+      "store_code": "SMOKE_STORE_01",
+      "price": 24.9,
+      "selling_price": 18.9,
+      "sale_start_date": "2026-08-16",
+      "sale_end_date": "2026-08-30"
+    },
+    {
+      "kind": "catalogue_update",
+      "sku_path": "CSKU-SMOKE-001",
+      "sku_body": "CSKU-SMOKE-001",
+      "state": "LIVE"
+    },
+    {
+      "kind": "catalogue_update_status",
+      "sku_path": "CSKU-SMOKE-001",
+      "sku_body": "CSKU-SMOKE-001",
+      "status": "INACTIVE",
+      "reason": "seasonal"
+    },
+    {
+      "kind": "catalogue_update_status",
+      "sku_path": "{sku}",
+      "sku_body": "CSKU-SMOKE-001",
+      "status": "INACTIVE",
+      "reason": "<absent>"
+    }
+  ],
+  "taxonomy_pushes": [
+    {
+      "kind": "brand_create",
+      "code": "AURORA_SMOKE",
+      "name": "Aurora Home",
+      "store_code": "SMOKE_STORE_01"
+    },
+    {
+      "kind": "brand_bulk_create",
+      "store_code_camel": "SMOKE_STORE_01",
+      "store_code_query": "SMOKE_STORE_01",
+      "first_code": "AURORA_SMOKE_B"
+    },
+    {
+      "kind": "brand_update",
+      "id": "71204",
+      "code": "AURORA_SMOKE"
+    },
+    {
+      "kind": "bulk_categories",
+      "code": "10000001",
+      "name": "Home & Living",
+      "children": [
+        {
+          "name": "Bedding",
+          "code": "10000002",
+          "active": true
+        }
+      ],
+      "store_code": "SMOKE_STORE_01"
+    },
+    {
+      "kind": "bulk_category_attributes",
+      "category_code": "10000412",
+      "marketplace_code": "tiktok",
+      "attributes": [
+        {
+          "field_name": "Material",
+          "field_code": "material",
+          "data_type": "STRING",
+          "mandatory": true
+        }
+      ]
+    },
+    {
+      "kind": "category_create",
+      "code": "10000002",
+      "store_code_camel": "SMOKE_STORE_01",
+      "marketplace_code_camel": "tiktok",
+      "parent_code_camel": "10000001"
+    },
+    {
+      "kind": "category_update",
+      "id": "442001",
+      "code": "10000002"
+    },
+    {
+      "kind": "category_attributes_create",
+      "category_code": "10000412",
+      "marketplace_code": "tiktok",
+      "attributes": [
+        {
+          "field_name": "Colour",
+          "field_code": "colour",
+          "data_type": "STRING",
+          "mandatory": false
+        }
+      ]
+    },
+    {
+      "kind": "category_attribute_update",
+      "id": "990331",
+      "field_code_camel": "material",
+      "data_type_camel": "STRING"
+    }
+  ],
+  "store_pushes": [
+    {
+      "kind": "store_meta",
+      "id": "33021",
+      "ss_code": "SS-SMOKE-01",
+      "order_sync": "2026-08-15T10:00:00Z",
+      "inventory_sync": "2026-08-15T10:05:00Z"
+    }
+  ],
+  "shipping_method_pushes": [
+    {
+      "kind": "shipping_method_create",
+      "name": "JNE Smoke",
+      "logistics_partner_code": "JNE",
+      "shipping_type": "STANDARD",
+      "marketplace_code": "tiktok",
+      "country_name": "Singapore"
+    },
+    {
+      "kind": "smp_shipping_method_create",
+      "shipping_method_id": 9901,
+      "marketplace_shipping_code": "JNE_REG",
+      "ss_code": "SS-SMOKE-01"
+    },
+    {
+      "kind": "smp_shipping_method_update",
+      "id": "44120",
+      "marketplace_shipping_code": "JNE_EXP"
+    }
+  ],
+  "misc_pushes": [
+    {
+      "kind": "payout",
+      "payment_id": "PAYOUT-SMOKE-001",
+      "settlement_amount": 16221.9,
+      "currency": "SGD",
+      "store_code": "SMOKE_STORE_01"
+    },
+    {
+      "kind": "promotion_failures",
+      "store_code": "SMOKE_STORE_01",
+      "promotions": [
+        {
+          "promotion_id": 5501,
+          "status": "FAILED",
+          "failure_reason": "sku not listed"
+        }
+      ]
+    },
+    {
+      "kind": "report",
+      "report_history_id": 660412,
+      "url": "https://reports.example.com/discrepancy/660412.csv",
+      "store_code": "SMOKE_STORE_01"
+    },
+    {
+      "kind": "transactions",
+      "store_code": "SMOKE_STORE_01",
+      "first_transaction_number": "TXN-SMOKE-001",
+      "count": [
+        {
+          "transaction_number": "TXN-SMOKE-001",
+          "transaction_type": "FEE",
+          "amount": -120.5,
+          "order_number": "SO-SMOKE-001"
+        }
+      ]
+    },
+    {
+      "kind": "report",
+      "report_history_id": 660412,
+      "url": "https://reports.example.com/x.csv",
+      "store_code": "SMOKE_STORE_01"
+    }
+  ],
+  "async_feeds": [
+    {
+      "kind": "async_order_feed",
+      "store_code": "SMOKE_STORE_01",
+      "first_order_number": "SO-SMOKE-001-B"
+    },
+    {
+      "kind": "async_inventory_create",
+      "first_inventory_sku": "ISKU-SMOKE-001-B"
+    },
+    {
+      "kind": "async_catalogue",
+      "store_code": "SMOKE_STORE_01",
+      "first_sku": "CSKU-SMOKE-001-B"
+    }
+  ]
+}

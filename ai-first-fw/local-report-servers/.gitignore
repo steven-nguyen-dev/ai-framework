@@ -1,0 +1,12 @@
+# Ignore local temporary/cache files in local-report-servers
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+
+# Preserve documentation, scripts, templates, icons, and zips
+!README.md
+!**/README.md
+!SHAREABLE_SERVER_STANDARD.md
+!*.zip
+!**/*.zip

@@ -1,0 +1,38 @@
+[
+  {
+    "kind": "catalogue_create",
+    "sku": "CSKU-SMOKE-001",
+    "store_code": "SMOKE_STORE_01",
+    "price": 19.9,
+    "selling_price": 16.9
+  },
+  {
+    "kind": "catalogue_update_price",
+    "sku": "CSKU-SMOKE-001",
+    "store_code": "SMOKE_STORE_01",
+    "price": 24.9,
+    "selling_price": 18.9,
+    "sale_start_date": "2026-08-16",
+    "sale_end_date": "2026-08-30"
+  },
+  {
+    "kind": "catalogue_update",
+    "sku_path": "CSKU-SMOKE-001",
+    "sku_body": "CSKU-SMOKE-001",
+    "state": "LIVE"
+  },
+  {
+    "kind": "catalogue_update_status",
+    "sku_path": "CSKU-SMOKE-001",
+    "sku_body": "CSKU-SMOKE-001",
+    "status": "INACTIVE",
+    "reason": "seasonal"
+  },
+  {
+    "kind": "catalogue_update_status",
+    "sku_path": "{sku}",
+    "sku_body": "CSKU-SMOKE-001",
+    "status": "INACTIVE",
+    "reason": "<absent>"
+  }
+]

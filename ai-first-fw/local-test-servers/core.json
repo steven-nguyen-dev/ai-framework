@@ -1,0 +1,8 @@
+{
+  "integration.db.url": "localhost:3306",
+  "integration.db.username": "jpluger",
+  "integration.db.password": "jpluger",
+  "server.ssl.keyStore.password": "Anchanto@123$",
+  "ETON_TOKEN_URL": "http://127.0.0.1:23101/connect/token",
+  "ETON_BASE_URL": "http://127.0.0.1:23101"
+}

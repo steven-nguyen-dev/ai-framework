@@ -1,0 +1,16 @@
+[
+  {
+    "kind": "async_order_feed",
+    "store_code": "SMOKE_STORE_01",
+    "first_order_number": "SO-SMOKE-001-B"
+  },
+  {
+    "kind": "async_inventory_create",
+    "first_inventory_sku": "ISKU-SMOKE-001-B"
+  },
+  {
+    "kind": "async_catalogue",
+    "store_code": "SMOKE_STORE_01",
+    "first_sku": "CSKU-SMOKE-001-B"
+  }
+]

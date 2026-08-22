@@ -1,0 +1,21 @@
+[
+  {
+    "kind": "shipping_method_create",
+    "name": "JNE Smoke",
+    "logistics_partner_code": "JNE",
+    "shipping_type": "STANDARD",
+    "marketplace_code": "tiktok",
+    "country_name": "Singapore"
+  },
+  {
+    "kind": "smp_shipping_method_create",
+    "shipping_method_id": 9901,
+    "marketplace_shipping_code": "JNE_REG",
+    "ss_code": "SS-SMOKE-01"
+  },
+  {
+    "kind": "smp_shipping_method_update",
+    "id": "44120",
+    "marketplace_shipping_code": "JNE_EXP"
+  }
+]

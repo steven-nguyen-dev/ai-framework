@@ -1,0 +1,1235 @@
+{
+  "name": "Anchanto WMS (Wareo3) mock smoke -- 27 operations",
+  "suite": "smoke",
+  "at": "2026-08-15T06:56:50Z",
+  "base_url": "http://127.0.0.1:23002",
+  "summary": {
+    "pass": 31,
+    "fail": 0,
+    "blocked": 0
+  },
+  "evidence": {
+    "status": "complete",
+    "mock call log": "captured -- 39 entries",
+    "mock stores": "captured -- 8 files",
+    "app": "not exercised -- mock only",
+    "database": "not exercised -- mock only"
+  },
+  "cases": [
+    {
+      "id": "AUTH-1",
+      "name": "OAuth2 initial grant",
+      "given": "no body \u2014 client credentials go in the Authorization header",
+      "then": [
+        "200",
+        "access_token, refresh_token and access_token_expire_in all present"
+      ],
+      "note": "This is the live mechanism. /rest/v1/tokens/generate is legacy v1 and its token is never used for a v2 call, so it is deliberately absent from the mock.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "initial basic-auth grant",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "access_token",
+          "what": "the token every business call carries",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "refresh_token",
+          "what": "needed for the refresh grant",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "access_token_expire_in",
+          "what": "AuthenticateResponseDTO maps it through a private setter; absent means no expiry known",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /oauth/token (initial grant, no body) -> 200"
+      ],
+      "detail": {
+        "token": "mock_wms3_access_token"
+      },
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "AUTH-2",
+      "name": "OAuth2 refresh grant",
+      "given": "grant_type refresh_token, posted to the same URL",
+      "then": [
+        "200",
+        "a token back",
+        "both grants recorded and distinguishable"
+      ],
+      "note": "Wms3RequestHandler posts initial and refresh to one URL, so the store is the only way to prove which one happened.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "refresh posts to the SAME url as the initial grant",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "access_token",
+          "what": "",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "both grants recorded and distinguishable",
+          "what": "token_grants keeps grant_type as sent; the initial grant has no body",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /oauth/token (refresh grant) -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "AUTH-3",
+      "name": "Rejected credentials",
+      "given": "client_id containing NOAUTH",
+      "then": [
+        "401",
+        "invalid_client"
+      ],
+      "note": "Lets a test exercise the failure path without breaking the token for every other case.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "client credentials rejected",
+          "expected": "401",
+          "actual": "401",
+          "ok": true
+        },
+        {
+          "label": "error code",
+          "what": "",
+          "expected": "invalid_client",
+          "actual": "invalid_client",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /oauth/token [NOAUTH] -> 401"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2C-1",
+      "name": "Create a B2C order",
+      "given": "one order, one item, warehouse-code header set",
+      "then": [
+        "200",
+        "order_number echoed",
+        "recorded",
+        "the header arrived",
+        "customer_code from the path"
+      ],
+      "note": "The header is the trap: warehouse-code is kebab-case and lives in the headers, while warehouse_code is a snake_case body field. Both constants exist side by side.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a b2c order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "order_number echoed",
+          "what": "correlates the response to the submitted order",
+          "expected": "SO-SMOKE-001",
+          "actual": "SO-SMOKE-001",
+          "ok": true
+        },
+        {
+          "label": "recorded in created_orders",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "warehouse-code HEADER received",
+          "what": "kebab-case header, not the snake_case body field -- a mock reading the body would miss it",
+          "expected": "WH-KUL-01",
+          "actual": "WH-KUL-01",
+          "ok": true
+        },
+        {
+          "label": "customer_code taken from the path",
+          "what": "scoped tenant, sourced from EHeaderKeys.CUSTOMER_CODE in real traffic",
+          "expected": "ANCHANTO",
+          "actual": "ANCHANTO",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders -> 200"
+      ],
+      "detail": {},
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "B2C-2",
+      "name": "Malformed B2C order",
+      "given": "no number, empty items",
+      "then": [
+        "422, not 400"
+      ],
+      "note": "Wareo3 answers 422 for a malformed resource. Mocking it as 400 would test a contract the real API does not have.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 422, not 400",
+          "what": "Wareo3 answers 422 for a malformed resource; a mock using 400 would test the wrong contract",
+          "expected": "422",
+          "actual": "422",
+          "ok": true
+        },
+        {
+          "label": "validation message",
+          "what": "",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [no number, no items] -> 422"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2C-3",
+      "name": "Cancel",
+      "given": "orderNumber in camelCase, as the client really sends it",
+      "then": [
+        "200",
+        "response success",
+        "the camelCase field was accepted"
+      ],
+      "note": "Wms3SalesOrderCancelRequestDTO carries no @SerializedName, so Gson emits the Java name into an otherwise snake_case body.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "cancel",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "response field",
+          "what": "writes answer {response, message}",
+          "expected": "success",
+          "actual": "success",
+          "ok": true
+        },
+        {
+          "label": "camelCase orderNumber accepted",
+          "what": "the DTO has no @SerializedName, so Gson emits the Java name -- a mock demanding order_number would reject the real client",
+          "expected": "Out of stock",
+          "actual": "Out of stock",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/cancel -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "B2C-4",
+      "name": "Complete",
+      "given": "deliveryDetails with six camelCase members",
+      "then": [
+        "200",
+        "nested camelCase accepted"
+      ],
+      "note": "Same Gson fallback, one level deeper.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "complete",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "nested camelCase deliveryDetails accepted",
+          "what": "",
+          "expected": "Minh Nguyen",
+          "actual": "Minh Nguyen",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/complete -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2C-5",
+      "name": "Push tracking",
+      "given": "tracking number and carrier",
+      "then": [
+        "200",
+        "tracking number recorded",
+        "carrier code recorded"
+      ],
+      "note": "",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "push tracking",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "tracking number recorded",
+          "what": "",
+          "expected": "MYDHL0001234567",
+          "actual": "MYDHL0001234567",
+          "ok": true
+        },
+        {
+          "label": "carrier code recorded",
+          "what": "",
+          "expected": "DHL",
+          "actual": "DHL",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/tracking -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "B2C-6",
+      "name": "Push shipping documents",
+      "given": "url_type URL",
+      "then": [
+        "200",
+        "url_type recorded"
+      ],
+      "note": "",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "push shipping documents",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "url_type recorded",
+          "what": "",
+          "expected": "URL",
+          "actual": "URL",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/shipping_docs -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2C-7",
+      "name": "Initiate a return",
+      "given": "orig_order_number path var, one returned item",
+      "then": [
+        "200",
+        "data.return_order_number returned",
+        "reason recorded"
+      ],
+      "note": "The path variable is orig_order_number, not order_number, and the caller persists return_order_number \u2014 omit it and the return is stranded.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "path var is orig_order_number, not order_number",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "data.return_order_number returned",
+          "what": "the caller persists it; a mock omitting it strands the return",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "reason recorded",
+          "what": "",
+          "expected": "DAMAGED",
+          "actual": "DAMAGED",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/initiate_return -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "B2C-8",
+      "name": "Read a B2C order",
+      "given": "an order number",
+      "then": [
+        "200",
+        "read envelope with no payload array",
+        "data carries id/type/attributes",
+        "number echoed"
+      ],
+      "note": "Every read answers {summary, status_code, data:{id,type,attributes}}. The OMS API's {\"payload\":[...]} appears nowhere in this API.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "read a b2c order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "read envelope, not a payload array",
+          "what": "{summary, status_code, data:{id,type,attributes}} -- the OMS API's {\"payload\":[...]} appears nowhere in this API",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "resource wrapper",
+          "what": "data carries id/type/attributes",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "order number echoed into attributes",
+          "what": "",
+          "expected": "SO-SMOKE-001",
+          "actual": "SO-SMOKE-001",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/details -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "B2C-9",
+      "name": "Read a missing order",
+      "given": "order number containing NOTFOUND",
+      "then": [
+        "404"
+      ],
+      "note": "A 404 has to be distinguishable from a 200 carrying an empty resource.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "404 must be distinguishable from a 200 carrying an empty resource",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/b2c_orders/NOTFOUND-1/details -> 404"
+      ],
+      "detail": {},
+      "summary": "1/1 checks passed"
+    },
+    {
+      "id": "B2C-10",
+      "name": "Update an unassigned order",
+      "given": "the live v1 path",
+      "then": [
+        "200",
+        "recorded"
+      ],
+      "note": "A /rest/v1/ path with no v2 equivalent, still live. In scope despite the v2-only rule \u2014 excluding it on the version prefix alone would have been wrong.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "a live v1 path with no v2 equivalent",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "recorded",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v1/b2c/orders/SO-SMOKE-001/update_unassigned_order -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2B-1",
+      "name": "Create a B2B order",
+      "given": "supplier_code and uom fields",
+      "then": [
+        "200",
+        "order_number echoed",
+        "supplier_code recorded"
+      ],
+      "note": "b2b/sto extend the b2c shape with supplier_code, is_stock_transfer and destination_store_code.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a b2b order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "order_number echoed",
+          "what": "",
+          "expected": "PO-SMOKE-001",
+          "actual": "PO-SMOKE-001",
+          "ok": true
+        },
+        {
+          "label": "supplier_code recorded",
+          "what": "b2b-only field, absent from the b2c DTO",
+          "expected": "SUP-0001",
+          "actual": "SUP-0001",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2b_orders -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "B2B-2",
+      "name": "Create an STO order",
+      "given": "is_stock_transfer true, destination_store_code set",
+      "then": [
+        "200",
+        "order_number echoed",
+        "both STO fields recorded"
+      ],
+      "note": "STO reuses the b2b envelope entirely; only those two fields distinguish it.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a stock-transfer order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "order_number echoed",
+          "what": "",
+          "expected": "STO-SMOKE-001",
+          "actual": "STO-SMOKE-001",
+          "ok": true
+        },
+        {
+          "label": "is_stock_transfer true",
+          "what": "what distinguishes an STO from a b2b order",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "destination_store_code recorded",
+          "what": "",
+          "expected": "STORE-02",
+          "actual": "STORE-02",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/sto/orders -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "B2B-3",
+      "name": "Read a B2B order",
+      "given": "an order number",
+      "then": [
+        "200",
+        "status_code comes back as a JSON number"
+      ],
+      "note": "WmsB2BGetOrderResponseDTO types status_code Integer while WmsGetOrderResponseDTO types it String. One field, two Java types \u2014 the mock reproduces both rather than picking one.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "read a b2b order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "status_code is a NUMBER here",
+          "what": "WmsB2BGetOrderResponseDTO types it Integer while the b2c read types it String -- one field, two Java types, and the mock is faithful to both",
+          "expected": "int",
+          "actual": "int",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/details -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "B2B-4",
+      "name": "Read B2B order items",
+      "given": "an order number",
+      "then": [
+        "200",
+        "data is a list",
+        "meta present",
+        "items carry sku and warehouse"
+      ],
+      "note": "The only read returning a list and the only one with pagination meta.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "read b2b order items",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "data is a list",
+          "what": "the only read that returns one",
+          "expected": "list",
+          "actual": "list",
+          "ok": true
+        },
+        {
+          "label": "meta pagination",
+          "what": "the only read carrying it",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "first item carries sku and warehouse",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/order_items -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "B2B-5",
+      "name": "Read items for an empty order",
+      "given": "order number containing EMPTY",
+      "then": [
+        "200",
+        "empty list",
+        "meta.total zero"
+      ],
+      "note": "An order with no items is a 200 with an empty list, not a 404 \u2014 the opposite of the OMS inventory_products endpoint, where 404 is the pagination terminator.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "an order with no items is a 200, not a 404",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "empty data list",
+          "what": "",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "meta.total zero",
+          "what": "",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/b2b_orders/EMPTY-1/order_items -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "PROD-1",
+      "name": "Create a product",
+      "given": "dimensions and sales info",
+      "then": [
+        "200",
+        "sku echoed",
+        "body status field",
+        "length_cm arrived"
+      ],
+      "note": "Dimensions are unit-suffixed (length_cm, weight_gm), unlike the OMS API's bare height/weight. And Wms3ProductResponseDTO.status is a body field, not the HTTP status.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a product",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "sku echoed",
+          "what": "",
+          "expected": "SKU-SMOKE-001",
+          "actual": "SKU-SMOKE-001",
+          "ok": true
+        },
+        {
+          "label": "body carries its own status field",
+          "what": "Wms3ProductResponseDTO.status is a body field distinct from the HTTP status",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "unit-suffixed dimensions arrived",
+          "what": "length_cm / weight_gm, not the bare height/weight the OMS API uses",
+          "expected": "12.0",
+          "actual": "12.0",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/products -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "PROD-2",
+      "name": "Update a product with PUT",
+      "given": "PUT \u2026/products/{sku}",
+      "then": [
+        "200",
+        "sku echoed"
+      ],
+      "note": "The only PUT in 27 operations.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "PUT succeeds",
+          "what": "the ONLY PUT in the whole surface",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "sku echoed",
+          "what": "",
+          "expected": "SKU-SMOKE-001",
+          "actual": "SKU-SMOKE-001",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "PUT /rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001 -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "PROD-3",
+      "name": "Update a product with POST",
+      "given": "the same path, wrong verb",
+      "then": [
+        "404"
+      ],
+      "note": "The negative that gives PROD-2 its meaning. If POST also answered 200 the mock would hide a wrong-verb bug that 404s in production.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "POST on the update path 404s",
+          "what": "proves the route really is PUT-only. If this passed as 200 the mock would hide a wrong-verb bug that 404s in production",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001 (wrong verb) -> 404"
+      ],
+      "detail": {},
+      "summary": "1/1 checks passed"
+    },
+    {
+      "id": "PROD-4",
+      "name": "Change product status",
+      "given": "state INACTIVE",
+      "then": [
+        "200",
+        "state recorded"
+      ],
+      "note": "",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "change product status",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "state recorded",
+          "what": "",
+          "expected": "INACTIVE",
+          "actual": "INACTIVE",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/products/change_status -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "PROD-5",
+      "name": "Read a product",
+      "given": "a sku",
+      "then": [
+        "200",
+        "same read envelope"
+      ],
+      "note": "",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "read a product",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "same read envelope as the order reads",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001 -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "PARTY-1",
+      "name": "Create and update a supplier",
+      "given": "one supplier, then the update sub-resource",
+      "then": [
+        "200 on both",
+        "data.id returned",
+        "both recorded"
+      ],
+      "note": "Update is a named sub-resource \u2014 \u2026/suppliers/update_supplier \u2014 not a PUT on the identifier.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a supplier",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "data.id returned",
+          "what": "",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "update is a named sub-resource",
+          "what": "\u2026/suppliers/update_supplier, not PUT \u2026/suppliers/{code}",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "both create and update recorded",
+          "what": "",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/suppliers -> 200",
+        "POST /rest/v2/customers/ANCHANTO/suppliers/update_supplier -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "PARTY-2",
+      "name": "Create and update a buyer",
+      "given": "a buyer payload carrying supplier_type",
+      "then": [
+        "200 on both",
+        "supplier_type accepted on a buyer"
+      ],
+      "note": "Suppliers and buyers share one Wms3PartyDataDTO, so a supplier-only field rides along on buyer payloads. A mock rejecting it would be stricter than the real API.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "create status",
+          "what": "",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "update status",
+          "what": "named sub-resource, as with suppliers",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "supplier_type accepted on a BUYER payload",
+          "what": "suppliers and buyers share one Wms3PartyDataDTO, so a supplier-only field rides along",
+          "expected": "VENDOR",
+          "actual": "VENDOR",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/buyers -> 200",
+        "POST /rest/v2/customers/ANCHANTO/buyers/update_buyer -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "PARTY-3",
+      "name": "Read a supplier and a buyer",
+      "given": "one of each",
+      "then": [
+        "200 on both",
+        "correct resource type on each"
+      ],
+      "note": "The supplier read uses {supplier_code} and the buyer read uses {code} \u2014 inconsistent, and reproduced rather than tidied.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "supplier read",
+          "what": "path var supplier_code",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "buyer read",
+          "what": "path var is `code`, not buyer_code -- inconsistent and faithful",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "supplier resource type",
+          "what": "",
+          "expected": "supplier",
+          "actual": "supplier",
+          "ok": true
+        },
+        {
+          "label": "buyer resource type",
+          "what": "",
+          "expected": "buyer",
+          "actual": "buyer",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/suppliers/SUP-SMOKE-1 -> 200",
+        "GET /rest/v2/customers/ANCHANTO/buyers/BUY-SMOKE-1 -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "CONS-1",
+      "name": "Create and read a consignment",
+      "given": "one consignment with items and VAS",
+      "then": [
+        "200",
+        "order_number returned",
+        "recorded",
+        "read returns a numeric status_code"
+      ],
+      "note": "order_number is persisted by the caller. WmsB2BGetConsignmentResponseDTO types status_code as a plain int \u2014 a third variant of that field.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "create a consignment",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "order_number returned",
+          "what": "the caller persists it -- a mock omitting it strands the consignment",
+          "expected": "CN-SMOKE-001",
+          "actual": "CN-SMOKE-001",
+          "ok": true
+        },
+        {
+          "label": "recorded",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "read status",
+          "what": "",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "status_code is a number here too",
+          "what": "WmsB2BGetConsignmentResponseDTO types it int",
+          "expected": "int",
+          "actual": "int",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/consignments -> 200",
+        "GET /rest/v2/customers/ANCHANTO/consignments/CN-SMOKE-001/details -> 200"
+      ],
+      "detail": {},
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "LEGACY-1",
+      "name": "The two WREO_DOMAIN v1 reads",
+      "given": "a b2c and a b2b order number",
+      "then": [
+        "200 on both",
+        "same read envelope"
+      ],
+      "note": "Declared with %s placeholders and String.format \u2014 the third placeholder style in this area. They live under wms3-core/utils/oip/, whose handler injects WREO_DOMAIN; `oip` means the OMS platform everywhere else in the repo, which is how they nearly got missed.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "b2c v1 read status",
+          "what": "declared with a %s placeholder and String.format -- the third placeholder style",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "b2c v1 read envelope",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "b2b v1 read status",
+          "what": "declared with a %s placeholder and String.format -- the third placeholder style",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "b2b v1 read envelope",
+          "what": "",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v1/b2c/orders/SO-SMOKE-001/details -> 200",
+        "GET /rest/v1/b2b/orders/PO-SMOKE-001/details -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "MRK-1",
+      "name": "All four steering markers",
+      "given": "each marker as the order number",
+      "then": [
+        "9990500 \u2192 500",
+        "9990429 \u2192 429",
+        "9990422 \u2192 422",
+        "9990401 \u2192 401"
+      ],
+      "note": "422 rather than 400 is the one to note: it is what Wareo3 actually answers for a malformed resource.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "9990500 -> 500",
+          "what": "server error",
+          "expected": "500",
+          "actual": "500",
+          "ok": true
+        },
+        {
+          "label": "9990429 -> 429",
+          "what": "rate limited",
+          "expected": "429",
+          "actual": "429",
+          "ok": true
+        },
+        {
+          "label": "9990422 -> 422",
+          "what": "unprocessable -- Wareo3 uses 422, not 400",
+          "expected": "422",
+          "actual": "422",
+          "ok": true
+        },
+        {
+          "label": "9990401 -> 401",
+          "what": "token rejected",
+          "expected": "401",
+          "actual": "401",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [9990500] -> 500",
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [9990429] -> 429",
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [9990422] -> 422",
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [9990401] -> 401"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "MRK-2",
+      "name": "In-band business failure",
+      "given": "order number 9990001",
+      "then": [
+        "200",
+        "response field says error"
+      ],
+      "note": "Writes carry their own response field, so a 200 alone does not mean success. A test asserting only on the HTTP status would pass here wrongly.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "a 2xx that still failed",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "response says error",
+          "what": "writes carry their own response field; 200 alone does not mean success here",
+          "expected": "error",
+          "actual": "error",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /rest/v2/customers/ANCHANTO/b2c_orders [9990001] -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "NEG-1",
+      "name": "Unknown path",
+      "given": "a path in neither the spec nor the config",
+      "then": [
+        "404"
+      ],
+      "note": "A wrong base URL or a typo must fail loudly rather than being absorbed.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "a wrong URL must fail loudly, not be absorbed",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /rest/v2/customers/ANCHANTO/definitely-not-an-endpoint -> 404"
+      ],
+      "detail": {},
+      "summary": "1/1 checks passed"
+    }
+  ]
+}

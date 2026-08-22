@@ -1,0 +1,18 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-19T09:50:26.095606+00:00",
+      "live_entries": 0,
+      "accumulated": 0,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-19T09:50:29.179824+00:00",
+      "live_entries": 0,
+      "accumulated": 0,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}

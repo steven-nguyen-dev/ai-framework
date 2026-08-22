@@ -1,0 +1,502 @@
+{
+  "name": "Eton WMS",
+  "port": 23101,
+  "spec": "eton-swagger.json",
+  "state_dir": "mock-data",
+  "log_file": "api-calls.har.json",
+  "log_format": "har",
+  "test_results_dir": "test-results",
+  "_comment_suites": "Commands the /test page may start. Only what is written here can be run, and only with the flags each suite declares -- the browser sends a suite id, never a command. Paths resolve relative to local-test-servers.",
+  "test_suites": [
+    {
+      "id": "flow2",
+      "name": "createOrder flow 2",
+      "description": "Anchanto OMS -> JPluger -> Eton WMS, 17 cases (normal + kit)",
+      "estimate": "~4 min, or ~90s fast",
+      "command": [
+        "python3",
+        "eton/suite-flow2.py"
+      ],
+      "options": [
+        {
+          "flag": "--fast",
+          "label": "Fast — skip N10, the retry case"
+        }
+      ]
+    }
+  ],
+  "_comment": "Markers are matched case-insensitively against the OMS order id (ClientSoCode) and order number (RefCode), which SaleOrdersDTO maps from order_id and order_number. Create echoes ClientSoCode back as the WMS Code, so one marker on the order id steers creation, the pricing push and the later cancellation alike. Every operation not listed here is answered from the swagger's own example response.",
+  "stores": {
+    "packed_orders": {
+      "file": "packed_orders.json",
+      "type": "set",
+      "_comment": "Order codes Eton considers already packed. Written by order creation, read by cancellation."
+    },
+    "price_details": {
+      "file": "price_details.json",
+      "type": "list",
+      "_comment": "Every pricing push received, so a test can read back which components were actually mapped."
+    },
+    "created_orders": {
+      "file": "created_orders.json",
+      "type": "set",
+      "_comment": "Sale orders this mock has already accepted. A second create for the same code is answered BESO05, the way the real eton does -- without it a @Retryable replay is answered 200 again and the integration writes the order row once per attempt."
+    }
+  },
+  "routes": [
+    {
+      "_comment": "Auth is not simulated -- the token is never checked. This exists only so the client can complete its OAuth call.",
+      "path": "/connect/token",
+      "method": "POST",
+      "name": "token issued",
+      "respond": {
+        "status": 200,
+        "body": {
+          "access_token": "stub_access_token_12345",
+          "token_type": "Bearer",
+          "expires_in": 86400
+        }
+      }
+    },
+    {
+      "path": "/api/v0.2/saleorders/single",
+      "method": "POST",
+      "name": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "rules": [
+        {
+          "name": "5xx -- exercises createOrder is5xxServerError() and @Retryable",
+          "when": {
+            "any": [
+              {
+                "body.ClientSoCode": {
+                  "contains": "SERVERERROR"
+                }
+              },
+              {
+                "body.RefCode": {
+                  "contains": "SERVERERROR"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Internal server error"
+              ]
+            }
+          }
+        },
+        {
+          "name": "BESO05 already exists -- createOrder treats this as success, then pushes pricing alone",
+          "when": {
+            "any": [
+              {
+                "body.ClientSoCode": {
+                  "contains": "EXISTS"
+                }
+              },
+              {
+                "body.RefCode": {
+                  "contains": "EXISTS"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "HasError": true,
+              "ErrorCode": "BESO05",
+              "Code": "${body.ClientSoCode|95489068}",
+              "ExternalCode": "${body.ClientSoCode|95489068}",
+              "RefExternalCode": "${body.RefCode|SO-ETON-001}",
+              "Status": null,
+              "ErrorMessages": [
+                "Sale order already exists in WMS"
+              ]
+            }
+          }
+        },
+        {
+          "name": "generic 400 -- not BESO05, so createOrder logs it, does not retry, reports unsynced",
+          "when": {
+            "any": [
+              {
+                "body.ClientSoCode": {
+                  "contains": "INVALID"
+                }
+              },
+              {
+                "body.RefCode": {
+                  "contains": "INVALID"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Validation failed"
+              ]
+            }
+          }
+        },
+        {
+          "_comment": "What CreateSingleSaleOrderModel formally declares: required ListSODetail, required SKU and Qty per line, ClientTpl maxLength 30. buildCreateSaleOrderItems always sets SKU and Qty, so the integration satisfies these -- only a hand-written minimal payload trips them. Set \"enabled\": false to let malformed payloads through.",
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "ListSODetail",
+              "ListSODetail[*].SKU",
+              "ListSODetail[*].Qty"
+            ],
+            "non_empty": [
+              "ListSODetail"
+            ],
+            "max_length": {
+              "ClientTpl": 30
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": "${validation.errors}"
+            }
+          }
+        },
+        {
+          "_comment": "OFF BY DEFAULT -- these are the obligations eton states only in prose, and the integration does not currently meet them: SaleOrdersDTO never populates ShippingWardCode, ShippingDistrictCode or DestinationClientBranch (no @JsonProperty, not set by setAllShippingDetails), Gson omits nulls so the keys are absent from the wire, and ClientPickup defaults to true without WarehouseCode being set on the Eton path. Turning this on rejects every order the integration currently sends. Do that deliberately -- either to prove the gap, or after confirming with eton whether the prose is still accurate.",
+          "name": "validation failed (documented address rules)",
+          "enabled": false,
+          "validate": {
+            "required_when": [
+              {
+                "when": {
+                  "body.DestinationClientBranch": {
+                    "exists": false
+                  }
+                },
+                "fields": [
+                  "CustName",
+                  "CustPhone",
+                  "ShippingAddressNo",
+                  "ShippingWardCode"
+                ],
+                "because": "optional only if DestinationClientBranch is set"
+              },
+              {
+                "when": {
+                  "all": [
+                    {
+                      "body.ShippingAddressScheme": {
+                        "equals": "ADM4"
+                      }
+                    },
+                    {
+                      "body.DestinationClientBranch": {
+                        "exists": false
+                      }
+                    }
+                  ]
+                },
+                "fields": [
+                  "ShippingDistrictCode"
+                ],
+                "because": "required when ShippingAddressScheme is ADM4"
+              },
+              {
+                "when": {
+                  "body.ClientPickup": {
+                    "equals": true
+                  }
+                },
+                "fields": [
+                  "WarehouseCode"
+                ],
+                "because": "required when ClientPickup is true"
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": "${validation.errors}"
+            }
+          }
+        },
+        {
+          "_comment": "This mock has already accepted this sale order, so it answers the way eton does on a replay. Without it the @Retryable replay behind a failed pricing push is answered 200 again, handleCreatedOnEton runs each time, and the order row is written once per attempt.",
+          "name": "BESO05 already exists -- replay of an order this mock created earlier",
+          "when": {
+            "body.ClientSoCode": {
+              "in_store": "created_orders"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "HasError": true,
+              "ErrorCode": "BESO05",
+              "Code": "${body.ClientSoCode}",
+              "ExternalCode": "${body.ClientSoCode}",
+              "RefExternalCode": "${body.RefCode|SO-ETON-001}",
+              "Status": null,
+              "ErrorMessages": [
+                "Sale order already exists in WMS"
+              ]
+            }
+          }
+        },
+        {
+          "name": "created, already packed",
+          "when": {
+            "any": [
+              {
+                "raw_body": {
+                  "contains": "packed"
+                }
+              },
+              {
+                "body.ClientSoCode": {
+                  "starts_with": "94"
+                }
+              },
+              {
+                "body.ClientSoCode": {
+                  "contains": "9999400"
+                }
+              }
+            ]
+          },
+          "then": [
+            {
+              "record": {
+                "store": "packed_orders",
+                "values": [
+                  "${body.ClientSoCode|95489068}",
+                  "${body.RefCode|SO-ETON-001}"
+                ]
+              }
+            },
+            {
+              "record": {
+                "store": "created_orders",
+                "values": [
+                  "${body.ClientSoCode|95489068}"
+                ]
+              }
+            }
+          ],
+          "respond": {
+            "status": 200,
+            "body": {
+              "HasError": false,
+              "Code": "${body.ClientSoCode|95489068}",
+              "ExternalCode": "${body.ClientSoCode|95489068}",
+              "RefExternalCode": "${body.RefCode|SO-ETON-001}",
+              "Status": "Packed",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "record": {
+            "store": "created_orders",
+            "values": [
+              "${body.ClientSoCode|95489068}"
+            ]
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "HasError": false,
+          "Code": "${body.ClientSoCode|95489068}",
+          "ExternalCode": "${body.ClientSoCode|95489068}",
+          "RefExternalCode": "${body.RefCode|SO-ETON-001}",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        }
+      }
+    },
+    {
+      "path": "/api/v0.2/saleorders/{soCode}/priceDetail",
+      "method": "POST",
+      "name": "no marker -- pricing push accepted, 200",
+      "before": [
+        {
+          "_comment": "Recorded whether or not Eton accepts it, so a rejected push is still inspectable.",
+          "append": {
+            "store": "price_details",
+            "entry": {
+              "soCode": "${path.soCode}",
+              "body": "${body}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "_comment": "PricingComponentModel declares no required fields at all; LineItemModel requires SKU and Quantity, so only the lines are checkable. A push with no Items at all is legal.",
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "Items[*].SKU",
+              "Items[*].Quantity"
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": "${validation.errors}"
+            }
+          }
+        },
+        {
+          "_comment": "soCode is the Code creation echoed back, i.e. the OMS order_id -- and DataDTO.order_id is a Long, so an end-to-end test cannot put the word REJECT in it. 9666 is the numeric marker for the same case; REJECT still works when the mock is driven by hand.",
+          "name": "rejected -- makes the create path throw so @Retryable replays the whole run",
+          "when": {
+            "any": [
+              {
+                "path.soCode": {
+                  "contains": "REJECT"
+                }
+              },
+              {
+                "path.soCode": {
+                  "contains": "9666"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Pricing rejected by mock for soCode ${path.soCode}"
+              ]
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        }
+      }
+    },
+    {
+      "path": "/api/v0.2/saleorders/{code}/cancel",
+      "method": "PATCH",
+      "name": "no marker -- cancellation accepted, 200",
+      "rules": [
+        {
+          "name": "5xx -- cancelOrder does not retry, returns failure and skips the OMS putaway push",
+          "when": {
+            "path.code": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Internal server error"
+              ]
+            }
+          }
+        },
+        {
+          "name": "BESO02 already cancelled",
+          "when": {
+            "path.code": {
+              "contains": "CANCELLED"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": "BESO02",
+              "HasError": true,
+              "ErrorMessages": [
+                "Sale order already cancelled"
+              ]
+            }
+          }
+        },
+        {
+          "name": "BESO22 packed -- cancelOrder reads any 400 as 'Eton packed it', reports success with skipQuantityAdjustment=true",
+          "when": {
+            "any": [
+              {
+                "path.code": {
+                  "in_store": "packed_orders"
+                }
+              },
+              {
+                "path.code": {
+                  "starts_with": "94"
+                }
+              },
+              {
+                "path.code": {
+                  "contains": "PACKED"
+                }
+              },
+              {
+                "path.code": {
+                  "contains": "9999400"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "ErrorCode": "BESO22",
+              "HasError": true,
+              "ErrorMessages": [
+                "Order is already packed on Eton warehouse, cancellation not allowed"
+              ]
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "ai-framework",
+  "description": "AI-First Software Engineering Framework: Lifecycle Skills, Standalone Utilities, MCPs, and Test Suites",
+  "owner": {
+    "name": "Steven Nguyen",
+    "email": "steven-nguyen-dev@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "ai-first-fw-skills",
+      "description": "Core AI-First Framework lifecycle skills: analysis-handoff, implementation-planner, specs-builder, specs-reviewer, plan-reviewer, and code-reviewer.",
+      "version": "1.0.0",
+      "source": "./ai-first-fw/skills"
+    },
+    {
+      "name": "ai-first-fw-utilities",
+      "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, naver-api-extractor, and lotteon-api-extractor.",
+      "version": "1.0.0",
+      "source": "./ai-first-fw/utilities"
+    }
+  ]
+}

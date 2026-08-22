@@ -1,0 +1,82 @@
+[
+  {
+    "id": "N12",
+    "name": "N12. Pricing rejected - retried alone, then the order stands",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:42:57.096193+00:00",
+    "returned_at": "2026-08-17T07:42:57.123776+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:43:27.228100+00:00",
+    "returned_at": "2026-08-17T07:43:27.279641+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:43:34.396304+00:00",
+    "returned_at": "2026-08-17T07:43:34.445079+00:00"
+  },
+  {
+    "id": "N15",
+    "name": "N15. Shopee quantity above one - per-unit amounts multiplied out",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:43:41.552118+00:00",
+    "returned_at": "2026-08-17T07:43:41.585475+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:43:48.750420+00:00",
+    "returned_at": "2026-08-17T07:43:48.791779+00:00"
+  },
+  {
+    "id": "N17",
+    "name": "N17. Blank item_sku - no line inherits another's prices",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:43:55.938090+00:00",
+    "returned_at": "2026-08-17T07:43:55.981755+00:00"
+  },
+  {
+    "id": "K1",
+    "name": "K1. Shopee kit - explodes into components",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:44:03.175573+00:00",
+    "returned_at": "2026-08-17T07:44:03.237503+00:00"
+  },
+  {
+    "id": "K2",
+    "name": "K2. TikTok kit - line_item_details carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:44:10.350923+00:00",
+    "returned_at": "2026-08-17T07:44:10.386678+00:00"
+  },
+  {
+    "id": "K3",
+    "name": "K3. Kit and plain item in one order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:44:17.508296+00:00",
+    "returned_at": "2026-08-17T07:44:17.545200+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-17T07:44:24.662904+00:00",
+    "returned_at": "2026-08-17T07:44:24.709987+00:00"
+  }
+]

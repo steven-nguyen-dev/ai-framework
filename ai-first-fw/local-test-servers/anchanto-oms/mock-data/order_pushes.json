@@ -1,0 +1,134 @@
+[
+  {
+    "kind": "order_create",
+    "order_number": "SO-SMOKE-001",
+    "store_code": "SMOKE_STORE_01",
+    "marketplace_code": "tiktok",
+    "order_total": 262000.0,
+    "is_historical_order": false,
+    "items": [
+      {
+        "sku": "CSKU-SMOKE-001",
+        "item_quantity": 2
+      }
+    ]
+  },
+  {
+    "kind": "acknowledge",
+    "order_number": "SO-SMOKE-001",
+    "order_id": 90114455,
+    "status": "Acknowledged",
+    "full_cancellation": false
+  },
+  {
+    "kind": "unsynchronized",
+    "order_number": "SO-SMOKE-001",
+    "order_number_camel": "SO-SMOKE-001",
+    "event_type": "CREATE_ORDER",
+    "error_message": "downstream rejected the order"
+  },
+  {
+    "kind": "cancelled_order_stock",
+    "order_id": 90114455,
+    "putaway_method": "AUTO",
+    "items": [
+      {
+        "line_item_id": "55510011",
+        "sellable": 1,
+        "damaged": 1
+      }
+    ]
+  },
+  {
+    "kind": "order_update",
+    "order_id": "90114455",
+    "order_number_camel": "SO-SMOKE-001",
+    "is_order_item_change": true,
+    "order_total": 270000.0
+  },
+  {
+    "kind": "cancel",
+    "order_id": "90114455",
+    "cancellation_reason": "OUT_OF_STOCK",
+    "marketplace_code": "tiktok",
+    "items": [
+      {
+        "id": 55510011,
+        "reason": "OUT_OF_STOCK",
+        "item_quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "confirm_payment",
+    "order_id": "90114455",
+    "payment_method": "cash on delivery",
+    "payment_total": 262000.0
+  },
+  {
+    "kind": "approve_or_reject",
+    "order_id": "90114455",
+    "status": "APPROVED",
+    "is_mp_unpaid": false,
+    "line_item_ids": [
+      {
+        "id": 55510011,
+        "sku": "CSKU-SMOKE-001",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "kind": "mark_complete",
+    "order_id": "90114455",
+    "marketplace_code": "tiktok",
+    "line_item_ids": [
+      {
+        "id": 55510011,
+        "sku": "CSKU-SMOKE-001"
+      }
+    ]
+  },
+  {
+    "kind": "revert_cancellation",
+    "order_id": "90114455",
+    "line_items_status": [
+      {
+        "item_id": 55510011,
+        "quantity": 1,
+        "reason": "RESTOCKED"
+      }
+    ]
+  },
+  {
+    "kind": "serial_validation",
+    "order_id": "90114455",
+    "shipment_number": "SHIP-SMOKE-001",
+    "items": [
+      {
+        "sku": "CSKU-SMOKE-001",
+        "serial_validation_status": "VALID"
+      }
+    ]
+  },
+  {
+    "kind": "update_delta_order",
+    "order_id": "90114455",
+    "order_number_camel": "SO-SMOKE-001",
+    "items": [
+      {
+        "line_item_id": 55510011,
+        "item_sku": "CSKU-SMOKE-001",
+        "item_quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "90114455",
+    "new_status": "Packed",
+    "wms_status": "PICKED",
+    "tracking_number": "JNE0099887766",
+    "return_type": "<absent>"
+  }
+]

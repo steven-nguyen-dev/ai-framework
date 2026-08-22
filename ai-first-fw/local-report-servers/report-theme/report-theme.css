@@ -1,0 +1,71 @@
+/* ==========================================================================
+   Report Theme (report-theme.css)
+   Enterprise developer dashboard & engineering report theme
+   Supports both Dark Mode and Light Mode with Semantic Tokens
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+:root {
+  /* Light Mode Design Tokens */
+  --drt-bg-app: #f8fafc;
+  --drt-bg-card: #ffffff;
+  --drt-border: #e2e8f0;
+  --drt-text-primary: #0f172a;
+  --drt-text-secondary: #334155;
+  --drt-text-muted: #64748b;
+}
+
+html.dark, body.dark-mode {
+  /* Dark Mode Design Tokens */
+  --drt-bg-app: #020617;
+  --drt-bg-card: #0f172a;
+  --drt-border: #1e293b;
+  --drt-text-primary: #f8fafc;
+  --drt-text-secondary: #cbd5e1;
+  --drt-text-muted: #94a3b8;
+}
+
+/* Base Body Setup */
+body.report-body {
+  background-color: var(--drt-bg-app);
+  color: var(--drt-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Fixed 1080px Centered Container */
+.report-container-1080 {
+  width: 100%;
+  max-width: 1080px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Sleek Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--drt-bg-app); }
+::-webkit-scrollbar-thumb { background: #64748b; border-radius: 3px; }
+
+/* Interactive Clickable Cards */
+.card-clickable {
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+.card-clickable:hover {
+  transform: translateY(-1px);
+}

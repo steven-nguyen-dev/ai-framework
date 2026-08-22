@@ -1,0 +1,140 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "Eton WMS",
+      "version": "1.0"
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-08-17T09:14:10.187Z",
+        "time": 2.561,
+        "_seq": 1,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000001\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"SKU-ETON-001\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N1\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "852"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000001\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"SKU-ETON-001\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N1\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000001",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "SKU-ETON-001",
+                  "Qty": 1,
+                  "Price": 105000.0,
+                  "Amount": 105000.0,
+                  "ActualAmount": 92850.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-N1",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 852
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 160,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000001\", \"ExternalCode\": \"92000001\", \"RefExternalCode\": \"SO-ETON-CO-N1\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000001",
+              "ExternalCode": "92000001",
+              "RefExternalCode": "SO-ETON-CO-N1",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 160
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.561,
+          "receive": 0
+        }
+      }
+    ]
+  }
+}

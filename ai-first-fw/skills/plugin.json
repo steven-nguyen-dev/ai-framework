@@ -1,0 +1,5 @@
+{
+  "name": "ai-first-fw-skills",
+  "version": "1.0.0",
+  "description": "Core AI-First Framework lifecycle skills for review-driven, specification-first software development (analysis-handoff, implementation-planner, specs-builder, specs-reviewer, plan-reviewer, and code-reviewer)."
+}

@@ -1,0 +1,12 @@
+{
+  "suite": "flow2",
+  "mock": "eton",
+  "settings": {
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  }
+}

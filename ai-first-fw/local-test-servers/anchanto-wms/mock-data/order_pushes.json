@@ -1,0 +1,428 @@
+[
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "SO-SMOKE-001",
+    "currency_code": "MYR",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 2,
+        "unit_price": 70000.0,
+        "selling_price": 63000.0
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": null,
+    "currency_code": null,
+    "items": []
+  },
+  {
+    "kind": "b2c_cancel",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "remark": "Out of stock"
+  },
+  {
+    "kind": "b2c_complete",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "delivered_to": "Minh Nguyen",
+    "received_amount": "148000"
+  },
+  {
+    "kind": "b2c_tracking",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "tracking_number": "MYDHL0001234567",
+    "carrier_code": "DHL"
+  },
+  {
+    "kind": "b2c_shipping_docs",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "url_type": "URL",
+    "tracking_number": "MYDHL0001234567"
+  },
+  {
+    "kind": "update_unassigned",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2b_create",
+    "customer_code": "ANCHANTO",
+    "number": "PO-SMOKE-001",
+    "supplier_code": "SUP-0001",
+    "is_stock_transfer": false,
+    "destination_store_code": "<none>",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "sto_create",
+    "customer_code": "ANCHANTO",
+    "number": "STO-SMOKE-001",
+    "supplier_code": "<none>",
+    "is_stock_transfer": true,
+    "destination_store_code": "STORE-02",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990500",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990429",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990422",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990401",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990001",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "SO-SMOKE-001",
+    "currency_code": "MYR",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 2,
+        "unit_price": 70000.0,
+        "selling_price": 63000.0
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": null,
+    "currency_code": null,
+    "items": []
+  },
+  {
+    "kind": "b2c_cancel",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "remark": "Out of stock"
+  },
+  {
+    "kind": "b2c_complete",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "delivered_to": "Minh Nguyen",
+    "received_amount": "148000"
+  },
+  {
+    "kind": "b2c_tracking",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "tracking_number": "MYDHL0001234567",
+    "carrier_code": "DHL"
+  },
+  {
+    "kind": "b2c_shipping_docs",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "url_type": "URL",
+    "tracking_number": "MYDHL0001234567"
+  },
+  {
+    "kind": "update_unassigned",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2b_create",
+    "customer_code": "ANCHANTO",
+    "number": "PO-SMOKE-001",
+    "supplier_code": "SUP-0001",
+    "is_stock_transfer": false,
+    "destination_store_code": "<none>",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "sto_create",
+    "customer_code": "ANCHANTO",
+    "number": "STO-SMOKE-001",
+    "supplier_code": "<none>",
+    "is_stock_transfer": true,
+    "destination_store_code": "STORE-02",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990500",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990429",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990422",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990401",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990001",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "SO-SMOKE-001",
+    "currency_code": "MYR",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 2,
+        "unit_price": 70000.0,
+        "selling_price": 63000.0
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": null,
+    "currency_code": null,
+    "items": []
+  },
+  {
+    "kind": "b2c_cancel",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "remark": "Out of stock"
+  },
+  {
+    "kind": "b2c_complete",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "delivered_to": "Minh Nguyen",
+    "received_amount": "148000"
+  },
+  {
+    "kind": "b2c_tracking",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "tracking_number": "MYDHL0001234567",
+    "carrier_code": "DHL"
+  },
+  {
+    "kind": "b2c_shipping_docs",
+    "customer_code": "ANCHANTO",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01",
+    "url_type": "URL",
+    "tracking_number": "MYDHL0001234567"
+  },
+  {
+    "kind": "update_unassigned",
+    "order_number": "SO-SMOKE-001",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2b_create",
+    "customer_code": "ANCHANTO",
+    "number": "PO-SMOKE-001",
+    "supplier_code": "SUP-0001",
+    "is_stock_transfer": false,
+    "destination_store_code": "<none>",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "sto_create",
+    "customer_code": "ANCHANTO",
+    "number": "STO-SMOKE-001",
+    "supplier_code": "<none>",
+    "is_stock_transfer": true,
+    "destination_store_code": "STORE-02",
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990500",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990429",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990422",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990401",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "kind": "b2c_create",
+    "customer_code": "ANCHANTO",
+    "warehouse_code_header": "WH-KUL-01",
+    "number": "9990001",
+    "currency_code": null,
+    "items": [
+      {
+        "sku": "S",
+        "quantity": 1
+      }
+    ]
+  }
+]

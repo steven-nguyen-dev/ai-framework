@@ -1,0 +1,26 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:50:39.454437+00:00",
+    "returned_at": "2026-08-19T09:50:39.471913+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. Shopee - order_adjustment pricing",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:50:46.579354+00:00",
+    "returned_at": "2026-08-19T09:50:46.601599+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Lazada - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:50:53.766113+00:00",
+    "returned_at": "2026-08-19T09:50:53.791809+00:00"
+  }
+]

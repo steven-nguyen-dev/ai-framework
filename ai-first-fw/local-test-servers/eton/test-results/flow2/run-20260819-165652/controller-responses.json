@@ -1,0 +1,154 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:56:52.999571+00:00",
+    "returned_at": "2026-08-19T09:56:53.072990+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. Shopee - order_adjustment pricing",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:00.192825+00:00",
+    "returned_at": "2026-08-19T09:57:00.236060+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Lazada - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:07.336870+00:00",
+    "returned_at": "2026-08-19T09:57:07.360938+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. TikTok - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:14.482063+00:00",
+    "returned_at": "2026-08-19T09:57:14.511293+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:21.653198+00:00",
+    "returned_at": "2026-08-19T09:57:21.689234+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:28.792435+00:00",
+    "returned_at": "2026-08-19T09:57:28.821454+00:00"
+  },
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:35.963509+00:00",
+    "returned_at": "2026-08-19T09:57:35.995399+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:43.131129+00:00",
+    "returned_at": "2026-08-19T09:57:43.155049+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:50.305679+00:00",
+    "returned_at": "2026-08-19T09:57:50.335102+00:00"
+  },
+  {
+    "id": "N11",
+    "name": "N11. Eton 400 generic - reported unsynchronized",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:57:57.490420+00:00",
+    "returned_at": "2026-08-19T09:57:57.527583+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:04.703402+00:00",
+    "returned_at": "2026-08-19T09:58:04.740057+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:11.874866+00:00",
+    "returned_at": "2026-08-19T09:58:11.921507+00:00"
+  },
+  {
+    "id": "N15",
+    "name": "N15. Shopee quantity above one - per-unit amounts multiplied out",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:19.048587+00:00",
+    "returned_at": "2026-08-19T09:58:19.070157+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:26.217149+00:00",
+    "returned_at": "2026-08-19T09:58:26.253089+00:00"
+  },
+  {
+    "id": "N17",
+    "name": "N17. Blank item_sku - no line inherits another's prices",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:33.372736+00:00",
+    "returned_at": "2026-08-19T09:58:33.416516+00:00"
+  },
+  {
+    "id": "K1",
+    "name": "K1. Shopee kit - explodes into components",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:40.546415+00:00",
+    "returned_at": "2026-08-19T09:58:40.578101+00:00"
+  },
+  {
+    "id": "K2",
+    "name": "K2. TikTok kit - line_item_details carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:47.715638+00:00",
+    "returned_at": "2026-08-19T09:58:47.747829+00:00"
+  },
+  {
+    "id": "K3",
+    "name": "K3. Kit and plain item in one order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:58:54.875613+00:00",
+    "returned_at": "2026-08-19T09:58:54.909275+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:59:02.023940+00:00",
+    "returned_at": "2026-08-19T09:59:02.057294+00:00"
+  }
+]

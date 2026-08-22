@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Emerald Cyber IT Gradient -->
+    <linearGradient id="cyber2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+
+    <!-- Dark Terminal Inner Base -->
+    <linearGradient id="terminalBg2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Squircle with Cyber Emerald Accent -->
+  <rect width="128" height="128" rx="28" fill="url(#cyber2)" />
+
+  <!-- Inner Dark Terminal Card (JetBrains Style) -->
+  <rect x="8" y="8" width="112" height="112" rx="20" fill="url(#terminalBg2)" />
+
+  <!-- Neon Terminal Prompt Accent (Top Left) -->
+  <text x="18" y="32" fill="#34d399" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="18" font-weight="900">&gt;_</text>
+
+  <!-- High-Contrast Monospace Digit 2 (JetBrains Mono) -->
+  <text x="64" y="96" 
+        fill="#ffffff" 
+        font-family="'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace" 
+        font-size="76" 
+        font-weight="800" 
+        text-anchor="middle">
+    2
+  </text>
+</svg>

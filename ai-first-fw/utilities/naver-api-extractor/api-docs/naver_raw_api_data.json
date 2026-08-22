@@ -1,0 +1,1571 @@
+[
+  {
+    "summary": "Blog Search API",
+    "description": "Blog Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/blog.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "블로그 포스트의 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "블로그 포스트의 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "블로그 포스트의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/bloggername": {
+          "type": "string",
+          "description": "블로그 포스트가 있는 블로그의 이름"
+        },
+        "rss/channel/item/bloggerlink": {
+          "type": "string",
+          "description": "블로그 포스트가 있는 블로그의 주소"
+        },
+        "rss/channel/item/postdate": {
+          "type": "string",
+          "description": "블로그 포스트가 작성된 날짜"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "News Search API",
+    "description": "News Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/news.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "뉴스 기사의 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/originallink": {
+          "type": "string",
+          "description": "뉴스 기사 원문의 URL"
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "뉴스 기사의 네이버 뉴스 URL. 네이버에 제공되지 않은 기사라면 기사 원문의 URL을 반환합니다."
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "뉴스 기사의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/pubDate": {
+          "type": "string",
+          "description": "뉴스 기사가 네이버에 제공된 시간. 네이버에 제공되지 않은 기사라면 기사 원문이 제공된 시간을 반환합니다."
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Book Search API",
+    "description": "Book Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/book.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 출간일순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "query",
+        "in": "query",
+        "required": false,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 출간일순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "d_titl",
+        "in": "query",
+        "required": false,
+        "description": "검색할 책 제목. UTF-8로 인코딩되어야 합니다. d_titl과 d_isbn 중 1개 이상의 파라미터를 사용해야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "d_isbn",
+        "in": "query",
+        "required": false,
+        "description": "검색할 ISBN. d_titl과 d_isbn 중 1개 이상의 파라미터를 사용해야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과"
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "책 제목"
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "네이버 도서 정보 URL"
+        },
+        "rss/channel/item/image": {
+          "type": "string",
+          "description": "섬네일 이미지의 URL"
+        },
+        "rss/channel/item/author": {
+          "type": "string",
+          "description": "저자 이름"
+        },
+        "rss/channel/item/discount": {
+          "type": "integer",
+          "description": "판매 가격. 절판 등의 이유로 가격이 없으면 값을 반환하지 않습니다."
+        },
+        "rss/channel/item/publisher": {
+          "type": "string",
+          "description": "출판사"
+        },
+        "rss/channel/item/isbn": {
+          "type": "integer",
+          "description": "ISBN"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "네이버 도서의 책 소개"
+        },
+        "rss/channel/item/pubdate": {
+          "type": "string",
+          "description": "출간일"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Encyclopedia Search API",
+    "description": "Encyclopedia Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/encyc.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "백과사전 표제어. 표제어에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "백과사전 항목 설명의 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "백과사전 항목 설명의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/thumbnail": {
+          "type": "string",
+          "description": "섬네일 이미지 URL"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Cafe Article Search API",
+    "description": "Cafe Article Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/cafearticle.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "카페 게시글 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "카페 게시글 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "카페 게시글의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/cafename": {
+          "type": "string",
+          "description": "게시글이 있는 카페의 이름"
+        },
+        "rss/channel/item/cafeurl": {
+          "type": "string",
+          "description": "게시글이 있는 카페의 URL"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Kin Search API",
+    "description": "Kin Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/kin.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬- point: 평점순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "지식iN 질문 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "지식iN 질문의 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "지식iN 질문 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Local Search API",
+    "description": "Local Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/local.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 1, 최댓값: 5)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- random: 정확도순으로 내림차순 정렬(기본값)- comment: 업체 및 기관에 대한 카페, 블로그의 리뷰 개수순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "업체, 기관의 이름"
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "업체, 기관의 상세 정보 URL"
+        },
+        "rss/channel/item/category": {
+          "type": "string",
+          "description": "업체, 기관의 분류 정보"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "업체, 기관에 대한 설명"
+        },
+        "rss/channel/item/telephone": {
+          "type": "string",
+          "description": "값을 반환하지 않는 요소. 하위 호환성을 유지하기 위해 있는 요소입니다."
+        },
+        "rss/channel/item/address": {
+          "type": "string",
+          "description": "업체, 기관명의 지번 주소"
+        },
+        "rss/channel/item/roadAddress": {
+          "type": "string",
+          "description": "업체, 기관명의 도로명 주소"
+        },
+        "rss/channel/item/mapx": {
+          "type": "integer",
+          "description": "업체, 기관이 위치한 장소의 x 좌표(WGS84 좌표계 기준)."
+        },
+        "rss/channel/item/mapy": {
+          "type": "integer",
+          "description": "업체, 기관이 위치한 장소의 y 좌표(WGS84 좌표계 기준)"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Errata Search API",
+    "description": "Errata Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/errata.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "errata": {
+          "type": "string",
+          "description": "오타를 변환한 결과. 오타가 없으면 빈 문자열을 반환합니다."
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Web Search API",
+    "description": "Web Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/webkr.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "웹 문서의 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "웹 문서의 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "웹 문서의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Image Search API",
+    "description": "Image Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/image.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "description": "크기별 검색 결과 필터- all: 모든 이미지(기본값)- large: 큰 이미지- medium: 중간 크기 이미지- small: 작은 크기 이미지",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "이미지가 검색된 문서의 제목"
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "이미지의 URL"
+        },
+        "rss/channel/item/thumbnail": {
+          "type": "string",
+          "description": "섬네일 이미지의 URL"
+        },
+        "rss/channel/item/sizeheight": {
+          "type": "string",
+          "description": "이미지의 세로 크기(단위: 픽셀)"
+        },
+        "rss/channel/item/sizewidth": {
+          "type": "string",
+          "description": "이미지의 가로 크기(단위: 픽셀)"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Shopping Search API",
+    "description": "Shopping Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/shop.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "검색어. UTF-8로 인코딩되어야 합니다.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과 정렬 방법- sim: 정확도순으로 내림차순 정렬(기본값)- date: 날짜순으로 내림차순 정렬- asc: 가격순으로 오름차순 정렬- dsc: 가격순으로 내림차순 정렬",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과에 포함할 상품 유형- 설정 안 함: 모든 상품(기본값)- naverpay: 네이버페이 연동 상품",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "exclude",
+        "in": "query",
+        "required": false,
+        "description": "검색 결과에서 제외할 상품 유형. exclude={option}:{option}:{option} 형태로 설정합니다(예: exclude=used:cbshop).- used: 중고- rental: 렌탈- cbshop: 해외직구, 구매대행",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "상품 이름. 이름에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "상품 정보 URL"
+        },
+        "rss/channel/item/image": {
+          "type": "string",
+          "description": "섬네일 이미지의 URL"
+        },
+        "rss/channel/item/lprice": {
+          "type": "integer",
+          "description": "최저가. 최저가 정보가 없으면 0을 반환합니다. 가격 비교 데이터가 없으면 상품 가격을 의미합니다."
+        },
+        "rss/channel/item/hprice": {
+          "type": "integer",
+          "description": "최고가. 최고가 정보가 없거나 가격 비교 데이터가 없으면 0을 반환합니다."
+        },
+        "rss/channel/item/mallName": {
+          "type": "string",
+          "description": "상품을 판매하는 쇼핑몰. 쇼핑몰 정보가 없으면 네이버를 반환합니다."
+        },
+        "rss/channel/item/productId": {
+          "type": "integer",
+          "description": "네이버 쇼핑의 상품 ID"
+        },
+        "rss/channel/item/productType": {
+          "type": "integer",
+          "description": "상품군과 상품 종류에 따른 상품 타입. 상품군과 상품 종류에 따른 상품 타입은 상품군 타입의 표를 참고합니다.- 상품군: 일반상품, 중고상품, 단종상품, 판매예정상품- 상품 종류: 가격비교 상품, 가격비교 비매칭 일반상품, 가격비교 매칭 일반상품"
+        },
+        "rss/channel/item/maker": {
+          "type": "string",
+          "description": "제조사"
+        },
+        "rss/channel/item/brand": {
+          "type": "string",
+          "description": "브랜드"
+        },
+        "rss/channel/item/category1": {
+          "type": "string",
+          "description": "상품의 카테고리(대분류)"
+        },
+        "rss/channel/item/category2": {
+          "type": "string",
+          "description": "상품의 카테고리(중분류)"
+        },
+        "rss/channel/item/category3": {
+          "type": "string",
+          "description": "상품의 카테고리(소분류)"
+        },
+        "rss/channel/item/category4": {
+          "type": "string",
+          "description": "상품의 카테고리(세분류)"
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "Doc Search API",
+    "description": "Doc Search API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/search/doc.json",
+    "query_parameters": [
+      {
+        "name": "query",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "display",
+        "in": "query",
+        "required": false,
+        "description": "한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      {
+        "name": "start",
+        "in": "query",
+        "required": false,
+        "description": "검색 시작 위치(기본값: 1, 최댓값: 1000)",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "rss": {
+          "type": "string",
+          "description": "RSS 컨테이너. RSS 리더기를 사용해 검색 결과를 확인할 수 있습니다."
+        },
+        "rss/channel": {
+          "type": "string",
+          "description": "검색 결과를 포함하는 컨테이너. channel 요소의 하위 요소인 title, link, description은 RSS에서 사용하는 정보이며, 검색 결과와는 상관이 없습니다."
+        },
+        "rss/channel/lastBuildDate": {
+          "type": "string",
+          "description": "검색 결과를 생성한 시간"
+        },
+        "rss/channel/total": {
+          "type": "integer",
+          "description": "총 검색 결과 개수"
+        },
+        "rss/channel/start": {
+          "type": "integer",
+          "description": "검색 시작 위치"
+        },
+        "rss/channel/display": {
+          "type": "integer",
+          "description": "한 번에 표시할 검색 결과 개수"
+        },
+        "rss/channel/item": {
+          "type": "string",
+          "description": "개별 검색 결과. JSON 형식의 결괏값에서는 items 속성의 JSON 배열로 개별 검색 결과를 반환합니다."
+        },
+        "rss/channel/item/title": {
+          "type": "string",
+          "description": "문서의 제목. 제목에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        },
+        "rss/channel/item/link": {
+          "type": "string",
+          "description": "문서의 URL"
+        },
+        "rss/channel/item/description": {
+          "type": "string",
+          "description": "문서의 내용을 요약한 패시지 정보. 패시지 정보에서 검색어와 일치하는 부분은 태그로 감싸져 있습니다."
+        }
+      }
+    },
+    "module_name": "Shopping & Search"
+  },
+  {
+    "summary": "DataLab Search API",
+    "description": "DataLab Search API provided by Naver Platform",
+    "method": "post",
+    "path": "/v1/datalab/search",
+    "query_parameters": [],
+    "request_properties": {
+      "startDate": {
+        "type": "string",
+        "description": "조회 기간 시작 날짜(yyyy-mm-dd 형식). 2016년 1월 1일부터 조회할 수 있습니다."
+      },
+      "endDate": {
+        "type": "string",
+        "description": "조회 기간 종료 날짜(yyyy-mm-dd 형식)"
+      },
+      "timeUnit": {
+        "type": "string",
+        "description": "구간 단위- date: 일간- week: 주간- month: 월간"
+      },
+      "keywordGroups": {
+        "type": "array",
+        "description": "주제어와 주제어에 해당하는 검색어 묶음 쌍의 배열. 최대 5개의 쌍을 배열로 설정할 수 있습니다."
+      },
+      "keywordGroups.groupName": {
+        "type": "string",
+        "description": "주제어. 검색어 묶음을 대표하는 이름입니다."
+      },
+      "keywordGroups.keywords": {
+        "type": "array",
+        "description": "주제어에 해당하는 검색어. 최대 20개의 검색어를 배열로 설정할 수 있습니다."
+      },
+      "device": {
+        "type": "string",
+        "description": "범위. 검색 환경에 따른 조건입니다.- 설정 안 함: 모든 환경- pc: PC에서 검색 추이- mo: 모바일에서 검색 추이"
+      },
+      "gender": {
+        "type": "string",
+        "description": "성별. 검색 사용자의 성별에 따른 조건입니다.- 설정 안 함: 모든 성별- m: 남성- f: 여성"
+      },
+      "ages": {
+        "type": "array",
+        "description": "연령. 검색 사용자의 연령에 따른 조건입니다. - 설정 안 함: 모든 연령- 1: 0∼12세- 2: 13∼18세- 3: 19∼24세- 4: 25∼29세- 5: 30∼34세- 6: 35∼39세- 7: 40∼44세- 8: 45∼49세- 9: 50∼54세- 10: 55∼59세- 11: 60세 이상"
+      }
+    },
+    "request_required": [
+      "startDate",
+      "endDate",
+      "timeUnit",
+      "keywordGroups",
+      "keywordGroups.groupName",
+      "keywordGroups.keywords"
+    ],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "lastBuildDate": {
+          "type": "string",
+          "description": "Response generation date"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total matching count"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start page/offset"
+        },
+        "display": {
+          "type": "integer",
+          "description": "Items displayed per page"
+        },
+        "items": {
+          "type": "array",
+          "description": "Item details array payload",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "module_name": "Analytics"
+  },
+  {
+    "summary": "Papago Translation API",
+    "description": "Papago Translation API provided by Naver Platform",
+    "method": "post",
+    "path": "/v1/papago/n2mt",
+    "query_parameters": [],
+    "request_properties": {
+      "source": {
+        "type": "string",
+        "description": "원본 언어(source language)의 언어 코드"
+      },
+      "target": {
+        "type": "string",
+        "description": "목적 언어(target language)의 언어 코드"
+      },
+      "text": {
+        "type": "string",
+        "description": "번역할 텍스트. 1회 호출 시 최대 5,000자까지 번역할 수 있습니다."
+      }
+    },
+    "request_required": [
+      "source",
+      "target",
+      "text"
+    ],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "lastBuildDate": {
+          "type": "string",
+          "description": "Response generation date"
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total matching count"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start page/offset"
+        },
+        "display": {
+          "type": "integer",
+          "description": "Items displayed per page"
+        },
+        "items": {
+          "type": "array",
+          "description": "Item details array payload",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "module_name": "AI Services"
+  },
+  {
+    "summary": "Naver Login User Profile API",
+    "description": "Naver Login User Profile API provided by Naver Platform",
+    "method": "get",
+    "path": "/v1/nid/me",
+    "query_parameters": [
+      {
+        "name": "response_type",
+        "in": "query",
+        "required": true,
+        "description": "code",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "client_id",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "redirect_uri",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "state",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "scope",
+        "in": "query",
+        "required": false,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "grant_type",
+        "in": "query",
+        "required": true,
+        "description": "code",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "client_id",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "client_secret",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "code",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "state",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "refresh_token",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "client_id",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "client_secret",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "token",
+        "in": "query",
+        "required": true,
+        "description": "-",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "token_type_hint",
+        "in": "query",
+        "required": false,
+        "description": "access_token",
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "request_properties": {},
+    "request_required": [],
+    "response_schema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "네이버 로그인 인증에 성공하면 반환받는 인증 코드, 접근 토큰(access token) 발급에 사용"
+        },
+        "state": {
+          "type": "string",
+          "description": "사이트 간 요청 위조 공격을 방지하기 위해 애플리케이션에서 생성한 상태 토큰으로 URL 인코딩을 적용한 값"
+        },
+        "error": {
+          "type": "string",
+          "description": "에러 코드"
+        },
+        "error_description": {
+          "type": "string",
+          "description": "에러 메시지"
+        },
+        "access_token": {
+          "type": "string",
+          "description": "접근 토큰, 발급 후 expires_in 파라미터에 설정된 시간(초)이 지나면 만료됨"
+        },
+        "refresh_token": {
+          "type": "string",
+          "description": "갱신 토큰, 접근 토큰이 만료될 경우 접근 토큰을 다시 발급받을 때 사용"
+        },
+        "token_type": {
+          "type": "string",
+          "description": "접근 토큰의 타입으로 Bearer와 MAC의 두 가지를 지원"
+        },
+        "expires_in": {
+          "type": "integer",
+          "description": "접근 토큰의 유효 기간(초 단위)"
+        }
+      }
+    },
+    "module_name": "User & Authentication"
+  }
+]

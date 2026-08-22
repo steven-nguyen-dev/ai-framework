@@ -1,0 +1,59 @@
+[
+  {
+    "kind": "create",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product",
+    "length_cm": 12.0,
+    "weight_gm": 400.0,
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "update",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product v2"
+  },
+  {
+    "kind": "change_status",
+    "sku": "SKU-SMOKE-001",
+    "state": "INACTIVE",
+    "remark": "Discontinued"
+  },
+  {
+    "kind": "create",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product",
+    "length_cm": 12.0,
+    "weight_gm": 400.0,
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "update",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product v2"
+  },
+  {
+    "kind": "change_status",
+    "sku": "SKU-SMOKE-001",
+    "state": "INACTIVE",
+    "remark": "Discontinued"
+  },
+  {
+    "kind": "create",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product",
+    "length_cm": 12.0,
+    "weight_gm": 400.0,
+    "warehouse_code_header": "WH-KUL-01"
+  },
+  {
+    "kind": "update",
+    "sku": "SKU-SMOKE-001",
+    "name": "Smoke Product v2"
+  },
+  {
+    "kind": "change_status",
+    "sku": "SKU-SMOKE-001",
+    "state": "INACTIVE",
+    "remark": "Discontinued"
+  }
+]

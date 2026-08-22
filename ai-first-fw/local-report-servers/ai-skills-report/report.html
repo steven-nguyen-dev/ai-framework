@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Skills &amp; Plugins Registry (Port 24003)</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme/theme.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #020617;
+      --panel: #0f172a;
+      --surface: #1e293b;
+      --surface-2: #334155;
+      --border: #1e293b;
+      --border-hover: #334155;
+      --text: #f8fafc;
+      --text-sec: #cbd5e1;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-bg: rgba(59, 130, 246, 0.15);
+      --accent-border: rgba(96, 165, 250, 0.35);
+      --ok: #34d399;
+      --ok-bg: rgba(16, 185, 129, 0.15);
+      --ok-border: rgba(52, 211, 153, 0.35);
+      --warn: #fbbf24;
+      --warn-bg: rgba(245, 158, 11, 0.15);
+      --warn-border: rgba(251, 191, 36, 0.35);
+      --danger: #f87171;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --danger-border: rgba(248, 113, 113, 0.35);
+      --purple: #c084fc;
+      --purple-bg: rgba(168, 85, 247, 0.15);
+      --purple-border: rgba(192, 132, 252, 0.35);
+      --teal: #2dd4bf;
+      --teal-bg: rgba(20, 184, 166, 0.15);
+      --teal-border: rgba(45, 212, 191, 0.35);
+      --neutral-bg: rgba(51, 65, 85, 0.4);
+      --neutral-border: rgba(100, 116, 139, 0.35);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    header {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .portal-link {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--panel);
+      border: 1px solid var(--border-hover);
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .portal-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .port-pill {
+      font-size: 11px;
+      background: var(--surface);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .spacer { flex: 1; }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 260px;
+    }
+    .search-box input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 12px 6px 30px;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-hover);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-sync {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .btn-sync:hover {
+      background: rgba(96, 165, 250, 0.25);
+    }
+    .btn-sync.syncing svg {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .btn-action-install {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok);
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+    .btn-action-install:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: var(--ok);
+    }
+
+    .btn-icon-uninstall {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: 6px;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .btn-icon-uninstall:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: var(--danger);
+      transform: scale(1.06);
+    }
+
+    main {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Metric Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .metric-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+    .metric-card.active {
+      border-color: var(--accent);
+      background: rgba(96, 165, 250, 0.08);
+      box-shadow: 0 0 0 1px var(--accent-border), 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+    .metric-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .metric-val {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.1;
+    }
+    .metric-val.green { color: var(--ok); }
+    .metric-val.blue { color: var(--accent); }
+    .metric-val.purple { color: var(--purple); }
+    .metric-val.teal { color: var(--teal); }
+    .metric-sub {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Navigation & Tabs */
+    .nav-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+    }
+
+    .tab-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tab-label {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-right: 8px;
+    }
+
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      color: var(--text-sec);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    .tab-btn.active {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .tab-btn.active-tab-skills {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok);
+    }
+    .tab-btn .count {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .source-filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-btn:hover {
+      color: var(--text);
+      background: var(--surface);
+    }
+    .filter-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    /* Badges */
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .badge-local {
+      color: var(--ok);
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+    }
+    .badge-marketplace {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+    }
+    .badge-workspace {
+      color: var(--warn);
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+    }
+    .badge-builtin {
+      color: var(--purple);
+      background: var(--purple-bg);
+      border: 1px solid var(--purple-border);
+    }
+    .badge-extension {
+      color: var(--teal);
+      background: var(--teal-bg);
+      border: 1px solid var(--teal-border);
+    }
+    .badge-neutral {
+      color: var(--text-sec);
+      background: var(--neutral-bg);
+      border: 1px solid var(--neutral-border);
+    }
+
+    /* Section Separation Styles */
+    .section-container {
+      margin-bottom: 36px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .subsection-container {
+      margin-bottom: 28px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .subsection-title {
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Categories: Vertical Plugins vs Grid Skills */
+    .category-block {
+      margin-bottom: 24px;
+    }
+    .category-block:last-child {
+      margin-bottom: 0;
+    }
+    .category-header {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border-hover);
+    }
+    .category-header.skills-cat {
+      color: var(--ok);
+    }
+
+    /* Vertical Plugins Layout */
+    .plugins-vertical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .plugin-vertical-card {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+    .plugin-vertical-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .plugin-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .plugin-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .plugin-title {
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+    }
+
+    .plugin-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Skills Grid */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 14px;
+    }
+
+    .item-card {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .item-card:hover {
+      border-color: var(--ok);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .item-name {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    /* Clamped 2-Line Description with Overlapping Expansion */
+    .item-desc-wrapper {
+      position: relative;
+      min-height: 40px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.45;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .item-desc:hover {
+      color: var(--text);
+    }
+    .item-desc.is-expanded {
+      display: block;
+      position: absolute;
+      top: -4px;
+      left: -6px;
+      right: -6px;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 10px 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85);
+      z-index: 50;
+      color: var(--text);
+      max-height: 240px;
+      overflow-y: auto;
+      cursor: pointer;
+    }
+    .item-desc.is-expanded::after {
+      content: " ✕ (Click to collapse)";
+      font-size: 11px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      display: block;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .path-row {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .path-row span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .path-row:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(96, 165, 250, 0.05);
+    }
+    .path-row.copied {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: rgba(52, 211, 153, 0.12);
+    }
+    .path-row .resolved {
+      color: var(--ok);
+    }
+
+    /* Plugin Single-Row Meta Line (Fixed Percentage Widths: Skills -> Path -> Repo -> Uninstall) */
+    .plugin-meta-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .plugin-meta-col {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-sizing: border-box;
+      min-width: 0;
+      height: 32px;
+    }
+
+    /* 1. Skills button */
+    .plugin-skills-btn {
+      flex: 0 0 12%;
+      max-width: 12%;
+      min-width: 90px;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+
+    .plugin-meta-line.no-repo .plugin-skills-btn {
+      flex: 0 0 14%;
+      max-width: 14%;
+    }
+
+    .plugin-skills-btn:hover {
+      background: rgba(96, 165, 250, 0.12);
+      border-color: var(--accent);
+    }
+
+    .plugin-skills-btn.active {
+      background: rgba(96, 165, 250, 0.18);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .plugin-skills-btn .skills-btn-arrow {
+      font-size: 9px;
+      margin-left: 4px;
+      transition: transform 0.15s ease;
+    }
+
+    .plugin-skills-btn.active .skills-btn-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* 2. Path column */
+    .plugin-path-col {
+      flex: 0 0 52%;
+      max-width: 52%;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .plugin-path-col:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(96, 165, 250, 0.05);
+    }
+    .plugin-path-col.copied {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .plugin-meta-line.no-repo .plugin-path-col {
+      flex: 1;
+      max-width: none;
+    }
+
+    /* 3. Repo column */
+    .plugin-link-col {
+      flex: 0 0 30%;
+      max-width: 30%;
+      color: var(--accent);
+    }
+
+    /* 4. Uninstall button with safety margin */
+    .plugin-uninstall-btn {
+      margin-left: 14px;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+    }
+
+    .meta-icon {
+      flex-shrink: 0;
+      font-size: 11px;
+    }
+
+    .meta-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .meta-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .meta-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Plugin Expandable Skills Dropdown */
+    .plugin-skills-content {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .plugin-skill-row {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      position: relative;
+    }
+    .plugin-skill-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .plugin-skill-name {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .plugin-skill-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 3px 0 0;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .plugin-skill-desc:hover {
+      color: var(--text);
+    }
+    .plugin-skill-desc.is-expanded {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 6px 8px;
+      color: var(--text);
+      z-index: 10;
+    }
+
+    .meta-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Skills Alphabetical Index Table & Cards */
+    .skills-index-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      flex-wrap: wrap;
+    }
+    .skills-batch-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .matrix-table th {
+      background: var(--surface);
+      padding: 10px 14px;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border-hover);
+    }
+    .matrix-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      position: relative;
+    }
+    .matrix-table tr:hover td {
+      background: rgba(30, 41, 59, 0.4);
+    }
+    .matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-desc {
+      font-size: 12px;
+      color: var(--text-sec);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .table-desc:hover {
+      color: var(--text);
+    }
+    .table-desc.is-expanded {
+      display: block;
+      background: var(--surface-2);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 6px 8px;
+      color: var(--text);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      z-index: 20;
+    }
+
+    .surface-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .surface-dot.active {
+      background: var(--ok-bg);
+      color: var(--ok);
+      border: 1px solid var(--ok-border);
+    }
+    .surface-dot.inactive {
+      background: var(--neutral-bg);
+      color: var(--muted);
+      border: 1px solid var(--neutral-border);
+      opacity: 0.6;
+    }
+
+    /* Modal / Confirm Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+    .modal-card {
+      background: var(--panel);
+      border: 1px solid var(--border-hover);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-body {
+      font-size: 13px;
+      color: var(--text-sec);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 300;
+      background: var(--panel);
+      border: 1px solid var(--border-hover);
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      max-width: 440px;
+      line-height: 1.4;
+    }
+    #toast.show {
+      display: flex;
+      animation: toastIn 0.2s ease;
+    }
+    #toast.success {
+      border-color: var(--ok);
+      border-left: 4px solid var(--ok);
+    }
+    #toast.info {
+      border-color: var(--accent);
+      border-left: 4px solid var(--accent);
+    }
+    #toast.error {
+      border-color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: var(--panel);
+      border: 1px dashed var(--border-hover);
+      border-radius: var(--radius);
+    }
+    /* MCP Status View Styles */
+    .mcp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 16px;
+    }
+    .mcp-card {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mcp-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    .mcp-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .mcp-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .mcp-title {
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mcp-desc {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .mcp-eco-matrix {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .mcp-eco-matrix-header {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+    .mcp-eco-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .mcp-eco-row:last-child {
+      border-bottom: none;
+    }
+    .mcp-eco-label {
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+    .mcp-eco-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mcp-status-pill {
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .mcp-status-pill.active {
+      color: var(--ok);
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+    }
+    .mcp-status-pill.inactive {
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .mcp-tools-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn-tools-expand {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      color: var(--accent);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: fit-content;
+      transition: all 0.15s ease;
+    }
+    .btn-tools-expand:hover {
+      background: rgba(96, 165, 250, 0.1);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .btn-tools-expand.active {
+      background: rgba(96, 165, 250, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-tools-expand .tools-btn-arrow {
+      font-size: 9px;
+      transition: transform 0.2s ease;
+    }
+    .btn-tools-expand.active .tools-btn-arrow {
+      transform: rotate(180deg);
+    }
+    .mcp-tools-expanded-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      animation: fadeIn 0.15s ease;
+    }
+    .mcp-tool-pill {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 4px 9px;
+      background: rgba(96, 165, 250, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: 4px;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .mcp-tool-pill:hover {
+      background: rgba(96, 165, 250, 0.18);
+      border-color: var(--accent);
+      color: var(--text);
+    .mcp-path-row {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .mcp-path-row:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      background: rgba(96, 165, 250, 0.05);
+    }
+    .mcp-path-row.copied {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: rgba(52, 211, 153, 0.12);
+    }
+    .mcp-path-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <a href="http://localhost:24000" class="portal-link" title="Return to Central Reports Portal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Portal
+    </a>
+    
+    <div class="header-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>AI Skills &amp; Plugins Registry</span>
+      <span class="port-pill">:24003</span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="header-controls">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search skills, plugins, paths, SHAs..." autocomplete="off">
+      </div>
+
+      <button id="syncBtn" class="btn btn-sync" title="Rescan macOS system now">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        <span id="syncText">Sync / Refresh</span>
+      </button>
+
+      <a href="/export" download="ai-skills-report.html" class="btn" title="Download static standalone HTML export">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Views Interactive Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card active" data-section="all" onclick="selectSection('all')">
+        <div class="metric-title">ALL ECOSYSTEMS</div>
+        <div class="metric-val blue" id="metricAll">0</div>
+        <div class="metric-sub" id="metricAllSub">All 3 Surfaces</div>
+      </div>
+      <div class="metric-card" data-section="claude_code" onclick="selectSection('claude_code')">
+        <div class="metric-title">⚡ CLAUDE CODE</div>
+        <div class="metric-val teal" id="metricClaudeCode">0</div>
+        <div class="metric-sub" id="metricClaudeCodeSub">CLI &amp; Desktop App</div>
+      </div>
+      <div class="metric-card" data-section="claude_cowork" onclick="selectSection('claude_cowork')">
+        <div class="metric-title">🤝 CLAUDE COWORK</div>
+        <div class="metric-val green" id="metricClaudeCowork">0</div>
+        <div class="metric-sub" id="metricClaudeCoworkSub">Desktop Workspace</div>
+      </div>
+      <div class="metric-card" data-section="antigravity" onclick="selectSection('antigravity')">
+        <div class="metric-title">🚀 ANTIGRAVITY</div>
+        <div class="metric-val purple" id="metricAntigravity">0</div>
+        <div class="metric-sub" id="metricAntigravitySub">CLI, App 2.0 &amp; IDE</div>
+      </div>
+      <div class="metric-card" data-section="skills_index" onclick="selectSection('skills_index')">
+        <div class="metric-title">📋 MASTER REGISTRY</div>
+        <div class="metric-val" id="metricRegistry" style="color: var(--ok);">0</div>
+        <div class="metric-sub" id="metricRegistrySub">Marketplaces &amp; Catalog</div>
+      </div>
+      <div class="metric-card" data-section="mcp_status" onclick="selectSection('mcp_status')">
+        <div class="metric-title">🔌 MCP STATUS</div>
+        <div class="metric-val" id="metricMcp" style="color: var(--accent);">0</div>
+        <div class="metric-sub" id="metricMcpSub">Claude &amp; AGY Config</div>
+      </div>
+    </div>
+
+    <!-- Source Filters -->
+    <div class="nav-bar">
+      <div class="source-filters" id="sourceFiltersRow">
+        <span class="tab-label">Source Filter:</span>
+        <button class="filter-btn active" data-source="all">All Sources</button>
+        <button class="filter-btn" data-source="local">Local Plugins</button>
+        <button class="filter-btn" data-source="marketplace">Marketplace / GitHub</button>
+        <button class="filter-btn" data-source="builtin">Built-in Core</button>
+      </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div id="contentArea"></div>
+  </main>
+
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-card">
+      <div class="modal-title" id="modalTitle">Confirm Action</div>
+      <div class="modal-body" id="modalBody">Are you sure?</div>
+      <div class="modal-actions">
+        <button class="btn" id="modalCancelBtn">Cancel</button>
+        <button class="btn" id="modalConfirmBtn" style="background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger);">🗑️ Uninstall</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Marketplace Modal -->
+  <div class="modal-overlay" id="marketplaceModal">
+    <div class="modal-card">
+      <div class="modal-title">➕ Register Plugin Marketplace</div>
+      <div class="modal-body">
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--text-sec); line-height: 1.4;">
+          Register a GitHub repository or local directory catalog to discover and install plugins.
+        </p>
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px;">
+            Repository or Directory Path:
+          </label>
+          <input type="text" id="mpSourceInput" placeholder="e.g. steven-nguyen-dev/ai-framework or anthropics/claude-plugins-official" style="width: 100%; padding: 8px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; box-sizing: border-box;" />
+        </div>
+        <div>
+          <label style="display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px;">
+            Marketplace Identifier (Optional):
+          </label>
+          <input type="text" id="mpNameInput" placeholder="e.g. ai-framework" style="width: 100%; padding: 8px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; box-sizing: border-box;" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeAddMarketplaceModal()">Cancel</button>
+        <button class="btn btn-action-install" id="mpSubmitBtn" onclick="submitAddMarketplace()">➕ Register Marketplace</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast"></div>
+
+  <script>
+    let rawData = null;
+    try {
+      rawData = __REPORT_DATA_JSON__;
+    } catch (e) {
+      rawData = null;
+    }
+    let reportData = window.__INITIAL_DATA__ || rawData || {};
+    let activeSection = 'all';
+    let activeSubsection = 'all';
+    let activeSourceFilter = 'all';
+    let searchQuery = '';
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = `show ${type}`;
+      setTimeout(() => { toast.className = ''; }, 3800);
+    }
+
+    function copyPath(el, text) {
+      if (!text) return;
+      const onSuccess = () => {
+        showToast('Path copied to clipboard!', 'success');
+        if (el) {
+          el.classList.add('copied');
+          setTimeout(() => el.classList.remove('copied'), 1200);
+        }
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+      } else {
+        fallbackCopy(text, onSuccess);
+      }
+    }
+
+    function fallbackCopy(text, cb) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        if (cb) cb();
+      } catch (err) {
+        showToast('Failed to copy path', 'error');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function shortenPath(path) {
+      if (!path) return '';
+      const marker = 'ai-first-fw';
+      const idx = path.indexOf(marker);
+      if (idx !== -1) {
+        return '.../' + path.slice(idx);
+      }
+      const parts = path.split('/').filter(Boolean);
+      if (parts.length > 2) {
+        return '.../' + parts.slice(-2).join('/');
+      }
+      return path;
+    }
+
+    function openConfirmModal({ title, body, confirmText = '🗑️ Uninstall', confirmClass = '', onConfirm }) {
+      const modal = document.getElementById('confirmModal');
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = body;
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+      confirmBtn.textContent = confirmText;
+      if (confirmClass) {
+        confirmBtn.className = `btn ${confirmClass}`;
+      }
+
+      modal.classList.add('show');
+
+      const cleanup = () => {
+        modal.classList.remove('show');
+        confirmBtn.onclick = null;
+        document.getElementById('modalCancelBtn').onclick = null;
+      };
+
+      document.getElementById('modalCancelBtn').onclick = cleanup;
+      confirmBtn.onclick = async () => {
+        cleanup();
+        await onConfirm();
+      };
+    }
+
+    function getSourceBadge(item) {
+      const st = item.source_type || '';
+      if (st.includes('repo_symlink')) {
+        return `<span class="badge badge-local">🔗 Local Symlink</span>`;
+      } else if (st.includes('workspace')) {
+        return `<span class="badge badge-workspace">📁 Workspace</span>`;
+      } else if (st.includes('builtin')) {
+        return `<span class="badge badge-builtin">⚡ Built-in</span>`;
+      } else if (st.includes('desktop_extension')) {
+        return `<span class="badge badge-extension">🧩 Extension</span>`;
+      } else if (st.includes('marketplace') || st.includes('github')) {
+        return `<span class="badge badge-marketplace">📦 Marketplace</span>`;
+      } else {
+        return `<span class="badge badge-neutral">${item.source_label || 'Local'}</span>`;
+      }
+    }
+
+    function selectSection(sec) {
+      activeSection = sec;
+
+      // Update Top Views Cards active state
+      document.querySelectorAll('.metric-card[data-section]').forEach(card => {
+        if (card.getAttribute('data-section') === sec) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+
+      // Hide Source Filter bar on MCP Status view
+      const navBar = document.querySelector('.nav-bar');
+      if (navBar) {
+        navBar.style.display = (sec === 'mcp_status') ? 'none' : 'flex';
+      }
+
+      activeSubsection = 'all';
+      renderSubsectionsNav();
+      renderContent();
+    }
+
+    function renderSummary() {
+      if (!reportData) return;
+      const s = reportData.summary || {};
+
+      const cliPlugins = (reportData.claude?.cli?.plugins || []);
+      const cliSkills = (reportData.claude?.cli?.skills || []);
+      const cliSkillsTotal = cliPlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0) + cliSkills.length;
+
+      const coworkPlugins = (reportData.claude?.app_cowork?.plugins || []);
+      const coworkSkills = (reportData.claude?.app_cowork?.skills || []);
+      const coworkSkillsTotal = coworkPlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0) + coworkSkills.length;
+
+      const agyPlugins = (reportData.antigravity?.cli?.plugins || []);
+      const agySkills = (reportData.antigravity?.app?.skills || []);
+      const agySkillsTotal = agyPlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0) + agySkills.length;
+
+      const marketplaces = (reportData.marketplaces || []);
+      const uniqueSkillsCount = s.unique_skills_count || 50;
+
+      // Update Top Views Cards
+      const metricAll = document.getElementById('metricAll');
+      const metricAllSub = document.getElementById('metricAllSub');
+      if (metricAll) metricAll.textContent = `${s.total_plugins || 9} Plugins`;
+      if (metricAllSub) metricAllSub.textContent = `${s.total_skills || 97} Total Skills Across Surfaces`;
+
+      const metricClaudeCode = document.getElementById('metricClaudeCode');
+      const metricClaudeCodeSub = document.getElementById('metricClaudeCodeSub');
+      if (metricClaudeCode) metricClaudeCode.textContent = `${cliPlugins.length} Plugins`;
+      if (metricClaudeCodeSub) metricClaudeCodeSub.textContent = `${cliSkillsTotal} Bundled Skills • CLI & App`;
+
+      const metricClaudeCowork = document.getElementById('metricClaudeCowork');
+      const metricClaudeCoworkSub = document.getElementById('metricClaudeCoworkSub');
+      if (metricClaudeCowork) metricClaudeCowork.textContent = `${coworkPlugins.length} Plugins`;
+      if (metricClaudeCoworkSub) metricClaudeCoworkSub.textContent = `${coworkSkillsTotal} Skills • Workspace`;
+
+      const metricAntigravity = document.getElementById('metricAntigravity');
+      const metricAntigravitySub = document.getElementById('metricAntigravitySub');
+      if (metricAntigravity) metricAntigravity.textContent = `${agyPlugins.length} Plugins`;
+      if (metricAntigravitySub) metricAntigravitySub.textContent = `${agySkillsTotal} Skills • Unified Engine`;
+
+      const metricRegistry = document.getElementById('metricRegistry');
+      const metricRegistrySub = document.getElementById('metricRegistrySub');
+      if (metricRegistry) metricRegistry.textContent = `${marketplaces.length} Catalogs`;
+      if (metricRegistrySub) metricRegistrySub.textContent = `${uniqueSkillsCount} Unique Framework Skills`;
+
+      const mcpServers = (reportData.mcp_servers || []);
+      const localMcpCount = mcpServers.filter(m => m.is_local).length;
+      const configuredTotal = mcpServers.filter(m => 
+        m.ecosystems?.antigravity?.configured || 
+        m.ecosystems?.claude_desktop?.configured || 
+        m.ecosystems?.claude_code?.configured
+      ).length;
+
+      const metricMcp = document.getElementById('metricMcp');
+      const metricMcpSub = document.getElementById('metricMcpSub');
+      if (metricMcp) metricMcp.textContent = `${localMcpCount || mcpServers.length} Local MCPs`;
+      if (metricMcpSub) metricMcpSub.textContent = `${configuredTotal} Active in AI Tools`;
+
+      // Update Tab Counts
+      const countAll = document.getElementById('countAll');
+      if (countAll) countAll.textContent = (s.total_skills || 0) + (s.total_plugins || 0);
+      const countClaudeCode = document.getElementById('countClaudeCode');
+      if (countClaudeCode) countClaudeCode.textContent = cliPlugins.length;
+      const countClaudeCowork = document.getElementById('countClaudeCowork');
+      if (countClaudeCowork) countClaudeCowork.textContent = coworkPlugins.length;
+      const countAntigravity = document.getElementById('countAntigravity');
+      if (countAntigravity) countAntigravity.textContent = agyPlugins.length + agySkills.length;
+      const countUniqueSkills = document.getElementById('countUniqueSkills');
+      if (countUniqueSkills) countUniqueSkills.textContent = marketplaces.length;
+    }
+
+    function filterMatches(item) {
+      const st = item.source_type || '';
+      if (activeSourceFilter === 'local' && (st.includes('marketplace') || st.includes('github') || st.includes('builtin'))) return false;
+      if (activeSourceFilter === 'marketplace' && !(st.includes('marketplace') || st.includes('github') || st.includes('desktop_extension'))) return false;
+      if (activeSourceFilter === 'builtin' && !st.includes('builtin')) return false;
+
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const name = (item.name || '').toLowerCase();
+        const desc = (item.description || '').toLowerCase();
+        const path = (item.path || item.install_path || item.origin_path || '').toLowerCase();
+        const repo = (item.repo_url || '').toLowerCase();
+        const sha = (item.commit_sha || '').toLowerCase();
+        const mp = (item.marketplace || '').toLowerCase();
+        const skillsText = item.skills ? item.skills.map(s => s.name + ' ' + s.description).join(' ').toLowerCase() : '';
+
+        return name.includes(query) || desc.includes(query) || path.includes(query) || repo.includes(query) || sha.includes(query) || mp.includes(query) || skillsText.includes(query);
+      }
+      return true;
+    }
+
+    function renderSubsectionsNav() {
+      // Direct 1-to-1 mapping via top Views tabs
+    }
+
+    // Action Helpers
+    async function triggerUninstallSkill(skillName, target = 'all') {
+      openConfirmModal({
+        title: `Uninstall Skill: ${skillName}`,
+        body: `Are you sure you want to uninstall <strong>${skillName}</strong> from target: <code>${target}</code>? (Symlinks will be safely unlinked; real directories backed up to .backups/)`,
+        confirmText: '🗑️ Uninstall',
+        onConfirm: async () => {
+          try {
+            const resp = await fetch('/api/skill/uninstall', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: skillName, targets: [target] }),
+            });
+            const data = await resp.json();
+            if (data.success) {
+              showToast(`Skill '${skillName}' uninstalled successfully.`, 'success');
+              await syncData();
+            } else {
+              showToast(`Uninstall failed: ${data.message || 'Error'}`, 'error');
+            }
+          } catch (e) {
+            showToast(`Error uninstalling skill: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function triggerInstallSkill(skillName, target = 'all') {
+      try {
+        const resp = await fetch('/api/skill/install', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: skillName, targets: [target] }),
+        });
+        const data = await resp.json();
+        if (data.success) {
+          showToast(`Skill '${skillName}' installed across target surfaces!`, 'success');
+          await syncData();
+        } else {
+          showToast(`Install failed: ${data.message || 'Error'}`, 'error');
+        }
+      } catch (e) {
+        showToast(`Error installing skill: ${e.message}`, 'error');
+      }
+    }
+
+    function openAddMarketplaceModal() {
+      document.getElementById('mpSourceInput').value = '';
+      document.getElementById('mpNameInput').value = '';
+      document.getElementById('marketplaceModal').classList.add('show');
+    }
+
+    function closeAddMarketplaceModal() {
+      document.getElementById('marketplaceModal').classList.remove('show');
+    }
+
+    async function submitAddMarketplace() {
+      const source = document.getElementById('mpSourceInput').value.trim();
+      const name = document.getElementById('mpNameInput').value.trim();
+      if (!source) {
+        showToast('Please provide a repository or directory path.', 'error');
+        return;
+      }
+      closeAddMarketplaceModal();
+      showToast('Registering marketplace catalog...', 'info');
+      try {
+        const resp = await fetch('/api/marketplace/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source, name }),
+        });
+        const data = await resp.json();
+        if (data.success) {
+          showToast(data.message || 'Marketplace added successfully!', 'success');
+          await syncData();
+        } else {
+          showToast(`Failed: ${data.message || 'Error'}`, 'error');
+        }
+      } catch (err) {
+        showToast(`Error: ${err.message}`, 'error');
+      }
+    }
+
+    async function triggerRemoveMarketplace(name) {
+      openConfirmModal({
+        title: `Remove Marketplace: ${name}`,
+        body: `Are you sure you want to unregister marketplace catalog <strong>${name}</strong>?<br><br>(This unregisters the catalog from Claude Code; already installed plugins remain untouched).`,
+        confirmText: '🗑️ Remove',
+        onConfirm: async () => {
+          try {
+            const resp = await fetch('/api/marketplace/remove', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name }),
+            });
+            const data = await resp.json();
+            if (data.success) {
+              showToast(`Marketplace '${name}' removed.`, 'success');
+              await syncData();
+            } else {
+              showToast(`Remove failed: ${data.message || 'Error'}`, 'error');
+            }
+          } catch (err) {
+            showToast(`Error: ${err.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function triggerUninstallPlugin(pluginId, installPath) {
+      openConfirmModal({
+        title: `Uninstall Plugin: ${pluginId}`,
+        body: `Are you sure you want to uninstall plugin <strong>${pluginId}</strong>?<br><br>Installed at: <code>${installPath}</code><br>(Folder will be moved to .backups/plugins/)`,
+        confirmText: '🗑️ Uninstall',
+        onConfirm: async () => {
+          try {
+            const resp = await fetch('/api/plugin/uninstall', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ plugin_id: pluginId, install_path: installPath }),
+            });
+            const data = await resp.json();
+            if (data.success) {
+              showToast(`Plugin '${pluginId}' uninstalled and backed up.`, 'success');
+              await syncData();
+            } else {
+              showToast(`Plugin uninstall failed: ${data.message || 'Error'}`, 'error');
+            }
+          } catch (e) {
+            showToast(`Error: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function triggerInstallAll() {
+      openConfirmModal({
+        title: `Install All Skills to All Agent Surfaces`,
+        body: `This will symlink every canonical skill (AI-First FW and Utility skills) into all detected agent directories (Claude CLI, Antigravity 2.0 App, Antigravity IDE, Antigravity CLI).`,
+        confirmText: '⚡ Install All',
+        confirmClass: 'btn-action-install',
+        onConfirm: async () => {
+          try {
+            const resp = await fetch('/api/skills/install_all', { method: 'POST' });
+            const data = await resp.json();
+            showToast(`Successfully installed ${data.count || 0} skills to all surfaces!`, 'success');
+            await syncData();
+          } catch (e) {
+            showToast(`Install all failed: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function triggerUninstallAll() {
+      openConfirmModal({
+        title: `Uninstall All Skills from All Surfaces`,
+        body: `This will remove all canonical symlinks from all target agent directories. Original repository files remain untouched.`,
+        confirmText: '🗑️ Uninstall All',
+        onConfirm: async () => {
+          try {
+            const resp = await fetch('/api/skills/uninstall_all', { method: 'POST' });
+            const data = await resp.json();
+            showToast(`Uninstalled skills across surfaces.`, 'success');
+            await syncData();
+          } catch (e) {
+            showToast(`Uninstall all failed: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function syncData() {
+      const resp = await fetch('/api/refresh', { method: 'POST' });
+      if (resp.ok) {
+        reportData = await resp.json();
+        renderSummary();
+        renderSubsectionsNav();
+        renderContent();
+      }
+    }
+
+    function renderSkillCard(skill) {
+      const isSymlink = skill.source_type && skill.source_type.includes('symlink');
+      const targetKey = (skill.metadata && skill.metadata.target_key) || 'all';
+
+      return `
+        <div class="item-card">
+          <div class="card-top">
+            <div style="flex: 1; min-width: 0;">
+              <div class="item-name">${skill.name}</div>
+              <div style="margin-top: 4px;">${getSourceBadge(skill)}</div>
+            </div>
+            <button class="btn-icon-uninstall" onclick="triggerUninstallSkill('${skill.name}', '${targetKey}')" title="Uninstall Skill">
+              🗑️
+            </button>
+          </div>
+          
+          <div class="item-desc-wrapper">
+            <p class="item-desc" onclick="this.classList.toggle('is-expanded')" title="Click to expand/collapse full description">
+              ${skill.description || 'No description provided.'}
+            </p>
+          </div>
+
+          <div class="path-row" onclick="copyPath(this, '${skill.path.replace(/'/g, "\\'")}')" title="Click to copy path: ${skill.path}">
+            <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">📍 ${skill.path}</span>
+          </div>
+          ${skill.resolved_path && isSymlink ? `
+            <div class="path-row resolved" onclick="copyPath(this, '${skill.resolved_path.replace(/'/g, "\\'")}')" title="Click to copy target path: ${skill.resolved_path}">
+              <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">↪️ Target: ${skill.resolved_path}</span>
+            </div>
+          ` : ''}
+          <div class="meta-tags">
+            ${skill.category ? `<span class="badge badge-neutral">📂 ${skill.category}</span>` : ''}
+            ${skill.metadata && skill.metadata.scope ? `<span class="badge badge-neutral">Scope: ${skill.metadata.scope}</span>` : ''}
+            ${skill.version ? `<span class="badge badge-neutral">v${skill.version}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPluginCard(plugin) {
+      const skillsCount = plugin.skills ? plugin.skills.length : (plugin.skills_count || 0);
+      const hasSkills = skillsCount > 0;
+      const hasRepo = !!plugin.repo_url;
+
+      return `
+        <div class="plugin-vertical-card">
+          <div class="plugin-top-row">
+            <div class="plugin-identity">
+              <span style="font-size: 18px;">🧩</span>
+              <span class="plugin-title">${plugin.name}</span>
+              ${getSourceBadge(plugin)}
+              ${plugin.version ? `<span class="badge badge-neutral">v${plugin.version}</span>` : ''}
+              ${plugin.commit_sha ? `<span class="badge badge-neutral" title="Git Commit SHA">SHA: ${plugin.commit_sha.slice(0, 8)}</span>` : ''}
+            </div>
+          </div>
+
+          <p class="item-desc" style="display: block; -webkit-line-clamp: unset; min-height: auto; max-height: none; margin: 0; cursor: default;">
+            ${plugin.description || 'Installed plugin package.'}
+          </p>
+
+          <!-- Single Row: 1. Skills button, 2. Path (Click to copy), 3. Repo, 4. Uninstall button with safety margin -->
+          <div class="plugin-meta-line ${hasRepo ? '' : 'no-repo'}">
+            ${hasSkills ? `
+              <button class="plugin-meta-col plugin-skills-btn" onclick="
+                const card = this.closest('.plugin-vertical-card');
+                const box = card.querySelector('.plugin-skills-content');
+                const isOpen = box.style.display !== 'none';
+                box.style.display = isOpen ? 'none' : 'flex';
+                this.classList.toggle('active', !isOpen);
+              " title="Click to expand/collapse bundled skills">
+                <span>${skillsCount} skills</span>
+                <span class="skills-btn-arrow">▼</span>
+              </button>
+            ` : ''}
+
+            <div class="plugin-meta-col plugin-path-col" onclick="copyPath(this, '${plugin.install_path.replace(/'/g, "\\'")}')" title="Click to copy path: ${plugin.install_path}">
+              <span class="meta-icon">📂</span>
+              <span class="meta-text">${plugin.install_path}</span>
+            </div>
+
+            ${hasRepo ? `
+              <div class="plugin-meta-col plugin-link-col" title="${plugin.repo_url}">
+                <span class="meta-icon">🌐</span>
+                <a href="${plugin.repo_url}" target="_blank" class="meta-text meta-link">${plugin.repo_url}</a>
+              </div>
+            ` : ''}
+
+            <button class="btn-icon-uninstall plugin-uninstall-btn" onclick="triggerUninstallPlugin('${plugin.id}', '${plugin.install_path}')" title="Uninstall Plugin">
+              🗑️
+            </button>
+          </div>
+
+          ${hasSkills ? `
+            <div class="plugin-skills-content" style="display: none;">
+              ${plugin.skills.map(s => `
+                <div class="plugin-skill-row">
+                  <div class="plugin-skill-name">
+                    <span>${s.name}</span>
+                    ${s.version ? `<span class="badge badge-neutral" style="font-size:10px; font-weight:600; color: var(--accent);">v${s.version}</span>` : ''}
+                    ${s.category ? `<span class="badge badge-neutral" style="font-size:10px; font-weight:500;">${s.category}</span>` : ''}
+                  </div>
+                  <div class="plugin-skill-desc" onclick="this.classList.toggle('is-expanded')" title="Click to expand/collapse full description">
+                    ${s.description || 'No description provided.'}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderSkillsIndexView() {
+      // Gather unique plugins across Claude and Antigravity
+      const allPluginsList = [
+        ...(reportData.claude?.cli?.plugins || []),
+        ...(reportData.claude?.app_cowork?.plugins || []),
+        ...(reportData.antigravity?.cli?.plugins || []),
+      ];
+
+      const uniquePluginsMap = new Map();
+      for (const p of allPluginsList) {
+        if (!uniquePluginsMap.has(p.name)) {
+          uniquePluginsMap.set(p.name, p);
+        }
+      }
+      const uniquePlugins = Array.from(uniquePluginsMap.values()).filter(filterMatches);
+
+      // Gather independent/standalone skills (skills that are NOT part of any plugin)
+      const allIndependentSkills = [
+        ...(reportData.antigravity?.app?.skills || []),
+        ...(reportData.antigravity?.cli?.skills || []),
+        ...(reportData.claude?.cli?.skills || []),
+        ...(reportData.claude?.app_cowork?.skills || []),
+      ];
+
+      const uniqueIndependentMap = new Map();
+      for (const s of allIndependentSkills) {
+        if (!s.plugin_name && !uniqueIndependentMap.has(s.name)) {
+          uniqueIndependentMap.set(s.name, s);
+        }
+      }
+      const independentSkills = Array.from(uniqueIndependentMap.values()).filter(filterMatches);
+      const marketplaces = reportData.marketplaces || [];
+
+      const totalBundledSkills = uniquePlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0);
+
+      return `
+        <div class="skills-index-header" style="margin-bottom: 20px;">
+          <div>
+            <h2 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700;">
+              📋 Master Plugins &amp; Skills Registry
+            </h2>
+            <div style="font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace;">
+              ${marketplaces.length} Marketplaces &bull; ${uniquePlugins.length} Plugin Packages (${totalBundledSkills} Bundled Skills) &bull; ${independentSkills.length} Independent / Built-in Skills
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketplaces Management Block -->
+        <div class="category-block" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div class="category-header" style="margin-bottom: 0;">🌐 Registered Plugin Marketplaces (${marketplaces.length})</div>
+            <button class="btn btn-action-install" style="font-size: 11px; padding: 4px 10px;" onclick="openAddMarketplaceModal()">
+              ➕ Add Marketplace
+            </button>
+          </div>
+
+          ${marketplaces.length > 0 ? `
+            <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px;">
+              ${marketplaces.map(m => `
+                <div class="skill-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 140px;">
+                  <div>
+                    <div class="skill-header">
+                      <span class="skill-title">🌐 ${m.name}</span>
+                      <span class="badge badge-marketplace">${m.source_type === 'github' ? 'GitHub' : 'Directory'}</span>
+                    </div>
+                    <p class="item-desc" style="margin-bottom: 8px; font-size: 12px;">${m.description || 'Registered marketplace catalog.'}</p>
+                    <div class="path-row" style="margin-bottom: 8px;" title="${m.installLocation || ''}">
+                      <span>📂 ${m.repo || m.installLocation || 'Local'}</span>
+                    </div>
+                    ${m.plugins && m.plugins.length > 0 ? `
+                      <div style="margin-top: 6px;">
+                        <div style="font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 4px;">Catalog Plugins (${m.plugins.length}):</div>
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                          ${m.plugins.map(p => `<span class="badge badge-neutral" style="font-size: 10px;" title="${p.description || ''}">🧩 ${p.name}</span>`).join('')}
+                        </div>
+                      </div>
+                    ` : ''}
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px;">
+                    <span style="font-size: 10px; color: var(--muted);">${m.lastUpdated ? 'Updated: ' + m.lastUpdated.slice(0, 10) : ''}</span>
+                    <button class="btn-icon-uninstall" style="font-size: 12px; width: 26px; height: 26px;" onclick="triggerRemoveMarketplace('${m.name}')" title="Remove Marketplace Catalog">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="empty-state" style="padding: 16px;">No registered marketplaces found. Click '➕ Add Marketplace' above to register one.</div>
+          `}
+        </div>
+
+        ${uniquePlugins.length > 0 ? `
+          <div class="category-block" style="margin-bottom: 24px;">
+            <div class="category-header">🧩 Installed Plugin Packages (${uniquePlugins.length})</div>
+            <div class="plugins-vertical-list">
+              ${uniquePlugins.map(renderPluginCard).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${independentSkills.length > 0 ? `
+          <div class="category-block">
+            <div class="category-header skills-cat">⚡ Independent &amp; Built-in Skills (${independentSkills.length})</div>
+            <div class="items-grid">
+              ${independentSkills.map(renderSkillCard).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${uniquePlugins.length === 0 && independentSkills.length === 0 && marketplaces.length === 0 ? `
+          <div class="empty-state">No marketplaces, plugins or independent skills matching your search criteria.</div>
+        ` : ''}
+      `;
+    }
+
+    function renderMcpStatusView() {
+      const mcpServers = reportData.mcp_servers || [];
+      const filtered = mcpServers.filter(m => {
+        if (!searchQuery) return true;
+        const q = searchQuery.toLowerCase();
+        const name = (m.name || '').toLowerCase();
+        const desc = (m.description || '').toLowerCase();
+        const path = (m.local_path || '').toLowerCase();
+        const toolsStr = (m.tools || []).join(' ').toLowerCase();
+        return name.includes(q) || desc.includes(q) || path.includes(q) || toolsStr.includes(q);
+      });
+
+      const localServers = filtered.filter(m => m.is_local);
+      const externalServers = filtered.filter(m => !m.is_local);
+
+      const localCount = mcpServers.filter(m => m.is_local).length;
+      const agyCount = mcpServers.filter(m => m.ecosystems?.antigravity?.configured).length;
+      const claudeCodeCount = mcpServers.filter(m => m.ecosystems?.claude_code?.configured).length;
+      const claudeDesktopCount = mcpServers.filter(m => m.ecosystems?.claude_desktop?.configured).length;
+      const totalTools = mcpServers.reduce((sum, m) => sum + (m.tools_count || 0), 0);
+
+      function renderSingleMcpCard(m) {
+        const agy = m.ecosystems?.antigravity || {};
+        const code = m.ecosystems?.claude_code || {};
+        const desk = m.ecosystems?.claude_desktop || {};
+        const icon = m.name === 'kibana' ? '📊' : m.name === 'jira' ? '📋' : m.name === 'idea' ? '💡' : '🔌';
+
+        return `
+          <div class="mcp-card">
+            <div class="mcp-top-bar">
+              <div class="mcp-title-wrap">
+                <div class="mcp-title">
+                  <span>${icon} ${m.title}</span>
+                </div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px;">
+                  ${m.is_local ? `<span class="badge badge-local">📁 Local Framework MCP</span>` : `<span class="badge badge-extension">💡 IDE / System Bridge</span>`}
+                  ${m.has_env ? `<span class="badge badge-workspace">🔑 .env Configured</span>` : ''}
+                  ${m.tools_count > 0 ? `<span class="badge badge-marketplace">🛠️ ${m.tools_count} Tools</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <p class="mcp-desc">${m.description || 'Model Context Protocol server integration.'}</p>
+
+            <!-- Ecosystem Integration Matrix -->
+            <div class="mcp-eco-matrix">
+              <div class="mcp-eco-matrix-header">Ecosystem Activation Status</div>
+
+              <!-- Antigravity -->
+              <div class="mcp-eco-row">
+                <div class="mcp-eco-label">
+                  <span>🚀 Antigravity</span>
+                  <span class="mcp-status-pill ${agy.configured ? 'active' : 'inactive'}">
+                    ${agy.configured ? 'Active' : 'Not Added'}
+                  </span>
+                </div>
+                <div class="mcp-eco-actions">
+                  ${agy.configured ? `
+                    <button class="btn btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg);" onclick="triggerToggleMcp('${m.id}', 'antigravity', false)">
+                      Disable
+                    </button>
+                  ` : `
+                    <button class="btn btn-sm btn-action-install" style="font-size: 10px; padding: 2px 8px;" onclick="triggerToggleMcp('${m.id}', 'antigravity', true)">
+                      ➕ Add to AGY
+                    </button>
+                  `}
+                </div>
+              </div>
+
+              <!-- Claude Code -->
+              <div class="mcp-eco-row">
+                <div class="mcp-eco-label">
+                  <span>⚡ Claude Code (CLI)</span>
+                  <span class="mcp-status-pill ${code.configured ? 'active' : 'inactive'}">
+                    ${code.configured ? 'Active' : 'Not Added'}
+                  </span>
+                </div>
+                <div class="mcp-eco-actions">
+                  ${code.configured ? `
+                    <button class="btn btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg);" onclick="triggerToggleMcp('${m.id}', 'claude_code', false)">
+                      Disable
+                    </button>
+                  ` : `
+                    <button class="btn btn-sm btn-action-install" style="font-size: 10px; padding: 2px 8px;" onclick="triggerToggleMcp('${m.id}', 'claude_code', true)">
+                      ➕ Add to Claude
+                    </button>
+                  `}
+                </div>
+              </div>
+
+              <!-- Claude Desktop -->
+              <div class="mcp-eco-row">
+                <div class="mcp-eco-label">
+                  <span>🤝 Claude Desktop</span>
+                  <span class="mcp-status-pill ${desk.configured ? 'active' : 'inactive'}">
+                    ${desk.configured ? 'Active' : 'Not Added'}
+                  </span>
+                </div>
+                <div class="mcp-eco-actions">
+                  ${desk.configured ? `
+                    <button class="btn btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg);" onclick="triggerToggleMcp('${m.id}', 'claude_desktop', false)">
+                      Disable
+                    </button>
+                  ` : `
+                    <button class="btn btn-sm btn-action-install" style="font-size: 10px; padding: 2px 8px;" onclick="triggerToggleMcp('${m.id}', 'claude_desktop', true)">
+                      ➕ Add to Desktop
+                    </button>
+                  `}
+                </div>
+              </div>
+            </div>
+
+            <!-- Exposed Tools Button (Expandable) -->
+            ${m.tools && m.tools.length > 0 ? `
+              <div class="mcp-tools-section">
+                <button class="btn-tools-expand" onclick="
+                  const card = this.closest('.mcp-card');
+                  const box = card.querySelector('.mcp-tools-expanded-box');
+                  const isOpen = box.style.display !== 'none';
+                  box.style.display = isOpen ? 'none' : 'flex';
+                  this.classList.toggle('active', !isOpen);
+                " title="Click to expand/collapse exposed tools">
+                  <span>🛠️ Exposed Tools (${m.tools.length})</span>
+                  <span class="tools-btn-arrow">▼</span>
+                </button>
+                <div class="mcp-tools-expanded-box" style="display: none;">
+                  ${m.tools.map(t => `<span class="mcp-tool-pill" onclick="copyPath(this, '${t}')" title="Click to copy tool name: ${t}">🛠️ ${t}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Local Path / Source -->
+            ${m.local_path ? `
+              <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 10px;">
+                <div class="path-row" onclick="copyPath(this, '${m.local_path.replace(/'/g, "\\'")}')" title="Click to copy path: ${m.local_path}">
+                  <span>📂 ${m.local_path}</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      return `
+        <!-- Ecosystem Summary Row -->
+        <div class="subsection-container" style="margin-bottom: 20px; padding: 14px 18px;">
+          <div style="font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;">
+            Target Agent Ecosystems &bull; Active Integrations
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
+              <div style="font-size: 11px; color: var(--muted); font-weight: 600;">🚀 Antigravity (Global)</div>
+              <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--purple); margin-top: 2px;">
+                ${agyCount} / ${mcpServers.length} Active
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">~/.gemini/config/mcp_config.json</div>
+            </div>
+
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
+              <div style="font-size: 11px; color: var(--muted); font-weight: 600;">⚡ Claude Code (CLI)</div>
+              <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--teal); margin-top: 2px;">
+                ${claudeCodeCount} / ${mcpServers.length} Active
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">~/.claude.json</div>
+            </div>
+
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
+              <div style="font-size: 11px; color: var(--muted); font-weight: 600;">🤝 Claude Desktop (Cowork)</div>
+              <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--ok); margin-top: 2px;">
+                ${claudeDesktopCount} / ${mcpServers.length} Active
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">claude_desktop_config.json</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Local Framework MCPs -->
+        ${localServers.length > 0 ? `
+          <div class="category-block" style="margin-bottom: 24px;">
+            <div class="category-header">📁 Local Framework MCP Servers (${localServers.length})</div>
+            <div class="mcp-grid">
+              ${localServers.map(renderSingleMcpCard).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- 2. IDE & External Bridges -->
+        ${externalServers.length > 0 ? `
+          <div class="category-block">
+            <div class="category-header">💡 IDE &amp; System Bridges (${externalServers.length})</div>
+            <div class="mcp-grid">
+              ${externalServers.map(renderSingleMcpCard).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${filtered.length === 0 ? `
+          <div class="empty-state">No MCP servers matching your search criteria.</div>
+        ` : ''}
+      `;
+    }
+
+    async function triggerToggleMcp(serverId, target, enable) {
+      try {
+        const resp = await fetch('/api/mcp/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ server_id: serverId, target: target, enable: enable })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          showToast(res.message || `MCP server '${serverId}' updated.`, 'success');
+          await syncData();
+        } else {
+          showToast(res.message || 'Failed to update MCP server.', 'error');
+        }
+      } catch (err) {
+        showToast(`Error updating MCP: ${err.message}`, 'error');
+      }
+    }
+
+    function renderContent() {
+      const container = document.getElementById('contentArea');
+
+      if (activeSection === 'skills_index') {
+        container.innerHTML = renderSkillsIndexView();
+        return;
+      }
+
+      if (activeSection === 'mcp_status') {
+        container.innerHTML = renderMcpStatusView();
+        return;
+      }
+
+      let html = '';
+
+      // 1. Card: Claude Code (CLI & Desktop App)
+      if (activeSection === 'all' || activeSection === 'claude_code') {
+        const cliSkills = (reportData.claude?.cli?.skills || []).filter(filterMatches);
+        const cliPlugins = (reportData.claude?.cli?.plugins || []).filter(filterMatches);
+        const codeMeta = reportData.claude?.app_code?.metadata || {};
+
+        if (cliSkills.length > 0 || cliPlugins.length > 0 || codeMeta.installed) {
+          html += `
+            <div class="subsection-container" style="margin-bottom: 24px;">
+              <div class="subsection-title">⚡ Claude Code (CLI &amp; Desktop App)</div>
+              <div class="path-row" style="margin-bottom: 14px;">
+                <span>Shared Discovery: <code>~/.claude/plugins/</code> &bull; Desktop VM: ${codeMeta.runtime_versions ? codeMeta.runtime_versions.join(', ') : '2.1.237'} &bull; Worktrees: ${(codeMeta.worktrees || []).length} active</span>
+              </div>
+
+              ${cliPlugins.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header">🧩 Installed Plugins (${cliPlugins.length})</div>
+                  <div class="plugins-vertical-list">
+                    ${cliPlugins.map(renderPluginCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${cliSkills.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header skills-cat">⚡ Independent Skills (${cliSkills.length})</div>
+                  <div class="items-grid">
+                    ${cliSkills.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      }
+
+      // 2. Card: Claude App Cowork
+      if (activeSection === 'all' || activeSection === 'claude_cowork') {
+        const coworkPlugins = (reportData.claude?.app_cowork?.plugins || []).filter(filterMatches);
+        const coworkSkills = (reportData.claude?.app_cowork?.skills || []).filter(filterMatches);
+        const meta = reportData.claude?.app_cowork?.metadata || {};
+
+        if (coworkPlugins.length > 0 || coworkSkills.length > 0 || meta.coworkUserFilesPath) {
+          html += `
+            <div class="subsection-container" style="margin-bottom: 24px;">
+              <div class="subsection-title">🤝 Claude App Cowork</div>
+              ${meta.coworkUserFilesPath ? `
+                <div class="path-row" style="margin-bottom: 14px;">
+                  <span>📁 Cowork Path: ${meta.coworkUserFilesPath} &bull; Active MCPs: ${Object.keys(meta.mcpServers || {}).join(', ') || 'None'}</span>
+                </div>
+              ` : ''}
+
+              ${coworkPlugins.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header">🧩 Workspace Plugins (${coworkPlugins.length})</div>
+                  <div class="plugins-vertical-list">
+                    ${coworkPlugins.map(renderPluginCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${coworkSkills.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header skills-cat">⚡ Cowork Skills (${coworkSkills.length})</div>
+                  <div class="items-grid">
+                    ${coworkSkills.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      }
+
+      // 3. Card: Antigravity Unified Ecosystem
+      if (activeSection === 'all' || activeSection === 'antigravity') {
+        const agyPlugins = (reportData.antigravity?.cli?.plugins || []).filter(filterMatches);
+        const agySkills = (reportData.antigravity?.app?.skills || []).filter(filterMatches);
+
+        if (agyPlugins.length > 0 || agySkills.length > 0) {
+          html += `
+            <div class="subsection-container" style="margin-bottom: 24px;">
+              <div class="subsection-title">🚀 Antigravity Unified Ecosystem</div>
+              <div class="path-row" style="margin-bottom: 14px;">
+                <span>⚡ 100% Unified Model &bull; Shared across <strong>CLI (agy)</strong>, <strong>Desktop App 2.0</strong>, and <strong>IDE (IntelliJ / VS Code)</strong> via <code>~/.gemini/config/plugins/</code> &amp; <code>.agents/skills.json</code></span>
+              </div>
+
+              ${agyPlugins.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header">🧩 Installed Ecosystem Plugins (${agyPlugins.length})</div>
+                  <div class="plugins-vertical-list">
+                    ${agyPlugins.map(renderPluginCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${agySkills.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header skills-cat">⚡ Built-in Core Skills (${agySkills.length})</div>
+                  <div class="items-grid">
+                    ${agySkills.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      }
+
+      if (!html) {
+        html = `<div class="empty-state">No skills or plugins matching the selected filters and search query.</div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    // Event Listeners
+    document.querySelectorAll('.source-filters button[data-source]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.source-filters button[data-source]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeSourceFilter = btn.getAttribute('data-source');
+        renderContent();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value.trim();
+      renderContent();
+    });
+
+    // Manual Refresh / Sync Button
+    document.getElementById('syncBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('syncBtn');
+      const text = document.getElementById('syncText');
+      btn.classList.add('syncing');
+      text.textContent = 'Syncing...';
+
+      try {
+        await syncData();
+        showToast('Successfully synchronized latest skills and plugins from macOS!', 'success');
+      } catch (err) {
+        showToast(`Sync failed: ${err.message}`, 'error');
+      } finally {
+        btn.classList.remove('syncing');
+        text.textContent = 'Sync / Refresh';
+      }
+    });
+
+    // Initial render
+    if (!reportData || !reportData.summary) {
+      syncData();
+    } else {
+      renderSummary();
+      renderSubsectionsNav();
+      renderContent();
+    }
+  </script>
+</body>
+</html>

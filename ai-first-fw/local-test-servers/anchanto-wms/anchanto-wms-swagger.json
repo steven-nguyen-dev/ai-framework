@@ -1,0 +1,4439 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Anchanto WMS (Wareo3) API called by JPluger",
+    "version": "1.0.0",
+    "description": "The HTTP surface JPluger's `wms3` area calls ON ANCHANTO WMS, reconstructed from the call sites so a local mock can answer it. Scope: v2 only, plus POST /oauth/token and the live v1 exceptions (ops 9, 26, 27).\n\nNOT THE OMS API. docs/anchanto-oms-api.md covers the OMS Open API that the `wms` area calls, where \"WMS\" names the third-party partner. The two share zero paths and the wms3 area references SS_DOMAIN in zero files.\n\nHOST: ${WMS_3_URL} -- wms-api.anchanto.com (prod), uatapi.anchanto.com (stage/uat), tst-wareo3.anchanto.com (dev/test/local), scrwms-api.anchanto.com (scarlett-prod). Ops 26-27 use ${WREO_DOMAIN}, same host family.\n\nAUTH: real OAuth2, not a flat bearer. POST /oauth/token serves both the initial basic-auth grant and the refresh grant. /rest/v1/tokens/generate is legacy v1 and its token is never used for a v2 call, so a mock implementing only that authenticates nothing.\n\nTWO HEADERS THAT LOOK ALIKE: `warehouse-code` (kebab-case) is a HEADER; `warehouse_code` (snake_case) is a body field. Both constants sit side by side in Wms3Constants. Not interchangeable.\n\ncustomer_code IS NOT CHOSEN BY THE CALLER: every v2 path is scoped by it and it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.\n\nENVELOPES: every write body is wrapped in one named key -- b2c_order, b2b_order, product, supplier, buyer, consignment. Every read answers {summary, status_code, data:{id,type,attributes}}. There is no {\"payload\":[...]} anywhere, unlike the OMS API.\n\nONE PUT: /rest/v2/customers/{customer_code}/products/{sku}. Everything else is POST, including every update; suppliers and buyers update via a named sub-resource.\n\nCAMELCASE INSIDE SNAKE_CASE BODIES IS REAL: orderNumber, externalReturnOrderNumber and the deliveryDetails members carry no @SerializedName, so Gson emits the Java name.\n\nSPEC FORMAT: Swagger 2.0 deliberately -- mock.py reads responses.<code>.examples[\"application/json\"], responses.<code>.schema and #/definitions/..., which are 2.0 shapes. An OpenAPI 3 version routes correctly and then answers every operation with an empty body."
+  },
+  "host": "127.0.0.1:23002",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "OAuth2 tenant token."
+    },
+    {
+      "name": "B2C orders",
+      "description": "Consumer order lifecycle."
+    },
+    {
+      "name": "B2B and STO",
+      "description": "Purchase and stock-transfer orders."
+    },
+    {
+      "name": "Products",
+      "description": "Product master."
+    },
+    {
+      "name": "Suppliers and buyers",
+      "description": "Trading parties -- one shared DTO."
+    },
+    {
+      "name": "Consignments",
+      "description": "Inbound consignments."
+    },
+    {
+      "name": "Legacy reads",
+      "description": "Live v1 reads on WREO_DOMAIN."
+    }
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "OAuth2 access token from POST /oauth/token. Modelled as an apiKey header because Swagger 2.0 has no bearer scheme. Never validated by the mock."
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "x-environments": [
+    {
+      "url": "http://127.0.0.1:23002",
+      "description": "local mock (23101 eton, 23001 anchanto-oms)"
+    },
+    {
+      "url": "https://wms-api.anchanto.com",
+      "description": "prod"
+    },
+    {
+      "url": "https://uatapi.anchanto.com",
+      "description": "stage / uat"
+    },
+    {
+      "url": "https://tst-wareo3.anchanto.com",
+      "description": "dev / test / local"
+    },
+    {
+      "url": "https://scrwms-api.anchanto.com",
+      "description": "scarlett-prod"
+    }
+  ],
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Tenant token (OAuth2)",
+        "operationId": "getTenantToken",
+        "description": "Op 1. THE live auth mechanism. /rest/v1/tokens/generate is legacy v1 and its token is never used for a v2 call.\n\nThe initial grant uses BASIC AUTH -- client credentials in the Authorization header, no body. The refresh grant posts RefreshTokenRequest to this same URL. customResponseTypeKey is `grant_type`, not the OAuth2 default `response_type`.\n\nCall site: Wms3RequestHandler.createAuthorizationGrant, connector/wms3-connector/.../service/Wms3RequestHandler.java:128.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/RefreshTokenRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token issued.",
+            "schema": {
+              "$ref": "#/definitions/TokenResponse"
+            },
+            "examples": {
+              "application/json": {
+                "access_token": "mock_wms3_access_token",
+                "refresh_token": "mock_wms3_refresh_token",
+                "token_type": "Bearer",
+                "scope": "public",
+                "created_at": 1755225600,
+                "access_token_expire_in": 7200
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Create a B2C order",
+        "operationId": "createB2cOrder",
+        "description": "Op 2. Body wrapped as {\"b2c_order\":{...}}. Deserialized client-side into a raw JsonNode, so no typed contract is enforced.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/B2COrderCreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/OrderCreateResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Order created",
+                "order_number": "SO-W3-0001"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/cancel": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Cancel a B2C order",
+        "operationId": "cancelB2cOrder",
+        "description": "Op 3. Body field orderNumber is camelCase -- the DTO has no @SerializedName.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/CancelOrderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancelled.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/complete": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Complete a B2C order",
+        "operationId": "completeB2cOrder",
+        "description": "Op 4. deliveryDetails and all its members are camelCase on the wire.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/CompleteOrderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/tracking": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Push a tracking number",
+        "operationId": "updateB2cTracking",
+        "description": "Op 5.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/TrackingRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracking recorded.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/shipping_docs": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Push shipping documents",
+        "operationId": "updateB2cShippingDocs",
+        "description": "Op 6.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ShippingDocsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documents recorded.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{orig_order_number}/initiate_return": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Initiate a return",
+        "operationId": "initiateB2cReturn",
+        "description": "Op 7. Note the path variable is orig_order_number, not order_number. A mock must return data.return_order_number -- the caller persists it.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "orig_order_number",
+            "in": "path",
+            "required": true,
+            "description": "The ORIGINAL order number being returned against.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ReturnRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return initiated.",
+            "schema": {
+              "$ref": "#/definitions/ReturnResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Return initiated",
+                "data": {
+                  "return_order_number": "RET-MOCK-0001"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/details": {
+      "get": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Get a B2C order",
+        "operationId": "getB2cOrder",
+        "description": "Op 8. Read envelope {summary, status_code, data:{id,type,attributes}} -- no payload array anywhere in this API.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "1001",
+                  "type": "b2c_order",
+                  "attributes": {
+                    "number": "SO-W3-0001",
+                    "status": "RFP",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v1/b2c/orders/{order_number}/update_unassigned_order": {
+      "post": {
+        "tags": [
+          "B2C orders"
+        ],
+        "summary": "Update an unassigned order",
+        "operationId": "updateUnassignedOrder",
+        "description": "Op 9. A v1 path that is LIVE and has no v2 equivalent, so it is in scope despite the v2-only rule. Uses the {order_number} placeholder, not the v1 <number> style. Call site: Wms3OrderService.java:361.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/UpdateUnassignedOrderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2b_orders": {
+      "post": {
+        "tags": [
+          "B2B and STO"
+        ],
+        "summary": "Create a B2B order",
+        "operationId": "createB2bOrder",
+        "description": "Op 10. Wrapped as {\"b2b_order\":{...}}.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/B2BOrderCreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/OrderCreateResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Order created",
+                "order_number": "PO-W3-0001"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2b_orders/{order_number}/details": {
+      "get": {
+        "tags": [
+          "B2B and STO"
+        ],
+        "summary": "Get a B2B order",
+        "operationId": "getB2bOrder",
+        "description": "Op 11. status_code is an Integer here and a String on the b2c read -- same field, two types.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "2001",
+                  "type": "b2b_order",
+                  "attributes": {
+                    "number": "PO-W3-0001",
+                    "status": "RECEIVED",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/b2b_orders/{order_number}/order_items": {
+      "get": {
+        "tags": [
+          "B2B and STO"
+        ],
+        "summary": "Get B2B order items",
+        "operationId": "getB2bOrderItems",
+        "description": "Op 12. The only read that returns a list, and the only one carrying `meta` pagination.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items.",
+            "schema": {
+              "$ref": "#/definitions/OrderItemsEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "meta": {
+                  "total": 1,
+                  "page": 1,
+                  "per_page": 50
+                },
+                "data": [
+                  {
+                    "id": 88001,
+                    "sku": "SKU-W3-001",
+                    "product_name": "Wareo Test Product",
+                    "unit_price": "70000",
+                    "retail_price": "75000",
+                    "selling_price": "63000",
+                    "quantity": 2,
+                    "status": "ALLOCATED",
+                    "line_number": 1,
+                    "order_number": "PO-W3-0001",
+                    "shipment_number": "SHP-W3-0001",
+                    "warehouse": {
+                      "code": "WH-KUL-01",
+                      "name": "Kuala Lumpur DC"
+                    },
+                    "usns": []
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/sto/orders": {
+      "post": {
+        "tags": [
+          "B2B and STO"
+        ],
+        "summary": "Create a stock-transfer order",
+        "operationId": "createStoOrder",
+        "description": "Op 13. Same b2b envelope with is_stock_transfer true and destination_store_code set.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/StoOrderCreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/OrderCreateResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Order created",
+                "order_number": "STO-W3-0001"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/products": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a product",
+        "operationId": "createProduct",
+        "description": "Op 14. Wrapped as {\"product\":{...}}. Dimensions are unit-suffixed: length_cm, weight_gm.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/ProductResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Product saved",
+                "sku": "SKU-W3-001",
+                "status": 200,
+                "data": [
+                  {
+                    "product_information_id": [
+                      9001
+                    ],
+                    "product_dimensions_info": {
+                      "mfupc": 8938505970019
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/products/{sku}": {
+      "put": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Update a product",
+        "operationId": "updateProduct",
+        "description": "Op 15. THE ONLY PUT in the whole surface (Wms3ProductService.java:155). Registering it as POST silently 404s every product update.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "description": "Product SKU.",
+            "type": "string",
+            "x-example": "SKU-W3-001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "schema": {
+              "$ref": "#/definitions/ProductResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Product updated",
+                "sku": "SKU-W3-001",
+                "status": 200,
+                "data": []
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get a product",
+        "operationId": "getProduct",
+        "description": "Op 17.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "description": "Product SKU.",
+            "type": "string",
+            "x-example": "SKU-W3-001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "9001",
+                  "type": "product",
+                  "attributes": {
+                    "number": "SKU-W3-001",
+                    "status": "ACTIVE",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/products/change_status": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Change product status",
+        "operationId": "changeProductStatus",
+        "description": "Op 16.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ProductStatusRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status changed.",
+            "schema": {
+              "$ref": "#/definitions/SimpleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "OK"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/suppliers": {
+      "post": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Create a supplier",
+        "operationId": "createSupplier",
+        "description": "Op 18. Wrapped as {\"supplier\":{...}} around the shared Wms3PartyDataDTO.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/SupplierRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/SupplierResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Supplier saved",
+                "data": {
+                  "id": 4401
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/suppliers/update_supplier": {
+      "post": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Update a supplier",
+        "operationId": "updateSupplier",
+        "description": "Op 19. Update is a NAMED SUB-RESOURCE, not a PUT on the identifier.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/SupplierRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "schema": {
+              "$ref": "#/definitions/SupplierResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Supplier updated",
+                "data": {
+                  "id": 4401
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/suppliers/{supplier_code}": {
+      "get": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Get a supplier",
+        "operationId": "getSupplier",
+        "description": "Op 20.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "supplier_code",
+            "in": "path",
+            "required": true,
+            "description": "Supplier code.",
+            "type": "string",
+            "x-example": "SUP-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supplier.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "4401",
+                  "type": "supplier",
+                  "attributes": {
+                    "number": "SUP-0001",
+                    "status": "ACTIVE",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/buyers": {
+      "post": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Create a buyer",
+        "operationId": "createBuyer",
+        "description": "Op 21. Wrapped as {\"buyer\":{...}} around the SAME Wms3PartyDataDTO, so supplier_type appears on a buyer payload.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/BuyerRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/SupplierResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Buyer saved",
+                "data": {
+                  "id": 5501
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/buyers/update_buyer": {
+      "post": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Update a buyer",
+        "operationId": "updateBuyer",
+        "description": "Op 22. Named sub-resource, as with suppliers.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/BuyerRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated.",
+            "schema": {
+              "$ref": "#/definitions/SupplierResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Buyer updated",
+                "data": {
+                  "id": 5501
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/buyers/{code}": {
+      "get": {
+        "tags": [
+          "Suppliers and buyers"
+        ],
+        "summary": "Get a buyer",
+        "operationId": "getBuyer",
+        "description": "Op 23. Path variable is `code`, not `buyer_code` -- inconsistent with the supplier read.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Buyer code.",
+            "type": "string",
+            "x-example": "BUY-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Buyer.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "5501",
+                  "type": "buyer",
+                  "attributes": {
+                    "number": "BUY-0001",
+                    "status": "ACTIVE",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/consignments": {
+      "post": {
+        "tags": [
+          "Consignments"
+        ],
+        "summary": "Create a consignment",
+        "operationId": "createConsignment",
+        "description": "Op 24. A mock MUST return order_number -- the caller persists it.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Request body.",
+            "schema": {
+              "$ref": "#/definitions/ConsignmentRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created.",
+            "schema": {
+              "$ref": "#/definitions/ConsignmentCreateResponse"
+            },
+            "examples": {
+              "application/json": {
+                "response": "success",
+                "message": "Consignment created",
+                "order_number": "CN-MOCK-0001"
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v2/customers/{customer_code}/consignments/{consignment_number}/details": {
+      "get": {
+        "tags": [
+          "Consignments"
+        ],
+        "summary": "Get a consignment",
+        "operationId": "getConsignment",
+        "description": "Op 25. status_code is a plain int in WmsB2BGetConsignmentResponseDTO.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "customer_code",
+            "in": "path",
+            "required": true,
+            "description": "Scoped tenant. NOT chosen by the caller -- it comes from the Kafka message header EHeaderKeys.CUSTOMER_CODE.",
+            "type": "string",
+            "x-example": "ANCHANTO"
+          },
+          {
+            "name": "consignment_number",
+            "in": "path",
+            "required": true,
+            "description": "Consignment number.",
+            "type": "string",
+            "x-example": "CN-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consignment.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "7001",
+                  "type": "consignment",
+                  "attributes": {
+                    "number": "CN-0001",
+                    "status": "RECEIVED",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v1/b2c/orders/{order_number}/details": {
+      "get": {
+        "tags": [
+          "Legacy reads"
+        ],
+        "summary": "Get a B2C order (v1, WREO_DOMAIN)",
+        "operationId": "getB2cOrderV1",
+        "description": "Op 26. Declared as \"/rest/v1/b2c/orders/%s/details\" and substituted with String.format -- the third placeholder style in this area. Lives in wms3-core/utils/oip/, whose handler injects WREO_DOMAIN. The `oip` package name means the OMS platform everywhere else in the repo; here it does not.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "1001",
+                  "type": "b2c_order",
+                  "attributes": {
+                    "number": "SO-W3-0001",
+                    "status": "RFP",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rest/v1/b2b/orders/{order_number}/details": {
+      "get": {
+        "tags": [
+          "Legacy reads"
+        ],
+        "summary": "Get a B2B order (v1, WREO_DOMAIN)",
+        "operationId": "getB2bOrderV1",
+        "description": "Op 27. Same `%s` style and same oip-package trap as op 26.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "order_number",
+            "in": "path",
+            "required": true,
+            "description": "Order number.",
+            "type": "string",
+            "x-example": "SO-W3-0001"
+          },
+          {
+            "name": "warehouse-code",
+            "in": "header",
+            "required": false,
+            "description": "Kebab-case HEADER, set from requestParameter.getExtras(). Distinct from the snake_case warehouse_code body field.",
+            "type": "string",
+            "x-example": "WH-KUL-01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order.",
+            "schema": {
+              "$ref": "#/definitions/ReadEnvelope"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "success",
+                "status_code": "200",
+                "data": {
+                  "id": "2001",
+                  "type": "b2b_order",
+                  "attributes": {
+                    "number": "PO-W3-0001",
+                    "status": "RECEIVED",
+                    "company_code": "ANCHANTO",
+                    "currency_code": "MYR",
+                    "created_at": "2026-08-01 10:00:00",
+                    "updated_at": "2026-08-01 10:05:00",
+                    "order_items": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or expired OAuth2 token.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "401",
+                "message": "Unauthorized"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failure. Wareo3 answers 422 rather than 400 for a malformed resource.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "422",
+                "message": "Validation failed"
+              }
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "summary": "error",
+                "status_code": "500",
+                "message": "Internal server error"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TokenResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string",
+          "example": "mock_wms3_access_token"
+        },
+        "refresh_token": {
+          "type": "string",
+          "example": "mock_wms3_refresh_token"
+        },
+        "token_type": {
+          "type": "string",
+          "example": "Bearer"
+        },
+        "scope": {
+          "type": "string",
+          "example": "public"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1755225600
+        },
+        "access_token_expire_in": {
+          "type": "integer",
+          "format": "int64",
+          "example": 7200,
+          "description": "AuthenticateResponseDTO maps this through a private setter setExpireTime, not a plain field."
+        }
+      },
+      "required": [
+        "access_token"
+      ],
+      "description": "Answers both the initial basic-auth grant and the refresh grant; the client posts to the same URL for each."
+    },
+    "RefreshTokenRequest": {
+      "type": "object",
+      "properties": {
+        "grant_type": {
+          "type": "string",
+          "example": "refresh_token"
+        },
+        "refresh_token": {
+          "type": "string",
+          "example": "mock_wms3_refresh_token"
+        },
+        "client_id": {
+          "type": "string",
+          "example": "jpluger-wms3"
+        },
+        "client_secret": {
+          "type": "string",
+          "example": "s3cr3t"
+        }
+      },
+      "description": "Wms3OauthRefreshTokenRequest. The initial grant uses basic auth and carries no body."
+    },
+    "ConsignmentCreateResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "OK"
+        },
+        "order_number": {
+          "type": "string",
+          "example": "CN-MOCK-0001",
+          "description": "Persisted by the caller. A mock must return it."
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "Wms3CreateConsignmentResponseDTO."
+    },
+    "SimpleResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "OK"
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "Wms3CompleteConsignmentResponseDTO shape: response + message only."
+    },
+    "ProductResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Product saved"
+        },
+        "sku": {
+          "type": "string",
+          "example": "SKU-W3-001"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "example": 200
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_information_id": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "example": [
+                  9001
+                ]
+              },
+              "product_dimensions_info": {
+                "type": "object",
+                "properties": {
+                  "mfupc": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 8938505970019
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "Wms3ProductResponseDTO. `status` is a body field, distinct from the HTTP status."
+    },
+    "SupplierResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Supplier saved"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "example": 4401
+            }
+          }
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "Wms3SupplierResponseDTO<T>; data is Wms3SupplierDataResponseDTO for suppliers and buyers."
+    },
+    "ReturnResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Return initiated"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "return_order_number": {
+              "type": "string",
+              "example": "RET-MOCK-0001",
+              "description": "Persisted by the caller. A mock must return it."
+            }
+          }
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "CreateReturnResponseDTO."
+    },
+    "OrderCreateResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "Order created"
+        },
+        "order_number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        }
+      },
+      "required": [
+        "response"
+      ],
+      "description": "Order creation deserializes into a raw JsonNode client-side, so no typed contract is enforced. This is the observed shape."
+    },
+    "Warehouse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "WH-KUL-01"
+        },
+        "name": {
+          "type": "string",
+          "example": "Kuala Lumpur DC"
+        }
+      }
+    },
+    "OrderItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 88001
+        },
+        "sku": {
+          "type": "string",
+          "example": "SKU-W3-001"
+        },
+        "product_name": {
+          "type": "string",
+          "example": "Wareo Test Product"
+        },
+        "unit_price": {
+          "type": "string",
+          "example": "70000"
+        },
+        "retail_price": {
+          "type": "string",
+          "example": "75000"
+        },
+        "selling_price": {
+          "type": "string",
+          "example": "63000"
+        },
+        "quantity": {
+          "type": "integer",
+          "example": 2
+        },
+        "status": {
+          "type": "string",
+          "example": "ALLOCATED"
+        },
+        "expiry_date": {
+          "type": "string",
+          "example": "2027-01-31"
+        },
+        "line_number": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2026-08-01 10:00:00"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2026-08-01 10:05:00"
+        },
+        "shipment_id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 5501
+        },
+        "shipment_number": {
+          "type": "string",
+          "example": "SHP-W3-0001"
+        },
+        "order_number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        },
+        "company": {
+          "type": "string",
+          "example": "ANCHANTO"
+        },
+        "warehouse": {
+          "$ref": "#/definitions/Warehouse"
+        },
+        "order_units_count": {
+          "type": "integer",
+          "example": 2
+        },
+        "insufficient_stock": {
+          "type": "boolean",
+          "example": false
+        },
+        "category": {
+          "type": "string",
+          "example": "Apparel"
+        },
+        "base_line_number": {
+          "type": "string",
+          "example": "1"
+        },
+        "seller_voucher_amount": {
+          "type": "number",
+          "example": 0.0
+        },
+        "kit_sku": {
+          "type": "string",
+          "example": ""
+        },
+        "platform_voucher_amount": {
+          "type": "string",
+          "example": "0"
+        },
+        "wms_retail_price": {
+          "type": "number",
+          "example": 75000.0
+        },
+        "usns": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "example": []
+        }
+      },
+      "description": "WmsOrderItemDTO."
+    },
+    "ResourceObject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1001"
+        },
+        "type": {
+          "type": "string",
+          "example": "b2c_order"
+        },
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "string",
+              "example": "SO-W3-0001"
+            },
+            "status": {
+              "type": "string",
+              "example": "RFP"
+            },
+            "company_code": {
+              "type": "string",
+              "example": "ANCHANTO"
+            },
+            "currency_code": {
+              "type": "string",
+              "example": "MYR"
+            },
+            "created_at": {
+              "type": "string",
+              "example": "2026-08-01 10:00:00"
+            },
+            "updated_at": {
+              "type": "string",
+              "example": "2026-08-01 10:05:00"
+            },
+            "order_items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderItem"
+              }
+            }
+          },
+          "description": "Attribute set varies by resource. The wrapper -- id/type/attributes -- is the stable part."
+        }
+      },
+      "description": "JSON:API-style resource. WmsOrderDTO / WmsB2BResponseDataDTO both use it."
+    },
+    "ReadEnvelope": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "example": "success"
+        },
+        "status_code": {
+          "type": "string",
+          "example": "200",
+          "description": "String in WmsGetOrderResponseDTO, Integer in WmsB2BGetOrderResponseDTO, int in WmsB2BGetConsignmentResponseDTO. Three types for one field across three DTOs."
+        },
+        "data": {
+          "$ref": "#/definitions/ResourceObject"
+        }
+      },
+      "required": [
+        "summary",
+        "data"
+      ],
+      "description": "Every v2 read wraps its resource this way -- not the {\"payload\":[...]} the OMS API uses."
+    },
+    "OrderItemsEnvelope": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "example": "success"
+        },
+        "status_code": {
+          "type": "string",
+          "example": "200"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderItem"
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "integer",
+              "example": 1
+            },
+            "page": {
+              "type": "integer",
+              "example": 1
+            },
+            "per_page": {
+              "type": "integer",
+              "example": 50
+            }
+          },
+          "description": "WmsPaginationMetaDTO."
+        }
+      },
+      "required": [
+        "summary",
+        "data"
+      ],
+      "description": "WmsGetOrderItemResponseDTO -- the only read that is a list and the only one with meta."
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "example": "error"
+        },
+        "status_code": {
+          "type": "string",
+          "example": "500"
+        },
+        "message": {
+          "type": "string",
+          "example": "Something went wrong"
+        }
+      }
+    },
+    "Carrier": {
+      "type": "object",
+      "properties": {
+        "carrier_code": {
+          "type": "string",
+          "example": "DHL"
+        },
+        "carrier_name": {
+          "type": "string",
+          "example": "DHL Express"
+        },
+        "carrier_email": {
+          "type": "string",
+          "example": "ops@dhl.example"
+        },
+        "carrier_contact_number": {
+          "type": "string",
+          "example": "+60123456789"
+        },
+        "carrier_tracking_url": {
+          "type": "string",
+          "example": "https://track.dhl.example/{tracking_number}"
+        }
+      }
+    },
+    "Adjustment": {
+      "type": "object",
+      "properties": {
+        "total_paid": {
+          "type": "number",
+          "example": 148000.0
+        },
+        "sub_total": {
+          "type": "number",
+          "example": 140000.0
+        },
+        "shipping_cost": {
+          "type": "number",
+          "example": 15000.0
+        },
+        "tax_amount": {
+          "type": "number",
+          "example": 0.0
+        },
+        "discount": {
+          "type": "number",
+          "example": 7000.0
+        },
+        "discount_details": {
+          "type": "object",
+          "properties": {
+            "platform_voucher": {
+              "type": "string",
+              "example": "0"
+            }
+          }
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "example": "Minh"
+        },
+        "last_name": {
+          "type": "string",
+          "example": "Nguyen"
+        },
+        "address1": {
+          "type": "string",
+          "example": "12 Jalan Ampang"
+        },
+        "address2": {
+          "type": "string",
+          "example": ""
+        },
+        "address3": {
+          "type": "string",
+          "example": ""
+        },
+        "business_name": {
+          "type": "string",
+          "example": ""
+        },
+        "city": {
+          "type": "string",
+          "example": "Kuala Lumpur"
+        },
+        "zipcode": {
+          "type": "string",
+          "example": "50450"
+        },
+        "country_iso": {
+          "type": "string",
+          "example": "MY"
+        },
+        "state_abbreviation": {
+          "type": "string",
+          "example": "KL"
+        },
+        "phone": {
+          "type": "string",
+          "example": "+60123456789"
+        },
+        "email": {
+          "type": "string",
+          "example": "buyer@example.com"
+        },
+        "sender_tax_id": {
+          "type": "string",
+          "example": ""
+        },
+        "receiver_tax_id": {
+          "type": "string",
+          "example": ""
+        },
+        "receiver_type": {
+          "type": "string",
+          "example": "INDIVIDUAL"
+        },
+        "w3w": {
+          "type": "string",
+          "example": "filled.count.soap",
+          "description": "what3words."
+        }
+      }
+    },
+    "OrderItemVas": {
+      "type": "object",
+      "properties": {
+        "quantity": {
+          "type": "integer",
+          "example": 1
+        },
+        "message": {
+          "type": "string",
+          "example": "Gift wrap"
+        },
+        "cost": {
+          "type": "number",
+          "example": 5000.0
+        }
+      }
+    },
+    "OrderItemAttributes": {
+      "type": "object",
+      "properties": {
+        "unit_price": {
+          "type": "number",
+          "example": 70000.0
+        },
+        "retail_price": {
+          "type": "number",
+          "example": 75000.0
+        },
+        "selling_price": {
+          "type": "number",
+          "example": 63000.0
+        },
+        "quantity": {
+          "type": "integer",
+          "example": 2
+        },
+        "sku": {
+          "type": "string",
+          "example": "SKU-W3-001"
+        },
+        "location": {
+          "type": "string",
+          "example": "A-01-01"
+        },
+        "uom_quantity": {
+          "type": "integer",
+          "example": 1,
+          "description": "b2b/sto only."
+        },
+        "uom": {
+          "type": "string",
+          "example": "EA",
+          "description": "b2b/sto only."
+        },
+        "base_line_number": {
+          "type": "string",
+          "example": "1",
+          "description": "b2b/sto only."
+        },
+        "b2c_order_item_vas_attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderItemVas"
+          }
+        },
+        "b2b_order_item_vas_attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderItemVas"
+          }
+        }
+      }
+    },
+    "B2COrderData": {
+      "type": "object",
+      "properties": {
+        "company_code": {
+          "type": "string",
+          "example": "ANCHANTO"
+        },
+        "shipping_type": {
+          "type": "string",
+          "example": "STANDARD"
+        },
+        "payment_collection_name": {
+          "type": "string",
+          "example": "COD"
+        },
+        "number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        },
+        "currency_code": {
+          "type": "string",
+          "example": "MYR"
+        },
+        "delivery_date": {
+          "type": "string",
+          "example": "2026-08-20"
+        },
+        "instruction": {
+          "type": "string",
+          "example": ""
+        },
+        "packing_instructions": {
+          "type": "string",
+          "example": ""
+        },
+        "source": {
+          "type": "string",
+          "example": "MARKETPLACE"
+        },
+        "buyer_code": {
+          "type": "string",
+          "example": "BUY-0001"
+        },
+        "campaign_code": {
+          "type": "string",
+          "example": ""
+        },
+        "media_code": {
+          "type": "string",
+          "example": ""
+        },
+        "gift_message": {
+          "type": "string",
+          "example": ""
+        },
+        "custom_duty": {
+          "type": "string",
+          "example": ""
+        },
+        "is_fbm_order": {
+          "type": "boolean",
+          "example": false
+        },
+        "is_fbs_order": {
+          "type": "boolean",
+          "example": false
+        },
+        "location": {
+          "type": "string",
+          "example": ""
+        },
+        "bill_of_exit": {
+          "type": "string",
+          "example": ""
+        },
+        "carrier": {
+          "$ref": "#/definitions/Carrier"
+        },
+        "adjustment_attributes": {
+          "$ref": "#/definitions/Adjustment"
+        },
+        "additional_attribute_attributes": {
+          "type": "object",
+          "properties": {
+            "extra_details": {
+              "type": "string",
+              "example": ""
+            }
+          }
+        },
+        "order_items_attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderItemAttributes"
+          }
+        },
+        "shipping_address_attributes": {
+          "$ref": "#/definitions/Address"
+        },
+        "billing_address_attributes": {
+          "$ref": "#/definitions/Address"
+        }
+      },
+      "required": [
+        "number"
+      ],
+      "description": "Wms3B2COrderCreateDetailsDTO."
+    },
+    "B2BOrderData": {
+      "type": "object",
+      "properties": {
+        "company_code": {
+          "type": "string",
+          "example": "ANCHANTO"
+        },
+        "shipping_type": {
+          "type": "string",
+          "example": "STANDARD"
+        },
+        "payment_collection_name": {
+          "type": "string",
+          "example": "COD"
+        },
+        "number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        },
+        "currency_code": {
+          "type": "string",
+          "example": "MYR"
+        },
+        "delivery_date": {
+          "type": "string",
+          "example": "2026-08-20"
+        },
+        "instruction": {
+          "type": "string",
+          "example": ""
+        },
+        "packing_instructions": {
+          "type": "string",
+          "example": ""
+        },
+        "source": {
+          "type": "string",
+          "example": "MARKETPLACE"
+        },
+        "buyer_code": {
+          "type": "string",
+          "example": "BUY-0001"
+        },
+        "campaign_code": {
+          "type": "string",
+          "example": ""
+        },
+        "media_code": {
+          "type": "string",
+          "example": ""
+        },
+        "gift_message": {
+          "type": "string",
+          "example": ""
+        },
+        "custom_duty": {
+          "type": "string",
+          "example": ""
+        },
+        "is_fbm_order": {
+          "type": "boolean",
+          "example": false
+        },
+        "is_fbs_order": {
+          "type": "boolean",
+          "example": false
+        },
+        "location": {
+          "type": "string",
+          "example": ""
+        },
+        "bill_of_exit": {
+          "type": "string",
+          "example": ""
+        },
+        "carrier": {
+          "$ref": "#/definitions/Carrier"
+        },
+        "adjustment_attributes": {
+          "$ref": "#/definitions/Adjustment"
+        },
+        "additional_attribute_attributes": {
+          "type": "object",
+          "properties": {
+            "extra_details": {
+              "type": "string",
+              "example": ""
+            }
+          }
+        },
+        "order_items_attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderItemAttributes"
+          }
+        },
+        "shipping_address_attributes": {
+          "$ref": "#/definitions/Address"
+        },
+        "billing_address_attributes": {
+          "$ref": "#/definitions/Address"
+        },
+        "supplier_code": {
+          "type": "string",
+          "example": "SUP-0001"
+        },
+        "is_stock_transfer": {
+          "type": "boolean",
+          "example": false
+        },
+        "destination_store_code": {
+          "type": "string",
+          "example": ""
+        }
+      },
+      "required": [
+        "number"
+      ],
+      "description": "Wms3OrderCreateDataDTO -- b2b and sto. Adds supplier_code, is_stock_transfer, destination_store_code."
+    },
+    "B2COrderCreateRequest": {
+      "type": "object",
+      "properties": {
+        "b2c_order": {
+          "$ref": "#/definitions/B2COrderData"
+        }
+      },
+      "required": [
+        "b2c_order"
+      ]
+    },
+    "B2BOrderCreateRequest": {
+      "type": "object",
+      "properties": {
+        "b2b_order": {
+          "$ref": "#/definitions/B2BOrderData"
+        }
+      },
+      "required": [
+        "b2b_order"
+      ]
+    },
+    "StoOrderCreateRequest": {
+      "type": "object",
+      "properties": {
+        "b2b_order": {
+          "$ref": "#/definitions/B2BOrderData"
+        }
+      },
+      "required": [
+        "b2b_order"
+      ],
+      "description": "STO reuses the b2b envelope with is_stock_transfer true and destination_store_code set."
+    },
+    "CancelOrderRequest": {
+      "type": "object",
+      "properties": {
+        "orderNumber": {
+          "type": "string",
+          "example": "SO-W3-0001",
+          "description": "camelCase on the wire: the DTO carries no @SerializedName, so Gson emits the Java name."
+        },
+        "remark": {
+          "type": "string",
+          "example": "Out of stock"
+        }
+      }
+    },
+    "CompleteOrderRequest": {
+      "type": "object",
+      "properties": {
+        "orderNumber": {
+          "type": "string",
+          "example": "SO-W3-0001",
+          "description": "camelCase on the wire."
+        },
+        "deliveryDetails": {
+          "type": "object",
+          "properties": {
+            "deliveredTo": {
+              "type": "string",
+              "example": "Minh Nguyen"
+            },
+            "deliveredRef": {
+              "type": "string",
+              "example": "REF-1"
+            },
+            "handoverTo": {
+              "type": "string",
+              "example": "Reception"
+            },
+            "cashReceived": {
+              "type": "string",
+              "example": "true"
+            },
+            "receivedAmount": {
+              "type": "string",
+              "example": "148000"
+            },
+            "comment": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          "description": "All camelCase, same reason."
+        }
+      }
+    },
+    "TrackingRequest": {
+      "type": "object",
+      "properties": {
+        "tracking_number": {
+          "type": "string",
+          "example": "MYDHL0001234567"
+        },
+        "carrier": {
+          "$ref": "#/definitions/Carrier"
+        },
+        "orderNumber": {
+          "type": "string",
+          "example": "SO-W3-0001",
+          "description": "camelCase beside two snake_case siblings."
+        }
+      }
+    },
+    "ShippingDocsRequest": {
+      "type": "object",
+      "properties": {
+        "url_type": {
+          "type": "string",
+          "example": "URL"
+        },
+        "tracking_number": {
+          "type": "string",
+          "example": "MYDHL0001234567"
+        },
+        "orderNumber": {
+          "type": "string",
+          "example": "SO-W3-0001",
+          "description": "camelCase."
+        }
+      }
+    },
+    "ReturnRequest": {
+      "type": "object",
+      "properties": {
+        "orig_order_number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        },
+        "externalReturnOrderNumber": {
+          "type": "string",
+          "example": "RET-EXT-0001",
+          "description": "camelCase."
+        },
+        "order": {
+          "type": "object",
+          "properties": {
+            "order_items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "sku": {
+                    "type": "string",
+                    "example": "SKU-W3-001"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            },
+            "pickup_date": {
+              "type": "string",
+              "example": "2026-08-22"
+            },
+            "reason": {
+              "type": "string",
+              "example": "DAMAGED"
+            }
+          }
+        }
+      }
+    },
+    "UpdateUnassignedOrderRequest": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string",
+          "example": "SO-W3-0001"
+        }
+      },
+      "description": "Sent as a raw JsonNode; no typed DTO client-side.",
+      "additionalProperties": true
+    },
+    "ProductData": {
+      "type": "object",
+      "properties": {
+        "company_code": {
+          "type": "string",
+          "example": "ANCHANTO"
+        },
+        "name": {
+          "type": "string",
+          "example": "Wareo Test Product"
+        },
+        "supplier_code": {
+          "type": "string",
+          "example": "SUP-0001"
+        },
+        "brand_code": {
+          "type": "string",
+          "example": "BR-1"
+        },
+        "storage_type": {
+          "type": "string",
+          "example": "AMBIENT"
+        },
+        "product_type": {
+          "type": "string",
+          "example": "SIMPLE"
+        },
+        "sku": {
+          "type": "string",
+          "example": "SKU-W3-001"
+        },
+        "mfupc": {
+          "type": "string",
+          "example": "8938505970019"
+        },
+        "unique_serial_no": {
+          "type": "boolean",
+          "example": false
+        },
+        "imei_number": {
+          "type": "boolean",
+          "example": false
+        },
+        "batch_management": {
+          "type": "boolean",
+          "example": false
+        },
+        "expiry_management": {
+          "type": "boolean",
+          "example": false
+        },
+        "base_uom_code": {
+          "type": "string",
+          "example": "EA"
+        },
+        "stock_take_cycle": {
+          "type": "boolean",
+          "example": false
+        },
+        "stock_take_cycle_days": {
+          "type": "integer",
+          "format": "int64",
+          "example": 0
+        },
+        "country_of_origin_iso": {
+          "type": "string",
+          "example": "MY"
+        },
+        "low_threshold": {
+          "type": "integer",
+          "format": "int64",
+          "example": 10
+        },
+        "buffer_stock": {
+          "type": "integer",
+          "format": "int64",
+          "example": 5
+        },
+        "min_no_of_units": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1
+        },
+        "max_no_of_units": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1000
+        },
+        "enabled_udfs": {
+          "type": "string",
+          "example": ""
+        },
+        "category_name": {
+          "type": "string",
+          "example": "Apparel"
+        },
+        "product_sales_informations_attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "currency_code": {
+                "type": "string",
+                "example": "MYR"
+              },
+              "selling_price": {
+                "type": "number",
+                "example": 63000.0
+              },
+              "retail_price": {
+                "type": "number",
+                "example": 75000.0
+              },
+              "cost_price": {
+                "type": "number",
+                "example": 35000.0
+              },
+              "uom_code": {
+                "type": "string",
+                "example": "EA"
+              }
+            }
+          }
+        },
+        "product_dimensions_attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uom_code": {
+                "type": "string",
+                "example": "EA"
+              },
+              "length_cm": {
+                "type": "number",
+                "example": 12.0
+              },
+              "width_cm": {
+                "type": "number",
+                "example": 8.0
+              },
+              "height_cm": {
+                "type": "number",
+                "example": 10.0
+              },
+              "weight_gm": {
+                "type": "number",
+                "example": 400.0
+              },
+              "no_of_units": {
+                "type": "integer",
+                "format": "int64",
+                "example": 1
+              }
+            }
+          },
+          "description": "Unit-suffixed: length_cm, weight_gm. Not the bare height/weight the OMS API uses."
+        }
+      },
+      "required": [
+        "sku"
+      ],
+      "description": "Wms3ProductDataDTO."
+    },
+    "ProductRequest": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/ProductData"
+        }
+      },
+      "required": [
+        "product"
+      ]
+    },
+    "ProductStatusRequest": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "example": "SKU-W3-001"
+        },
+        "remark": {
+          "type": "string",
+          "example": "Discontinued"
+        },
+        "state": {
+          "type": "string",
+          "example": "INACTIVE"
+        }
+      }
+    },
+    "PartyData": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Acme Supplies"
+        },
+        "code": {
+          "type": "string",
+          "example": "SUP-0001"
+        },
+        "email": {
+          "type": "string",
+          "example": "ops@acme.example"
+        },
+        "contact_name": {
+          "type": "string",
+          "example": "Aisha"
+        },
+        "contact_number": {
+          "type": "string",
+          "example": "+60123456789"
+        },
+        "vat_tin": {
+          "type": "string",
+          "example": ""
+        },
+        "active": {
+          "type": "boolean",
+          "example": true
+        },
+        "trn": {
+          "type": "string",
+          "example": ""
+        },
+        "invoice_number_format": {
+          "type": "string",
+          "example": ""
+        },
+        "pudo_id": {
+          "type": "string",
+          "example": ""
+        },
+        "supplier_type": {
+          "type": "string",
+          "example": "VENDOR",
+          "description": "Present on the buyer payload too -- one DTO serves both."
+        },
+        "address_attributes": {
+          "$ref": "#/definitions/Address"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "description": "Wms3PartyDataDTO -- shared by suppliers and buyers."
+    },
+    "SupplierRequest": {
+      "type": "object",
+      "properties": {
+        "supplier": {
+          "$ref": "#/definitions/PartyData"
+        }
+      },
+      "required": [
+        "supplier"
+      ]
+    },
+    "BuyerRequest": {
+      "type": "object",
+      "properties": {
+        "buyer": {
+          "$ref": "#/definitions/PartyData"
+        }
+      },
+      "required": [
+        "buyer"
+      ]
+    },
+    "ConsignmentData": {
+      "type": "object",
+      "properties": {
+        "supplier_code": {
+          "type": "string",
+          "example": "SUP-0001"
+        },
+        "number": {
+          "type": "string",
+          "example": "CN-0001"
+        },
+        "po_ref_number": {
+          "type": "string",
+          "example": "PO-0001"
+        },
+        "instruction": {
+          "type": "string",
+          "example": ""
+        },
+        "order_type": {
+          "type": "string",
+          "example": "PURCHASE"
+        },
+        "ship_date": {
+          "type": "string",
+          "example": "2026-08-10"
+        },
+        "receiving_date": {
+          "type": "string",
+          "example": "2026-08-14"
+        },
+        "consignment_items_attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "example": "SKU-W3-001"
+              },
+              "quantity": {
+                "type": "integer",
+                "example": 100
+              },
+              "udf_display_name1": {
+                "type": "string",
+                "example": ""
+              }
+            }
+          },
+          "description": "Note the DTO class is misspelled Wms3ConsigmentDataDTO (one n); the wire field is not."
+        },
+        "consignment_vas_attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price_tag": {
+                "type": "string",
+                "example": ""
+              },
+              "price_tag_selected": {
+                "type": "boolean",
+                "example": false
+              },
+              "security_tag_check": {
+                "type": "boolean",
+                "example": false
+              },
+              "shrink_wrapping": {
+                "type": "boolean",
+                "example": false
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "number"
+      ]
+    },
+    "ConsignmentRequest": {
+      "type": "object",
+      "properties": {
+        "consignment": {
+          "$ref": "#/definitions/ConsignmentData"
+        }
+      },
+      "required": [
+        "consignment"
+      ]
+    }
+  }
+}

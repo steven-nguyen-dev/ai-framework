@@ -1,0 +1,4 @@
+order_number	selluseller_order_id	wms_order_id	status	warehouse_code	created_date
+SO-ETON-CO-N1	92000001	92000001	NULL	eton	2026-08-19 16:50:45
+SO-ETON-CO-N14-PAYLOAD-SHAPE	92000014	92000014	NULL	eton	2026-08-19 16:50:45
+SO-ETON-CO-N2-SHOPEE	92000002	92000002	NULL	eton	2026-08-19 16:50:47

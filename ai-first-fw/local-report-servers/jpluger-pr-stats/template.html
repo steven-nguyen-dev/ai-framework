@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPluger · PR Health & Review Velocity</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    
+    :root {
+      /* Semantic Design Tokens - Light Mode */
+      --token-primary: #2563eb;
+      --token-primary-bg: rgba(37, 99, 235, 0.12);
+      --token-primary-border: rgba(37, 99, 235, 0.3);
+
+      --token-critical: #dc2626;
+      --token-critical-bg: rgba(220, 38, 38, 0.12);
+      --token-critical-border: rgba(220, 38, 38, 0.3);
+
+      --token-warning: #d97706;
+      --token-warning-bg: rgba(217, 119, 6, 0.12);
+      --token-warning-border: rgba(217, 119, 6, 0.3);
+
+      --token-neutral: #475569;
+      --token-neutral-bg: rgba(71, 85, 105, 0.1);
+      --token-neutral-border: rgba(71, 85, 105, 0.25);
+    }
+
+    html.dark {
+      /* Semantic Design Tokens - Dark Mode */
+      --token-primary: #60a5fa;
+      --token-primary-bg: rgba(59, 130, 246, 0.18);
+      --token-primary-border: rgba(96, 165, 250, 0.35);
+
+      --token-critical: #f87171;
+      --token-critical-bg: rgba(239, 68, 68, 0.18);
+      --token-critical-border: rgba(248, 113, 113, 0.35);
+
+      --token-warning: #fbbf24;
+      --token-warning-bg: rgba(245, 158, 11, 0.18);
+      --token-warning-border: rgba(251, 191, 36, 0.35);
+
+      --token-neutral: #cbd5e1;
+      --token-neutral-bg: rgba(51, 65, 85, 0.4);
+      --token-neutral-border: rgba(100, 116, 139, 0.35);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    .dark ::-webkit-scrollbar-track { background: #020617; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    html:not(.dark) ::-webkit-scrollbar-track { background: #f1f5f9; }
+    html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .card-clickable {
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+    }
+    .card-clickable:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen overflow-y-auto flex flex-col items-center p-2 sm:p-3 select-none">
+
+  <!-- Fixed 1080px Centered Container with 1280px Min-Height -->
+  <div class="w-full max-w-[1080px] min-h-[1280px] flex flex-col justify-between gap-2.5 pb-2">
+
+    <!-- Header with Theme Toggle, Sync, Export -->
+    <header class="flex-shrink-0 mb-1 border-b border-slate-200 dark:border-slate-800 pb-1">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        
+        <!-- Title & Version -->
+        <div class="flex flex-col">
+          <h1 class="text-base font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5 leading-tight">
+            <span>JPluger</span>
+            <span class="text-slate-400 dark:text-slate-600 font-light">/</span>
+            <span class="text-slate-700 dark:text-slate-200 font-bold">PR Health & Velocity</span>
+          </h1>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono font-semibold leading-none mt-0.5">v1.0.0</span>
+        </div>
+
+        <!-- Right Actions: Theme Toggle, Sync GitHub & Auto-Refresh, Export -->
+        <div class="flex items-center gap-1.5 text-xs">
+          <!-- Light / Dark Theme Switcher Button -->
+          <button id="theme-toggle-btn" onclick="toggleTheme()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm transition-all focus:outline-none" title="Toggle Light / Dark Theme">
+            <span id="theme-icon" class="mr-1">☀️</span>
+            <span id="theme-text">Light</span>
+          </button>
+
+          <!-- Sync GitHub Button -->
+          <button id="refresh-btn" onclick="refreshData()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm transition-all focus:outline-none" title="Manually sync latest PRs from GitHub">
+            <svg id="refresh-icon" class="w-3 h-3 mr-1 text-sky-500 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            <span id="refresh-btn-text">Sync GitHub</span>
+          </button>
+
+          <!-- Auto-Refresh Interval Selector -->
+          <select id="auto-refresh-select" onchange="handleAutoRefreshChange(this.value)" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-xs font-semibold focus:outline-none shadow-sm cursor-pointer" title="Auto-sync interval with GitHub">
+            <option value="0" selected>Auto: Off</option>
+            <option value="1800000">Auto: 30m</option>
+            <option value="3600000">Auto: 60m</option>
+            <option value="14400000">Auto: 4h</option>
+          </select>
+          
+          <button onclick="exportStaticHTML()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 shadow-sm">
+            Export
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Row 1: Top High-Contrast KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-1 flex-shrink-0">
+      
+      <!-- Card 1: Total Open -->
+      <div id="card-filter-ALL" onclick="setKpiFilter('ALL')" class="card-clickable bg-white dark:bg-slate-900/90 border-2 border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1 shadow-sm dark:shadow-md ring-2 ring-sky-500/50">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-0.5">
+          <span>TOTAL OPEN</span>
+          <span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400 animate-pulse"></span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-slate-900 dark:text-white font-mono tracking-tight" id="kpi-total">137</div>
+          <span class="text-[9px] text-slate-500 dark:text-slate-400 font-mono">click to filter ↓</span>
+        </div>
+        <p class="text-[9px] text-slate-500 dark:text-slate-400 font-medium truncate">Active backlog branches</p>
+      </div>
+
+      <!-- Card 2: Unassigned / Critical Red -->
+      <div id="card-filter-NO_REVIEWER" onclick="setKpiFilter('NO_REVIEWER')" class="card-clickable bg-red-50/80 dark:bg-red-950/30 border-2 border-red-400 dark:border-red-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-0.5">
+          <span>NO REVIEWER</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-red-600 dark:bg-red-900 text-white font-bold tracking-wide">CRITICAL</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-red-600 dark:text-red-400 font-mono tracking-tight" id="kpi-unassigned">102</div>
+          <span class="text-[9px] text-red-700 dark:text-red-300/90 font-mono font-semibold"><strong id="kpi-unassigned-pct">74%</strong> unassigned</span>
+        </div>
+        <p class="text-[9px] text-red-700/90 dark:text-red-300/80 font-medium truncate">0 reviewer assigned</p>
+      </div>
+
+      <!-- Card 3: Stale >30d / Amber Warning -->
+      <div id="card-filter-STALE" onclick="setKpiFilter('STALE')" class="card-clickable bg-amber-50/80 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
+          <span>STALE &gt;30D</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-amber-500 dark:bg-amber-900 text-white font-bold tracking-wide">WARN</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-amber-600 dark:text-amber-400 font-mono tracking-tight" id="kpi-stale">38</div>
+          <span class="text-[9px] text-amber-700 dark:text-amber-300/90 font-mono">&gt;30d inactive</span>
+        </div>
+        <p class="text-[9px] text-amber-700/90 dark:text-amber-300/80 font-medium truncate">Needs author or triage ping</p>
+      </div>
+
+      <!-- Card 4: Approved / Blue Actionable -->
+      <div id="card-filter-APPROVED" onclick="setKpiFilter('APPROVED')" class="card-clickable bg-blue-50/80 dark:bg-blue-950/30 border-2 border-blue-400 dark:border-blue-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-0.5">
+          <span>APPROVED</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-blue-600 dark:bg-blue-900 text-white font-bold tracking-wide">ACTION</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono tracking-tight" id="kpi-approved">11</div>
+          <span class="text-[9px] text-blue-700 dark:text-blue-300/90 font-mono">ready to merge</span>
+        </div>
+        <p class="text-[9px] text-blue-700/90 dark:text-blue-300/80 font-medium truncate">Review passed · unmerged</p>
+      </div>
+
+    </div>
+
+    <!-- Row 2: 12-Month Intake vs Merge Velocity Chart (High-Contrast Dual Theme) -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-sm mb-1 flex-shrink-0">
+      <div class="flex items-center justify-between mb-1">
+        <div>
+          <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">1. INTAKE VS MERGE (12 MONTHS VELOCITY)</h3>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans leading-tight">Monthly PR volume · dashed red line tracks net backlog deficit growth (+opened &gt; merged)</p>
+        </div>
+        <div class="flex items-center gap-4 text-[10px] font-mono">
+          <span class="flex items-center text-teal-700 dark:text-teal-400 font-semibold"><span class="w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 rounded-sm mr-1.5"></span>Opened (Intake)</span>
+          <span class="flex items-center text-slate-700 dark:text-slate-300 font-semibold"><span class="w-2.5 h-2.5 bg-slate-600 dark:bg-slate-500 rounded-sm mr-1.5"></span>Merged (Closure)</span>
+          <span class="flex items-center text-red-600 dark:text-red-400 font-semibold"><span class="w-3 h-1 bg-red-600 dark:bg-red-500 mr-1.5 rounded-full"></span>Net Deficit Trend</span>
+        </div>
+      </div>
+      
+      <!-- Chart Container (h-52 = 208px) -->
+      <div class="h-52 w-full relative flex flex-col justify-end" id="monthly-chart-container"></div>
+    </div>
+
+    <!-- Row 3: The 4 Diagnostic Panels (Reviewer Queue, Author Queue, Diff Size, PR Age Bins) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-1 flex-shrink-0">
+      
+      <!-- Panel 2: REVIEWER QUEUE -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">2. REVIEWER QUEUE</h3>
+            <span id="reviewer-header-badge" class="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">2 High · 3 Med</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Pending reviews assigned</p>
+        </div>
+        <div id="reviewer-load-container" class="space-y-1"></div>
+      </div>
+
+      <!-- Panel 3: AUTHOR QUEUE -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">3. AUTHOR QUEUE</h3>
+            <span id="author-header-badge" class="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">4 High · 6 Med</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Authors with &gt;1 open PR</p>
+        </div>
+        <div id="author-load-container" class="space-y-1"></div>
+      </div>
+
+      <!-- Panel 4: DIFF SIZE TIERS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">4. DIFF SIZE TIERS</h3>
+            <span class="text-[10px] font-mono text-red-600 dark:text-red-400 font-bold whitespace-nowrap" id="mountain-pct-badge">&gt;5k Mountain</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Line additions + deletions risk</p>
+        </div>
+        <div id="size-distribution-container" class="space-y-0.5"></div>
+      </div>
+
+      <!-- Panel 5: PR AGE BINS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">5. PR AGE BINS</h3>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium whitespace-nowrap">98 &gt;7d (Past SLA)</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Time open since creation · SLA: &gt;7d</p>
+        </div>
+        <div class="h-16 flex flex-col justify-end" id="age-chart-container"></div>
+      </div>
+
+    </div>
+
+    <!-- Row 4: Refined Table with Soft Pills (Min-Height 460px) -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 shadow-sm flex-1 min-h-[460px] flex flex-col mb-1">
+      
+      <!-- Table Controls Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-1 flex-shrink-0">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">PR TRIAGE QUEUE</h2>
+            <span id="active-filter-badge" class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-400 border border-slate-300 dark:border-slate-700 font-mono font-semibold">
+              Showing: All (137)
+            </span>
+            <button id="clear-filter-btn" onclick="resetAllFilters()" class="text-[10px] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white underline font-mono hidden">
+              Reset Filters
+            </button>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans leading-tight">Live inventory · Click any #PR to open on GitHub</p>
+        </div>
+
+        <!-- Quick Search & Checkbox Multi-Select Dropdowns -->
+        <div class="flex items-center gap-1.5 relative">
+          <input id="table-search" type="text" placeholder="Search title / #PR..." oninput="handleSearchChange(this.value)" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-900 dark:text-slate-200 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-sky-500 w-32 sm:w-40" />
+
+          <!-- Multi-Select Base Dropdown -->
+          <div class="relative" id="ms-base-wrapper">
+            <button id="ms-base-btn" type="button" onclick="toggleMsDropdown(event, 'ms-base-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[125px]">
+              <span id="ms-base-btn-text" class="truncate">All Bases</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-base-menu" class="hidden absolute top-full mt-1 right-0 sm:left-0 z-50 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('base')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('base')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <input type="text" placeholder="Filter base..." oninput="filterMsItems('base', this.value)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-1.5 py-0.5 text-[11px] mb-1.5 focus:outline-none focus:border-sky-500" />
+              <div id="ms-base-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Multi-Select Author Dropdown -->
+          <div class="relative" id="ms-author-wrapper">
+            <button id="ms-author-btn" type="button" onclick="toggleMsDropdown(event, 'ms-author-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[130px]">
+              <span id="ms-author-btn-text" class="truncate">All Authors</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-author-menu" class="hidden absolute top-full mt-1 right-0 sm:left-0 z-50 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('author')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('author')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <input type="text" placeholder="Filter author..." oninput="filterMsItems('author', this.value)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-1.5 py-0.5 text-[11px] mb-1.5 focus:outline-none focus:border-sky-500" />
+              <div id="ms-author-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Multi-Select Status Dropdown -->
+          <div class="relative" id="ms-status-wrapper">
+            <button id="ms-status-btn" type="button" onclick="toggleMsDropdown(event, 'ms-status-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[125px]">
+              <span id="ms-status-btn-text" class="truncate">All Status</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-status-menu" class="hidden absolute top-full mt-1 right-0 z-50 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('status')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('status')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <div id="ms-status-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neutral Status Legend Bar (Uniform Base Color for All) -->
+      <div class="flex flex-wrap items-center gap-1.5 py-0.5 px-1.5 mb-1 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded text-[10px] font-mono flex-shrink-0">
+        <span class="text-slate-500 uppercase font-semibold mr-1">Legend:</span>
+        
+        <button onclick="handleStatusFilterChange('UNASSIGNED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="No reviewer requested or assigned (77 PRs)">
+          NO OWNER <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= 0 Reviewer</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('PENDING_REVIEW')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Reviewer assigned, waiting for review (24 PRs)">
+          PENDING <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Waiting review</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('APPROVED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Review passed, ready to merge (11 PRs)">
+          APPROVED <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Ready to merge</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('CHANGES_REQUESTED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Reviewer requested fixes (9 PRs)">
+          CHANGES <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Fixes requested</span>
+        </button>
+
+        <button onclick="handleStatusFilterChange('COMMENTED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Review comments left, discussion in progress (12 PRs)">
+          COMMENTED <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Feedback left</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('DRAFT')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Author marked as WIP (4 PRs)">
+          DRAFT <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Work-in-progress</span>
+        </button>
+      </div>
+
+      <!-- Table Container (Scrollable with Sticky Header & Zebra Rows) -->
+      <div class="overflow-y-auto flex-1 min-h-[380px] border border-slate-200 dark:border-slate-800 rounded">
+        <table class="w-full text-left text-xs border-collapse font-mono">
+          <thead class="sticky top-0 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 uppercase tracking-wider z-10 select-none">
+            <tr>
+              <th onclick="toggleSort('number')" class="py-1 px-2 w-16 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                PR <span id="sort-number-icon">▼</span>
+              </th>
+              <th class="py-1 px-2 font-sans">Title</th>
+              <th onclick="toggleSort('base')" class="py-1 px-2 w-28 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Base <span id="sort-base-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('author')" class="py-1 px-2 w-28 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Author <span id="sort-author-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('status')" class="py-1 px-2 w-24 text-center cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Status <span id="sort-status-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('lines')" class="py-1 px-2 w-20 text-right cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Lines <span id="sort-lines-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('updated')" class="py-1 px-2 text-right w-24 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Updated <span id="sort-updated-icon">⇅</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="pr-table-body" class="divide-y divide-slate-200/80 dark:divide-slate-800/80 text-slate-700 dark:text-slate-300">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ultra Compact Footer -->
+    <footer class="flex-shrink-0 text-[10px] text-slate-500 font-mono flex items-center justify-between border-t border-slate-200 dark:border-slate-900 pt-1 pb-1">
+      <span>v1.0.0 · Data: live gh stream · <span id="footer-date">21 Aug 2026</span> · 12-month intake</span>
+      <span>Fixed 1080px container · Min-height 1280px · Auto-scrollable</span>
+    </footer>
+
+  </div>
+
+  <!-- Direct Data Injection -->
+  <script>
+    window.INITIAL_REPORT_DATA = __REPORT_DATA_JSON__;
+  </script>
+
+  <script>
+    let fullPrList = [];
+    let currentKpiFilter = 'ALL';
+    let currentReviewerFilter = '';
+    let currentSearchTerm = '';
+    let sortColumn = 'number';
+    let sortDirection = 'asc';
+    let isDarkTheme = true;
+
+    let selectedBases = new Set();
+    let selectedAuthors = new Set();
+    let selectedStatuses = new Set();
+
+    let allBasesList = [];
+    let allAuthorsList = [];
+    let allStatusList = [];
+
+    // Theme Switcher Logic
+    function initTheme() {
+      const savedTheme = localStorage.getItem('jpluger-theme');
+      if (savedTheme === 'light') {
+        setTheme(false);
+      } else {
+        setTheme(true);
+      }
+    }
+
+    function toggleTheme() {
+      setTheme(!isDarkTheme);
+      if (window.INITIAL_REPORT_DATA) {
+        renderMonthlyVelocity(window.INITIAL_REPORT_DATA.monthlyTrends || []);
+        renderAgeChart(window.INITIAL_REPORT_DATA.ageBins || {});
+      }
+      applyTableFiltersAndSort();
+    }
+
+    function setTheme(dark) {
+      isDarkTheme = dark;
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+
+      if (dark) {
+        html.classList.add('dark');
+        localStorage.setItem('jpluger-theme', 'dark');
+        if (icon) icon.innerText = '☀️';
+        if (text) text.innerText = 'Light';
+      } else {
+        html.classList.remove('dark');
+        localStorage.setItem('jpluger-theme', 'light');
+        if (icon) icon.innerText = '🌙';
+        if (text) text.innerText = 'Dark';
+      }
+    }
+
+    function renderUI(data) {
+      if (!data) return;
+
+      try {
+        fullPrList = data.allPrs || data.oldestPrs || [];
+
+        if (data.formattedDate) {
+          const reportDateEl = document.getElementById('report-date');
+          if (reportDateEl) reportDateEl.innerText = data.formattedDate;
+          
+          const footerDateEl = document.getElementById('footer-date');
+          if (footerDateEl) footerDateEl.innerText = data.formattedDate;
+        }
+
+        // Top KPIs
+        const totalEl = document.getElementById('kpi-total');
+        if (totalEl) totalEl.innerText = data.totalOpen ?? 0;
+
+        const unassignedEl = document.getElementById('kpi-unassigned');
+        if (unassignedEl) unassignedEl.innerText = data.unassignedCount ?? 0;
+
+        const unassignedPctEl = document.getElementById('kpi-unassigned-pct');
+        if (unassignedPctEl) unassignedPctEl.innerText = `${data.unassignedPct ?? 0}%`;
+
+        const staleEl = document.getElementById('kpi-stale');
+        if (staleEl) staleEl.innerText = data.stale30dCount ?? 0;
+
+        const approvedEl = document.getElementById('kpi-approved');
+        if (approvedEl) approvedEl.innerText = data.approvedUnmergedCount ?? 0;
+
+        const mountainBadgeEl = document.getElementById('mountain-pct-badge');
+        if (mountainBadgeEl && data.mountainPct !== undefined) {
+          mountainBadgeEl.innerText = `${data.mountainPct}% Mountain`;
+        }
+
+        populateTableDropdowns(fullPrList);
+      } catch (err) {
+        console.error("Error in Header/KPIs:", err);
+      }
+
+      // Safe individual rendering
+      try { renderMonthlyVelocity(data.monthlyTrends || []); } catch (e) { console.error("Monthly error:", e); }
+      try { renderReviewerLoad(data.topReviewers || []); } catch (e) { console.error("Reviewer error:", e); }
+      try { renderSizeDistribution(data.sizeBins || {}, data.totalOpen || 1); } catch (e) { console.error("Size error:", e); }
+      try { renderAgeChart(data.ageBins || {}); } catch (e) { console.error("Age error:", e); }
+      try { renderAuthorQueue(data.topAuthors || []); } catch (e) { console.error("Author queue error:", e); }
+      try { applyTableFiltersAndSort(); } catch (e) { console.error("Table error:", e); }
+    }
+
+    // High-Contrast Dual-Theme Velocity Chart with Dynamic Headroom Scaling
+    function renderMonthlyVelocity(trends) {
+      const container = document.getElementById('monthly-chart-container');
+      if (!container || !trends || trends.length === 0) return;
+
+      // 1. Dynamic Scaling for Net Deficit Trend (Upper Corridor)
+      const allNets = trends.map(t => t.netOverflow ?? 0);
+      const rawMinNet = Math.min(...allNets);
+      const rawMaxNet = Math.max(...allNets);
+      const minNet = Math.min(0, rawMinNet);
+      const maxNet = Math.max(Math.ceil(rawMaxNet * 1.25), 20); // 25% headroom to prevent top clipping
+
+      // 2. Dynamic Scaling for Grouped Bars (Lower Zone)
+      const allBarVals = trends.flatMap(t => [t.opened || 0, t.merged || 0]);
+      const rawMaxBar = Math.max(...allBarVals, 100);
+      const maxVal = Math.ceil((rawMaxBar * 1.15) / 50) * 50; // 15% headroom rounded to 50
+
+      const num = trends.length;
+      const svgPoints = [];
+      
+      const startX = 25;
+      const endX = 975;
+      const usableW = endX - startX;
+
+      // Upper Corridor: y range strictly 20px (top) to 56px (bottom)
+      trends.forEach((t, i) => {
+        const x = startX + ((i + 0.5) / num) * usableW;
+        const netNorm = (t.netOverflow - minNet) / Math.max(maxNet - minNet, 1);
+        const y = 56 - (netNorm * 34); // Scaled safely within [22, 56]
+        svgPoints.push({ x, y, net: t.netOverflow });
+      });
+
+      const polyline = svgPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+      // High-Contrast Colors
+      const isDark = document.documentElement.classList.contains('dark');
+      const gridColor = isDark ? '#1e293b' : '#e2e8f0';
+      const baselineColor = isDark ? '#334155' : '#cbd5e1';
+      
+      const openBarColor = isDark ? '#14b8a6' : '#0d9488'; // Teal-500 / Teal-600
+      const openTextColor = isDark ? '#2dd4bf' : '#0f766e';
+      
+      const mergeBarColor = isDark ? '#64748b' : '#475569'; // Slate-500 / Solid Slate-600 (High contrast)
+      const mergeTextColor = isDark ? '#94a3b8' : '#334155';
+      
+      const monthTextColor = isDark ? '#cbd5e1' : '#334155';
+      const netLineColor = isDark ? '#ef4444' : '#dc2626';
+      const netTextColor = isDark ? '#fca5a5' : '#b91c1c';
+      const pointBorderColor = isDark ? '#020617' : '#ffffff';
+
+      let html = '<div class="relative w-full h-full flex items-center justify-between">';
+
+      html += `
+        <svg class="w-full h-full" viewBox="0 0 1000 205" preserveAspectRatio="none">
+          <!-- Separator and Baseline -->
+          <line x1="15" y1="68" x2="985" y2="68" stroke="${gridColor}" stroke-width="1" stroke-dasharray="4,4" />
+          <line x1="15" y1="172" x2="985" y2="172" stroke="${baselineColor}" stroke-width="1.2" />
+
+          <!-- Upper Zone: Overlaid Net Deficit Trend Line & Circular Markers -->
+          <polyline points="${polyline}" fill="none" stroke="${netLineColor}" stroke-width="2.5" stroke-dasharray="6,4" />
+      `;
+
+      svgPoints.forEach(p => {
+        const sign = p.net >= 0 ? '+' : '';
+        html += `
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${netLineColor}" stroke="${pointBorderColor}" stroke-width="1.5" />
+          <text x="${p.x.toFixed(1)}" y="${(p.y - 6).toFixed(1)}" fill="${netTextColor}" font-size="10.5" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">
+            ${sign}${p.net}
+          </text>
+        `;
+      });
+
+      // Lower Zone: Dual Grouped Bars (Baseline y=172, Max Height = 78px reaching y=94)
+      trends.forEach((t, i) => {
+        const x = startX + ((i + 0.5) / num) * usableW;
+        const barW = 16;
+        const gap = 3.5;
+        
+        const openH = Math.min((t.opened / maxVal) * 78, 78);
+        const mergeH = Math.min((t.merged / maxVal) * 78, 78);
+        
+        const openX = x - barW - (gap / 2);
+        const mergeX = x + (gap / 2);
+        const openY = 172 - openH;
+        const mergeY = 172 - mergeH;
+
+        html += `
+          <!-- Opened Bar (Teal) -->
+          <text x="${openX + barW/2}" y="${openY - 3}" fill="${openTextColor}" font-size="9" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${t.opened}</text>
+          <rect x="${openX}" y="${openY}" width="${barW}" height="${openH}" fill="${openBarColor}" rx="2.5" ry="2.5" />
+
+          <!-- Merged Bar (Slate - Solid High Contrast) -->
+          <text x="${mergeX + barW/2}" y="${mergeY - 3}" fill="${mergeTextColor}" font-size="9" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${t.merged}</text>
+          <rect x="${mergeX}" y="${mergeY}" width="${barW}" height="${mergeH}" fill="${mergeBarColor}" rx="2.5" ry="2.5" />
+
+          <!-- Month Label -->
+          <text x="${x}" y="193" fill="${monthTextColor}" font-size="10" font-family="JetBrains Mono, monospace" font-weight="600" text-anchor="middle">${t.label || t.month}</text>
+        `;
+      });
+      html += '</svg></div>';
+      container.innerHTML = html;
+    }
+
+    function populateTableDropdowns(prs) {
+      if (!prs || prs.length === 0) return;
+
+      const baseMap = {};
+      const authorMap = {};
+      const statusMap = {
+        'APPROVED': 0,
+        'CHANGES_REQUESTED': 0,
+        'COMMENTED': 0,
+        'DRAFT': 0,
+        'UNASSIGNED': 0,
+        'PENDING_REVIEW': 0
+      };
+
+      prs.forEach(pr => {
+        if (pr.base) baseMap[pr.base] = (baseMap[pr.base] || 0) + 1;
+        if (pr.author) authorMap[pr.author] = (authorMap[pr.author] || 0) + 1;
+        
+        if (pr.isDraft) statusMap['DRAFT']++;
+        else if (pr.reviewState === 'APPROVED') statusMap['APPROVED']++;
+        else if (pr.reviewState === 'CHANGES_REQUESTED') statusMap['CHANGES_REQUESTED']++;
+        else if (pr.reviewState === 'COMMENTED') statusMap['COMMENTED']++;
+        else if (pr.reviewState === 'UNASSIGNED') statusMap['UNASSIGNED']++;
+        else statusMap['PENDING_REVIEW']++;
+      });
+
+      // Pinned Bases at Top
+      const pinnedBases = ['master', 'integration-qa', 'integration-stage'];
+      allBasesList = [];
+      pinnedBases.forEach(name => {
+        if (baseMap[name] !== undefined) {
+          allBasesList.push({ name: name, count: baseMap[name] });
+        }
+      });
+      Object.entries(baseMap)
+        .filter(([name]) => !pinnedBases.includes(name))
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }))
+        .forEach(([name, count]) => {
+          allBasesList.push({ name: name, count: count });
+        });
+
+      // Authors sorted alphabetically (A-Z)
+      allAuthorsList = Object.entries(authorMap)
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }))
+        .map(([name, count]) => ({ name: name, count: count }));
+
+      // Statuses sorted alphabetically (A-Z)
+      allStatusList = [
+        { val: 'APPROVED', label: 'APPROVED', count: statusMap['APPROVED'] },
+        { val: 'CHANGES_REQUESTED', label: 'CHANGES', count: statusMap['CHANGES_REQUESTED'] },
+        { val: 'COMMENTED', label: 'COMMENTED', count: statusMap['COMMENTED'] },
+        { val: 'DRAFT', label: 'DRAFT', count: statusMap['DRAFT'] },
+        { val: 'UNASSIGNED', label: 'NO OWNER', count: statusMap['UNASSIGNED'] },
+        { val: 'PENDING_REVIEW', label: 'PENDING', count: statusMap['PENDING_REVIEW'] },
+      ].sort((a, b) => a.label.localeCompare(b.label));
+
+      renderMsList('base');
+      renderMsList('author');
+      renderMsList('status');
+
+      updateMsBtnText('base');
+      updateMsBtnText('author');
+      updateMsBtnText('status');
+    }
+
+    function toggleMsDropdown(e, menuId) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      closeAllMsDropdowns();
+      if (isHidden) {
+        menu.classList.remove('hidden');
+      }
+    }
+
+    function closeAllMsDropdowns() {
+      ['ms-base-menu', 'ms-author-menu', 'ms-status-menu'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#ms-base-wrapper') && !e.target.closest('#ms-author-wrapper') && !e.target.closest('#ms-status-wrapper')) {
+        closeAllMsDropdowns();
+      }
+    });
+
+    function toggleMsItem(type, val) {
+      let targetSet = (type === 'base') ? selectedBases : ((type === 'author') ? selectedAuthors : selectedStatuses);
+      if (targetSet.has(val)) {
+        targetSet.delete(val);
+      } else {
+        targetSet.add(val);
+      }
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function selectAllMs(type) {
+      if (type === 'base') {
+        selectedBases = new Set(allBasesList.map(b => b.name));
+      } else if (type === 'author') {
+        selectedAuthors = new Set(allAuthorsList.map(a => a.name));
+      } else if (type === 'status') {
+        selectedStatuses = new Set(allStatusList.map(s => s.val));
+      }
+      renderMsList(type);
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function clearMs(type) {
+      if (type === 'base') {
+        selectedBases.clear();
+      } else if (type === 'author') {
+        selectedAuthors.clear();
+      } else if (type === 'status') {
+        selectedStatuses.clear();
+      }
+      renderMsList(type);
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function updateMsBtnText(type) {
+      if (type === 'base') {
+        const textEl = document.getElementById('ms-base-btn-text');
+        if (!textEl) return;
+        if (selectedBases.size === 0 || selectedBases.size === allBasesList.length) {
+          textEl.innerText = 'All Bases';
+        } else if (selectedBases.size === 1) {
+          textEl.innerText = `Base: ${Array.from(selectedBases)[0]}`;
+        } else {
+          textEl.innerText = `Bases (${selectedBases.size})`;
+        }
+      } else if (type === 'author') {
+        const textEl = document.getElementById('ms-author-btn-text');
+        if (!textEl) return;
+        if (selectedAuthors.size === 0 || selectedAuthors.size === allAuthorsList.length) {
+          textEl.innerText = 'All Authors';
+        } else if (selectedAuthors.size === 1) {
+          textEl.innerText = `Author: ${Array.from(selectedAuthors)[0]}`;
+        } else {
+          textEl.innerText = `Authors (${selectedAuthors.size})`;
+        }
+      } else if (type === 'status') {
+        const textEl = document.getElementById('ms-status-btn-text');
+        if (!textEl) return;
+        if (selectedStatuses.size === 0 || selectedStatuses.size === allStatusList.length) {
+          textEl.innerText = 'All Status';
+        } else if (selectedStatuses.size === 1) {
+          const val = Array.from(selectedStatuses)[0];
+          const match = allStatusList.find(s => s.val === val);
+          textEl.innerText = `Status: ${match ? match.label : val}`;
+        } else {
+          textEl.innerText = `Status (${selectedStatuses.size})`;
+        }
+      }
+    }
+
+    function renderMsList(type, filterQuery = '') {
+      const container = document.getElementById(`ms-${type}-list`);
+      if (!container) return;
+      
+      let items = (type === 'base') ? allBasesList : ((type === 'author') ? allAuthorsList : allStatusList);
+      let targetSet = (type === 'base') ? selectedBases : ((type === 'author') ? selectedAuthors : selectedStatuses);
+      
+      if (filterQuery) {
+        const q = filterQuery.toLowerCase().trim();
+        items = items.filter(it => (it.name || it.label || it.val).toLowerCase().includes(q));
+      }
+
+      container.innerHTML = '';
+      if (items.length === 0) {
+        container.innerHTML = '<div class="text-[10px] text-slate-400 p-1">No matches found</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const val = item.val !== undefined ? item.val : item.name;
+        const label = item.label !== undefined ? item.label : item.name;
+        const count = item.count;
+        const isChecked = targetSet.has(val);
+
+        const row = document.createElement('label');
+        row.className = 'flex items-center justify-between gap-2 px-1.5 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800/70 cursor-pointer select-none';
+        row.innerHTML = `
+          <div class="flex items-center gap-2 truncate">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMsItem('${type}', '${val}')" class="rounded border-slate-300 dark:border-slate-700 text-sky-600 focus:ring-sky-500 h-3.5 w-3.5">
+            <span class="truncate text-slate-800 dark:text-slate-200">${label}</span>
+          </div>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">${count}</span>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function filterMsItems(type, query) {
+      renderMsList(type, query);
+    }
+
+    function setKpiFilter(filter) {
+      currentKpiFilter = filter;
+
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+
+      if (cards[filter]) {
+        const ringColor = filter === 'ALL' ? 'ring-sky-500' : (filter === 'NO_REVIEWER' ? 'ring-red-400' : (filter === 'STALE' ? 'ring-amber-400' : 'ring-blue-400'));
+        cards[filter].classList.add('ring-2', ringColor, 'ring-offset-2', 'dark:ring-offset-slate-950');
+      }
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleBaseFilterChange(val) {
+      currentBaseFilter = val;
+      applyTableFiltersAndSort();
+    }
+
+    function handleAuthorFilterChange(val) {
+      const isSame = (selectedAuthors.size === 1 && selectedAuthors.has(val));
+
+      // Reset all other filters
+      currentKpiFilter = 'ALL';
+      currentReviewerFilter = '';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      // Reset KPI card ring outlines to ALL
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+      if (cards['ALL']) cards['ALL'].classList.add('ring-2', 'ring-sky-500', 'ring-offset-2', 'dark:ring-offset-slate-950');
+
+      if (isSame) {
+        selectedAuthors.clear();
+      } else {
+        selectedAuthors = new Set([val]);
+      }
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleReviewerFilterChange(val) {
+      const isSame = (currentReviewerFilter === val);
+
+      // Reset all other filters
+      currentKpiFilter = 'ALL';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedAuthors.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      // Reset KPI card ring outlines to ALL
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+      if (cards['ALL']) cards['ALL'].classList.add('ring-2', 'ring-sky-500', 'ring-offset-2', 'dark:ring-offset-slate-950');
+
+      currentReviewerFilter = isSame ? '' : val;
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleStatusFilterChange(val) {
+      if (selectedStatuses.size === 1 && selectedStatuses.has(val)) {
+        selectedStatuses.clear();
+      } else {
+        selectedStatuses = new Set([val]);
+      }
+      renderMsList('status');
+      updateMsBtnText('status');
+      applyTableFiltersAndSort();
+    }
+
+    function handleSearchChange(val) {
+      currentSearchTerm = val.toLowerCase().trim();
+      applyTableFiltersAndSort();
+    }
+
+    function resetAllFilters() {
+      currentKpiFilter = 'ALL';
+      currentReviewerFilter = '';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedAuthors.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      setKpiFilter('ALL');
+    }
+
+    function toggleSort(col) {
+      if (sortColumn === col) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = col;
+        sortDirection = (col === 'updated' || col === 'lines') ? 'desc' : 'asc';
+      }
+      updateSortIcons();
+      applyTableFiltersAndSort();
+    }
+
+    function updateSortIcons() {
+      const cols = ['number', 'base', 'author', 'status', 'lines', 'updated'];
+      cols.forEach(c => {
+        const icon = document.getElementById(`sort-${c}-icon`);
+        if (!icon) return;
+        if (sortColumn === c) {
+          icon.innerText = sortDirection === 'asc' ? '▲' : '▼';
+          icon.className = 'text-sky-600 dark:text-sky-400 font-bold';
+        } else {
+          icon.innerText = '⇅';
+          icon.className = 'text-slate-400 dark:text-slate-600';
+        }
+      });
+    }
+
+    function applyTableFiltersAndSort() {
+      let filtered = [...fullPrList];
+
+      if (currentKpiFilter === 'NO_REVIEWER') {
+        filtered = filtered.filter(pr => (pr.requestedReviewers || []).length === 0 && !pr.hasReview);
+      } else if (currentKpiFilter === 'STALE') {
+        filtered = filtered.filter(pr => pr.inactiveDays >= 30);
+      } else if (currentKpiFilter === 'APPROVED') {
+        filtered = filtered.filter(pr => pr.reviewState === 'APPROVED');
+      }
+
+      if (selectedBases.size > 0) {
+        filtered = filtered.filter(pr => selectedBases.has(pr.base));
+      }
+
+      if (selectedAuthors.size > 0) {
+        filtered = filtered.filter(pr => selectedAuthors.has(pr.author));
+      }
+
+      if (currentReviewerFilter) {
+        filtered = filtered.filter(pr => (pr.requestedReviewers || []).includes(currentReviewerFilter));
+      }
+
+      if (selectedStatuses.size > 0) {
+        filtered = filtered.filter(pr => pr.isDraft ? selectedStatuses.has('DRAFT') : selectedStatuses.has(pr.reviewState));
+      }
+
+      if (currentSearchTerm) {
+        filtered = filtered.filter(pr => 
+          pr.number.toString().includes(currentSearchTerm) ||
+          (pr.title && pr.title.toLowerCase().includes(currentSearchTerm)) ||
+          (pr.author && pr.author.toLowerCase().includes(currentSearchTerm)) ||
+          (pr.base && pr.base.toLowerCase().includes(currentSearchTerm))
+        );
+      }
+
+      filtered.sort((a, b) => {
+        let valA, valB;
+        if (sortColumn === 'number') {
+          valA = a.number; valB = b.number;
+        } else if (sortColumn === 'base') {
+          valA = (a.base || '').toLowerCase(); valB = (b.base || '').toLowerCase();
+        } else if (sortColumn === 'author') {
+          valA = (a.author || '').toLowerCase(); valB = (b.author || '').toLowerCase();
+        } else if (sortColumn === 'status') {
+          valA = (a.reviewState || '').toLowerCase(); valB = (b.reviewState || '').toLowerCase();
+        } else if (sortColumn === 'lines') {
+          valA = (a.additions || 0) + (a.deletions || 0);
+          valB = (b.additions || 0) + (b.deletions || 0);
+        } else if (sortColumn === 'updated') {
+          valA = new Date(a.updatedAt).getTime();
+          valB = new Date(b.updatedAt).getTime();
+        }
+
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      const badge = document.getElementById('active-filter-badge');
+      const resetBtn = document.getElementById('clear-filter-btn');
+      const isFiltered = currentKpiFilter !== 'ALL' || selectedBases.size > 0 || selectedAuthors.size > 0 || currentReviewerFilter || selectedStatuses.size > 0 || currentSearchTerm;
+      
+      let label = `Showing: ${filtered.length}/${fullPrList.length} PRs`;
+      if (selectedBases.size > 0) label += ` [Bases: ${selectedBases.size}]`;
+      if (selectedAuthors.size > 0) label += ` [Authors: ${selectedAuthors.size}]`;
+      if (currentReviewerFilter) label += ` [Reviewer: ${currentReviewerFilter}]`;
+      if (selectedStatuses.size > 0) label += ` [Status: ${selectedStatuses.size}]`;
+      badge.innerText = label;
+
+      if (isFiltered) {
+        resetBtn.classList.remove('hidden');
+      } else {
+        resetBtn.classList.add('hidden');
+      }
+
+      renderTableRows(filtered);
+    }
+
+    // Render Table Rows with UNIFORM NEUTRAL STATUS BADGES (Light/Dark Base)
+    function renderTableRows(prs) {
+      const tbody = document.getElementById('pr-table-body');
+      tbody.innerHTML = '';
+      if (!prs || prs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400 font-mono text-xs">No matching PRs found for active filters.</td></tr>';
+        return;
+      }
+
+      prs.forEach((pr, index) => {
+        let statusLabel = 'PENDING';
+        if (pr.reviewState === 'APPROVED') statusLabel = 'APPROVED';
+        else if (pr.reviewState === 'CHANGES_REQUESTED') statusLabel = 'CHANGES';
+        else if (pr.reviewState === 'UNASSIGNED') statusLabel = 'NO OWNER';
+        else if (pr.reviewState === 'COMMENTED') statusLabel = 'COMMENTED';
+        else if (pr.isDraft) statusLabel = 'DRAFT';
+
+        // Uniform Neutral Base Pill across all statuses
+        const badgeHtml = `<span class="px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/80 uppercase tracking-wide">${statusLabel}</span>`;
+
+        // 5-tier diff colors
+        const totalDiff = (pr.additions || 0) + (pr.deletions || 0);
+        let diffColor = 'text-slate-600 dark:text-slate-300 font-medium';
+        if (totalDiff > 5000) diffColor = 'text-red-600 dark:text-red-400 font-bold';
+        else if (totalDiff >= 1000) diffColor = 'text-orange-600 dark:text-orange-400 font-bold';
+        else if (totalDiff >= 500) diffColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+        else if (totalDiff < 100) diffColor = 'text-teal-700 dark:text-teal-400 font-semibold';
+
+        const tr = document.createElement('tr');
+        tr.className = index % 2 === 0 
+          ? "bg-white dark:bg-slate-900/35 hover:bg-sky-50/60 dark:hover:bg-slate-800/80 transition-colors" 
+          : "bg-slate-50/70 dark:bg-slate-950/50 hover:bg-sky-50/60 dark:hover:bg-slate-800/80 transition-colors";
+
+        tr.innerHTML = `
+          <td class="py-1 px-2 font-bold text-sky-600 dark:text-sky-400 text-xs">
+            <a href="${pr.url}" target="_blank" class="hover:text-sky-700 dark:hover:text-sky-300 hover:underline">#${pr.number}</a>
+          </td>
+          <td class="py-1 px-2 font-sans text-slate-800 dark:text-slate-200 pr-2 text-xs">
+            <a href="${pr.url}" target="_blank" class="hover:text-sky-600 dark:hover:text-sky-300 line-clamp-1">${pr.title}</a>
+          </td>
+          <td class="py-1 px-2 text-slate-500 dark:text-slate-400 truncate max-w-[110px] text-[11px]" title="${pr.base || 'master'}">
+            <span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800/90 rounded border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">${pr.base || 'master'}</span>
+          </td>
+          <td class="py-1 px-2 text-slate-700 dark:text-slate-300 truncate max-w-[95px] text-xs">${pr.author}</td>
+          <td class="py-1 px-2 text-center">${badgeHtml}</td>
+          <td class="py-1 px-2 text-right ${diffColor} text-xs font-mono">+${pr.additions || 0}</td>
+          <td class="py-1 px-2 text-right text-slate-500 dark:text-slate-400 whitespace-nowrap text-xs">${pr.lastActivity || 'Unknown'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Row 3: Panel 2 (Reviewer Queue)
+    function renderReviewerLoad(reviewers) {
+      const container = document.getElementById('reviewer-load-container');
+      const badgeEl = document.getElementById('reviewer-header-badge');
+      if (!container) return;
+      if (!reviewers || reviewers.length === 0) {
+        container.innerHTML = '<p class="text-xs font-mono text-slate-400">0 assigned reviewers</p>';
+        if (badgeEl) badgeEl.innerText = '0 in queue';
+        return;
+      }
+
+      let highCount = 0;
+      let mediumCount = 0;
+      reviewers.forEach(r => {
+        if (r.count > 10) highCount++;
+        else if (r.count >= 5) mediumCount++;
+      });
+
+      if (badgeEl) {
+        if (highCount > 0) {
+          badgeEl.innerText = `${highCount} High · ${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-red-600 dark:text-red-400 whitespace-nowrap";
+        } else if (mediumCount > 0) {
+          badgeEl.innerText = `${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap";
+        } else {
+          badgeEl.innerText = 'All Normal';
+          badgeEl.className = "text-[10px] font-mono font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap";
+        }
+      }
+
+      const maxCount = Math.max(...reviewers.map(r => r.count), 1);
+
+      // Compact rows matching Diff Size Tiers, fitting exactly 5 items cleanly without clipping
+      let html = '<div class="space-y-1 overflow-y-auto max-h-[120px] pr-1">';
+      reviewers.forEach((r) => {
+        const pct = Math.round((r.count / maxCount) * 100);
+        
+        let barColor = 'bg-teal-500';
+        let textColor = 'text-slate-600 dark:text-slate-300';
+        let tierText = 'Normal';
+
+        if (r.count > 10) {
+          barColor = 'bg-red-600';
+          textColor = 'text-red-600 dark:text-red-400 font-bold';
+          tierText = 'High';
+        } else if (r.count >= 5) {
+          barColor = 'bg-amber-500';
+          textColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+          tierText = 'Med';
+        }
+
+        html += `
+          <div class="cursor-pointer" onclick="handleReviewerFilterChange('${r.name}')" title="Click to filter table by reviewer ${r.name}">
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="truncate max-w-[130px] ${textColor}" title="${r.name}">${r.name}</span>
+              <span class="${textColor}">${r.count} PRs <span class="opacity-70 text-[10px]">(${tierText})</span></span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${barColor} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 3 (Diff Size - 5 tiers)
+    function renderSizeDistribution(bins, total) {
+      const container = document.getElementById('size-distribution-container');
+      if (!container) return;
+      const items = [
+        { label: '<100 lines', count: bins['Small (<100)'] || 0, color: 'bg-teal-500' },
+        { label: '100-500', count: bins['Medium (100-500)'] || 0, color: 'bg-sky-500' },
+        { label: '500-1k', count: bins['Large (500-1k)'] || 0, color: 'bg-amber-500' },
+        { label: '1k-5k (Huge)', count: bins['Huge (1k-5k)'] || 0, color: 'bg-orange-500' },
+        { label: '>5k (The Mountain)', count: bins['The Mountain (>5k)'] || 0, color: 'bg-red-600', alert: true },
+      ];
+
+      let html = '<div class="space-y-1 pr-1">';
+      items.forEach(item => {
+        const pct = Math.round((item.count / total) * 100);
+        html += `
+          <div>
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="${item.alert ? 'text-red-600 dark:text-red-400 font-bold' : 'text-slate-600 dark:text-slate-300 font-medium'}">${item.label}</span>
+              <span class="${item.alert ? 'text-red-600 dark:text-red-400 font-bold' : 'text-slate-600 dark:text-slate-300 font-medium'}">${item.count} (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${item.color} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 4 (PR Age Bins: Pure High-Res SVG Histogram - 100% Deterministic & Cross-Browser)
+    function renderAgeChart(bins) {
+      const container = document.getElementById('age-chart-container');
+      if (!container) return;
+
+      const items = [
+        { label: '0-7d', count: bins['0-7d'] || bins['0-7 days'] || 0, color: '#14b8a6' },
+        { label: '8-18d', count: bins['8-18d'] || bins['8-18 days'] || 0, color: '#0ea5e9' },
+        { label: '19-90d', count: bins['19-90d'] || bins['19-90 days'] || 0, color: '#f59e0b' },
+        { label: '3-12m', count: bins['3-12m'] || bins['3-12 months'] || 0, color: '#f43f5e' },
+        { label: '>1y', count: bins['>1y'] || bins['over 1 year'] || 0, color: '#dc2626' },
+      ];
+
+      const maxCount = Math.max(...items.map(i => i.count), 1);
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const labelColor = isDark ? '#94a3b8' : '#64748b';
+      const baselineColor = isDark ? '#334155' : '#cbd5e1';
+
+      // Pure SVG Bar Histogram
+      let html = `
+        <svg class="w-full h-full" viewBox="0 0 300 80" preserveAspectRatio="none">
+          <!-- Baseline -->
+          <line x1="5" y1="60" x2="295" y2="60" stroke="${baselineColor}" stroke-width="1" />
+      `;
+
+      const num = items.length;
+      const barW = 32;
+      const slotW = 300 / num;
+
+      items.forEach((item, i) => {
+        const xCenter = (i + 0.5) * slotW;
+        const x = xCenter - (barW / 2);
+        const barH = Math.max(Math.round(((item.count || 0) / maxCount) * 38), (item.count > 0 ? 5 : 0));
+        const y = 60 - barH;
+
+        html += `
+          <!-- Value Label -->
+          <text x="${xCenter}" y="${y - 3}" fill="${textColor}" font-size="9.5" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${item.count}</text>
+          
+          <!-- Bar -->
+          <rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${item.color}" rx="2.5" ry="2.5" />
+          
+          <!-- X-Axis Label -->
+          <text x="${xCenter}" y="74" fill="${labelColor}" font-size="9.5" font-family="JetBrains Mono, monospace" font-weight="600" text-anchor="middle">${item.label}</text>
+        `;
+      });
+
+      html += '</svg>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 3 (Author Queue: Multi-PR Authors - 100% Identical Style to Panel 2)
+    function renderAuthorQueue(authors) {
+      const container = document.getElementById('author-load-container');
+      const badgeEl = document.getElementById('author-header-badge');
+      if (!container) return;
+
+      // Filter authors who have multiple open PRs (> 1)
+      const multiAuthors = (authors || []).filter(a => a.count > 1);
+
+      let highCount = 0;
+      let mediumCount = 0;
+      multiAuthors.forEach(a => {
+        if (a.count > 10) highCount++;
+        else if (a.count >= 5) mediumCount++;
+      });
+
+      if (badgeEl) {
+        if (highCount > 0) {
+          badgeEl.innerText = `${highCount} High · ${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-red-600 dark:text-red-400 whitespace-nowrap";
+        } else if (mediumCount > 0) {
+          badgeEl.innerText = `${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap";
+        } else {
+          badgeEl.innerText = 'All Normal';
+          badgeEl.className = "text-[10px] font-mono font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap";
+        }
+      }
+
+      if (!multiAuthors || multiAuthors.length === 0) {
+        container.innerHTML = '<p class="text-xs font-mono text-slate-400 p-2">0 authors with >1 open PR</p>';
+        return;
+      }
+
+      const maxCount = Math.max(...multiAuthors.map(a => a.count), 1);
+
+      let html = '<div class="space-y-1 overflow-y-auto max-h-[120px] pr-1">';
+      multiAuthors.forEach(a => {
+        const pct = Math.round((a.count / maxCount) * 100);
+        
+        let barColor = 'bg-teal-500';
+        let textColor = 'text-slate-600 dark:text-slate-300';
+        let tierText = 'Normal';
+
+        if (a.count > 10) {
+          barColor = 'bg-red-600';
+          textColor = 'text-red-600 dark:text-red-400 font-bold';
+          tierText = 'High';
+        } else if (a.count >= 5) {
+          barColor = 'bg-amber-500';
+          textColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+          tierText = 'Med';
+        }
+
+        html += `
+          <div class="cursor-pointer" onclick="handleAuthorFilterChange('${a.name}')" title="Click to filter table by author ${a.name}">
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="truncate max-w-[130px] ${textColor}" title="${a.name}">${a.name}</span>
+              <span class="${textColor}">${a.count} PRs <span class="opacity-70 text-[10px]">(${tierText})</span></span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${barColor} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    let autoRefreshTimer = null;
+
+    function handleAutoRefreshChange(val) {
+      const ms = parseInt(val, 10);
+      localStorage.setItem('jpluger-auto-refresh', val);
+      setupAutoRefresh(ms);
+    }
+
+    function setupAutoRefresh(ms) {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+      if (ms > 0) {
+        autoRefreshTimer = setInterval(() => {
+          refreshData(true);
+        }, ms);
+      }
+    }
+
+    async function refreshData(isSilent = false) {
+      const btn = document.getElementById('refresh-btn');
+      const btnText = document.getElementById('refresh-btn-text');
+      const icon = document.getElementById('refresh-icon');
+      
+      if (!isSilent && btn && btnText && icon) {
+        btn.disabled = true;
+        btnText.innerText = "Syncing...";
+        icon.classList.add('animate-spin');
+      } else if (icon) {
+        icon.classList.add('animate-spin');
+      }
+
+      try {
+        const res = await fetch('/api/refresh', { method: 'POST' });
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        const data = await res.json();
+        renderUI(data);
+      } catch (err) {
+        console.warn("Live API refresh error:", err);
+      } finally {
+        if (!isSilent && btn && btnText) {
+          btn.disabled = false;
+          btnText.innerText = "Sync GitHub";
+        }
+        if (icon) {
+          icon.classList.remove('animate-spin');
+        }
+      }
+    }
+
+    function exportStaticHTML() {
+      window.open('/export', '_blank');
+    }
+
+    // Initialize theme and auto-refresh from storage
+    initTheme();
+
+    const savedAutoRefresh = localStorage.getItem('jpluger-auto-refresh') || '0';
+    const autoRefreshSelect = document.getElementById('auto-refresh-select');
+    if (autoRefreshSelect) {
+      autoRefreshSelect.value = savedAutoRefresh;
+    }
+    setupAutoRefresh(parseInt(savedAutoRefresh, 10));
+
+    if (window.INITIAL_REPORT_DATA) {
+      renderUI(window.INITIAL_REPORT_DATA);
+    }
+  </script>
+</body>
+</html>

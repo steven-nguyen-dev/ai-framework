@@ -1,0 +1,525 @@
+{
+  "name": "createOrder flow 2 (Anchanto OMS -> Eton WMS)",
+  "at": "2026-08-19T09:50:39.454437+00:00",
+  "run": "run-20260819-165039",
+  "suite": "flow2",
+  "summary": {
+    "pass": 2,
+    "running": 1,
+    "pending": 16
+  },
+  "evidence": {
+    "status": "run in progress",
+    "mock log": "captured, 6 call(s)",
+    "database": "captured",
+    "pushUnsynchronizedOrder delta": "not captured",
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  },
+  "cases": [
+    {
+      "id": "N1",
+      "name": "Plain item - happy path, no pricing carrier",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "shopee_vn normally carries pricing. This is the case where it does not, so it proves buildShopeePayload returning empty skips the push rather than sending an empty or zeroed payload.",
+      "given": "A shopee_vn order with one plain item and no data.order_adjustment block.",
+      "then": [
+        "Eton accepts the create and answers Status 'New'.",
+        "One row is written to orders.",
+        "No price detail is pushed \u2014 price_details.json must not grow."
+      ],
+      "detail": {
+        "order_id": "92000001",
+        "order_number": "SO-ETON-CO-N1"
+      },
+      "calls": []
+    },
+    {
+      "id": "N2",
+      "name": "Shopee - order_adjustment pricing",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Shopee is the only channel carrying pricing at order level rather than per line. Proves that carrier is found and mapped.",
+      "given": "A shopee_vn order carrying its pricing in data.order_adjustment.adjustments.",
+      "then": [
+        "Eton accepts the create, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted 200, with the order-level Shopee components populated."
+      ],
+      "detail": {
+        "order_id": "92000002",
+        "order_number": "SO-ETON-CO-N2-SHOPEE"
+      },
+      "calls": []
+    },
+    {
+      "id": "N3",
+      "name": "Lazada - line_item_details",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "firing\u2026",
+      "checks": [],
+      "verdict": "running",
+      "note": "The per-line carrier is a different shape from Shopee's. Proves the mapper reads it.",
+      "given": "A lazada_vn order carrying pricing per line, in order_items[].line_item_details.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted, carrying the per-line breakdown with Items[].SKU = SKU-ETON-001."
+      ],
+      "detail": {
+        "order_id": "92000003",
+        "order_number": "SO-ETON-CO-N3-LAZADA"
+      },
+      "calls": []
+    },
+    {
+      "id": "N4",
+      "name": "TikTok - line_item_details",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Lazada and TikTok share one reader. Proves channel prefix resolution routes both to it, so a change made for one cannot silently break the other.",
+      "given": "A tiktok_vn order carrying pricing per line \u2014 the same shape Lazada uses.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted, carrying the per-line breakdown."
+      ],
+      "detail": {
+        "order_id": "92000004",
+        "order_number": "SO-ETON-CO-N4-TIKTOK"
+      },
+      "calls": []
+    },
+    {
+      "id": "N5",
+      "name": "TikTok - flat fallback (empty line_item_details)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "hasLineItemPricing has to fall back to the flat fields rather than read an empty array as 'no pricing'. Proves the fallback fires.",
+      "given": "A tiktok_vn order whose line_item_details is empty, but whose item_price and paid_price are non-zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted, mapped flat from item_price and paid_price with no line breakdown."
+      ],
+      "detail": {
+        "order_id": "92000005",
+        "order_number": "SO-ETON-CO-N5-TIKTOK-FLAT"
+      },
+      "calls": []
+    },
+    {
+      "id": "N6",
+      "name": "TikTok - zero prices, nothing to push (boundary)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "The boundary between 'flat fallback' and 'no data'. Zeros pushed to Eton would assert the order had no discount, tax or shipping \u2014 silent corruption, not a visible failure. Proves pushPricingIfMapped skips instead.",
+      "given": "A tiktok_vn order whose line_item_details is empty AND whose item_price and paid_price are both zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "No price detail call is made at all."
+      ],
+      "detail": {
+        "order_id": "92000006",
+        "order_number": "SO-ETON-CO-N6-TIKTOK-ZERO"
+      },
+      "calls": []
+    },
+    {
+      "id": "N7",
+      "name": "Haravan - out of scope channel",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "The important negative. An out-of-scope channel must skip pricing rather than send zeros, for the same reason as N6.",
+      "given": "A haravan_vn order. Channel resolution is longest-prefix over EtonConstants.SalesChannel.BY_MARKETPLACE_PREFIX, and only Shopee, Lazada and TikTok are in scope, so resolveChannel returns null.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "No price detail call is made at all."
+      ],
+      "detail": {
+        "order_id": "92000007",
+        "order_number": "SO-ETON-CO-N7-HARAVAN"
+      },
+      "calls": []
+    },
+    {
+      "id": "N8",
+      "name": "Packed order",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: Packed \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Cancellation behaviour later keys off packed state \u2014 cancelOrder reads any 400 as 'Eton packed it'. Proves creation records that state in the first place.",
+      "given": "An order whose number contains PACKED, which makes the mock answer as a warehouse that has already packed it.",
+      "then": [
+        "Create accepted with Status 'Packed' rather than 'New'.",
+        "One row in orders.",
+        "The code is appended to packed_orders.json.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000008",
+        "order_number": "SO-ETON-CO-N8-PACKED"
+      },
+      "calls": []
+    },
+    {
+      "id": "N9",
+      "name": "Replay - Eton answers BESO05 already exists",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: BESO05 \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "A replay must not be read as an error and must not duplicate the row. Proves handleAlreadyExistsOnEton takes the replay branch.",
+      "given": "An order whose number contains EXISTS, so Eton answers 400 with error code BESO05 \u2014 meaning it already holds this order.",
+      "then": [
+        "The create answers 400 carrying BESO05.",
+        "createOrder treats that as success, not failure.",
+        "The order is not re-saved \u2014 one row in orders, not two.",
+        "The price detail push still goes out and is accepted."
+      ],
+      "detail": {
+        "order_id": "92000009",
+        "order_number": "SO-ETON-CO-N9-EXISTS"
+      },
+      "calls": []
+    },
+    {
+      "id": "N11",
+      "name": "Eton 400 generic - reported unsynchronized",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: Validation failed \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "A 4xx means the payload is wrong; retrying it three times would only delay the report. Proves the integration tells 4xx and 5xx apart.",
+      "given": "An order whose number contains INVALID, so Eton answers a generic 400 rather than BESO05.",
+      "then": [
+        "Exactly 1 create call \u2014 a 400 is not retried.",
+        "No row in orders.",
+        "No price detail push.",
+        "The order is reported unsynchronized to Anchanto OMS on the pushUnsynchronizedOrder queue."
+      ],
+      "detail": {
+        "order_id": "92000011",
+        "order_number": "SO-ETON-CO-N11-INVALID"
+      },
+      "calls": []
+    },
+    {
+      "id": "N13",
+      "name": "Empty order_items - mock validation 400",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: must not be empty \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "The array is sent empty rather than omitted on purpose: omitting the key NPEs inside buildCreateSaleOrderItems before any Eton call is made, which would test nothing.",
+      "given": "An order with an empty order_items array, which produces an empty ListSODetail. Eton's schema forbids it.",
+      "then": [
+        "The create answers 400 naming 'ListSODetail' must not be empty.",
+        "1 create call \u2014 not retried.",
+        "No row in orders.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000013",
+        "order_number": "SO-ETON-CO-N13-NO-ITEMS"
+      },
+      "calls": []
+    },
+    {
+      "id": "N14",
+      "name": "Pricing payload - every property named once",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Name every pricing property once: 15",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "N2 proves the Shopee carrier is found and mapped; this proves what the mapping serialises to. Both price DTOs first named their fields for the wire, so Jackson treated each field and its getter as two properties and sent all 15 values twice \u2014 30 keys, plus a doubled Items array with 8 doubled keys per line. Eton accepted it because ASP.NET binding is case-insensitive and last-wins, so nothing failed and nothing in the old suite could see it. Only the wire shows it.",
+      "given": "The same shopee_vn order as N2, judged on the body of the pricing push rather than on whether the push happened.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "The pushed body carries exactly 15 top-level properties \u2014 the count PricingComponentModel declares in eton-swagger.json.",
+        "Not one lowercase-initial key: Items and never items, OrderBasePrice and never orderBasePrice."
+      ],
+      "detail": {
+        "order_id": "92000014",
+        "order_number": "SO-ETON-CO-N14-PAYLOAD-SHAPE"
+      },
+      "calls": []
+    },
+    {
+      "id": "N15",
+      "name": "Shopee quantity above one - per-unit amounts multiplied out",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Send line totals, not unit prices: [210000.0]",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Every other Shopee case orders one unit, where a per-unit price and a line total are the same number, so none of them can tell the two apart. Shopee states each adjustments.items[] amount per unit alongside quantity_purchased; Eton reads BasePrice as 'total number of the original price of the item'. Sending the unit price halves the line against an order level that is already correct.",
+      "given": "A shopee_vn order for 2 units, whose adjustments entry carries quantity_purchased 2 and original_price 105000, and whose order-level order_original_price is the matching 210000.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "Items[0].BasePrice is 210000 \u2014 2 x 105000, not the 105000 unit price.",
+        "It equals the order-level OrderBasePrice, so the two levels agree."
+      ],
+      "detail": {
+        "order_id": "92000015",
+        "order_number": "SO-ETON-CO-N15-QTY2"
+      },
+      "calls": []
+    },
+    {
+      "id": "N16",
+      "name": "Unmappable payload - reported rather than escaping",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 0 \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "buildCreateSalesOrderDTO dereferences the shipping address for a log line. It was built outside createOrder's try block, so a missing address escaped past all three catch blocks \u2014 no seller-tagged log, no Slack alert, three silent @Retryable attempts and a minute of backoff before @Recover. It was moved back inside, which is what this case pins. A retry cannot fix a malformed payload.",
+      "given": "An order with no shipping_address at all, which NPEs while the Eton payload is being mapped \u2014 before any Eton call is made.",
+      "then": [
+        "No create call reaches Eton, and no pricing call.",
+        "No row in orders.",
+        "The order is reported unsynchronized on the pushUnsynchronizedOrder queue, in this run rather than after three retries."
+      ],
+      "detail": {
+        "order_id": "92000016",
+        "order_number": "SO-ETON-CO-N16-NO-ADDRESS"
+      },
+      "calls": []
+    },
+    {
+      "id": "N17",
+      "name": "Blank item_sku - no line inherits another's prices",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Send line totals, not unit prices: [105000.0, 0.0]",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Real Shopee payloads carry an empty item_sku on every adjustments entry \u2014 the fixture above does too. matchAdjustmentItem guarded only against null, so an OMS line whose own sku was blank matched the first such entry and inherited its prices, and the same entry was then counted once per blank line at order level. Silent over-statement, not a failure.",
+      "given": "A shopee_vn order of two lines, the second carrying a blank marketplace sku, against an adjustments block whose single entry has item_sku ''.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "Items[0].BasePrice is 105000, matched on model_sku as it should be.",
+        "Items[1].BasePrice is 0 \u2014 the blank sku matches nothing rather than inheriting the first entry."
+      ],
+      "detail": {
+        "order_id": "92000017",
+        "order_number": "SO-ETON-CO-N17-BLANK-SKU"
+      },
+      "calls": []
+    },
+    {
+      "id": "K1",
+      "name": "Shopee kit - explodes into components",
+      "shape": "kit",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Eton has no concept of a kit. Proves the explosion happens before the payload is built, and that the quantity arithmetic multiplies through.",
+      "given": "A shopee_vn order for a kit, quantity 2, made of two components.",
+      "then": [
+        "ListSODetail carries one line per component, not one line for the kit \u2014 1025377-A quantity 6, 1025377-B quantity 2, i.e. component quantity \u00d7 kit quantity.",
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push with one Items[] entry per component."
+      ],
+      "detail": {
+        "order_id": "92000101",
+        "order_number": "SO-ETON-CO-K1-KIT-SHOPEE"
+      },
+      "calls": []
+    },
+    {
+      "id": "K2",
+      "name": "TikTok kit - line_item_details carrier",
+      "shape": "kit",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Kit explosion and per-line pricing have to compose. Proves neither breaks the other.",
+      "given": "The same kit, on a tiktok_vn order carrying its pricing per line.",
+      "then": [
+        "Components exploded exactly as in K1.",
+        "Create accepted; one row in orders.",
+        "One price detail push, mapped from line_item_details."
+      ],
+      "detail": {
+        "order_id": "92000102",
+        "order_number": "SO-ETON-CO-K2-KIT-TIKTOK"
+      },
+      "calls": []
+    },
+    {
+      "id": "K3",
+      "name": "Kit and plain item in one order",
+      "shape": "kit",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "Proves explosion is per line rather than per order: a plain line sitting beside a kit must survive untouched.",
+      "given": "One order holding a kit of two components and a plain item.",
+      "then": [
+        "ListSODetail carries 3 lines \u2014 the 2 components and INV-PLAIN.",
+        "Create accepted; one row in orders.",
+        "One price detail push."
+      ],
+      "detail": {
+        "order_id": "92000103",
+        "order_number": "SO-ETON-CO-K3-KIT-PLUS-PLAIN"
+      },
+      "calls": []
+    },
+    {
+      "id": "K4",
+      "name": "Kit with a component missing its SKU - validation 400",
+      "shape": "kit",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: SKU' is required \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "A shape-specific failure a plain item cannot produce. The index in Eton's error names the exploded line, which is what proves the component reached Eton as a line of its own.",
+      "given": "A kit whose second component has no SKU.",
+      "then": [
+        "The create answers 400 naming 'ListSODetail[1].SKU' is required.",
+        "1 create call \u2014 not retried.",
+        "No row in orders.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000104",
+        "order_number": "SO-ETON-CO-K4-KIT-NO-SKU"
+      },
+      "calls": []
+    }
+  ]
+}

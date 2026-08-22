@@ -1,0 +1,255 @@
+{
+  "token_grants": [
+    {
+      "grant_type": "<basic auth, no body>",
+      "client_id": "<in Authorization header>",
+      "had_refresh_token": "no"
+    },
+    {
+      "grant_type": "refresh_token",
+      "client_id": "jpluger-wms3",
+      "had_refresh_token": "mock_wms3_refresh_token"
+    },
+    {
+      "grant_type": "<basic auth, no body>",
+      "client_id": "NOAUTH-client",
+      "had_refresh_token": "no"
+    }
+  ],
+  "created_orders": [
+    "SO-SMOKE-001",
+    "PO-SMOKE-001",
+    "STO-SMOKE-001",
+    "9990500",
+    "9990429",
+    "9990422",
+    "9990401",
+    "9990001"
+  ],
+  "order_pushes": [
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "SO-SMOKE-001",
+      "currency_code": "MYR",
+      "items": [
+        {
+          "sku": "SKU-W3-001",
+          "quantity": 2,
+          "unit_price": 70000.0,
+          "selling_price": 63000.0
+        }
+      ]
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": null,
+      "currency_code": null,
+      "items": []
+    },
+    {
+      "kind": "b2c_cancel",
+      "customer_code": "ANCHANTO",
+      "order_number": "SO-SMOKE-001",
+      "warehouse_code_header": "WH-KUL-01",
+      "remark": "Out of stock"
+    },
+    {
+      "kind": "b2c_complete",
+      "customer_code": "ANCHANTO",
+      "order_number": "SO-SMOKE-001",
+      "warehouse_code_header": "WH-KUL-01",
+      "delivered_to": "Minh Nguyen",
+      "received_amount": "148000"
+    },
+    {
+      "kind": "b2c_tracking",
+      "customer_code": "ANCHANTO",
+      "order_number": "SO-SMOKE-001",
+      "warehouse_code_header": "WH-KUL-01",
+      "tracking_number": "MYDHL0001234567",
+      "carrier_code": "DHL"
+    },
+    {
+      "kind": "b2c_shipping_docs",
+      "customer_code": "ANCHANTO",
+      "order_number": "SO-SMOKE-001",
+      "warehouse_code_header": "WH-KUL-01",
+      "url_type": "URL",
+      "tracking_number": "MYDHL0001234567"
+    },
+    {
+      "kind": "update_unassigned",
+      "order_number": "SO-SMOKE-001",
+      "warehouse_code_header": "WH-KUL-01"
+    },
+    {
+      "kind": "b2b_create",
+      "customer_code": "ANCHANTO",
+      "number": "PO-SMOKE-001",
+      "supplier_code": "SUP-0001",
+      "is_stock_transfer": false,
+      "destination_store_code": "<none>",
+      "warehouse_code_header": "WH-KUL-01"
+    },
+    {
+      "kind": "sto_create",
+      "customer_code": "ANCHANTO",
+      "number": "STO-SMOKE-001",
+      "supplier_code": "<none>",
+      "is_stock_transfer": true,
+      "destination_store_code": "STORE-02",
+      "warehouse_code_header": "WH-KUL-01"
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "9990500",
+      "currency_code": null,
+      "items": [
+        {
+          "sku": "S",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "9990429",
+      "currency_code": null,
+      "items": [
+        {
+          "sku": "S",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "9990422",
+      "currency_code": null,
+      "items": [
+        {
+          "sku": "S",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "9990401",
+      "currency_code": null,
+      "items": [
+        {
+          "sku": "S",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "kind": "b2c_create",
+      "customer_code": "ANCHANTO",
+      "warehouse_code_header": "WH-KUL-01",
+      "number": "9990001",
+      "currency_code": null,
+      "items": [
+        {
+          "sku": "S",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "returns": [
+    {
+      "orig_order_number": "SO-SMOKE-001",
+      "external_return_order_number": "RET-EXT-001",
+      "reason": "DAMAGED",
+      "pickup_date": "2026-08-22",
+      "items": [
+        {
+          "sku": "SKU-W3-001",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "product_pushes": [
+    {
+      "kind": "create",
+      "sku": "SKU-SMOKE-001",
+      "name": "Smoke Product",
+      "length_cm": 12.0,
+      "weight_gm": 400.0,
+      "warehouse_code_header": "WH-KUL-01"
+    },
+    {
+      "kind": "update",
+      "sku": "SKU-SMOKE-001",
+      "name": "Smoke Product v2"
+    },
+    {
+      "kind": "change_status",
+      "sku": "SKU-SMOKE-001",
+      "state": "INACTIVE",
+      "remark": "Discontinued"
+    }
+  ],
+  "party_pushes": [
+    {
+      "party": "supplier",
+      "kind": "create",
+      "code": "SUP-SMOKE-1",
+      "name": "Acme Supplies",
+      "supplier_type_present": "VENDOR"
+    },
+    {
+      "party": "supplier",
+      "kind": "update",
+      "code": "SUP-SMOKE-1",
+      "name": "Acme Supplies",
+      "supplier_type_present": "VENDOR"
+    },
+    {
+      "party": "buyer",
+      "kind": "create",
+      "code": "BUY-SMOKE-1",
+      "name": "Retail Co",
+      "supplier_type_present": "VENDOR"
+    },
+    {
+      "party": "buyer",
+      "kind": "update",
+      "code": "BUY-SMOKE-1",
+      "name": "Retail Co",
+      "supplier_type_present": "VENDOR"
+    }
+  ],
+  "created_consignments": [
+    "CN-SMOKE-001"
+  ],
+  "consignment_pushes": [
+    {
+      "number": "CN-SMOKE-001",
+      "supplier_code": "SUP-SMOKE-1",
+      "po_ref_number": "PO-REF-1",
+      "order_type": "PURCHASE",
+      "items": [
+        {
+          "sku": "SKU-W3-001",
+          "quantity": 100
+        }
+      ]
+    }
+  ]
+}

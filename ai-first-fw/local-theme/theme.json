@@ -1,0 +1,58 @@
+{
+  "_comment": [
+    "Unified design tokens for Local Test Servers & Local Report Servers.",
+    "Single source of truth located at ai-first-fw/local-theme/theme.json.",
+    "Used by portals on ports 23000 & 24000, mock servers on 23001..23200, and report servers on 24001..24002."
+  ],
+
+  "_surfaces": "darkest to lightest; background canvas, insets, cards, and sub-panels",
+  "canvas": "#020617",
+  "panel": "#0b0f19",
+  "surface": "#0f172a",
+  "surface-2": "#1e293b",
+
+  "_text": "high contrast primary, secondary, and muted text",
+  "ink": "#f8fafc",
+  "ink-2": "#cbd5e1",
+  "muted": "#94a3b8",
+
+  "_lines": "subtle card border line and structure line-2",
+  "line": "#1e293b",
+  "line-2": "#334155",
+
+  "_status": "semantic soft pills matching Dark Report Theme",
+  "pass-bg": "rgba(16, 185, 129, 0.15)",
+  "pass-fg": "#34d399",
+  "fail-bg": "rgba(239, 68, 68, 0.15)",
+  "fail-fg": "#f87171",
+  "run-bg": "rgba(59, 130, 246, 0.15)",
+  "run-fg": "#60a5fa",
+  "warn-bg": "rgba(245, 158, 11, 0.15)",
+  "warn-fg": "#fbbf24",
+  "mute-bg": "rgba(51, 65, 85, 0.4)",
+  "mute-fg": "#cbd5e1",
+
+  "_categorical": "HTTP method badges and category tags",
+  "teal-bg": "rgba(20, 184, 166, 0.15)",
+  "teal-fg": "#2dd4bf",
+  "violet-bg": "rgba(168, 85, 247, 0.15)",
+  "violet-fg": "#c084fc",
+  "slate-bg": "rgba(51, 65, 85, 0.4)",
+  "slate-fg": "#cbd5e1",
+
+  "_states": "hover and active states",
+  "hover": "#1e293b",
+  "selected": "#334155",
+  "pass-bg-2": "rgba(16, 185, 129, 0.25)",
+  "fail-bg-2": "rgba(239, 68, 68, 0.25)",
+
+  "_accents": "headers, live dot indicator, and code backgrounds",
+  "header-mute": "#94a3b8",
+  "dot": "#34d399",
+  "dim": "#64748b",
+  "code-bg": "#020617",
+
+  "_shape": "radius and dark ambient shadows",
+  "radius": "8px",
+  "shadow": "0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px -4px rgba(0, 0, 0, 0.6)"
+}

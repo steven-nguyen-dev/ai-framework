@@ -1,0 +1,2003 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Naver Open API Specification (English)",
+    "description": "Comprehensive OpenAPI 3.0.3 specification for Naver Open API Platform translated into English.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://openapi.naver.com",
+      "description": "Naver Open API Production Server"
+    }
+  ],
+  "security": [
+    {
+      "X-Naver-Client-Id": [],
+      "X-Naver-Client-Secret": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "X-Naver-Client-Id": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Naver-Client-Id",
+        "description": "Naver Application Client ID header"
+      },
+      "X-Naver-Client-Secret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Naver-Client-Secret",
+        "description": "Naver Application Client Secret header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "AI Services"
+    },
+    {
+      "name": "Analytics"
+    },
+    {
+      "name": "Shopping & Search"
+    },
+    {
+      "name": "User & Authentication"
+    }
+  ],
+  "paths": {
+    "/v1/search/blog.json": {
+      "get": {
+        "summary": "Blog Search API",
+        "description": "Blog Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Title of the blog post. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of blog post"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the content of the blog post. The part of the passage information that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/bloggername": {
+                      "type": "string",
+                      "description": "Name of the blog where the blog post is located"
+                    },
+                    "rss/channel/item/bloggerlink": {
+                      "type": "string",
+                      "description": "Address of the blog where the blog post is located"
+                    },
+                    "rss/channel/item/postdate": {
+                      "type": "string",
+                      "description": "Date the blog post was created"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort descending by accuracy (default) - date: Sort descending by date",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/news.json": {
+      "get": {
+        "summary": "News Search API",
+        "description": "News Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Title of news article. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/originallink": {
+                      "type": "string",
+                      "description": "URL of the original news article"
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "Naver News URL of the news article. If the article is not provided to Naver, the URL of the original article will be returned."
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of a news article. The part of the passage information that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/pubDate": {
+                      "type": "string",
+                      "description": "The time when the news article was provided to Naver. If the article is not provided to Naver, the time when the original article was provided is returned."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort descending by accuracy (default) - date: Sort descending by date",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/book.json": {
+      "get": {
+        "summary": "Book Search API",
+        "description": "Book Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results"
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "book title"
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "Naver book information URL"
+                    },
+                    "rss/channel/item/image": {
+                      "type": "string",
+                      "description": "URL of thumbnail image"
+                    },
+                    "rss/channel/item/author": {
+                      "type": "string",
+                      "description": "author name"
+                    },
+                    "rss/channel/item/discount": {
+                      "type": "integer",
+                      "description": "Selling price. If there is no price due to reasons such as out of print, no value will be returned."
+                    },
+                    "rss/channel/item/publisher": {
+                      "type": "string",
+                      "description": "publisher"
+                    },
+                    "rss/channel/item/isbn": {
+                      "type": "integer",
+                      "description": "ISBN"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Naver Book’s book introduction"
+                    },
+                    "rss/channel/item/pubdate": {
+                      "type": "string",
+                      "description": "Publication date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort in descending order by accuracy (default) - date: Sort in descending order by publication date.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort in descending order by accuracy (default) - date: Sort in descending order by publication date.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "d_titl",
+            "in": "query",
+            "required": false,
+            "description": "Book title to search for. It must be encoded as UTF-8. At least one parameter among d_titl and d_isbn must be used.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "d_isbn",
+            "in": "query",
+            "required": false,
+            "description": "ISBN to search for. At least one parameter among d_titl and d_isbn must be used.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/encyc.json": {
+      "get": {
+        "summary": "Encyclopedia Search API",
+        "description": "Encyclopedia Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Encyclopedia entry. The part of the headword that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of the encyclopedia item description"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of an encyclopedia item description. The part of the passage information that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/thumbnail": {
+                      "type": "string",
+                      "description": "Thumbnail image URL"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/cafearticle.json": {
+      "get": {
+        "summary": "Cafe Article Search API",
+        "description": "Cafe Article Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Cafe post title. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "Cafe post URL"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of the cafe post. The part of the passage information that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/cafename": {
+                      "type": "string",
+                      "description": "The name of the cafe where the post is located"
+                    },
+                    "rss/channel/item/cafeurl": {
+                      "type": "string",
+                      "description": "URL of the cafe where the post is located"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort descending by accuracy (default) - date: Sort descending by date",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/kin.json": {
+      "get": {
+        "summary": "Kin Search API",
+        "description": "Kin Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Knowledge iN question title. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of Knowledge iN question"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of the Knowledge iN question. The part of the passage information that matches the search term is wrapped in tags."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort in descending order by accuracy (default) - date: Sort in descending order by date - point: Sort in descending order by rating.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/local.json": {
+      "get": {
+        "summary": "Local Search API",
+        "description": "Local Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Name of company or institution"
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "Detailed information URL of the company or organization"
+                    },
+                    "rss/channel/item/category": {
+                      "type": "string",
+                      "description": "Classification information of companies and institutions"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Description of the company or institution"
+                    },
+                    "rss/channel/item/telephone": {
+                      "type": "string",
+                      "description": "Elements that do not return a value. This element is there to maintain backward compatibility."
+                    },
+                    "rss/channel/item/address": {
+                      "type": "string",
+                      "description": "Address of company or organization name"
+                    },
+                    "rss/channel/item/roadAddress": {
+                      "type": "string",
+                      "description": "Road name address of business or organization name"
+                    },
+                    "rss/channel/item/mapx": {
+                      "type": "integer",
+                      "description": "The x-coordinate of the location where the company or institution is located (based on the WGS84 coordinate system)."
+                    },
+                    "rss/channel/item/mapy": {
+                      "type": "integer",
+                      "description": "y-coordinate of the location where the company or institution is located (based on the WGS84 coordinate system)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 1, maximum: 5)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - random: Sort in descending order by accuracy (default) - comment: Sort in descending order by the number of reviews in cafes and blogs about companies and institutions.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/errata.json": {
+      "get": {
+        "summary": "Errata Search API",
+        "description": "Errata Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errata": {
+                      "type": "string",
+                      "description": "Result of converting typos. If there are no typos, it returns an empty string."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/webkr.json": {
+      "get": {
+        "summary": "Web Search API",
+        "description": "Web Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "The title of the web document. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of web document"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of a web document. The part of the passage information that matches the search term is wrapped in tags."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/image.json": {
+      "get": {
+        "summary": "Image Search API",
+        "description": "Image Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Title of the document for which the image was retrieved"
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of the image"
+                    },
+                    "rss/channel/item/thumbnail": {
+                      "type": "string",
+                      "description": "URL of thumbnail image"
+                    },
+                    "rss/channel/item/sizeheight": {
+                      "type": "string",
+                      "description": "Vertical size of the image (unit: pixels)"
+                    },
+                    "rss/channel/item/sizewidth": {
+                      "type": "string",
+                      "description": "Horizontal size of the image (unit: pixels)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort descending by accuracy (default) - date: Sort descending by date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Filter search results by size - all: all images (default) - large: large images - medium: medium size images - small: small size images",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/shop.json": {
+      "get": {
+        "summary": "Shopping Search API",
+        "description": "Shopping Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "Product name. The part of the name that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "Product information URL"
+                    },
+                    "rss/channel/item/image": {
+                      "type": "string",
+                      "description": "URL of thumbnail image"
+                    },
+                    "rss/channel/item/lprice": {
+                      "type": "integer",
+                      "description": "Lowest price. If there is no lowest price information, it returns 0. If price comparison data is not available, this refers to the product price."
+                    },
+                    "rss/channel/item/hprice": {
+                      "type": "integer",
+                      "description": "Highest price. Returns 0 if there is no highest price information or no price comparison data."
+                    },
+                    "rss/channel/item/mallName": {
+                      "type": "string",
+                      "description": "A shopping mall that sells products. If there is no shopping mall information, Naver is returned."
+                    },
+                    "rss/channel/item/productId": {
+                      "type": "integer",
+                      "description": "Naver Shopping product ID"
+                    },
+                    "rss/channel/item/productType": {
+                      "type": "integer",
+                      "description": "Product type according to product group and product type. For product types according to product group and product type, refer to the table of product group types. - Product group: general product, used product, discontinued product, product scheduled for sale - Product type: price comparison product, price comparison non-matching general product, price comparison matching general product"
+                    },
+                    "rss/channel/item/maker": {
+                      "type": "string",
+                      "description": "manufacturing company"
+                    },
+                    "rss/channel/item/brand": {
+                      "type": "string",
+                      "description": "brand"
+                    },
+                    "rss/channel/item/category1": {
+                      "type": "string",
+                      "description": "Product categories (main classification)"
+                    },
+                    "rss/channel/item/category2": {
+                      "type": "string",
+                      "description": "Product Category (Middle Classification)"
+                    },
+                    "rss/channel/item/category3": {
+                      "type": "string",
+                      "description": "Product categories (subcategories)"
+                    },
+                    "rss/channel/item/category4": {
+                      "type": "string",
+                      "description": "Product categories (subcategories)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search term. It must be encoded as UTF-8.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "How to sort search results - sim: Sort descending by accuracy (default) - date: Sort descending by date - asc: Sort ascending by price - dsc: Sort descending by price",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Product types to include in search results - Not set: All products (default) - naverpay: Naver Pay linked products",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "exclude",
+            "in": "query",
+            "required": false,
+            "description": "Product types to exclude from search results. Set in the format exclude={option}:{option}:{option} (e.g. exclude=used:cbshop).- used: used- rental: rental- cbshop: overseas direct purchase, purchasing agency",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/search/doc.json": {
+      "get": {
+        "summary": "Doc Search API",
+        "description": "Doc Search API provided by Naver Platform",
+        "tags": [
+          "Shopping & Search"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rss": {
+                      "type": "string",
+                      "description": "RSS container. You can check search results using an RSS reader."
+                    },
+                    "rss/channel": {
+                      "type": "string",
+                      "description": "A container that contains search results. The sub-elements of the channel element, such as title, link, and description, are information used in RSS and have nothing to do with search results."
+                    },
+                    "rss/channel/lastBuildDate": {
+                      "type": "string",
+                      "description": "Time when search results were generated"
+                    },
+                    "rss/channel/total": {
+                      "type": "integer",
+                      "description": "Total number of search results"
+                    },
+                    "rss/channel/start": {
+                      "type": "integer",
+                      "description": "Where to start your search"
+                    },
+                    "rss/channel/display": {
+                      "type": "integer",
+                      "description": "Number of search results to display at once"
+                    },
+                    "rss/channel/item": {
+                      "type": "string",
+                      "description": "Individual search results. Results in JSON format return individual search results as a JSON array in the items property."
+                    },
+                    "rss/channel/item/title": {
+                      "type": "string",
+                      "description": "The title of the document. The part of the title that matches the search term is wrapped in tags."
+                    },
+                    "rss/channel/item/link": {
+                      "type": "string",
+                      "description": "URL of the document"
+                    },
+                    "rss/channel/item/description": {
+                      "type": "string",
+                      "description": "Passage information that summarizes the contents of the document. The part of the passage information that matches the search term is wrapped in tags."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "display",
+            "in": "query",
+            "required": false,
+            "description": "Number of search results to display at once (default: 10, maximum: 100)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "description": "Search start position (default: 1, maximum: 1000)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/datalab/search": {
+      "post": {
+        "summary": "DataLab Search API",
+        "description": "DataLab Search API provided by Naver Platform",
+        "tags": [
+          "Analytics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastBuildDate": {
+                      "type": "string",
+                      "description": "Response generation date"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total matching count"
+                    },
+                    "start": {
+                      "type": "integer",
+                      "description": "Start page/offset"
+                    },
+                    "display": {
+                      "type": "integer",
+                      "description": "Items displayed per page"
+                    },
+                    "items": {
+                      "type": "array",
+                      "description": "Item details array payload",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "link": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "type": "string",
+                    "description": "The query period start date (in yyyy-mm-dd format). You can search starting January 1, 2016."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "description": "Tracking period end date (yyyy-mm-dd format)"
+                  },
+                  "timeUnit": {
+                    "type": "string",
+                    "description": "Section unit - date: daily - week: weekly - month: monthly"
+                  },
+                  "keywordGroups": {
+                    "type": "array",
+                    "description": "An array of pairs of keywords and search term bundles corresponding to the keywords. Up to 5 pairs can be set up in an array."
+                  },
+                  "keywordGroups.groupName": {
+                    "type": "string",
+                    "description": "Key word. This is a name that represents a group of search terms."
+                  },
+                  "keywordGroups.keywords": {
+                    "type": "array",
+                    "description": "Search term corresponding to the topic. Up to 20 search terms can be set as an array."
+                  },
+                  "device": {
+                    "type": "string",
+                    "description": "range. Conditions based on the search environment. - Not set: All environments - pc: Search trends on PC - mo: Search trends on mobile"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "gender. Conditions based on the gender of the search user. - Not set: All genders - m: Male - f: Female"
+                  },
+                  "ages": {
+                    "type": "array",
+                    "description": "years. Conditions based on the age of the search user. - Not set: All ages - 1: 0 to 12 years - 2: 13 to 18 years - 3: 19 to 24 years - 4: 25 to 29 years - 5: 30 to 34 years - 6: 35 to 39 years - 7: 40 to 44 years - 8: 45 to 49 years - 9: 50 to 54 years - 10: 55-59 years old - 11: 60 years old or older"
+                  }
+                },
+                "required": [
+                  "startDate",
+                  "endDate",
+                  "timeUnit",
+                  "keywordGroups",
+                  "keywordGroups.groupName",
+                  "keywordGroups.keywords"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/papago/n2mt": {
+      "post": {
+        "summary": "Papago Translation API",
+        "description": "Papago Translation API provided by Naver Platform",
+        "tags": [
+          "AI Services"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lastBuildDate": {
+                      "type": "string",
+                      "description": "Response generation date"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total matching count"
+                    },
+                    "start": {
+                      "type": "integer",
+                      "description": "Start page/offset"
+                    },
+                    "display": {
+                      "type": "integer",
+                      "description": "Items displayed per page"
+                    },
+                    "items": {
+                      "type": "array",
+                      "description": "Item details array payload",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "link": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "description": "Language code of source language"
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "Language code of target language"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Text to translate. Up to 5,000 characters can be translated per call."
+                  }
+                },
+                "required": [
+                  "source",
+                  "target",
+                  "text"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/nid/me": {
+      "get": {
+        "summary": "Naver Login User Profile API",
+        "description": "Naver Login User Profile API provided by Naver Platform",
+        "tags": [
+          "User & Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Authentication code returned when Naver login authentication is successful, used to issue an access token"
+                    },
+                    "state": {
+                      "type": "string",
+                      "description": "URL-encoded value with an application-generated state token to prevent cross-site request forgery attacks."
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "error code"
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "description": "error message"
+                    },
+                    "access_token": {
+                      "type": "string",
+                      "description": "Access token expires after the number of seconds set in the expires_in parameter after issuance."
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "description": "Renew token, used to reissue an access token when the access token expires"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "description": "Supports two types of access tokens: Bearer and MAC."
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "description": "Validity period of access token (in seconds)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing mandatory query parameter or invalid parameter value"
+          },
+          "401": {
+            "description": "Unauthorized - Authentication failed (invalid X-Naver-Client-Id / Secret)"
+          },
+          "403": {
+            "description": "Forbidden - Unapproved API service call"
+          },
+          "404": {
+            "description": "Not Found - Invalid request URL path"
+          },
+          "500": {
+            "description": "Internal Server Error - System error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "response_type",
+            "in": "query",
+            "required": true,
+            "description": "code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "grant_type",
+            "in": "query",
+            "required": true,
+            "description": "code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "-",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_type_hint",
+            "in": "query",
+            "required": false,
+            "description": "access_token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

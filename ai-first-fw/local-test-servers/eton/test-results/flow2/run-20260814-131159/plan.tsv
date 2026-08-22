@@ -1,0 +1,17 @@
+N1	normal	92000001	SO-ETON-CO-N1	7	N1. Plain item - happy path, no pricing carrier
+N2	normal	92000002	SO-ETON-CO-N2-SHOPEE	7	N2. Shopee - order_adjustment pricing
+N3	normal	92000003	SO-ETON-CO-N3-LAZADA	7	N3. Lazada - line_item_details
+N4	normal	92000004	SO-ETON-CO-N4-TIKTOK	7	N4. TikTok - line_item_details
+N5	normal	92000005	SO-ETON-CO-N5-TIKTOK-FLAT	7	N5. TikTok - flat fallback (empty line_item_details)
+N6	normal	92000006	SO-ETON-CO-N6-TIKTOK-ZERO	7	N6. TikTok - zero prices, nothing to push (boundary)
+N7	normal	92000007	SO-ETON-CO-N7-HARAVAN	7	N7. Haravan - out of scope channel
+N8	normal	92000008	SO-ETON-CO-N8-PACKED	7	N8. Packed order
+N9	normal	92000009	SO-ETON-CO-N9-EXISTS	7	N9. Replay - Eton answers BESO05 already exists
+N10	normal	92000010	SO-ETON-CO-N10-SERVERERROR	110	N10. Eton 500 - retry then recover
+N11	normal	92000011	SO-ETON-CO-N11-INVALID	7	N11. Eton 400 generic - reported unsynchronized
+N12	normal	92009666	SO-ETON-CO-N12-PRICING-REJECT	110	N12. Pricing rejected - whole run replays
+N13	normal	92000013	SO-ETON-CO-N13-NO-ITEMS	7	N13. Empty order_items - mock validation 400
+K1	kit	92000101	SO-ETON-CO-K1-KIT-SHOPEE	7	K1. Shopee kit - explodes into components
+K2	kit	92000102	SO-ETON-CO-K2-KIT-TIKTOK	7	K2. TikTok kit - line_item_details carrier
+K3	kit	92000103	SO-ETON-CO-K3-KIT-PLUS-PLAIN	7	K3. Kit and plain item in one order
+K4	kit	92000104	SO-ETON-CO-K4-KIT-NO-SKU	7	K4. Kit with a component missing its SKU - validation 400

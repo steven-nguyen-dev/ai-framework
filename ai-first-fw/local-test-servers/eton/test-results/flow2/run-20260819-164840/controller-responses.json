@@ -1,0 +1,82 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:48:40.633896+00:00",
+    "returned_at": "2026-08-19T09:48:40.702559+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. Shopee - order_adjustment pricing",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:48:47.826020+00:00",
+    "returned_at": "2026-08-19T09:48:47.876280+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Lazada - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:48:55.013304+00:00",
+    "returned_at": "2026-08-19T09:48:55.046243+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. TikTok - line_item_details",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:02.189469+00:00",
+    "returned_at": "2026-08-19T09:49:02.221790+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:09.326784+00:00",
+    "returned_at": "2026-08-19T09:49:09.356770+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:16.485343+00:00",
+    "returned_at": "2026-08-19T09:49:16.518093+00:00"
+  },
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:23.645511+00:00",
+    "returned_at": "2026-08-19T09:49:23.678341+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:30.816362+00:00",
+    "returned_at": "2026-08-19T09:49:30.847716+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:37.983926+00:00",
+    "returned_at": "2026-08-19T09:49:38.006729+00:00"
+  },
+  {
+    "id": "N10",
+    "name": "N10. Eton 500 - retry then recover",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-19T09:49:45.114435+00:00",
+    "returned_at": "2026-08-19T09:49:45.141466+00:00"
+  }
+]

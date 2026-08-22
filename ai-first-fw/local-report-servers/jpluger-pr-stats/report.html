@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPluger · PR Health & Review Velocity</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
+    
+    :root {
+      /* Semantic Design Tokens - Light Mode */
+      --token-primary: #2563eb;
+      --token-primary-bg: rgba(37, 99, 235, 0.12);
+      --token-primary-border: rgba(37, 99, 235, 0.3);
+
+      --token-critical: #dc2626;
+      --token-critical-bg: rgba(220, 38, 38, 0.12);
+      --token-critical-border: rgba(220, 38, 38, 0.3);
+
+      --token-warning: #d97706;
+      --token-warning-bg: rgba(217, 119, 6, 0.12);
+      --token-warning-border: rgba(217, 119, 6, 0.3);
+
+      --token-neutral: #475569;
+      --token-neutral-bg: rgba(71, 85, 105, 0.1);
+      --token-neutral-border: rgba(71, 85, 105, 0.25);
+    }
+
+    html.dark {
+      /* Semantic Design Tokens - Dark Mode */
+      --token-primary: #60a5fa;
+      --token-primary-bg: rgba(59, 130, 246, 0.18);
+      --token-primary-border: rgba(96, 165, 250, 0.35);
+
+      --token-critical: #f87171;
+      --token-critical-bg: rgba(239, 68, 68, 0.18);
+      --token-critical-border: rgba(248, 113, 113, 0.35);
+
+      --token-warning: #fbbf24;
+      --token-warning-bg: rgba(245, 158, 11, 0.18);
+      --token-warning-border: rgba(251, 191, 36, 0.35);
+
+      --token-neutral: #cbd5e1;
+      --token-neutral-bg: rgba(51, 65, 85, 0.4);
+      --token-neutral-border: rgba(100, 116, 139, 0.35);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    .dark ::-webkit-scrollbar-track { background: #020617; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    html:not(.dark) ::-webkit-scrollbar-track { background: #f1f5f9; }
+    html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .card-clickable {
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+    }
+    .card-clickable:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen overflow-y-auto flex flex-col items-center p-2 sm:p-3 select-none">
+
+  <!-- Fixed 1080px Centered Container with 1280px Min-Height -->
+  <div class="w-full max-w-[1080px] min-h-[1280px] flex flex-col justify-between gap-2.5 pb-2">
+
+    <!-- Header with Theme Toggle, Sync, Export -->
+    <header class="flex-shrink-0 mb-1 border-b border-slate-200 dark:border-slate-800 pb-1">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        
+        <!-- Title & Version -->
+        <div class="flex flex-col">
+          <h1 class="text-base font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5 leading-tight">
+            <span>JPluger</span>
+            <span class="text-slate-400 dark:text-slate-600 font-light">/</span>
+            <span class="text-slate-700 dark:text-slate-200 font-bold">PR Health & Velocity</span>
+          </h1>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono font-semibold leading-none mt-0.5">v1.0.0</span>
+        </div>
+
+        <!-- Right Actions: Theme Toggle, Sync GitHub & Auto-Refresh, Export -->
+        <div class="flex items-center gap-1.5 text-xs">
+          <!-- Light / Dark Theme Switcher Button -->
+          <button id="theme-toggle-btn" onclick="toggleTheme()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm transition-all focus:outline-none" title="Toggle Light / Dark Theme">
+            <span id="theme-icon" class="mr-1">☀️</span>
+            <span id="theme-text">Light</span>
+          </button>
+
+          <!-- Sync GitHub Button -->
+          <button id="refresh-btn" onclick="refreshData()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm transition-all focus:outline-none" title="Manually sync latest PRs from GitHub">
+            <svg id="refresh-icon" class="w-3 h-3 mr-1 text-sky-500 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            <span id="refresh-btn-text">Sync GitHub</span>
+          </button>
+
+          <!-- Auto-Refresh Interval Selector -->
+          <select id="auto-refresh-select" onchange="handleAutoRefreshChange(this.value)" class="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-xs font-semibold focus:outline-none shadow-sm cursor-pointer" title="Auto-sync interval with GitHub">
+            <option value="0" selected>Auto: Off</option>
+            <option value="1800000">Auto: 30m</option>
+            <option value="3600000">Auto: 60m</option>
+            <option value="14400000">Auto: 4h</option>
+          </select>
+          
+          <button onclick="exportStaticHTML()" class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 shadow-sm">
+            Export
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Row 1: Top High-Contrast KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-1 flex-shrink-0">
+      
+      <!-- Card 1: Total Open -->
+      <div id="card-filter-ALL" onclick="setKpiFilter('ALL')" class="card-clickable bg-white dark:bg-slate-900/90 border-2 border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1 shadow-sm dark:shadow-md ring-2 ring-sky-500/50">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-0.5">
+          <span>TOTAL OPEN</span>
+          <span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-sky-400 animate-pulse"></span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-slate-900 dark:text-white font-mono tracking-tight" id="kpi-total">137</div>
+          <span class="text-[9px] text-slate-500 dark:text-slate-400 font-mono">click to filter ↓</span>
+        </div>
+        <p class="text-[9px] text-slate-500 dark:text-slate-400 font-medium truncate">Active backlog branches</p>
+      </div>
+
+      <!-- Card 2: Unassigned / Critical Red -->
+      <div id="card-filter-NO_REVIEWER" onclick="setKpiFilter('NO_REVIEWER')" class="card-clickable bg-red-50/80 dark:bg-red-950/30 border-2 border-red-400 dark:border-red-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-0.5">
+          <span>NO REVIEWER</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-red-600 dark:bg-red-900 text-white font-bold tracking-wide">CRITICAL</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-red-600 dark:text-red-400 font-mono tracking-tight" id="kpi-unassigned">102</div>
+          <span class="text-[9px] text-red-700 dark:text-red-300/90 font-mono font-semibold"><strong id="kpi-unassigned-pct">74%</strong> unassigned</span>
+        </div>
+        <p class="text-[9px] text-red-700/90 dark:text-red-300/80 font-medium truncate">0 reviewer assigned</p>
+      </div>
+
+      <!-- Card 3: Stale >30d / Amber Warning -->
+      <div id="card-filter-STALE" onclick="setKpiFilter('STALE')" class="card-clickable bg-amber-50/80 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
+          <span>STALE &gt;30D</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-amber-500 dark:bg-amber-900 text-white font-bold tracking-wide">WARN</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-amber-600 dark:text-amber-400 font-mono tracking-tight" id="kpi-stale">38</div>
+          <span class="text-[9px] text-amber-700 dark:text-amber-300/90 font-mono">&gt;30d inactive</span>
+        </div>
+        <p class="text-[9px] text-amber-700/90 dark:text-amber-300/80 font-medium truncate">Needs author or triage ping</p>
+      </div>
+
+      <!-- Card 4: Approved / Blue Actionable -->
+      <div id="card-filter-APPROVED" onclick="setKpiFilter('APPROVED')" class="card-clickable bg-blue-50/80 dark:bg-blue-950/30 border-2 border-blue-400 dark:border-blue-600/90 rounded-lg px-3 py-1 shadow-sm dark:shadow-md">
+        <div class="flex items-center justify-between text-[10px] font-mono font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-0.5">
+          <span>APPROVED</span>
+          <span class="px-1.5 py-0.2 rounded text-[8px] bg-blue-600 dark:bg-blue-900 text-white font-bold tracking-wide">ACTION</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <div class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono tracking-tight" id="kpi-approved">11</div>
+          <span class="text-[9px] text-blue-700 dark:text-blue-300/90 font-mono">ready to merge</span>
+        </div>
+        <p class="text-[9px] text-blue-700/90 dark:text-blue-300/80 font-medium truncate">Review passed · unmerged</p>
+      </div>
+
+    </div>
+
+    <!-- Row 2: 12-Month Intake vs Merge Velocity Chart (High-Contrast Dual Theme) -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 shadow-sm mb-1 flex-shrink-0">
+      <div class="flex items-center justify-between mb-1">
+        <div>
+          <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">1. INTAKE VS MERGE (12 MONTHS VELOCITY)</h3>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans leading-tight">Monthly PR volume · dashed red line tracks net backlog deficit growth (+opened &gt; merged)</p>
+        </div>
+        <div class="flex items-center gap-4 text-[10px] font-mono">
+          <span class="flex items-center text-teal-700 dark:text-teal-400 font-semibold"><span class="w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 rounded-sm mr-1.5"></span>Opened (Intake)</span>
+          <span class="flex items-center text-slate-700 dark:text-slate-300 font-semibold"><span class="w-2.5 h-2.5 bg-slate-600 dark:bg-slate-500 rounded-sm mr-1.5"></span>Merged (Closure)</span>
+          <span class="flex items-center text-red-600 dark:text-red-400 font-semibold"><span class="w-3 h-1 bg-red-600 dark:bg-red-500 mr-1.5 rounded-full"></span>Net Deficit Trend</span>
+        </div>
+      </div>
+      
+      <!-- Chart Container (h-52 = 208px) -->
+      <div class="h-52 w-full relative flex flex-col justify-end" id="monthly-chart-container"></div>
+    </div>
+
+    <!-- Row 3: The 4 Diagnostic Panels (Reviewer Queue, Author Queue, Diff Size, PR Age Bins) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-1 flex-shrink-0">
+      
+      <!-- Panel 2: REVIEWER QUEUE -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">2. REVIEWER QUEUE</h3>
+            <span id="reviewer-header-badge" class="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">2 High · 3 Med</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Pending reviews assigned</p>
+        </div>
+        <div id="reviewer-load-container" class="space-y-1"></div>
+      </div>
+
+      <!-- Panel 3: AUTHOR QUEUE -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">3. AUTHOR QUEUE</h3>
+            <span id="author-header-badge" class="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">4 High · 6 Med</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Authors with &gt;1 open PR</p>
+        </div>
+        <div id="author-load-container" class="space-y-1"></div>
+      </div>
+
+      <!-- Panel 4: DIFF SIZE TIERS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">4. DIFF SIZE TIERS</h3>
+            <span class="text-[10px] font-mono text-red-600 dark:text-red-400 font-bold whitespace-nowrap" id="mountain-pct-badge">&gt;5k Mountain</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Line additions + deletions risk</p>
+        </div>
+        <div id="size-distribution-container" class="space-y-0.5"></div>
+      </div>
+
+      <!-- Panel 5: PR AGE BINS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-0.5">
+            <h3 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase whitespace-nowrap">5. PR AGE BINS</h3>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium whitespace-nowrap">98 &gt;7d (Past SLA)</span>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans mb-1 leading-tight truncate">Time open since creation · SLA: &gt;7d</p>
+        </div>
+        <div class="h-16 flex flex-col justify-end" id="age-chart-container"></div>
+      </div>
+
+    </div>
+
+    <!-- Row 4: Refined Table with Soft Pills (Min-Height 460px) -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 shadow-sm flex-1 min-h-[460px] flex flex-col mb-1">
+      
+      <!-- Table Controls Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-1 flex-shrink-0">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">PR TRIAGE QUEUE</h2>
+            <span id="active-filter-badge" class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-400 border border-slate-300 dark:border-slate-700 font-mono font-semibold">
+              Showing: All (137)
+            </span>
+            <button id="clear-filter-btn" onclick="resetAllFilters()" class="text-[10px] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white underline font-mono hidden">
+              Reset Filters
+            </button>
+          </div>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-sans leading-tight">Live inventory · Click any #PR to open on GitHub</p>
+        </div>
+
+        <!-- Quick Search & Checkbox Multi-Select Dropdowns -->
+        <div class="flex items-center gap-1.5 relative">
+          <input id="table-search" type="text" placeholder="Search title / #PR..." oninput="handleSearchChange(this.value)" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-900 dark:text-slate-200 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-sky-500 w-32 sm:w-40" />
+
+          <!-- Multi-Select Base Dropdown -->
+          <div class="relative" id="ms-base-wrapper">
+            <button id="ms-base-btn" type="button" onclick="toggleMsDropdown(event, 'ms-base-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[125px]">
+              <span id="ms-base-btn-text" class="truncate">All Bases</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-base-menu" class="hidden absolute top-full mt-1 right-0 sm:left-0 z-50 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('base')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('base')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <input type="text" placeholder="Filter base..." oninput="filterMsItems('base', this.value)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-1.5 py-0.5 text-[11px] mb-1.5 focus:outline-none focus:border-sky-500" />
+              <div id="ms-base-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Multi-Select Author Dropdown -->
+          <div class="relative" id="ms-author-wrapper">
+            <button id="ms-author-btn" type="button" onclick="toggleMsDropdown(event, 'ms-author-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[130px]">
+              <span id="ms-author-btn-text" class="truncate">All Authors</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-author-menu" class="hidden absolute top-full mt-1 right-0 sm:left-0 z-50 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('author')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('author')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <input type="text" placeholder="Filter author..." oninput="filterMsItems('author', this.value)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-1.5 py-0.5 text-[11px] mb-1.5 focus:outline-none focus:border-sky-500" />
+              <div id="ms-author-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Multi-Select Status Dropdown -->
+          <div class="relative" id="ms-status-wrapper">
+            <button id="ms-status-btn" type="button" onclick="toggleMsDropdown(event, 'ms-status-menu')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2 py-0.5 text-xs text-slate-800 dark:text-slate-200 font-mono focus:outline-none hover:border-slate-400 dark:hover:border-slate-600 flex items-center justify-between gap-1 max-w-[125px]">
+              <span id="ms-status-btn-text" class="truncate">All Status</span>
+              <span class="text-[10px] text-slate-400">▾</span>
+            </button>
+            <div id="ms-status-menu" class="hidden absolute top-full mt-1 right-0 z-50 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl p-2 text-xs font-mono">
+              <div class="flex justify-between items-center pb-1 mb-1 border-b border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
+                <button type="button" onclick="selectAllMs('status')" class="hover:text-sky-500 font-semibold">Select All</button>
+                <button type="button" onclick="clearMs('status')" class="hover:text-red-500 font-semibold">Clear</button>
+              </div>
+              <div id="ms-status-list" class="space-y-0.5 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neutral Status Legend Bar (Uniform Base Color for All) -->
+      <div class="flex flex-wrap items-center gap-1.5 py-0.5 px-1.5 mb-1 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded text-[10px] font-mono flex-shrink-0">
+        <span class="text-slate-500 uppercase font-semibold mr-1">Legend:</span>
+        
+        <button onclick="handleStatusFilterChange('UNASSIGNED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="No reviewer requested or assigned (77 PRs)">
+          NO OWNER <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= 0 Reviewer</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('PENDING_REVIEW')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Reviewer assigned, waiting for review (24 PRs)">
+          PENDING <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Waiting review</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('APPROVED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Review passed, ready to merge (11 PRs)">
+          APPROVED <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Ready to merge</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('CHANGES_REQUESTED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Reviewer requested fixes (9 PRs)">
+          CHANGES <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Fixes requested</span>
+        </button>
+
+        <button onclick="handleStatusFilterChange('COMMENTED')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Review comments left, discussion in progress (12 PRs)">
+          COMMENTED <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Feedback left</span>
+        </button>
+        
+        <button onclick="handleStatusFilterChange('DRAFT')" class="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 font-semibold transition-colors" title="Author marked as WIP (4 PRs)">
+          DRAFT <span class="text-slate-400 dark:text-slate-500 font-sans font-normal">= Work-in-progress</span>
+        </button>
+      </div>
+
+      <!-- Table Container (Scrollable with Sticky Header & Zebra Rows) -->
+      <div class="overflow-y-auto flex-1 min-h-[380px] border border-slate-200 dark:border-slate-800 rounded">
+        <table class="w-full text-left text-xs border-collapse font-mono">
+          <thead class="sticky top-0 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 uppercase tracking-wider z-10 select-none">
+            <tr>
+              <th onclick="toggleSort('number')" class="py-1 px-2 w-16 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                PR <span id="sort-number-icon">▼</span>
+              </th>
+              <th class="py-1 px-2 font-sans">Title</th>
+              <th onclick="toggleSort('base')" class="py-1 px-2 w-28 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Base <span id="sort-base-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('author')" class="py-1 px-2 w-28 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Author <span id="sort-author-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('status')" class="py-1 px-2 w-24 text-center cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Status <span id="sort-status-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('lines')" class="py-1 px-2 w-20 text-right cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Lines <span id="sort-lines-icon">⇅</span>
+              </th>
+              <th onclick="toggleSort('updated')" class="py-1 px-2 text-right w-24 cursor-pointer hover:text-slate-900 dark:hover:text-white">
+                Updated <span id="sort-updated-icon">⇅</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="pr-table-body" class="divide-y divide-slate-200/80 dark:divide-slate-800/80 text-slate-700 dark:text-slate-300">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ultra Compact Footer -->
+    <footer class="flex-shrink-0 text-[10px] text-slate-500 font-mono flex items-center justify-between border-t border-slate-200 dark:border-slate-900 pt-1 pb-1">
+      <span>v1.0.0 · Data: live gh stream · <span id="footer-date">21 Aug 2026</span> · 12-month intake</span>
+      <span>Fixed 1080px container · Min-height 1280px · Auto-scrollable</span>
+    </footer>
+
+  </div>
+
+  <!-- Direct Data Injection -->
+  <script>
+    window.INITIAL_REPORT_DATA = {"repo": "Anchanto/JPluger", "fetchedAt": "2026-08-21T08:48:46.205570+00:00", "formattedDate": "21 Aug 2026", "totalOpen": 129, "unreviewedCount": 110, "unreviewedFraction": "9/10", "unassignedCount": 79, "unassignedPct": 61, "approvedUnmergedCount": 11, "changesRequestedCount": 7, "stale30dCount": 30, "older90dCount": 26, "over1yrCount": 6, "olderThanWeek": 97, "olderThan18d": 59, "mountainCount": 21, "mountainPct": 16, "netOverflowsStr": "+36, +40, +51, +72", "total12mDeficit": 421, "ageBins": {"0-7d": 32, "8-18d": 38, "19-90d": 33, "3-12m": 20, ">1y": 6}, "sizeBins": {"Small (<100)": 56, "Medium (100-500)": 16, "Large (500-1k)": 14, "Huge (1k-5k)": 22, "The Mountain (>5k)": 21}, "topReviewers": [{"name": "aritra-das-13", "count": 14}, {"name": "vasudevpathak", "count": 14}, {"name": "keshavbagaria-anchanto", "count": 10}, {"name": "ParitoshAnchanto", "count": 7}, {"name": "pkoraon", "count": 4}, {"name": "prasenjit-h", "count": 3}], "topAuthors": [{"name": "raoul-ai", "count": 28}, {"name": "kirankushwah-anchanto", "count": 14}, {"name": "pkoraon", "count": 10}, {"name": "nikhilGupta6", "count": 8}, {"name": "rahulshinde100", "count": 8}, {"name": "AzimuddinSheikh", "count": 7}, {"name": "prasenjit-h", "count": 7}, {"name": "tushardev07", "count": 6}, {"name": "deeksha-sisodiya1005", "count": 5}, {"name": "vaibhavchoudhary-anchanto", "count": 5}, {"name": "chiragbhargava-anchanto", "count": 3}, {"name": "vishnuswami001", "count": 3}, {"name": "Kranti-Kumar-053", "count": 2}, {"name": "debaudhghosh1", "count": 2}, {"name": "thinhvu-anchanto", "count": 1}, {"name": "MadhuriAnchanto123", "count": 1}, {"name": "aritra-das-13", "count": 1}, {"name": "ParitoshAnchanto", "count": 1}, {"name": "vishal-jain", "count": 1}, {"name": "keshavbagaria-anchanto", "count": 1}, {"name": "sshetty66", "count": 1}, {"name": "Rishu-Gupta-Anchanto", "count": 1}], "topBases": [{"name": "master", "count": 76}, {"name": "allied-botanical/base", "count": 11}, {"name": "integration-qa", "count": 7}, {"name": "integration-stage", "count": 3}, {"name": "amazon-sdk-upgrade/base", "count": 2}, {"name": "Ssg-dept/base", "count": 1}, {"name": "tiktok-multi-app/base", "count": 1}, {"name": "eko-ken-sql-cloud/base", "count": 1}, {"name": "jd-edwards/base", "count": 1}, {"name": "amazon-sdk-upgrade/sellerflex", "count": 1}, {"name": "lotte-on/fetch-carriers", "count": 1}, {"name": "lotte-on/updates", "count": 1}, {"name": "lotte-on/orders/fetch", "count": 1}, {"name": "puig/base", "count": 1}, {"name": "tiktok-v2-global/base", "count": 1}, {"name": "mondial-relay-v2/working", "count": 1}, {"name": "lotte-on/update-price", "count": 1}, {"name": "amazon-sdk-upgrade/report-api", "count": 1}, {"name": "lotte-on/update-stock", "count": 1}, {"name": "amazon-sdk-upgrade/feeds-api-2", "count": 1}, {"name": "amazon-sdk-upgrade/feeds-api", "count": 1}, {"name": "lotte-on/fetch-product-junit", "count": 1}, {"name": "lotte-on/fetch-product", "count": 1}, {"name": "lotte-on/base", "count": 1}, {"name": "specs/marketplace", "count": 1}, {"name": "amazon-sdk-update/working", "count": 1}, {"name": "tr_cloud/base", "count": 1}, {"name": "colissimo-v3/base", "count": 1}, {"name": "colissimo-v3/scheduler-service", "count": 1}, {"name": "colissimo-v3/create-manifest", "count": 1}, {"name": "raw-develop", "count": 1}, {"name": "raw-develop-stage-v2", "count": 1}, {"name": "master-admin", "count": 1}, {"name": "master-admin-dynamo", "count": 1}, {"name": "swagger-doc-main", "count": 1}], "monthlyTrends": [{"year": 2025, "monthNum": 9, "month": "Sep", "label": "Sep'25", "opened": 286, "merged": 266, "netOverflow": 20, "isPartial": false}, {"year": 2025, "monthNum": 10, "month": "Oct", "label": "Oct'25", "opened": 201, "merged": 173, "netOverflow": 28, "isPartial": false}, {"year": 2025, "monthNum": 11, "month": "Nov", "label": "Nov'25", "opened": 170, "merged": 138, "netOverflow": 32, "isPartial": false}, {"year": 2025, "monthNum": 12, "month": "Dec", "label": "Dec'25", "opened": 180, "merged": 156, "netOverflow": 24, "isPartial": false}, {"year": 2026, "monthNum": 1, "month": "Jan", "label": "Jan'26", "opened": 233, "merged": 214, "netOverflow": 19, "isPartial": false}, {"year": 2026, "monthNum": 2, "month": "Feb", "label": "Feb'26", "opened": 263, "merged": 219, "netOverflow": 44, "isPartial": false}, {"year": 2026, "monthNum": 3, "month": "Mar", "label": "Mar'26", "opened": 205, "merged": 190, "netOverflow": 15, "isPartial": false}, {"year": 2026, "monthNum": 4, "month": "Apr", "label": "Apr'26", "opened": 287, "merged": 247, "netOverflow": 40, "isPartial": false}, {"year": 2026, "monthNum": 5, "month": "May", "label": "May'26", "opened": 282, "merged": 246, "netOverflow": 36, "isPartial": false}, {"year": 2026, "monthNum": 6, "month": "Jun", "label": "Jun'26", "opened": 268, "merged": 228, "netOverflow": 40, "isPartial": false}, {"year": 2026, "monthNum": 7, "month": "Jul", "label": "Jul'26", "opened": 449, "merged": 398, "netOverflow": 51, "isPartial": false}, {"year": 2026, "monthNum": 8, "month": "Aug", "label": "Aug'26*", "opened": 450, "merged": 378, "netOverflow": 72, "isPartial": true}], "oldestPrs": [{"number": 4686, "title": "started swagger documentation serving api", "url": "https://github.com/Anchanto/JPluger/pull/4686", "createdAt": "2022-03-16T09:14:55Z", "updatedAt": "2023-06-20T04:55:23Z", "author": "Rishu-Gupta-Anchanto", "base": "swagger-doc-main", "requestedReviewers": ["namratashete", "ShrutiSarda08", "vasudevpathak", "pkoraon", "Gupta-Kj-anchanto", "Tanushree333", "saluja-anchanto", "imrankhurshid94", "aritra-das-13", "anubhavsarkar44", "chetan-anchanto", "keshavbagaria-anchanto", "varunnaik99", "kediaankita", "upadhyaydheeraj", "paras2197"], "reviewState": "PENDING_REVIEW", "ageDays": 1619.0, "inactiveDays": 1158.2, "hasReview": false, "reviewsCount": 0, "additions": 4835, "deletions": 0, "totalLines": 4835, "changedFiles": 24, "sizeCategory": "Huge", "lastActivity": "Jun 2023", "isDraft": false}, {"number": 13833, "title": "Chronopost ft base", "url": "https://github.com/Anchanto/JPluger/pull/13833", "createdAt": "2024-05-14T06:46:32Z", "updatedAt": "2024-06-03T05:30:32Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 829.1, "inactiveDays": 809.1, "hasReview": false, "reviewsCount": 0, "additions": 2390, "deletions": 554, "totalLines": 2944, "changedFiles": 301, "sizeCategory": "Huge", "lastActivity": "Jun 2024", "isDraft": true}, {"number": 16096, "title": "Trace id for spring scheduled tasks", "url": "https://github.com/Anchanto/JPluger/pull/16096", "createdAt": "2024-11-21T18:16:55Z", "updatedAt": "2024-12-05T07:41:07Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak"], "reviewState": "PENDING_REVIEW", "ageDays": 637.6, "inactiveDays": 624.0, "hasReview": false, "reviewsCount": 0, "additions": 183, "deletions": 2, "totalLines": 185, "changedFiles": 5, "sizeCategory": "Medium", "lastActivity": "Dec 2024", "isDraft": false}, {"number": 17059, "title": "Added integration request error handler changes", "url": "https://github.com/Anchanto/JPluger/pull/17059", "createdAt": "2025-02-20T06:12:47Z", "updatedAt": "2025-03-10T13:55:01Z", "author": "pkoraon", "base": "master-admin-dynamo", "requestedReviewers": ["Rishu-Gupta-Anchanto"], "reviewState": "APPROVED", "ageDays": 547.1, "inactiveDays": 528.8, "hasReview": true, "reviewsCount": 1, "additions": 62, "deletions": 26, "totalLines": 88, "changedFiles": 6, "sizeCategory": "Small", "lastActivity": "Mar 2025", "isDraft": false}, {"number": 18056, "title": "Error handling mp", "url": "https://github.com/Anchanto/JPluger/pull/18056", "createdAt": "2025-06-03T09:15:11Z", "updatedAt": "2026-08-12T09:31:47Z", "author": "pkoraon", "base": "master-admin", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 444.0, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 11663, "deletions": 381, "totalLines": 12044, "changedFiles": 186, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 18632, "title": "Error handling mp", "url": "https://github.com/Anchanto/JPluger/pull/18632", "createdAt": "2025-07-30T07:54:21Z", "updatedAt": "2026-08-12T09:31:29Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak", "ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 387.0, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 193, "deletions": 88, "totalLines": 281, "changedFiles": 17, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 19396, "title": "Added whiteboarding for Carrier-Integrations", "url": "https://github.com/Anchanto/JPluger/pull/19396", "createdAt": "2025-10-27T05:59:58Z", "updatedAt": "2025-10-27T06:00:54Z", "author": "sshetty66", "base": "master", "requestedReviewers": ["vasudevpathak", "pkoraon"], "reviewState": "PENDING_REVIEW", "ageDays": 298.1, "inactiveDays": 298.1, "hasReview": false, "reviewsCount": 0, "additions": 24861, "deletions": 0, "totalLines": 24861, "changedFiles": 1, "sizeCategory": "The Mountain", "lastActivity": "Oct 2025", "isDraft": false}, {"number": 19508, "title": "PT Schedulers legacy code migrated", "url": "https://github.com/Anchanto/JPluger/pull/19508", "createdAt": "2025-11-10T09:44:18Z", "updatedAt": "2025-11-10T10:46:11Z", "author": "keshavbagaria-anchanto", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 284.0, "inactiveDays": 283.9, "hasReview": false, "reviewsCount": 0, "additions": 1777, "deletions": 786, "totalLines": 2563, "changedFiles": 34, "sizeCategory": "Huge", "lastActivity": "Nov 2025", "isDraft": false}, {"number": 19548, "title": "Sap elc/gift set discount", "url": "https://github.com/Anchanto/JPluger/pull/19548", "createdAt": "2025-11-13T10:40:07Z", "updatedAt": "2026-08-12T09:16:29Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 280.9, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 874, "deletions": 55, "totalLines": 929, "changedFiles": 24, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 19696, "title": "Http request trace", "url": "https://github.com/Anchanto/JPluger/pull/19696", "createdAt": "2025-12-11T08:26:10Z", "updatedAt": "2026-08-12T05:49:59Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak", "saluja-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 253.0, "inactiveDays": 9.1, "hasReview": false, "reviewsCount": 0, "additions": 42, "deletions": 2, "totalLines": 44, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 20043, "title": "hibernate ID generation strategy changed for wms3 entities", "url": "https://github.com/Anchanto/JPluger/pull/20043", "createdAt": "2026-02-02T09:49:22Z", "updatedAt": "2026-02-02T09:50:12Z", "author": "pkoraon", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 200.0, "inactiveDays": 200.0, "hasReview": false, "reviewsCount": 0, "additions": 29, "deletions": 17, "totalLines": 46, "changedFiles": 17, "sizeCategory": "Small", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20065, "title": "Raw develop stage v2 mid cmg", "url": "https://github.com/Anchanto/JPluger/pull/20065", "createdAt": "2026-02-05T06:16:38Z", "updatedAt": "2026-02-05T06:18:07Z", "author": "deeksha-sisodiya1005", "base": "raw-develop-stage-v2", "requestedReviewers": ["ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 197.1, "inactiveDays": 197.1, "hasReview": false, "reviewsCount": 0, "additions": 8730, "deletions": 126, "totalLines": 8856, "changedFiles": 63, "sizeCategory": "The Mountain", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20085, "title": "Dashboard Changes WMS", "url": "https://github.com/Anchanto/JPluger/pull/20085", "createdAt": "2026-02-06T11:52:24Z", "updatedAt": "2026-08-06T04:45:00Z", "author": "pkoraon", "base": "master", "requestedReviewers": [], "reviewState": "CHANGES_REQUESTED", "ageDays": 195.9, "inactiveDays": 15.2, "hasReview": true, "reviewsCount": 2, "additions": 13408, "deletions": 894, "totalLines": 14302, "changedFiles": 286, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 20121, "title": "Palletways/raw develop mid", "url": "https://github.com/Anchanto/JPluger/pull/20121", "createdAt": "2026-02-11T05:24:24Z", "updatedAt": "2026-02-25T12:38:39Z", "author": "deeksha-sisodiya1005", "base": "raw-develop", "requestedReviewers": ["MadhuriAnchanto123"], "reviewState": "PENDING_REVIEW", "ageDays": 191.1, "inactiveDays": 176.8, "hasReview": false, "reviewsCount": 0, "additions": 22105, "deletions": 9778, "totalLines": 31883, "changedFiles": 587, "sizeCategory": "The Mountain", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20125, "title": "Colissimo v3: migration scheduler service", "url": "https://github.com/Anchanto/JPluger/pull/20125", "createdAt": "2026-02-11T08:19:39Z", "updatedAt": "2026-02-13T04:42:32Z", "author": "nikhilGupta6", "base": "colissimo-v3/create-manifest", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 191.0, "inactiveDays": 189.2, "hasReview": false, "reviewsCount": 0, "additions": 642, "deletions": 0, "totalLines": 642, "changedFiles": 6, "sizeCategory": "Large", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20161, "title": "Colissimo v3/test", "url": "https://github.com/Anchanto/JPluger/pull/20161", "createdAt": "2026-02-13T20:51:17Z", "updatedAt": "2026-02-26T04:45:41Z", "author": "nikhilGupta6", "base": "colissimo-v3/scheduler-service", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 188.5, "inactiveDays": 176.2, "hasReview": false, "reviewsCount": 0, "additions": 1650, "deletions": 211, "totalLines": 1861, "changedFiles": 34, "sizeCategory": "Huge", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20281, "title": "Migrating Colissimo Carrier", "url": "https://github.com/Anchanto/JPluger/pull/20281", "createdAt": "2026-02-26T09:58:03Z", "updatedAt": "2026-02-27T05:58:42Z", "author": "nikhilGupta6", "base": "colissimo-v3/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 176.0, "inactiveDays": 175.1, "hasReview": false, "reviewsCount": 0, "additions": 1723, "deletions": 79, "totalLines": 1802, "changedFiles": 28, "sizeCategory": "Huge", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20337, "title": "Added Code for TR Cloud Create B2B Order", "url": "https://github.com/Anchanto/JPluger/pull/20337", "createdAt": "2026-03-07T19:27:24Z", "updatedAt": "2026-03-08T11:36:30Z", "author": "tushardev07", "base": "tr_cloud/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 166.6, "inactiveDays": 165.9, "hasReview": false, "reviewsCount": 0, "additions": 3333, "deletions": 206, "totalLines": 3539, "changedFiles": 85, "sizeCategory": "Huge", "lastActivity": "Mar 2026", "isDraft": false}, {"number": 20349, "title": "Amazon vendor central/base", "url": "https://github.com/Anchanto/JPluger/pull/20349", "createdAt": "2026-03-09T13:32:26Z", "updatedAt": "2026-08-20T09:56:44Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 164.8, "inactiveDays": 1.0, "hasReview": false, "reviewsCount": 0, "additions": 171, "deletions": 99, "totalLines": 270, "changedFiles": 5, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 20431, "title": "Seller flex/discount fix", "url": "https://github.com/Anchanto/JPluger/pull/20431", "createdAt": "2026-03-17T13:05:39Z", "updatedAt": "2026-03-17T13:06:33Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 156.8, "inactiveDays": 156.8, "hasReview": false, "reviewsCount": 0, "additions": 1, "deletions": 1, "totalLines": 2, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Mar 2026", "isDraft": true}, {"number": 20466, "title": "IA-4001/partial cancellation \u2014 dispatch and Naver confirm handling", "url": "https://github.com/Anchanto/JPluger/pull/20466", "createdAt": "2026-03-25T12:10:22Z", "updatedAt": "2026-07-30T11:06:22Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["aritra-das-13", "prasenjit-h"], "reviewState": "CHANGES_REQUESTED", "ageDays": 148.9, "inactiveDays": 21.9, "hasReview": true, "reviewsCount": 3, "additions": 625, "deletions": 83, "totalLines": 708, "changedFiles": 7, "sizeCategory": "Large", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 20485, "title": "feature/ELC-social-gift : Rakuten Social Gift SP line in SAP order payload", "url": "https://github.com/Anchanto/JPluger/pull/20485", "createdAt": "2026-03-27T11:54:24Z", "updatedAt": "2026-04-15T06:38:11Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["prasenjit-h", "aritra-das-13"], "reviewState": "CHANGES_REQUESTED", "ageDays": 146.9, "inactiveDays": 128.1, "hasReview": true, "reviewsCount": 7, "additions": 405, "deletions": 64, "totalLines": 469, "changedFiles": 3, "sizeCategory": "Medium", "lastActivity": "Apr 2026", "isDraft": false}, {"number": 20518, "title": "feature/IA-3517: Fix split-order (-n) correlation using shipment fallback for ELC SAP", "url": "https://github.com/Anchanto/JPluger/pull/20518", "createdAt": "2026-04-02T09:03:52Z", "updatedAt": "2026-04-06T13:09:25Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["vasudevpathak", "aritra-das-13", "Kranti-Kumar-053"], "reviewState": "CHANGES_REQUESTED", "ageDays": 141.0, "inactiveDays": 136.8, "hasReview": true, "reviewsCount": 1, "additions": 252, "deletions": 26, "totalLines": 278, "changedFiles": 6, "sizeCategory": "Medium", "lastActivity": "Apr 2026", "isDraft": false}, {"number": 20522, "title": "feature/Doc: add developer guides and clarify logging/tracing patterns", "url": "https://github.com/Anchanto/JPluger/pull/20522", "createdAt": "2026-04-02T12:49:37Z", "updatedAt": "2026-05-03T04:47:01Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["vasudevpathak", "pkoraon", "aritra-das-13", "keshavbagaria-anchanto", "ParitoshAnchanto", "prasenjit-h"], "reviewState": "PENDING_REVIEW", "ageDays": 140.8, "inactiveDays": 110.2, "hasReview": false, "reviewsCount": 0, "additions": 36138, "deletions": 3201, "totalLines": 39339, "changedFiles": 156, "sizeCategory": "The Mountain", "lastActivity": "May 2026", "isDraft": false}, {"number": 20880, "title": "Sap elc/save status transaction", "url": "https://github.com/Anchanto/JPluger/pull/20880", "createdAt": "2026-05-12T11:21:34Z", "updatedAt": "2026-08-12T09:23:19Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 100.9, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 789, "deletions": 20, "totalLines": 809, "changedFiles": 17, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}], "allPrs": [{"number": 4686, "title": "started swagger documentation serving api", "url": "https://github.com/Anchanto/JPluger/pull/4686", "createdAt": "2022-03-16T09:14:55Z", "updatedAt": "2023-06-20T04:55:23Z", "author": "Rishu-Gupta-Anchanto", "base": "swagger-doc-main", "requestedReviewers": ["namratashete", "ShrutiSarda08", "vasudevpathak", "pkoraon", "Gupta-Kj-anchanto", "Tanushree333", "saluja-anchanto", "imrankhurshid94", "aritra-das-13", "anubhavsarkar44", "chetan-anchanto", "keshavbagaria-anchanto", "varunnaik99", "kediaankita", "upadhyaydheeraj", "paras2197"], "reviewState": "PENDING_REVIEW", "ageDays": 1619.0, "inactiveDays": 1158.2, "hasReview": false, "reviewsCount": 0, "additions": 4835, "deletions": 0, "totalLines": 4835, "changedFiles": 24, "sizeCategory": "Huge", "lastActivity": "Jun 2023", "isDraft": false}, {"number": 13833, "title": "Chronopost ft base", "url": "https://github.com/Anchanto/JPluger/pull/13833", "createdAt": "2024-05-14T06:46:32Z", "updatedAt": "2024-06-03T05:30:32Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 829.1, "inactiveDays": 809.1, "hasReview": false, "reviewsCount": 0, "additions": 2390, "deletions": 554, "totalLines": 2944, "changedFiles": 301, "sizeCategory": "Huge", "lastActivity": "Jun 2024", "isDraft": true}, {"number": 16096, "title": "Trace id for spring scheduled tasks", "url": "https://github.com/Anchanto/JPluger/pull/16096", "createdAt": "2024-11-21T18:16:55Z", "updatedAt": "2024-12-05T07:41:07Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak"], "reviewState": "PENDING_REVIEW", "ageDays": 637.6, "inactiveDays": 624.0, "hasReview": false, "reviewsCount": 0, "additions": 183, "deletions": 2, "totalLines": 185, "changedFiles": 5, "sizeCategory": "Medium", "lastActivity": "Dec 2024", "isDraft": false}, {"number": 17059, "title": "Added integration request error handler changes", "url": "https://github.com/Anchanto/JPluger/pull/17059", "createdAt": "2025-02-20T06:12:47Z", "updatedAt": "2025-03-10T13:55:01Z", "author": "pkoraon", "base": "master-admin-dynamo", "requestedReviewers": ["Rishu-Gupta-Anchanto"], "reviewState": "APPROVED", "ageDays": 547.1, "inactiveDays": 528.8, "hasReview": true, "reviewsCount": 1, "additions": 62, "deletions": 26, "totalLines": 88, "changedFiles": 6, "sizeCategory": "Small", "lastActivity": "Mar 2025", "isDraft": false}, {"number": 18056, "title": "Error handling mp", "url": "https://github.com/Anchanto/JPluger/pull/18056", "createdAt": "2025-06-03T09:15:11Z", "updatedAt": "2026-08-12T09:31:47Z", "author": "pkoraon", "base": "master-admin", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 444.0, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 11663, "deletions": 381, "totalLines": 12044, "changedFiles": 186, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 18632, "title": "Error handling mp", "url": "https://github.com/Anchanto/JPluger/pull/18632", "createdAt": "2025-07-30T07:54:21Z", "updatedAt": "2026-08-12T09:31:29Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak", "ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 387.0, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 193, "deletions": 88, "totalLines": 281, "changedFiles": 17, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 19396, "title": "Added whiteboarding for Carrier-Integrations", "url": "https://github.com/Anchanto/JPluger/pull/19396", "createdAt": "2025-10-27T05:59:58Z", "updatedAt": "2025-10-27T06:00:54Z", "author": "sshetty66", "base": "master", "requestedReviewers": ["vasudevpathak", "pkoraon"], "reviewState": "PENDING_REVIEW", "ageDays": 298.1, "inactiveDays": 298.1, "hasReview": false, "reviewsCount": 0, "additions": 24861, "deletions": 0, "totalLines": 24861, "changedFiles": 1, "sizeCategory": "The Mountain", "lastActivity": "Oct 2025", "isDraft": false}, {"number": 19508, "title": "PT Schedulers legacy code migrated", "url": "https://github.com/Anchanto/JPluger/pull/19508", "createdAt": "2025-11-10T09:44:18Z", "updatedAt": "2025-11-10T10:46:11Z", "author": "keshavbagaria-anchanto", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 284.0, "inactiveDays": 283.9, "hasReview": false, "reviewsCount": 0, "additions": 1777, "deletions": 786, "totalLines": 2563, "changedFiles": 34, "sizeCategory": "Huge", "lastActivity": "Nov 2025", "isDraft": false}, {"number": 19548, "title": "Sap elc/gift set discount", "url": "https://github.com/Anchanto/JPluger/pull/19548", "createdAt": "2025-11-13T10:40:07Z", "updatedAt": "2026-08-12T09:16:29Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 280.9, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 874, "deletions": 55, "totalLines": 929, "changedFiles": 24, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 19696, "title": "Http request trace", "url": "https://github.com/Anchanto/JPluger/pull/19696", "createdAt": "2025-12-11T08:26:10Z", "updatedAt": "2026-08-12T05:49:59Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak", "saluja-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 253.0, "inactiveDays": 9.1, "hasReview": false, "reviewsCount": 0, "additions": 42, "deletions": 2, "totalLines": 44, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 20043, "title": "hibernate ID generation strategy changed for wms3 entities", "url": "https://github.com/Anchanto/JPluger/pull/20043", "createdAt": "2026-02-02T09:49:22Z", "updatedAt": "2026-02-02T09:50:12Z", "author": "pkoraon", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 200.0, "inactiveDays": 200.0, "hasReview": false, "reviewsCount": 0, "additions": 29, "deletions": 17, "totalLines": 46, "changedFiles": 17, "sizeCategory": "Small", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20065, "title": "Raw develop stage v2 mid cmg", "url": "https://github.com/Anchanto/JPluger/pull/20065", "createdAt": "2026-02-05T06:16:38Z", "updatedAt": "2026-02-05T06:18:07Z", "author": "deeksha-sisodiya1005", "base": "raw-develop-stage-v2", "requestedReviewers": ["ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 197.1, "inactiveDays": 197.1, "hasReview": false, "reviewsCount": 0, "additions": 8730, "deletions": 126, "totalLines": 8856, "changedFiles": 63, "sizeCategory": "The Mountain", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20085, "title": "Dashboard Changes WMS", "url": "https://github.com/Anchanto/JPluger/pull/20085", "createdAt": "2026-02-06T11:52:24Z", "updatedAt": "2026-08-06T04:45:00Z", "author": "pkoraon", "base": "master", "requestedReviewers": [], "reviewState": "CHANGES_REQUESTED", "ageDays": 195.9, "inactiveDays": 15.2, "hasReview": true, "reviewsCount": 2, "additions": 13408, "deletions": 894, "totalLines": 14302, "changedFiles": 286, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 20121, "title": "Palletways/raw develop mid", "url": "https://github.com/Anchanto/JPluger/pull/20121", "createdAt": "2026-02-11T05:24:24Z", "updatedAt": "2026-02-25T12:38:39Z", "author": "deeksha-sisodiya1005", "base": "raw-develop", "requestedReviewers": ["MadhuriAnchanto123"], "reviewState": "PENDING_REVIEW", "ageDays": 191.1, "inactiveDays": 176.8, "hasReview": false, "reviewsCount": 0, "additions": 22105, "deletions": 9778, "totalLines": 31883, "changedFiles": 587, "sizeCategory": "The Mountain", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20125, "title": "Colissimo v3: migration scheduler service", "url": "https://github.com/Anchanto/JPluger/pull/20125", "createdAt": "2026-02-11T08:19:39Z", "updatedAt": "2026-02-13T04:42:32Z", "author": "nikhilGupta6", "base": "colissimo-v3/create-manifest", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 191.0, "inactiveDays": 189.2, "hasReview": false, "reviewsCount": 0, "additions": 642, "deletions": 0, "totalLines": 642, "changedFiles": 6, "sizeCategory": "Large", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20161, "title": "Colissimo v3/test", "url": "https://github.com/Anchanto/JPluger/pull/20161", "createdAt": "2026-02-13T20:51:17Z", "updatedAt": "2026-02-26T04:45:41Z", "author": "nikhilGupta6", "base": "colissimo-v3/scheduler-service", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 188.5, "inactiveDays": 176.2, "hasReview": false, "reviewsCount": 0, "additions": 1650, "deletions": 211, "totalLines": 1861, "changedFiles": 34, "sizeCategory": "Huge", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20281, "title": "Migrating Colissimo Carrier", "url": "https://github.com/Anchanto/JPluger/pull/20281", "createdAt": "2026-02-26T09:58:03Z", "updatedAt": "2026-02-27T05:58:42Z", "author": "nikhilGupta6", "base": "colissimo-v3/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 176.0, "inactiveDays": 175.1, "hasReview": false, "reviewsCount": 0, "additions": 1723, "deletions": 79, "totalLines": 1802, "changedFiles": 28, "sizeCategory": "Huge", "lastActivity": "Feb 2026", "isDraft": false}, {"number": 20337, "title": "Added Code for TR Cloud Create B2B Order", "url": "https://github.com/Anchanto/JPluger/pull/20337", "createdAt": "2026-03-07T19:27:24Z", "updatedAt": "2026-03-08T11:36:30Z", "author": "tushardev07", "base": "tr_cloud/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 166.6, "inactiveDays": 165.9, "hasReview": false, "reviewsCount": 0, "additions": 3333, "deletions": 206, "totalLines": 3539, "changedFiles": 85, "sizeCategory": "Huge", "lastActivity": "Mar 2026", "isDraft": false}, {"number": 20349, "title": "Amazon vendor central/base", "url": "https://github.com/Anchanto/JPluger/pull/20349", "createdAt": "2026-03-09T13:32:26Z", "updatedAt": "2026-08-20T09:56:44Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 164.8, "inactiveDays": 1.0, "hasReview": false, "reviewsCount": 0, "additions": 171, "deletions": 99, "totalLines": 270, "changedFiles": 5, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 20431, "title": "Seller flex/discount fix", "url": "https://github.com/Anchanto/JPluger/pull/20431", "createdAt": "2026-03-17T13:05:39Z", "updatedAt": "2026-03-17T13:06:33Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 156.8, "inactiveDays": 156.8, "hasReview": false, "reviewsCount": 0, "additions": 1, "deletions": 1, "totalLines": 2, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Mar 2026", "isDraft": true}, {"number": 20466, "title": "IA-4001/partial cancellation \u2014 dispatch and Naver confirm handling", "url": "https://github.com/Anchanto/JPluger/pull/20466", "createdAt": "2026-03-25T12:10:22Z", "updatedAt": "2026-07-30T11:06:22Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["aritra-das-13", "prasenjit-h"], "reviewState": "CHANGES_REQUESTED", "ageDays": 148.9, "inactiveDays": 21.9, "hasReview": true, "reviewsCount": 3, "additions": 625, "deletions": 83, "totalLines": 708, "changedFiles": 7, "sizeCategory": "Large", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 20485, "title": "feature/ELC-social-gift : Rakuten Social Gift SP line in SAP order payload", "url": "https://github.com/Anchanto/JPluger/pull/20485", "createdAt": "2026-03-27T11:54:24Z", "updatedAt": "2026-04-15T06:38:11Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["prasenjit-h", "aritra-das-13"], "reviewState": "CHANGES_REQUESTED", "ageDays": 146.9, "inactiveDays": 128.1, "hasReview": true, "reviewsCount": 7, "additions": 405, "deletions": 64, "totalLines": 469, "changedFiles": 3, "sizeCategory": "Medium", "lastActivity": "Apr 2026", "isDraft": false}, {"number": 20518, "title": "feature/IA-3517: Fix split-order (-n) correlation using shipment fallback for ELC SAP", "url": "https://github.com/Anchanto/JPluger/pull/20518", "createdAt": "2026-04-02T09:03:52Z", "updatedAt": "2026-04-06T13:09:25Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["vasudevpathak", "aritra-das-13", "Kranti-Kumar-053"], "reviewState": "CHANGES_REQUESTED", "ageDays": 141.0, "inactiveDays": 136.8, "hasReview": true, "reviewsCount": 1, "additions": 252, "deletions": 26, "totalLines": 278, "changedFiles": 6, "sizeCategory": "Medium", "lastActivity": "Apr 2026", "isDraft": false}, {"number": 20522, "title": "feature/Doc: add developer guides and clarify logging/tracing patterns", "url": "https://github.com/Anchanto/JPluger/pull/20522", "createdAt": "2026-04-02T12:49:37Z", "updatedAt": "2026-05-03T04:47:01Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["vasudevpathak", "pkoraon", "aritra-das-13", "keshavbagaria-anchanto", "ParitoshAnchanto", "prasenjit-h"], "reviewState": "PENDING_REVIEW", "ageDays": 140.8, "inactiveDays": 110.2, "hasReview": false, "reviewsCount": 0, "additions": 36138, "deletions": 3201, "totalLines": 39339, "changedFiles": 156, "sizeCategory": "The Mountain", "lastActivity": "May 2026", "isDraft": false}, {"number": 20880, "title": "Sap elc/save status transaction", "url": "https://github.com/Anchanto/JPluger/pull/20880", "createdAt": "2026-05-12T11:21:34Z", "updatedAt": "2026-08-12T09:23:19Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 100.9, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 789, "deletions": 20, "totalLines": 809, "changedFiles": 17, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 20964, "title": "[IA-4640] Prevent duplicate order entries in orders table", "url": "https://github.com/Anchanto/JPluger/pull/20964", "createdAt": "2026-05-21T05:10:39Z", "updatedAt": "2026-05-21T05:11:35Z", "author": "vaibhavchoudhary-anchanto", "base": "master", "requestedReviewers": ["vasudevpathak", "pkoraon"], "reviewState": "PENDING_REVIEW", "ageDays": 92.2, "inactiveDays": 92.2, "hasReview": false, "reviewsCount": 0, "additions": 1, "deletions": 0, "totalLines": 1, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "May 2026", "isDraft": false}, {"number": 21137, "title": "Integration docs", "url": "https://github.com/Anchanto/JPluger/pull/21137", "createdAt": "2026-06-05T14:16:17Z", "updatedAt": "2026-06-05T14:17:13Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak"], "reviewState": "PENDING_REVIEW", "ageDays": 76.8, "inactiveDays": 76.8, "hasReview": false, "reviewsCount": 0, "additions": 1410, "deletions": 768, "totalLines": 2178, "changedFiles": 4, "sizeCategory": "Huge", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21151, "title": "Allied botanical/b2c order complete", "url": "https://github.com/Anchanto/JPluger/pull/21151", "createdAt": "2026-06-09T09:43:46Z", "updatedAt": "2026-08-20T02:55:45Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 73.0, "inactiveDays": 1.2, "hasReview": true, "reviewsCount": 1, "additions": 84, "deletions": 1, "totalLines": 85, "changedFiles": 4, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21154, "title": "Add Infor-BRI Standalone Support to Wrapper", "url": "https://github.com/Anchanto/JPluger/pull/21154", "createdAt": "2026-06-09T14:56:17Z", "updatedAt": "2026-08-13T12:31:18Z", "author": "vishnuswami001", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 72.7, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 203, "deletions": 13, "totalLines": 216, "changedFiles": 18, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21182, "title": "Allied botanical/b2c return order credit notes", "url": "https://github.com/Anchanto/JPluger/pull/21182", "createdAt": "2026-06-12T07:58:01Z", "updatedAt": "2026-08-20T02:57:08Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 70.0, "inactiveDays": 1.2, "hasReview": true, "reviewsCount": 1, "additions": 391, "deletions": 1, "totalLines": 392, "changedFiles": 6, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21187, "title": "Allied botanical/b2c return order goods receipt", "url": "https://github.com/Anchanto/JPluger/pull/21187", "createdAt": "2026-06-12T12:45:50Z", "updatedAt": "2026-08-20T02:58:17Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 69.8, "inactiveDays": 1.2, "hasReview": true, "reviewsCount": 1, "additions": 545, "deletions": 1, "totalLines": 546, "changedFiles": 7, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21196, "title": "Added Default User-Agent for REST Calls", "url": "https://github.com/Anchanto/JPluger/pull/21196", "createdAt": "2026-06-16T05:15:17Z", "updatedAt": "2026-08-12T05:49:31Z", "author": "pkoraon", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 66.1, "inactiveDays": 9.1, "hasReview": false, "reviewsCount": 0, "additions": 30, "deletions": 4, "totalLines": 34, "changedFiles": 5, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21201, "title": "Lettre suivie bug fixes", "url": "https://github.com/Anchanto/JPluger/pull/21201", "createdAt": "2026-06-16T10:12:49Z", "updatedAt": "2026-06-16T12:37:32Z", "author": "deeksha-sisodiya1005", "base": "master", "requestedReviewers": ["tushardev07"], "reviewState": "PENDING_REVIEW", "ageDays": 65.9, "inactiveDays": 65.8, "hasReview": false, "reviewsCount": 0, "additions": 9, "deletions": 1, "totalLines": 10, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21206, "title": "Mondial relay refetch label", "url": "https://github.com/Anchanto/JPluger/pull/21206", "createdAt": "2026-06-16T12:16:24Z", "updatedAt": "2026-06-16T12:17:21Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 65.9, "inactiveDays": 65.9, "hasReview": false, "reviewsCount": 0, "additions": 693, "deletions": 328, "totalLines": 1021, "changedFiles": 10, "sizeCategory": "Huge", "lastActivity": "Jun 2026", "isDraft": true}, {"number": 21231, "title": "Allied botanical/b2c exchange item order creation", "url": "https://github.com/Anchanto/JPluger/pull/21231", "createdAt": "2026-06-18T06:36:47Z", "updatedAt": "2026-08-18T16:08:37Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 64.1, "inactiveDays": 2.7, "hasReview": false, "reviewsCount": 0, "additions": 1330, "deletions": 1, "totalLines": 1331, "changedFiles": 29, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21243, "title": "Allied botanical/b2b order create", "url": "https://github.com/Anchanto/JPluger/pull/21243", "createdAt": "2026-06-19T09:13:19Z", "updatedAt": "2026-06-19T09:15:13Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 63.0, "inactiveDays": 63.0, "hasReview": false, "reviewsCount": 0, "additions": 9654, "deletions": 336, "totalLines": 9990, "changedFiles": 128, "sizeCategory": "The Mountain", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21274, "title": "Allied botanical/b2b order update", "url": "https://github.com/Anchanto/JPluger/pull/21274", "createdAt": "2026-06-23T07:05:25Z", "updatedAt": "2026-06-23T07:06:56Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 59.1, "inactiveDays": 59.1, "hasReview": false, "reviewsCount": 0, "additions": 10937, "deletions": 336, "totalLines": 11273, "changedFiles": 132, "sizeCategory": "The Mountain", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21278, "title": "Corrected SDK response and added logging", "url": "https://github.com/Anchanto/JPluger/pull/21278", "createdAt": "2026-06-23T13:18:06Z", "updatedAt": "2026-08-12T08:20:40Z", "author": "vishnuswami001", "base": "amazon-sdk-update/working", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 58.8, "inactiveDays": 9.0, "hasReview": true, "reviewsCount": 1, "additions": 64, "deletions": 28, "totalLines": 92, "changedFiles": 4, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21286, "title": "Elc return order address issue fix", "url": "https://github.com/Anchanto/JPluger/pull/21286", "createdAt": "2026-06-24T04:58:25Z", "updatedAt": "2026-08-11T10:29:14Z", "author": "nikhilGupta6", "base": "master", "requestedReviewers": ["vasudevpathak"], "reviewState": "APPROVED", "ageDays": 58.2, "inactiveDays": 9.9, "hasReview": true, "reviewsCount": 1, "additions": 2, "deletions": 1, "totalLines": 3, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21287, "title": "Allied botanical/b2b order cancel", "url": "https://github.com/Anchanto/JPluger/pull/21287", "createdAt": "2026-06-24T06:12:24Z", "updatedAt": "2026-06-24T10:33:47Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 58.1, "inactiveDays": 57.9, "hasReview": false, "reviewsCount": 0, "additions": 11627, "deletions": 336, "totalLines": 11963, "changedFiles": 135, "sizeCategory": "The Mountain", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21291, "title": "Allied botanical/b2b order qc done", "url": "https://github.com/Anchanto/JPluger/pull/21291", "createdAt": "2026-06-24T11:39:56Z", "updatedAt": "2026-06-24T11:41:25Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 57.9, "inactiveDays": 57.9, "hasReview": false, "reviewsCount": 0, "additions": 11875, "deletions": 336, "totalLines": 12211, "changedFiles": 135, "sizeCategory": "The Mountain", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21292, "title": "Updated Logs for Amazon Vendor Central.", "url": "https://github.com/Anchanto/JPluger/pull/21292", "createdAt": "2026-06-24T12:23:11Z", "updatedAt": "2026-06-24T12:24:09Z", "author": "deeksha-sisodiya1005", "base": "master", "requestedReviewers": ["aritra-das-13", "ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 57.9, "inactiveDays": 57.9, "hasReview": false, "reviewsCount": 0, "additions": 3, "deletions": 2, "totalLines": 5, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21299, "title": "Fix: Added code to handle Timed Out Exceptions in DynamodWmsService", "url": "https://github.com/Anchanto/JPluger/pull/21299", "createdAt": "2026-06-25T07:26:05Z", "updatedAt": "2026-07-07T11:29:50Z", "author": "tushardev07", "base": "master", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 57.1, "inactiveDays": 44.9, "hasReview": true, "reviewsCount": 1, "additions": 9, "deletions": 4, "totalLines": 13, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21315, "title": "Allied botanical/create asn", "url": "https://github.com/Anchanto/JPluger/pull/21315", "createdAt": "2026-06-26T09:36:30Z", "updatedAt": "2026-06-26T09:37:52Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 56.0, "inactiveDays": 56.0, "hasReview": false, "reviewsCount": 0, "additions": 12403, "deletions": 337, "totalLines": 12740, "changedFiles": 135, "sizeCategory": "The Mountain", "lastActivity": "Jun 2026", "isDraft": false}, {"number": 21381, "title": "Allied botanical/base", "url": "https://github.com/Anchanto/JPluger/pull/21381", "createdAt": "2026-07-03T12:20:03Z", "updatedAt": "2026-08-17T09:31:11Z", "author": "kirankushwah-anchanto", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 48.9, "inactiveDays": 4.0, "hasReview": false, "reviewsCount": 0, "additions": 12688, "deletions": 99, "totalLines": 12787, "changedFiles": 135, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21389, "title": "Specs/dev/hktvmall", "url": "https://github.com/Anchanto/JPluger/pull/21389", "createdAt": "2026-07-06T17:08:35Z", "updatedAt": "2026-08-12T05:49:06Z", "author": "pkoraon", "base": "specs/marketplace", "requestedReviewers": ["parimal-kale"], "reviewState": "PENDING_REVIEW", "ageDays": 45.7, "inactiveDays": 9.1, "hasReview": false, "reviewsCount": 0, "additions": 6207, "deletions": 0, "totalLines": 6207, "changedFiles": 83, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21423, "title": "Allied botanical/asn completed", "url": "https://github.com/Anchanto/JPluger/pull/21423", "createdAt": "2026-07-09T11:37:50Z", "updatedAt": "2026-07-09T11:40:46Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 42.9, "inactiveDays": 42.9, "hasReview": false, "reviewsCount": 0, "additions": 11356, "deletions": 258, "totalLines": 11614, "changedFiles": 111, "sizeCategory": "The Mountain", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21424, "title": "Allied botanical/email notifications", "url": "https://github.com/Anchanto/JPluger/pull/21424", "createdAt": "2026-07-09T11:40:30Z", "updatedAt": "2026-07-09T11:44:32Z", "author": "kirankushwah-anchanto", "base": "allied-botanical/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 42.9, "inactiveDays": 42.9, "hasReview": false, "reviewsCount": 0, "additions": 11552, "deletions": 270, "totalLines": 11822, "changedFiles": 120, "sizeCategory": "The Mountain", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21723, "title": "fix: Geodis address mapping NPE dropping expediteur/destinataire (ZD #476214)", "url": "https://github.com/Anchanto/JPluger/pull/21723", "createdAt": "2026-07-29T06:45:34Z", "updatedAt": "2026-07-31T09:33:19Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 23.1, "inactiveDays": 21.0, "hasReview": false, "reviewsCount": 0, "additions": 12, "deletions": 0, "totalLines": 12, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21734, "title": "fix: strip non-ASCII characters from Colissimo customs description/SKU (ZD #473785)", "url": "https://github.com/Anchanto/JPluger/pull/21734", "createdAt": "2026-07-29T13:44:08Z", "updatedAt": "2026-07-29T13:46:13Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 22.8, "inactiveDays": 22.8, "hasReview": false, "reviewsCount": 0, "additions": 18, "deletions": 3, "totalLines": 21, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21737, "title": "fix: treat Dynamod 2xx CREATE_FAILED response as create failure (ZD #475976)", "url": "https://github.com/Anchanto/JPluger/pull/21737", "createdAt": "2026-07-29T23:40:56Z", "updatedAt": "2026-07-29T23:43:13Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 22.4, "inactiveDays": 22.4, "hasReview": false, "reviewsCount": 0, "additions": 63, "deletions": 9, "totalLines": 72, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21742, "title": "fix: set TikTok product attributes before certification handling (ZD #474354)", "url": "https://github.com/Anchanto/JPluger/pull/21742", "createdAt": "2026-07-30T06:02:14Z", "updatedAt": "2026-07-30T06:04:34Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 22.1, "inactiveDays": 22.1, "hasReview": false, "reviewsCount": 0, "additions": 5, "deletions": 2, "totalLines": 7, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21747, "title": "fix: send OMS-assigned warehouse as Kerry DSO Custodian (ZD #476574)", "url": "https://github.com/Anchanto/JPluger/pull/21747", "createdAt": "2026-07-30T10:04:50Z", "updatedAt": "2026-07-30T10:06:42Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 21.9, "inactiveDays": 21.9, "hasReview": false, "reviewsCount": 0, "additions": 16, "deletions": 0, "totalLines": 16, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21759, "title": "fix: skip blank voucher_platform when summing Dynamod channel discount (ZD #475976)", "url": "https://github.com/Anchanto/JPluger/pull/21759", "createdAt": "2026-07-30T23:37:47Z", "updatedAt": "2026-07-30T23:38:55Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 21.4, "inactiveDays": 21.4, "hasReview": false, "reviewsCount": 0, "additions": 1, "deletions": 1, "totalLines": 2, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21762, "title": "fix: log dropped marketplace status update when no order item matches (ZD #476167)", "url": "https://github.com/Anchanto/JPluger/pull/21762", "createdAt": "2026-07-31T03:13:30Z", "updatedAt": "2026-07-31T03:16:37Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 21.2, "inactiveDays": 21.2, "hasReview": false, "reviewsCount": 0, "additions": 11, "deletions": 0, "totalLines": 11, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21768, "title": "fix: do not cancel a sibling shipment's AWB on Chronopost label create (ZD #475948)", "url": "https://github.com/Anchanto/JPluger/pull/21768", "createdAt": "2026-07-31T05:02:33Z", "updatedAt": "2026-07-31T05:06:09Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 21.2, "inactiveDays": 21.2, "hasReview": false, "reviewsCount": 0, "additions": 100, "deletions": 0, "totalLines": 100, "changedFiles": 3, "sizeCategory": "Medium", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21777, "title": "fix: scope Chronopost AWB cancellation check to the shipment being processed (ZD #474929)", "url": "https://github.com/Anchanto/JPluger/pull/21777", "createdAt": "2026-07-31T07:07:59Z", "updatedAt": "2026-07-31T07:10:05Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 21.1, "inactiveDays": 21.1, "hasReview": false, "reviewsCount": 0, "additions": 8, "deletions": 5, "totalLines": 13, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Jul 2026", "isDraft": false}, {"number": 21795, "title": "Add bitship-integration module for BitShip carrier integration", "url": "https://github.com/Anchanto/JPluger/pull/21795", "createdAt": "2026-08-01T14:34:02Z", "updatedAt": "2026-08-07T03:34:37Z", "author": "vishal-jain", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 19.8, "inactiveDays": 14.2, "hasReview": false, "reviewsCount": 0, "additions": 1653, "deletions": 0, "totalLines": 1653, "changedFiles": 28, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21801, "title": "Add DTOs for Lotte fetch product list and detail API responses", "url": "https://github.com/Anchanto/JPluger/pull/21801", "createdAt": "2026-08-03T07:43:12Z", "updatedAt": "2026-08-20T07:36:52Z", "author": "aritra-das-13", "base": "lotte-on/base", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 18.0, "inactiveDays": 1.0, "hasReview": false, "reviewsCount": 0, "additions": 4539, "deletions": 2, "totalLines": 4541, "changedFiles": 32, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21811, "title": "Add unit tests for Lotte fetchProducts", "url": "https://github.com/Anchanto/JPluger/pull/21811", "createdAt": "2026-08-03T11:29:40Z", "updatedAt": "2026-08-20T07:36:43Z", "author": "aritra-das-13", "base": "lotte-on/fetch-product", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 17.9, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 999, "deletions": 47, "totalLines": 1046, "changedFiles": 4, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21817, "title": "Implement Lotte stock update via LotteON stock change API", "url": "https://github.com/Anchanto/JPluger/pull/21817", "createdAt": "2026-08-03T13:01:55Z", "updatedAt": "2026-08-20T07:36:34Z", "author": "aritra-das-13", "base": "lotte-on/fetch-product-junit", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 17.8, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 961, "deletions": 4, "totalLines": 965, "changedFiles": 12, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21835, "title": "fix: guard NPE in ELC 3PP order mapping when original order record missing (ZD #477086)", "url": "https://github.com/Anchanto/JPluger/pull/21835", "createdAt": "2026-08-04T11:25:43Z", "updatedAt": "2026-08-04T11:27:00Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 16.9, "inactiveDays": 16.9, "hasReview": false, "reviewsCount": 0, "additions": 8, "deletions": 0, "totalLines": 8, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21840, "title": "feeds-api-changes", "url": "https://github.com/Anchanto/JPluger/pull/21840", "createdAt": "2026-08-04T12:33:17Z", "updatedAt": "2026-08-04T18:00:42Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/base", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 16.8, "inactiveDays": 16.6, "hasReview": false, "reviewsCount": 0, "additions": 66, "deletions": 43, "totalLines": 109, "changedFiles": 7, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21847, "title": "Retry order status update when order not yet created (race)", "url": "https://github.com/Anchanto/JPluger/pull/21847", "createdAt": "2026-08-05T04:41:05Z", "updatedAt": "2026-08-05T04:45:46Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 16.2, "inactiveDays": 16.2, "hasReview": false, "reviewsCount": 0, "additions": 13, "deletions": 0, "totalLines": 13, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21855, "title": "Fix TikTok Shop connect redirecting to decommissioned domain", "url": "https://github.com/Anchanto/JPluger/pull/21855", "createdAt": "2026-08-05T08:38:45Z", "updatedAt": "2026-08-05T08:41:55Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 16.0, "inactiveDays": 16.0, "hasReview": false, "reviewsCount": 0, "additions": 1, "deletions": 1, "totalLines": 2, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21866, "title": "complete FeedsApi migration for handler and scheduled services", "url": "https://github.com/Anchanto/JPluger/pull/21866", "createdAt": "2026-08-05T17:55:01Z", "updatedAt": "2026-08-05T17:57:33Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/feeds-api", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 15.6, "inactiveDays": 15.6, "hasReview": false, "reviewsCount": 0, "additions": 78, "deletions": 46, "totalLines": 124, "changedFiles": 5, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21867, "title": "complete ReportsApi migration for handler and AmazonUtility", "url": "https://github.com/Anchanto/JPluger/pull/21867", "createdAt": "2026-08-05T18:21:47Z", "updatedAt": "2026-08-05T18:22:57Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/feeds-api-2", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 15.6, "inactiveDays": 15.6, "hasReview": false, "reviewsCount": 0, "additions": 23, "deletions": 22, "totalLines": 45, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21873, "title": "Implement Lotte price update", "url": "https://github.com/Anchanto/JPluger/pull/21873", "createdAt": "2026-08-06T03:15:32Z", "updatedAt": "2026-08-20T07:36:20Z", "author": "aritra-das-13", "base": "lotte-on/update-stock", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 15.2, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 517, "deletions": 1, "totalLines": 518, "changedFiles": 8, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21882, "title": "fix: match ELC SAP status webhook line items after stripping SAP release suffix (ZD #477329)", "url": "https://github.com/Anchanto/JPluger/pull/21882", "createdAt": "2026-08-06T07:50:48Z", "updatedAt": "2026-08-06T07:53:32Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 15.0, "inactiveDays": 15.0, "hasReview": false, "reviewsCount": 0, "additions": 16, "deletions": 1, "totalLines": 17, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21895, "title": "Migrate OrdersAPI to spapi-sdk", "url": "https://github.com/Anchanto/JPluger/pull/21895", "createdAt": "2026-08-06T10:24:10Z", "updatedAt": "2026-08-06T11:42:41Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/report-api", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 14.9, "inactiveDays": 14.9, "hasReview": false, "reviewsCount": 0, "additions": 59, "deletions": 85, "totalLines": 144, "changedFiles": 13, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21898, "title": "Adding Scarlett dashboard configuration and properties.", "url": "https://github.com/Anchanto/JPluger/pull/21898", "createdAt": "2026-08-06T12:15:34Z", "updatedAt": "2026-08-06T13:33:07Z", "author": "ParitoshAnchanto", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 14.9, "inactiveDays": 14.8, "hasReview": false, "reviewsCount": 0, "additions": 252, "deletions": 4, "totalLines": 256, "changedFiles": 7, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21909, "title": "adding secrets manager support for selluseller-connector", "url": "https://github.com/Anchanto/JPluger/pull/21909", "createdAt": "2026-08-07T06:56:02Z", "updatedAt": "2026-08-21T07:55:52Z", "author": "aritra-das-13", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 14.1, "inactiveDays": 0.0, "hasReview": false, "reviewsCount": 0, "additions": 31, "deletions": 2, "totalLines": 33, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21920, "title": "Fixing", "url": "https://github.com/Anchanto/JPluger/pull/21920", "createdAt": "2026-08-07T11:07:07Z", "updatedAt": "2026-08-12T09:20:41Z", "author": "debaudhghosh1", "base": "master", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 13.9, "inactiveDays": 9.0, "hasReview": true, "reviewsCount": 3, "additions": 21, "deletions": 0, "totalLines": 21, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21931, "title": "fix: retry CMG DO cancellation when order not yet persisted (ZD #477656)", "url": "https://github.com/Anchanto/JPluger/pull/21931", "createdAt": "2026-08-08T20:12:11Z", "updatedAt": "2026-08-08T20:13:55Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 12.5, "inactiveDays": 12.5, "hasReview": false, "reviewsCount": 0, "additions": 6, "deletions": 2, "totalLines": 8, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21944, "title": "fix: report DPD UK createOrder failure to WMS on unexpected exception (ZD #477794)", "url": "https://github.com/Anchanto/JPluger/pull/21944", "createdAt": "2026-08-10T09:43:06Z", "updatedAt": "2026-08-10T09:44:44Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 11.0, "inactiveDays": 11.0, "hasReview": false, "reviewsCount": 0, "additions": 14, "deletions": 3, "totalLines": 17, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21967, "title": "fix: surface Quadx/GoGo errors.detail instead of blanking it (ZD #477945)", "url": "https://github.com/Anchanto/JPluger/pull/21967", "createdAt": "2026-08-11T10:59:04Z", "updatedAt": "2026-08-11T11:00:56Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.9, "inactiveDays": 9.9, "hasReview": false, "reviewsCount": 0, "additions": 85, "deletions": 0, "totalLines": 85, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21968, "title": "fix: truncate CMG customer name before WMS FC payload (ZD #477948)", "url": "https://github.com/Anchanto/JPluger/pull/21968", "createdAt": "2026-08-11T11:20:56Z", "updatedAt": "2026-08-11T11:22:55Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.9, "inactiveDays": 9.9, "hasReview": false, "reviewsCount": 0, "additions": 12, "deletions": 4, "totalLines": 16, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21981, "title": "fix: stop silently dropping TikTok stock updates on redis cache miss (ZD #477982)", "url": "https://github.com/Anchanto/JPluger/pull/21981", "createdAt": "2026-08-12T01:22:30Z", "updatedAt": "2026-08-12T01:25:26Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.3, "inactiveDays": 9.3, "hasReview": false, "reviewsCount": 0, "additions": 6, "deletions": 1, "totalLines": 7, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21987, "title": "Fix: store stuck ACTIVE after disconnect blocks all future reconnects (ZD #477887)", "url": "https://github.com/Anchanto/JPluger/pull/21987", "createdAt": "2026-08-12T06:41:21Z", "updatedAt": "2026-08-12T06:46:16Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.1, "inactiveDays": 9.1, "hasReview": false, "reviewsCount": 0, "additions": 7, "deletions": 0, "totalLines": 7, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 21988, "title": "Lotte on/orders/fetch", "url": "https://github.com/Anchanto/JPluger/pull/21988", "createdAt": "2026-08-12T06:52:10Z", "updatedAt": "2026-08-20T07:35:32Z", "author": "aritra-das-13", "base": "lotte-on/update-price", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.1, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 2683, "deletions": 1, "totalLines": 2684, "changedFiles": 14, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 21990, "title": "Fix LX-ELC cancel race by deferring cancel until after create (Option\u2026", "url": "https://github.com/Anchanto/JPluger/pull/21990", "createdAt": "2026-08-12T06:59:27Z", "updatedAt": "2026-08-13T13:04:34Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.1, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 2857, "deletions": 88, "totalLines": 2945, "changedFiles": 21, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22001, "title": "fix: prevent NPE on first-time Brand.com order creation in SAP ELC integration (ZD #478038)", "url": "https://github.com/Anchanto/JPluger/pull/22001", "createdAt": "2026-08-12T08:48:22Z", "updatedAt": "2026-08-12T08:51:35Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 9.0, "inactiveDays": 9.0, "hasReview": false, "reviewsCount": 0, "additions": 10, "deletions": 3, "totalLines": 13, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22005, "title": "Add SF Express Malaysia support for EE, SE, and EXCD", "url": "https://github.com/Anchanto/JPluger/pull/22005", "createdAt": "2026-08-12T11:55:16Z", "updatedAt": "2026-08-20T08:14:47Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 8.9, "inactiveDays": 1.0, "hasReview": false, "reviewsCount": 0, "additions": 345, "deletions": 22, "totalLines": 367, "changedFiles": 6, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22011, "title": "Mondial relay v2/auth", "url": "https://github.com/Anchanto/JPluger/pull/22011", "createdAt": "2026-08-12T17:40:25Z", "updatedAt": "2026-08-21T05:29:29Z", "author": "MadhuriAnchanto123", "base": "mondial-relay-v2/working", "requestedReviewers": [], "reviewState": "CHANGES_REQUESTED", "ageDays": 8.6, "inactiveDays": 0.1, "hasReview": true, "reviewsCount": 5, "additions": 9015, "deletions": 168, "totalLines": 9183, "changedFiles": 95, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22012, "title": "fix: retry order creation on exception before HTTP status is known (ZD #478039)", "url": "https://github.com/Anchanto/JPluger/pull/22012", "createdAt": "2026-08-13T00:53:38Z", "updatedAt": "2026-08-13T00:56:09Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 8.3, "inactiveDays": 8.3, "hasReview": false, "reviewsCount": 0, "additions": 9, "deletions": 1, "totalLines": 10, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22014, "title": "Fix NonUniqueResultException in GRN lookup by PO number (ZD477094)", "url": "https://github.com/Anchanto/JPluger/pull/22014", "createdAt": "2026-08-13T03:45:56Z", "updatedAt": "2026-08-13T03:47:26Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 8.2, "inactiveDays": 8.2, "hasReview": false, "reviewsCount": 0, "additions": 2, "deletions": 2, "totalLines": 4, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22025, "title": "Changed Entity name from countrycodes to wmscountryCodes", "url": "https://github.com/Anchanto/JPluger/pull/22025", "createdAt": "2026-08-13T06:58:43Z", "updatedAt": "2026-08-17T07:05:17Z", "author": "deeksha-sisodiya1005", "base": "master", "requestedReviewers": ["ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 8.1, "inactiveDays": 4.1, "hasReview": false, "reviewsCount": 0, "additions": 22, "deletions": 22, "totalLines": 44, "changedFiles": 7, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22026, "title": "fix: do not silently drop TikTok stock updates on redis cache miss (ZD #478157)", "url": "https://github.com/Anchanto/JPluger/pull/22026", "createdAt": "2026-08-13T07:11:40Z", "updatedAt": "2026-08-13T07:14:49Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 8.1, "inactiveDays": 8.1, "hasReview": false, "reviewsCount": 0, "additions": 7, "deletions": 5, "totalLines": 12, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22034, "title": "Add jplugger-mcp STDIO server for documented agent commits.", "url": "https://github.com/Anchanto/JPluger/pull/22034", "createdAt": "2026-08-13T10:05:57Z", "updatedAt": "2026-08-13T12:53:04Z", "author": "prasenjit-h", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.9, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 1708, "deletions": 0, "totalLines": 1708, "changedFiles": 32, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22036, "title": "Qa/chronopost split order fix", "url": "https://github.com/Anchanto/JPluger/pull/22036", "createdAt": "2026-08-13T10:24:46Z", "updatedAt": "2026-08-14T07:23:43Z", "author": "kirankushwah-anchanto", "base": "integration-qa", "requestedReviewers": [], "reviewState": "COMMENTED", "ageDays": 7.9, "inactiveDays": 7.1, "hasReview": true, "reviewsCount": 1, "additions": 23, "deletions": 3, "totalLines": 26, "changedFiles": 4, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22045, "title": "Tiktok v2 global/auth", "url": "https://github.com/Anchanto/JPluger/pull/22045", "createdAt": "2026-08-13T11:42:30Z", "updatedAt": "2026-08-21T07:17:44Z", "author": "tushardev07", "base": "tiktok-v2-global/base", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 7.9, "inactiveDays": 0.1, "hasReview": true, "reviewsCount": 1, "additions": 70184, "deletions": 15, "totalLines": 70199, "changedFiles": 362, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22047, "title": "Puig/spec files", "url": "https://github.com/Anchanto/JPluger/pull/22047", "createdAt": "2026-08-13T13:06:19Z", "updatedAt": "2026-08-21T06:15:28Z", "author": "chiragbhargava-anchanto", "base": "puig/base", "requestedReviewers": [], "reviewState": "CHANGES_REQUESTED", "ageDays": 7.8, "inactiveDays": 0.1, "hasReview": true, "reviewsCount": 1, "additions": 1406, "deletions": 51, "totalLines": 1457, "changedFiles": 19, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22048, "title": "Lx elc qa/deferred cancel qa", "url": "https://github.com/Anchanto/JPluger/pull/22048", "createdAt": "2026-08-13T13:16:07Z", "updatedAt": "2026-08-13T13:19:50Z", "author": "prasenjit-h", "base": "integration-qa", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.8, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 2856, "deletions": 109, "totalLines": 2965, "changedFiles": 21, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22050, "title": "Lx elc uat/deferred cancel uat", "url": "https://github.com/Anchanto/JPluger/pull/22050", "createdAt": "2026-08-13T13:17:11Z", "updatedAt": "2026-08-13T13:21:27Z", "author": "prasenjit-h", "base": "integration-stage", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.8, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 2857, "deletions": 88, "totalLines": 2945, "changedFiles": 21, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22054, "title": "fix: retry order status+details update on order-not-present race (ZD #478167)", "url": "https://github.com/Anchanto/JPluger/pull/22054", "createdAt": "2026-08-13T14:43:06Z", "updatedAt": "2026-08-13T14:46:39Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.8, "inactiveDays": 7.8, "hasReview": false, "reviewsCount": 0, "additions": 13, "deletions": 0, "totalLines": 13, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22064, "title": "Lotte on/updates", "url": "https://github.com/Anchanto/JPluger/pull/22064", "createdAt": "2026-08-14T05:51:57Z", "updatedAt": "2026-08-20T07:36:10Z", "author": "aritra-das-13", "base": "lotte-on/orders/fetch", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.1, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 160, "deletions": 26, "totalLines": 186, "changedFiles": 10, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 22070, "title": "fix: CMG cancel-delta check ignores orders never confirmed cancelled at FC (ZD #477800)", "url": "https://github.com/Anchanto/JPluger/pull/22070", "createdAt": "2026-08-14T08:29:56Z", "updatedAt": "2026-08-14T08:32:22Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.0, "inactiveDays": 7.0, "hasReview": false, "reviewsCount": 0, "additions": 11, "deletions": 0, "totalLines": 11, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22076, "title": "[IA-4884] fix SonarQube related pending tasks ", "url": "https://github.com/Anchanto/JPluger/pull/22076", "createdAt": "2026-08-14T09:05:36Z", "updatedAt": "2026-08-21T04:11:31Z", "author": "thinhvu-anchanto", "base": "integration-qa", "requestedReviewers": ["vasudevpathak", "keshavbagaria-anchanto", "nguyennguyen-anchanto"], "reviewState": "CHANGES_REQUESTED", "ageDays": 7.0, "inactiveDays": 0.2, "hasReview": true, "reviewsCount": 2, "additions": 681, "deletions": 157, "totalLines": 838, "changedFiles": 60, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22078, "title": "carrier fetch added", "url": "https://github.com/Anchanto/JPluger/pull/22078", "createdAt": "2026-08-14T09:33:02Z", "updatedAt": "2026-08-20T07:36:00Z", "author": "aritra-das-13", "base": "lotte-on/updates", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 7.0, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 536, "deletions": 3, "totalLines": 539, "changedFiles": 6, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 22105, "title": "Product creation and updation webhook for suntory", "url": "https://github.com/Anchanto/JPluger/pull/22105", "createdAt": "2026-08-17T06:16:19Z", "updatedAt": "2026-08-17T17:03:02Z", "author": "nikhilGupta6", "base": "master", "requestedReviewers": ["vasudevpathak", "ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 4.1, "inactiveDays": 3.7, "hasReview": false, "reviewsCount": 0, "additions": 1254, "deletions": 20, "totalLines": 1274, "changedFiles": 30, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22107, "title": "fix: treat NetSuite duplicate-record rejection as idempotent success in ULSSI sales order push (ZD #478496)", "url": "https://github.com/Anchanto/JPluger/pull/22107", "createdAt": "2026-08-17T06:34:44Z", "updatedAt": "2026-08-18T04:08:20Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 4.1, "inactiveDays": 3.2, "hasReview": false, "reviewsCount": 0, "additions": 30, "deletions": 2, "totalLines": 32, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22108, "title": "switch Mirakl OAuth to client credentials grant", "url": "https://github.com/Anchanto/JPluger/pull/22108", "createdAt": "2026-08-17T07:10:10Z", "updatedAt": "2026-08-17T07:11:50Z", "author": "kirankushwah-anchanto", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 4.1, "inactiveDays": 4.1, "hasReview": false, "reviewsCount": 0, "additions": 4, "deletions": 21, "totalLines": 25, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22114, "title": "Master pr for order part and cr for product part of ms dynamics", "url": "https://github.com/Anchanto/JPluger/pull/22114", "createdAt": "2026-08-17T08:17:24Z", "updatedAt": "2026-08-21T04:54:44Z", "author": "nikhilGupta6", "base": "master", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 4.0, "inactiveDays": 0.2, "hasReview": false, "reviewsCount": 0, "additions": 15120, "deletions": 227, "totalLines": 15347, "changedFiles": 129, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22116, "title": "Retry TikTok stock update on rate-limit (429) response", "url": "https://github.com/Anchanto/JPluger/pull/22116", "createdAt": "2026-08-17T09:36:22Z", "updatedAt": "2026-08-17T09:37:07Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 4.0, "inactiveDays": 4.0, "hasReview": false, "reviewsCount": 0, "additions": 21, "deletions": 1, "totalLines": 22, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22119, "title": "fix: populate GoodsDescription in C3X create-order requests (ZD #476426)", "url": "https://github.com/Anchanto/JPluger/pull/22119", "createdAt": "2026-08-17T10:37:13Z", "updatedAt": "2026-08-17T10:38:57Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 3.9, "inactiveDays": 3.9, "hasReview": false, "reviewsCount": 0, "additions": 19, "deletions": 0, "totalLines": 19, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22129, "title": "updating sellerflex flow with latest sdk", "url": "https://github.com/Anchanto/JPluger/pull/22129", "createdAt": "2026-08-18T02:38:59Z", "updatedAt": "2026-08-20T02:15:49Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/base", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 3.3, "inactiveDays": 1.3, "hasReview": false, "reviewsCount": 0, "additions": 690, "deletions": 422, "totalLines": 1112, "changedFiles": 6, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22130, "title": "Lotte on/orders/shipment", "url": "https://github.com/Anchanto/JPluger/pull/22130", "createdAt": "2026-08-18T03:33:34Z", "updatedAt": "2026-08-20T07:35:49Z", "author": "aritra-das-13", "base": "lotte-on/fetch-carriers", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 3.2, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 2311, "deletions": 62, "totalLines": 2373, "changedFiles": 18, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": true}, {"number": 22131, "title": "fix: forward the default return warehouse on TikTok return-order creation (ZD #478625)", "url": "https://github.com/Anchanto/JPluger/pull/22131", "createdAt": "2026-08-18T03:39:29Z", "updatedAt": "2026-08-18T03:40:04Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 3.2, "inactiveDays": 3.2, "hasReview": false, "reviewsCount": 0, "additions": 46, "deletions": 4, "totalLines": 50, "changedFiles": 3, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22136, "title": "updating rest orders flow with latest sdk", "url": "https://github.com/Anchanto/JPluger/pull/22136", "createdAt": "2026-08-18T06:46:17Z", "updatedAt": "2026-08-18T09:25:29Z", "author": "AzimuddinSheikh", "base": "amazon-sdk-upgrade/sellerflex", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 3.1, "inactiveDays": 3.0, "hasReview": false, "reviewsCount": 0, "additions": 334, "deletions": 289, "totalLines": 623, "changedFiles": 7, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22153, "title": "fix: log and flag CMG SAP sales-posting rejections instead of silently swallowing them (ZD #478571)", "url": "https://github.com/Anchanto/JPluger/pull/22153", "createdAt": "2026-08-18T13:51:49Z", "updatedAt": "2026-08-18T13:52:30Z", "author": "rahulshinde100", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 2.8, "inactiveDays": 2.8, "hasReview": false, "reviewsCount": 0, "additions": 11, "deletions": 0, "totalLines": 11, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22167, "title": "order flows", "url": "https://github.com/Anchanto/JPluger/pull/22167", "createdAt": "2026-08-18T22:27:07Z", "updatedAt": "2026-08-21T06:24:58Z", "author": "nikhilGupta6", "base": "jd-edwards/base", "requestedReviewers": ["vasudevpathak"], "reviewState": "PENDING_REVIEW", "ageDays": 2.4, "inactiveDays": 0.1, "hasReview": false, "reviewsCount": 0, "additions": 4340, "deletions": 133, "totalLines": 4473, "changedFiles": 52, "sizeCategory": "Huge", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22177, "title": "TR cloud Master PR", "url": "https://github.com/Anchanto/JPluger/pull/22177", "createdAt": "2026-08-19T05:48:44Z", "updatedAt": "2026-08-19T05:52:44Z", "author": "tushardev07", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 2.1, "inactiveDays": 2.1, "hasReview": false, "reviewsCount": 0, "additions": 23847, "deletions": 945, "totalLines": 24792, "changedFiles": 236, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22178, "title": "Map TikTok return delivered status and forward create_time to OMS (stage)", "url": "https://github.com/Anchanto/JPluger/pull/22178", "createdAt": "2026-08-19T06:01:45Z", "updatedAt": "2026-08-19T09:26:06Z", "author": "vishnuswami001", "base": "integration-stage", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 2.1, "inactiveDays": 2.0, "hasReview": false, "reviewsCount": 0, "additions": 112, "deletions": 16, "totalLines": 128, "changedFiles": 8, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22186, "title": "Integration stage tr cloud", "url": "https://github.com/Anchanto/JPluger/pull/22186", "createdAt": "2026-08-19T07:36:35Z", "updatedAt": "2026-08-19T08:45:59Z", "author": "tushardev07", "base": "integration-stage", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 2.1, "inactiveDays": 2.0, "hasReview": false, "reviewsCount": 0, "additions": 498, "deletions": 155, "totalLines": 653, "changedFiles": 25, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22193, "title": "Raw develop tr cloud", "url": "https://github.com/Anchanto/JPluger/pull/22193", "createdAt": "2026-08-19T11:53:16Z", "updatedAt": "2026-08-19T11:53:54Z", "author": "tushardev07", "base": "integration-qa", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 1.9, "inactiveDays": 1.9, "hasReview": false, "reviewsCount": 0, "additions": 611, "deletions": 266, "totalLines": 877, "changedFiles": 21, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22197, "title": "cursor comment resolve to qa", "url": "https://github.com/Anchanto/JPluger/pull/22197", "createdAt": "2026-08-20T05:00:16Z", "updatedAt": "2026-08-21T03:52:01Z", "author": "nikhilGupta6", "base": "integration-qa", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 1.2, "inactiveDays": 0.2, "hasReview": true, "reviewsCount": 1, "additions": 92, "deletions": 26, "totalLines": 118, "changedFiles": 8, "sizeCategory": "Medium", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22201, "title": "fix: pass SAP FulfillerOrderNumber as reference on ELC order acknowledgements (ZD #479044)", "url": "https://github.com/Anchanto/JPluger/pull/22201", "createdAt": "2026-08-20T05:50:09Z", "updatedAt": "2026-08-20T05:51:23Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 1.1, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 3, "deletions": 0, "totalLines": 3, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22214, "title": "fix: resolve ELC order acknowledgement duplicate WmsOrders lookup (ZD #479057)", "url": "https://github.com/Anchanto/JPluger/pull/22214", "createdAt": "2026-08-20T07:11:09Z", "updatedAt": "2026-08-20T07:13:54Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 1.1, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 22, "deletions": 1, "totalLines": 23, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22217, "title": "fix: Zid stock push always zero for multi-warehouse sellers (ZD #479065)", "url": "https://github.com/Anchanto/JPluger/pull/22217", "createdAt": "2026-08-20T07:31:04Z", "updatedAt": "2026-08-20T07:32:19Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 1.1, "inactiveDays": 1.1, "hasReview": false, "reviewsCount": 0, "additions": 6, "deletions": 1, "totalLines": 7, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22222, "title": "Spec Builder Skill Update", "url": "https://github.com/Anchanto/JPluger/pull/22222", "createdAt": "2026-08-20T08:07:42Z", "updatedAt": "2026-08-20T09:07:16Z", "author": "pkoraon", "base": "master", "requestedReviewers": ["vasudevpathak", "ParitoshAnchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 1.0, "inactiveDays": 1.0, "hasReview": false, "reviewsCount": 0, "additions": 938, "deletions": 30, "totalLines": 968, "changedFiles": 10, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22226, "title": "fix: use TikTok actual sale price instead of RRP for order item price (ZD #479108)", "url": "https://github.com/Anchanto/JPluger/pull/22226", "createdAt": "2026-08-20T10:01:08Z", "updatedAt": "2026-08-20T10:05:37Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 0.9, "inactiveDays": 0.9, "hasReview": false, "reviewsCount": 0, "additions": 6, "deletions": 1, "totalLines": 7, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22228, "title": "fix: skip FC push when CMG DO create arrives already cancelled (ZD #479118)", "url": "https://github.com/Anchanto/JPluger/pull/22228", "createdAt": "2026-08-20T10:59:12Z", "updatedAt": "2026-08-20T11:00:58Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 0.9, "inactiveDays": 0.9, "hasReview": false, "reviewsCount": 0, "additions": 37, "deletions": 0, "totalLines": 37, "changedFiles": 1, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22237, "title": "Pancake integration/new base", "url": "https://github.com/Anchanto/JPluger/pull/22237", "createdAt": "2026-08-20T20:31:14Z", "updatedAt": "2026-08-21T04:21:38Z", "author": "Kranti-Kumar-053", "base": "master", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 0.5, "inactiveDays": 0.2, "hasReview": false, "reviewsCount": 0, "additions": 26079, "deletions": 11, "totalLines": 26090, "changedFiles": 191, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22239, "title": "Eko Ken: create authentication flow", "url": "https://github.com/Anchanto/JPluger/pull/22239", "createdAt": "2026-08-20T21:21:18Z", "updatedAt": "2026-08-21T08:12:55Z", "author": "debaudhghosh1", "base": "eko-ken-sql-cloud/base", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 0.5, "inactiveDays": 0.0, "hasReview": false, "reviewsCount": 0, "additions": 10209, "deletions": 0, "totalLines": 10209, "changedFiles": 84, "sizeCategory": "The Mountain", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22240, "title": "Lettresuiviev1: cancelorder-qa", "url": "https://github.com/Anchanto/JPluger/pull/22240", "createdAt": "2026-08-21T04:12:23Z", "updatedAt": "2026-08-21T04:23:33Z", "author": "AzimuddinSheikh", "base": "integration-qa", "requestedReviewers": ["aritra-das-13", "keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 0.2, "inactiveDays": 0.2, "hasReview": false, "reviewsCount": 0, "additions": 17, "deletions": 18, "totalLines": 35, "changedFiles": 5, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22244, "title": "fix: sanitize non-Thai SAP billing postcode to avoid E999 rejection (ZD #479176)", "url": "https://github.com/Anchanto/JPluger/pull/22244", "createdAt": "2026-08-21T05:31:28Z", "updatedAt": "2026-08-21T05:33:12Z", "author": "raoul-ai", "base": "master", "requestedReviewers": [], "reviewState": "UNASSIGNED", "ageDays": 0.1, "inactiveDays": 0.1, "hasReview": false, "reviewsCount": 0, "additions": 14, "deletions": 1, "totalLines": 15, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22245, "title": "support app key and secret per marketplace_code", "url": "https://github.com/Anchanto/JPluger/pull/22245", "createdAt": "2026-08-21T06:05:12Z", "updatedAt": "2026-08-21T06:05:49Z", "author": "chiragbhargava-anchanto", "base": "tiktok-multi-app/base", "requestedReviewers": ["keshavbagaria-anchanto"], "reviewState": "PENDING_REVIEW", "ageDays": 0.1, "inactiveDays": 0.1, "hasReview": false, "reviewsCount": 0, "additions": 32, "deletions": 10, "totalLines": 42, "changedFiles": 2, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22246, "title": "[Claude]-Split return fetch into initiated/approved calls; drop appro\u2026", "url": "https://github.com/Anchanto/JPluger/pull/22246", "createdAt": "2026-08-21T06:45:52Z", "updatedAt": "2026-08-21T06:46:26Z", "author": "Kranti-Kumar-053", "base": "Ssg-dept/base", "requestedReviewers": ["aritra-das-13"], "reviewState": "PENDING_REVIEW", "ageDays": 0.1, "inactiveDays": 0.1, "hasReview": false, "reviewsCount": 0, "additions": 247, "deletions": 487, "totalLines": 734, "changedFiles": 11, "sizeCategory": "Large", "lastActivity": "Aug 2026", "isDraft": false}, {"number": 22247, "title": "Tiktok jp/integration qa", "url": "https://github.com/Anchanto/JPluger/pull/22247", "createdAt": "2026-08-21T08:02:27Z", "updatedAt": "2026-08-21T08:12:34Z", "author": "chiragbhargava-anchanto", "base": "integration-qa", "requestedReviewers": [], "reviewState": "APPROVED", "ageDays": 0.0, "inactiveDays": 0.0, "hasReview": true, "reviewsCount": 1, "additions": 51, "deletions": 45, "totalLines": 96, "changedFiles": 10, "sizeCategory": "Small", "lastActivity": "Aug 2026", "isDraft": false}]};
+  </script>
+
+  <script>
+    let fullPrList = [];
+    let currentKpiFilter = 'ALL';
+    let currentReviewerFilter = '';
+    let currentSearchTerm = '';
+    let sortColumn = 'number';
+    let sortDirection = 'asc';
+    let isDarkTheme = true;
+
+    let selectedBases = new Set();
+    let selectedAuthors = new Set();
+    let selectedStatuses = new Set();
+
+    let allBasesList = [];
+    let allAuthorsList = [];
+    let allStatusList = [];
+
+    // Theme Switcher Logic
+    function initTheme() {
+      const savedTheme = localStorage.getItem('jpluger-theme');
+      if (savedTheme === 'light') {
+        setTheme(false);
+      } else {
+        setTheme(true);
+      }
+    }
+
+    function toggleTheme() {
+      setTheme(!isDarkTheme);
+      if (window.INITIAL_REPORT_DATA) {
+        renderMonthlyVelocity(window.INITIAL_REPORT_DATA.monthlyTrends || []);
+        renderAgeChart(window.INITIAL_REPORT_DATA.ageBins || {});
+      }
+      applyTableFiltersAndSort();
+    }
+
+    function setTheme(dark) {
+      isDarkTheme = dark;
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+
+      if (dark) {
+        html.classList.add('dark');
+        localStorage.setItem('jpluger-theme', 'dark');
+        if (icon) icon.innerText = '☀️';
+        if (text) text.innerText = 'Light';
+      } else {
+        html.classList.remove('dark');
+        localStorage.setItem('jpluger-theme', 'light');
+        if (icon) icon.innerText = '🌙';
+        if (text) text.innerText = 'Dark';
+      }
+    }
+
+    function renderUI(data) {
+      if (!data) return;
+
+      try {
+        fullPrList = data.allPrs || data.oldestPrs || [];
+
+        if (data.formattedDate) {
+          const reportDateEl = document.getElementById('report-date');
+          if (reportDateEl) reportDateEl.innerText = data.formattedDate;
+          
+          const footerDateEl = document.getElementById('footer-date');
+          if (footerDateEl) footerDateEl.innerText = data.formattedDate;
+        }
+
+        // Top KPIs
+        const totalEl = document.getElementById('kpi-total');
+        if (totalEl) totalEl.innerText = data.totalOpen ?? 0;
+
+        const unassignedEl = document.getElementById('kpi-unassigned');
+        if (unassignedEl) unassignedEl.innerText = data.unassignedCount ?? 0;
+
+        const unassignedPctEl = document.getElementById('kpi-unassigned-pct');
+        if (unassignedPctEl) unassignedPctEl.innerText = `${data.unassignedPct ?? 0}%`;
+
+        const staleEl = document.getElementById('kpi-stale');
+        if (staleEl) staleEl.innerText = data.stale30dCount ?? 0;
+
+        const approvedEl = document.getElementById('kpi-approved');
+        if (approvedEl) approvedEl.innerText = data.approvedUnmergedCount ?? 0;
+
+        const mountainBadgeEl = document.getElementById('mountain-pct-badge');
+        if (mountainBadgeEl && data.mountainPct !== undefined) {
+          mountainBadgeEl.innerText = `${data.mountainPct}% Mountain`;
+        }
+
+        populateTableDropdowns(fullPrList);
+      } catch (err) {
+        console.error("Error in Header/KPIs:", err);
+      }
+
+      // Safe individual rendering
+      try { renderMonthlyVelocity(data.monthlyTrends || []); } catch (e) { console.error("Monthly error:", e); }
+      try { renderReviewerLoad(data.topReviewers || []); } catch (e) { console.error("Reviewer error:", e); }
+      try { renderSizeDistribution(data.sizeBins || {}, data.totalOpen || 1); } catch (e) { console.error("Size error:", e); }
+      try { renderAgeChart(data.ageBins || {}); } catch (e) { console.error("Age error:", e); }
+      try { renderAuthorQueue(data.topAuthors || []); } catch (e) { console.error("Author queue error:", e); }
+      try { applyTableFiltersAndSort(); } catch (e) { console.error("Table error:", e); }
+    }
+
+    // High-Contrast Dual-Theme Velocity Chart with Dynamic Headroom Scaling
+    function renderMonthlyVelocity(trends) {
+      const container = document.getElementById('monthly-chart-container');
+      if (!container || !trends || trends.length === 0) return;
+
+      // 1. Dynamic Scaling for Net Deficit Trend (Upper Corridor)
+      const allNets = trends.map(t => t.netOverflow ?? 0);
+      const rawMinNet = Math.min(...allNets);
+      const rawMaxNet = Math.max(...allNets);
+      const minNet = Math.min(0, rawMinNet);
+      const maxNet = Math.max(Math.ceil(rawMaxNet * 1.25), 20); // 25% headroom to prevent top clipping
+
+      // 2. Dynamic Scaling for Grouped Bars (Lower Zone)
+      const allBarVals = trends.flatMap(t => [t.opened || 0, t.merged || 0]);
+      const rawMaxBar = Math.max(...allBarVals, 100);
+      const maxVal = Math.ceil((rawMaxBar * 1.15) / 50) * 50; // 15% headroom rounded to 50
+
+      const num = trends.length;
+      const svgPoints = [];
+      
+      const startX = 25;
+      const endX = 975;
+      const usableW = endX - startX;
+
+      // Upper Corridor: y range strictly 20px (top) to 56px (bottom)
+      trends.forEach((t, i) => {
+        const x = startX + ((i + 0.5) / num) * usableW;
+        const netNorm = (t.netOverflow - minNet) / Math.max(maxNet - minNet, 1);
+        const y = 56 - (netNorm * 34); // Scaled safely within [22, 56]
+        svgPoints.push({ x, y, net: t.netOverflow });
+      });
+
+      const polyline = svgPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+      // High-Contrast Colors
+      const isDark = document.documentElement.classList.contains('dark');
+      const gridColor = isDark ? '#1e293b' : '#e2e8f0';
+      const baselineColor = isDark ? '#334155' : '#cbd5e1';
+      
+      const openBarColor = isDark ? '#14b8a6' : '#0d9488'; // Teal-500 / Teal-600
+      const openTextColor = isDark ? '#2dd4bf' : '#0f766e';
+      
+      const mergeBarColor = isDark ? '#64748b' : '#475569'; // Slate-500 / Solid Slate-600 (High contrast)
+      const mergeTextColor = isDark ? '#94a3b8' : '#334155';
+      
+      const monthTextColor = isDark ? '#cbd5e1' : '#334155';
+      const netLineColor = isDark ? '#ef4444' : '#dc2626';
+      const netTextColor = isDark ? '#fca5a5' : '#b91c1c';
+      const pointBorderColor = isDark ? '#020617' : '#ffffff';
+
+      let html = '<div class="relative w-full h-full flex items-center justify-between">';
+
+      html += `
+        <svg class="w-full h-full" viewBox="0 0 1000 205" preserveAspectRatio="none">
+          <!-- Separator and Baseline -->
+          <line x1="15" y1="68" x2="985" y2="68" stroke="${gridColor}" stroke-width="1" stroke-dasharray="4,4" />
+          <line x1="15" y1="172" x2="985" y2="172" stroke="${baselineColor}" stroke-width="1.2" />
+
+          <!-- Upper Zone: Overlaid Net Deficit Trend Line & Circular Markers -->
+          <polyline points="${polyline}" fill="none" stroke="${netLineColor}" stroke-width="2.5" stroke-dasharray="6,4" />
+      `;
+
+      svgPoints.forEach(p => {
+        const sign = p.net >= 0 ? '+' : '';
+        html += `
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${netLineColor}" stroke="${pointBorderColor}" stroke-width="1.5" />
+          <text x="${p.x.toFixed(1)}" y="${(p.y - 6).toFixed(1)}" fill="${netTextColor}" font-size="10.5" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">
+            ${sign}${p.net}
+          </text>
+        `;
+      });
+
+      // Lower Zone: Dual Grouped Bars (Baseline y=172, Max Height = 78px reaching y=94)
+      trends.forEach((t, i) => {
+        const x = startX + ((i + 0.5) / num) * usableW;
+        const barW = 16;
+        const gap = 3.5;
+        
+        const openH = Math.min((t.opened / maxVal) * 78, 78);
+        const mergeH = Math.min((t.merged / maxVal) * 78, 78);
+        
+        const openX = x - barW - (gap / 2);
+        const mergeX = x + (gap / 2);
+        const openY = 172 - openH;
+        const mergeY = 172 - mergeH;
+
+        html += `
+          <!-- Opened Bar (Teal) -->
+          <text x="${openX + barW/2}" y="${openY - 3}" fill="${openTextColor}" font-size="9" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${t.opened}</text>
+          <rect x="${openX}" y="${openY}" width="${barW}" height="${openH}" fill="${openBarColor}" rx="2.5" ry="2.5" />
+
+          <!-- Merged Bar (Slate - Solid High Contrast) -->
+          <text x="${mergeX + barW/2}" y="${mergeY - 3}" fill="${mergeTextColor}" font-size="9" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${t.merged}</text>
+          <rect x="${mergeX}" y="${mergeY}" width="${barW}" height="${mergeH}" fill="${mergeBarColor}" rx="2.5" ry="2.5" />
+
+          <!-- Month Label -->
+          <text x="${x}" y="193" fill="${monthTextColor}" font-size="10" font-family="JetBrains Mono, monospace" font-weight="600" text-anchor="middle">${t.label || t.month}</text>
+        `;
+      });
+      html += '</svg></div>';
+      container.innerHTML = html;
+    }
+
+    function populateTableDropdowns(prs) {
+      if (!prs || prs.length === 0) return;
+
+      const baseMap = {};
+      const authorMap = {};
+      const statusMap = {
+        'APPROVED': 0,
+        'CHANGES_REQUESTED': 0,
+        'COMMENTED': 0,
+        'DRAFT': 0,
+        'UNASSIGNED': 0,
+        'PENDING_REVIEW': 0
+      };
+
+      prs.forEach(pr => {
+        if (pr.base) baseMap[pr.base] = (baseMap[pr.base] || 0) + 1;
+        if (pr.author) authorMap[pr.author] = (authorMap[pr.author] || 0) + 1;
+        
+        if (pr.isDraft) statusMap['DRAFT']++;
+        else if (pr.reviewState === 'APPROVED') statusMap['APPROVED']++;
+        else if (pr.reviewState === 'CHANGES_REQUESTED') statusMap['CHANGES_REQUESTED']++;
+        else if (pr.reviewState === 'COMMENTED') statusMap['COMMENTED']++;
+        else if (pr.reviewState === 'UNASSIGNED') statusMap['UNASSIGNED']++;
+        else statusMap['PENDING_REVIEW']++;
+      });
+
+      // Pinned Bases at Top
+      const pinnedBases = ['master', 'integration-qa', 'integration-stage'];
+      allBasesList = [];
+      pinnedBases.forEach(name => {
+        if (baseMap[name] !== undefined) {
+          allBasesList.push({ name: name, count: baseMap[name] });
+        }
+      });
+      Object.entries(baseMap)
+        .filter(([name]) => !pinnedBases.includes(name))
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }))
+        .forEach(([name, count]) => {
+          allBasesList.push({ name: name, count: count });
+        });
+
+      // Authors sorted alphabetically (A-Z)
+      allAuthorsList = Object.entries(authorMap)
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }))
+        .map(([name, count]) => ({ name: name, count: count }));
+
+      // Statuses sorted alphabetically (A-Z)
+      allStatusList = [
+        { val: 'APPROVED', label: 'APPROVED', count: statusMap['APPROVED'] },
+        { val: 'CHANGES_REQUESTED', label: 'CHANGES', count: statusMap['CHANGES_REQUESTED'] },
+        { val: 'COMMENTED', label: 'COMMENTED', count: statusMap['COMMENTED'] },
+        { val: 'DRAFT', label: 'DRAFT', count: statusMap['DRAFT'] },
+        { val: 'UNASSIGNED', label: 'NO OWNER', count: statusMap['UNASSIGNED'] },
+        { val: 'PENDING_REVIEW', label: 'PENDING', count: statusMap['PENDING_REVIEW'] },
+      ].sort((a, b) => a.label.localeCompare(b.label));
+
+      renderMsList('base');
+      renderMsList('author');
+      renderMsList('status');
+
+      updateMsBtnText('base');
+      updateMsBtnText('author');
+      updateMsBtnText('status');
+    }
+
+    function toggleMsDropdown(e, menuId) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      closeAllMsDropdowns();
+      if (isHidden) {
+        menu.classList.remove('hidden');
+      }
+    }
+
+    function closeAllMsDropdowns() {
+      ['ms-base-menu', 'ms-author-menu', 'ms-status-menu'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#ms-base-wrapper') && !e.target.closest('#ms-author-wrapper') && !e.target.closest('#ms-status-wrapper')) {
+        closeAllMsDropdowns();
+      }
+    });
+
+    function toggleMsItem(type, val) {
+      let targetSet = (type === 'base') ? selectedBases : ((type === 'author') ? selectedAuthors : selectedStatuses);
+      if (targetSet.has(val)) {
+        targetSet.delete(val);
+      } else {
+        targetSet.add(val);
+      }
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function selectAllMs(type) {
+      if (type === 'base') {
+        selectedBases = new Set(allBasesList.map(b => b.name));
+      } else if (type === 'author') {
+        selectedAuthors = new Set(allAuthorsList.map(a => a.name));
+      } else if (type === 'status') {
+        selectedStatuses = new Set(allStatusList.map(s => s.val));
+      }
+      renderMsList(type);
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function clearMs(type) {
+      if (type === 'base') {
+        selectedBases.clear();
+      } else if (type === 'author') {
+        selectedAuthors.clear();
+      } else if (type === 'status') {
+        selectedStatuses.clear();
+      }
+      renderMsList(type);
+      updateMsBtnText(type);
+      applyTableFiltersAndSort();
+    }
+
+    function updateMsBtnText(type) {
+      if (type === 'base') {
+        const textEl = document.getElementById('ms-base-btn-text');
+        if (!textEl) return;
+        if (selectedBases.size === 0 || selectedBases.size === allBasesList.length) {
+          textEl.innerText = 'All Bases';
+        } else if (selectedBases.size === 1) {
+          textEl.innerText = `Base: ${Array.from(selectedBases)[0]}`;
+        } else {
+          textEl.innerText = `Bases (${selectedBases.size})`;
+        }
+      } else if (type === 'author') {
+        const textEl = document.getElementById('ms-author-btn-text');
+        if (!textEl) return;
+        if (selectedAuthors.size === 0 || selectedAuthors.size === allAuthorsList.length) {
+          textEl.innerText = 'All Authors';
+        } else if (selectedAuthors.size === 1) {
+          textEl.innerText = `Author: ${Array.from(selectedAuthors)[0]}`;
+        } else {
+          textEl.innerText = `Authors (${selectedAuthors.size})`;
+        }
+      } else if (type === 'status') {
+        const textEl = document.getElementById('ms-status-btn-text');
+        if (!textEl) return;
+        if (selectedStatuses.size === 0 || selectedStatuses.size === allStatusList.length) {
+          textEl.innerText = 'All Status';
+        } else if (selectedStatuses.size === 1) {
+          const val = Array.from(selectedStatuses)[0];
+          const match = allStatusList.find(s => s.val === val);
+          textEl.innerText = `Status: ${match ? match.label : val}`;
+        } else {
+          textEl.innerText = `Status (${selectedStatuses.size})`;
+        }
+      }
+    }
+
+    function renderMsList(type, filterQuery = '') {
+      const container = document.getElementById(`ms-${type}-list`);
+      if (!container) return;
+      
+      let items = (type === 'base') ? allBasesList : ((type === 'author') ? allAuthorsList : allStatusList);
+      let targetSet = (type === 'base') ? selectedBases : ((type === 'author') ? selectedAuthors : selectedStatuses);
+      
+      if (filterQuery) {
+        const q = filterQuery.toLowerCase().trim();
+        items = items.filter(it => (it.name || it.label || it.val).toLowerCase().includes(q));
+      }
+
+      container.innerHTML = '';
+      if (items.length === 0) {
+        container.innerHTML = '<div class="text-[10px] text-slate-400 p-1">No matches found</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const val = item.val !== undefined ? item.val : item.name;
+        const label = item.label !== undefined ? item.label : item.name;
+        const count = item.count;
+        const isChecked = targetSet.has(val);
+
+        const row = document.createElement('label');
+        row.className = 'flex items-center justify-between gap-2 px-1.5 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800/70 cursor-pointer select-none';
+        row.innerHTML = `
+          <div class="flex items-center gap-2 truncate">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMsItem('${type}', '${val}')" class="rounded border-slate-300 dark:border-slate-700 text-sky-600 focus:ring-sky-500 h-3.5 w-3.5">
+            <span class="truncate text-slate-800 dark:text-slate-200">${label}</span>
+          </div>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">${count}</span>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function filterMsItems(type, query) {
+      renderMsList(type, query);
+    }
+
+    function setKpiFilter(filter) {
+      currentKpiFilter = filter;
+
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+
+      if (cards[filter]) {
+        const ringColor = filter === 'ALL' ? 'ring-sky-500' : (filter === 'NO_REVIEWER' ? 'ring-red-400' : (filter === 'STALE' ? 'ring-amber-400' : 'ring-blue-400'));
+        cards[filter].classList.add('ring-2', ringColor, 'ring-offset-2', 'dark:ring-offset-slate-950');
+      }
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleBaseFilterChange(val) {
+      currentBaseFilter = val;
+      applyTableFiltersAndSort();
+    }
+
+    function handleAuthorFilterChange(val) {
+      const isSame = (selectedAuthors.size === 1 && selectedAuthors.has(val));
+
+      // Reset all other filters
+      currentKpiFilter = 'ALL';
+      currentReviewerFilter = '';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      // Reset KPI card ring outlines to ALL
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+      if (cards['ALL']) cards['ALL'].classList.add('ring-2', 'ring-sky-500', 'ring-offset-2', 'dark:ring-offset-slate-950');
+
+      if (isSame) {
+        selectedAuthors.clear();
+      } else {
+        selectedAuthors = new Set([val]);
+      }
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleReviewerFilterChange(val) {
+      const isSame = (currentReviewerFilter === val);
+
+      // Reset all other filters
+      currentKpiFilter = 'ALL';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedAuthors.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      // Reset KPI card ring outlines to ALL
+      const cards = {
+        'ALL': document.getElementById('card-filter-ALL'),
+        'NO_REVIEWER': document.getElementById('card-filter-NO_REVIEWER'),
+        'STALE': document.getElementById('card-filter-STALE'),
+        'APPROVED': document.getElementById('card-filter-APPROVED')
+      };
+      Object.values(cards).forEach(c => {
+        if (c) c.classList.remove('ring-2', 'ring-sky-500', 'ring-red-400', 'ring-amber-400', 'ring-blue-400', 'ring-offset-2', 'ring-offset-slate-50', 'dark:ring-offset-slate-950');
+      });
+      if (cards['ALL']) cards['ALL'].classList.add('ring-2', 'ring-sky-500', 'ring-offset-2', 'dark:ring-offset-slate-950');
+
+      currentReviewerFilter = isSame ? '' : val;
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      applyTableFiltersAndSort();
+    }
+
+    function handleStatusFilterChange(val) {
+      if (selectedStatuses.size === 1 && selectedStatuses.has(val)) {
+        selectedStatuses.clear();
+      } else {
+        selectedStatuses = new Set([val]);
+      }
+      renderMsList('status');
+      updateMsBtnText('status');
+      applyTableFiltersAndSort();
+    }
+
+    function handleSearchChange(val) {
+      currentSearchTerm = val.toLowerCase().trim();
+      applyTableFiltersAndSort();
+    }
+
+    function resetAllFilters() {
+      currentKpiFilter = 'ALL';
+      currentReviewerFilter = '';
+      currentSearchTerm = '';
+      selectedBases.clear();
+      selectedAuthors.clear();
+      selectedStatuses.clear();
+
+      const searchInput = document.getElementById('table-search');
+      if (searchInput) searchInput.value = '';
+
+      ['base', 'author', 'status'].forEach(type => {
+        renderMsList(type);
+        updateMsBtnText(type);
+      });
+
+      setKpiFilter('ALL');
+    }
+
+    function toggleSort(col) {
+      if (sortColumn === col) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortColumn = col;
+        sortDirection = (col === 'updated' || col === 'lines') ? 'desc' : 'asc';
+      }
+      updateSortIcons();
+      applyTableFiltersAndSort();
+    }
+
+    function updateSortIcons() {
+      const cols = ['number', 'base', 'author', 'status', 'lines', 'updated'];
+      cols.forEach(c => {
+        const icon = document.getElementById(`sort-${c}-icon`);
+        if (!icon) return;
+        if (sortColumn === c) {
+          icon.innerText = sortDirection === 'asc' ? '▲' : '▼';
+          icon.className = 'text-sky-600 dark:text-sky-400 font-bold';
+        } else {
+          icon.innerText = '⇅';
+          icon.className = 'text-slate-400 dark:text-slate-600';
+        }
+      });
+    }
+
+    function applyTableFiltersAndSort() {
+      let filtered = [...fullPrList];
+
+      if (currentKpiFilter === 'NO_REVIEWER') {
+        filtered = filtered.filter(pr => (pr.requestedReviewers || []).length === 0 && !pr.hasReview);
+      } else if (currentKpiFilter === 'STALE') {
+        filtered = filtered.filter(pr => pr.inactiveDays >= 30);
+      } else if (currentKpiFilter === 'APPROVED') {
+        filtered = filtered.filter(pr => pr.reviewState === 'APPROVED');
+      }
+
+      if (selectedBases.size > 0) {
+        filtered = filtered.filter(pr => selectedBases.has(pr.base));
+      }
+
+      if (selectedAuthors.size > 0) {
+        filtered = filtered.filter(pr => selectedAuthors.has(pr.author));
+      }
+
+      if (currentReviewerFilter) {
+        filtered = filtered.filter(pr => (pr.requestedReviewers || []).includes(currentReviewerFilter));
+      }
+
+      if (selectedStatuses.size > 0) {
+        filtered = filtered.filter(pr => pr.isDraft ? selectedStatuses.has('DRAFT') : selectedStatuses.has(pr.reviewState));
+      }
+
+      if (currentSearchTerm) {
+        filtered = filtered.filter(pr => 
+          pr.number.toString().includes(currentSearchTerm) ||
+          (pr.title && pr.title.toLowerCase().includes(currentSearchTerm)) ||
+          (pr.author && pr.author.toLowerCase().includes(currentSearchTerm)) ||
+          (pr.base && pr.base.toLowerCase().includes(currentSearchTerm))
+        );
+      }
+
+      filtered.sort((a, b) => {
+        let valA, valB;
+        if (sortColumn === 'number') {
+          valA = a.number; valB = b.number;
+        } else if (sortColumn === 'base') {
+          valA = (a.base || '').toLowerCase(); valB = (b.base || '').toLowerCase();
+        } else if (sortColumn === 'author') {
+          valA = (a.author || '').toLowerCase(); valB = (b.author || '').toLowerCase();
+        } else if (sortColumn === 'status') {
+          valA = (a.reviewState || '').toLowerCase(); valB = (b.reviewState || '').toLowerCase();
+        } else if (sortColumn === 'lines') {
+          valA = (a.additions || 0) + (a.deletions || 0);
+          valB = (b.additions || 0) + (b.deletions || 0);
+        } else if (sortColumn === 'updated') {
+          valA = new Date(a.updatedAt).getTime();
+          valB = new Date(b.updatedAt).getTime();
+        }
+
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      const badge = document.getElementById('active-filter-badge');
+      const resetBtn = document.getElementById('clear-filter-btn');
+      const isFiltered = currentKpiFilter !== 'ALL' || selectedBases.size > 0 || selectedAuthors.size > 0 || currentReviewerFilter || selectedStatuses.size > 0 || currentSearchTerm;
+      
+      let label = `Showing: ${filtered.length}/${fullPrList.length} PRs`;
+      if (selectedBases.size > 0) label += ` [Bases: ${selectedBases.size}]`;
+      if (selectedAuthors.size > 0) label += ` [Authors: ${selectedAuthors.size}]`;
+      if (currentReviewerFilter) label += ` [Reviewer: ${currentReviewerFilter}]`;
+      if (selectedStatuses.size > 0) label += ` [Status: ${selectedStatuses.size}]`;
+      badge.innerText = label;
+
+      if (isFiltered) {
+        resetBtn.classList.remove('hidden');
+      } else {
+        resetBtn.classList.add('hidden');
+      }
+
+      renderTableRows(filtered);
+    }
+
+    // Render Table Rows with UNIFORM NEUTRAL STATUS BADGES (Light/Dark Base)
+    function renderTableRows(prs) {
+      const tbody = document.getElementById('pr-table-body');
+      tbody.innerHTML = '';
+      if (!prs || prs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400 font-mono text-xs">No matching PRs found for active filters.</td></tr>';
+        return;
+      }
+
+      prs.forEach((pr, index) => {
+        let statusLabel = 'PENDING';
+        if (pr.reviewState === 'APPROVED') statusLabel = 'APPROVED';
+        else if (pr.reviewState === 'CHANGES_REQUESTED') statusLabel = 'CHANGES';
+        else if (pr.reviewState === 'UNASSIGNED') statusLabel = 'NO OWNER';
+        else if (pr.reviewState === 'COMMENTED') statusLabel = 'COMMENTED';
+        else if (pr.isDraft) statusLabel = 'DRAFT';
+
+        // Uniform Neutral Base Pill across all statuses
+        const badgeHtml = `<span class="px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700/80 uppercase tracking-wide">${statusLabel}</span>`;
+
+        // 5-tier diff colors
+        const totalDiff = (pr.additions || 0) + (pr.deletions || 0);
+        let diffColor = 'text-slate-600 dark:text-slate-300 font-medium';
+        if (totalDiff > 5000) diffColor = 'text-red-600 dark:text-red-400 font-bold';
+        else if (totalDiff >= 1000) diffColor = 'text-orange-600 dark:text-orange-400 font-bold';
+        else if (totalDiff >= 500) diffColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+        else if (totalDiff < 100) diffColor = 'text-teal-700 dark:text-teal-400 font-semibold';
+
+        const tr = document.createElement('tr');
+        tr.className = index % 2 === 0 
+          ? "bg-white dark:bg-slate-900/35 hover:bg-sky-50/60 dark:hover:bg-slate-800/80 transition-colors" 
+          : "bg-slate-50/70 dark:bg-slate-950/50 hover:bg-sky-50/60 dark:hover:bg-slate-800/80 transition-colors";
+
+        tr.innerHTML = `
+          <td class="py-1 px-2 font-bold text-sky-600 dark:text-sky-400 text-xs">
+            <a href="${pr.url}" target="_blank" class="hover:text-sky-700 dark:hover:text-sky-300 hover:underline">#${pr.number}</a>
+          </td>
+          <td class="py-1 px-2 font-sans text-slate-800 dark:text-slate-200 pr-2 text-xs">
+            <a href="${pr.url}" target="_blank" class="hover:text-sky-600 dark:hover:text-sky-300 line-clamp-1">${pr.title}</a>
+          </td>
+          <td class="py-1 px-2 text-slate-500 dark:text-slate-400 truncate max-w-[110px] text-[11px]" title="${pr.base || 'master'}">
+            <span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800/90 rounded border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">${pr.base || 'master'}</span>
+          </td>
+          <td class="py-1 px-2 text-slate-700 dark:text-slate-300 truncate max-w-[95px] text-xs">${pr.author}</td>
+          <td class="py-1 px-2 text-center">${badgeHtml}</td>
+          <td class="py-1 px-2 text-right ${diffColor} text-xs font-mono">+${pr.additions || 0}</td>
+          <td class="py-1 px-2 text-right text-slate-500 dark:text-slate-400 whitespace-nowrap text-xs">${pr.lastActivity || 'Unknown'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Row 3: Panel 2 (Reviewer Queue)
+    function renderReviewerLoad(reviewers) {
+      const container = document.getElementById('reviewer-load-container');
+      const badgeEl = document.getElementById('reviewer-header-badge');
+      if (!container) return;
+      if (!reviewers || reviewers.length === 0) {
+        container.innerHTML = '<p class="text-xs font-mono text-slate-400">0 assigned reviewers</p>';
+        if (badgeEl) badgeEl.innerText = '0 in queue';
+        return;
+      }
+
+      let highCount = 0;
+      let mediumCount = 0;
+      reviewers.forEach(r => {
+        if (r.count > 10) highCount++;
+        else if (r.count >= 5) mediumCount++;
+      });
+
+      if (badgeEl) {
+        if (highCount > 0) {
+          badgeEl.innerText = `${highCount} High · ${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-red-600 dark:text-red-400 whitespace-nowrap";
+        } else if (mediumCount > 0) {
+          badgeEl.innerText = `${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap";
+        } else {
+          badgeEl.innerText = 'All Normal';
+          badgeEl.className = "text-[10px] font-mono font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap";
+        }
+      }
+
+      const maxCount = Math.max(...reviewers.map(r => r.count), 1);
+
+      // Compact rows matching Diff Size Tiers, fitting exactly 5 items cleanly without clipping
+      let html = '<div class="space-y-1 overflow-y-auto max-h-[120px] pr-1">';
+      reviewers.forEach((r) => {
+        const pct = Math.round((r.count / maxCount) * 100);
+        
+        let barColor = 'bg-teal-500';
+        let textColor = 'text-slate-600 dark:text-slate-300';
+        let tierText = 'Normal';
+
+        if (r.count > 10) {
+          barColor = 'bg-red-600';
+          textColor = 'text-red-600 dark:text-red-400 font-bold';
+          tierText = 'High';
+        } else if (r.count >= 5) {
+          barColor = 'bg-amber-500';
+          textColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+          tierText = 'Med';
+        }
+
+        html += `
+          <div class="cursor-pointer" onclick="handleReviewerFilterChange('${r.name}')" title="Click to filter table by reviewer ${r.name}">
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="truncate max-w-[130px] ${textColor}" title="${r.name}">${r.name}</span>
+              <span class="${textColor}">${r.count} PRs <span class="opacity-70 text-[10px]">(${tierText})</span></span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${barColor} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 3 (Diff Size - 5 tiers)
+    function renderSizeDistribution(bins, total) {
+      const container = document.getElementById('size-distribution-container');
+      if (!container) return;
+      const items = [
+        { label: '<100 lines', count: bins['Small (<100)'] || 0, color: 'bg-teal-500' },
+        { label: '100-500', count: bins['Medium (100-500)'] || 0, color: 'bg-sky-500' },
+        { label: '500-1k', count: bins['Large (500-1k)'] || 0, color: 'bg-amber-500' },
+        { label: '1k-5k (Huge)', count: bins['Huge (1k-5k)'] || 0, color: 'bg-orange-500' },
+        { label: '>5k (The Mountain)', count: bins['The Mountain (>5k)'] || 0, color: 'bg-red-600', alert: true },
+      ];
+
+      let html = '<div class="space-y-1 pr-1">';
+      items.forEach(item => {
+        const pct = Math.round((item.count / total) * 100);
+        html += `
+          <div>
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="${item.alert ? 'text-red-600 dark:text-red-400 font-bold' : 'text-slate-600 dark:text-slate-300 font-medium'}">${item.label}</span>
+              <span class="${item.alert ? 'text-red-600 dark:text-red-400 font-bold' : 'text-slate-600 dark:text-slate-300 font-medium'}">${item.count} (${pct}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${item.color} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 4 (PR Age Bins: Pure High-Res SVG Histogram - 100% Deterministic & Cross-Browser)
+    function renderAgeChart(bins) {
+      const container = document.getElementById('age-chart-container');
+      if (!container) return;
+
+      const items = [
+        { label: '0-7d', count: bins['0-7d'] || bins['0-7 days'] || 0, color: '#14b8a6' },
+        { label: '8-18d', count: bins['8-18d'] || bins['8-18 days'] || 0, color: '#0ea5e9' },
+        { label: '19-90d', count: bins['19-90d'] || bins['19-90 days'] || 0, color: '#f59e0b' },
+        { label: '3-12m', count: bins['3-12m'] || bins['3-12 months'] || 0, color: '#f43f5e' },
+        { label: '>1y', count: bins['>1y'] || bins['over 1 year'] || 0, color: '#dc2626' },
+      ];
+
+      const maxCount = Math.max(...items.map(i => i.count), 1);
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const labelColor = isDark ? '#94a3b8' : '#64748b';
+      const baselineColor = isDark ? '#334155' : '#cbd5e1';
+
+      // Pure SVG Bar Histogram
+      let html = `
+        <svg class="w-full h-full" viewBox="0 0 300 80" preserveAspectRatio="none">
+          <!-- Baseline -->
+          <line x1="5" y1="60" x2="295" y2="60" stroke="${baselineColor}" stroke-width="1" />
+      `;
+
+      const num = items.length;
+      const barW = 32;
+      const slotW = 300 / num;
+
+      items.forEach((item, i) => {
+        const xCenter = (i + 0.5) * slotW;
+        const x = xCenter - (barW / 2);
+        const barH = Math.max(Math.round(((item.count || 0) / maxCount) * 38), (item.count > 0 ? 5 : 0));
+        const y = 60 - barH;
+
+        html += `
+          <!-- Value Label -->
+          <text x="${xCenter}" y="${y - 3}" fill="${textColor}" font-size="9.5" font-family="JetBrains Mono, monospace" font-weight="bold" text-anchor="middle">${item.count}</text>
+          
+          <!-- Bar -->
+          <rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${item.color}" rx="2.5" ry="2.5" />
+          
+          <!-- X-Axis Label -->
+          <text x="${xCenter}" y="74" fill="${labelColor}" font-size="9.5" font-family="JetBrains Mono, monospace" font-weight="600" text-anchor="middle">${item.label}</text>
+        `;
+      });
+
+      html += '</svg>';
+      container.innerHTML = html;
+    }
+
+    // Row 3: Panel 3 (Author Queue: Multi-PR Authors - 100% Identical Style to Panel 2)
+    function renderAuthorQueue(authors) {
+      const container = document.getElementById('author-load-container');
+      const badgeEl = document.getElementById('author-header-badge');
+      if (!container) return;
+
+      // Filter authors who have multiple open PRs (> 1)
+      const multiAuthors = (authors || []).filter(a => a.count > 1);
+
+      let highCount = 0;
+      let mediumCount = 0;
+      multiAuthors.forEach(a => {
+        if (a.count > 10) highCount++;
+        else if (a.count >= 5) mediumCount++;
+      });
+
+      if (badgeEl) {
+        if (highCount > 0) {
+          badgeEl.innerText = `${highCount} High · ${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-red-600 dark:text-red-400 whitespace-nowrap";
+        } else if (mediumCount > 0) {
+          badgeEl.innerText = `${mediumCount} Med`;
+          badgeEl.className = "text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 whitespace-nowrap";
+        } else {
+          badgeEl.innerText = 'All Normal';
+          badgeEl.className = "text-[10px] font-mono font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap";
+        }
+      }
+
+      if (!multiAuthors || multiAuthors.length === 0) {
+        container.innerHTML = '<p class="text-xs font-mono text-slate-400 p-2">0 authors with >1 open PR</p>';
+        return;
+      }
+
+      const maxCount = Math.max(...multiAuthors.map(a => a.count), 1);
+
+      let html = '<div class="space-y-1 overflow-y-auto max-h-[120px] pr-1">';
+      multiAuthors.forEach(a => {
+        const pct = Math.round((a.count / maxCount) * 100);
+        
+        let barColor = 'bg-teal-500';
+        let textColor = 'text-slate-600 dark:text-slate-300';
+        let tierText = 'Normal';
+
+        if (a.count > 10) {
+          barColor = 'bg-red-600';
+          textColor = 'text-red-600 dark:text-red-400 font-bold';
+          tierText = 'High';
+        } else if (a.count >= 5) {
+          barColor = 'bg-amber-500';
+          textColor = 'text-amber-600 dark:text-amber-400 font-semibold';
+          tierText = 'Med';
+        }
+
+        html += `
+          <div class="cursor-pointer" onclick="handleAuthorFilterChange('${a.name}')" title="Click to filter table by author ${a.name}">
+            <div class="flex justify-between text-[11px] font-mono mb-0.5">
+              <span class="truncate max-w-[130px] ${textColor}" title="${a.name}">${a.name}</span>
+              <span class="${textColor}">${a.count} PRs <span class="opacity-70 text-[10px]">(${tierText})</span></span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1 overflow-hidden">
+              <div class="${barColor} h-1 rounded-full" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    let autoRefreshTimer = null;
+
+    function handleAutoRefreshChange(val) {
+      const ms = parseInt(val, 10);
+      localStorage.setItem('jpluger-auto-refresh', val);
+      setupAutoRefresh(ms);
+    }
+
+    function setupAutoRefresh(ms) {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+      if (ms > 0) {
+        autoRefreshTimer = setInterval(() => {
+          refreshData(true);
+        }, ms);
+      }
+    }
+
+    async function refreshData(isSilent = false) {
+      const btn = document.getElementById('refresh-btn');
+      const btnText = document.getElementById('refresh-btn-text');
+      const icon = document.getElementById('refresh-icon');
+      
+      if (!isSilent && btn && btnText && icon) {
+        btn.disabled = true;
+        btnText.innerText = "Syncing...";
+        icon.classList.add('animate-spin');
+      } else if (icon) {
+        icon.classList.add('animate-spin');
+      }
+
+      try {
+        const res = await fetch('/api/refresh', { method: 'POST' });
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        const data = await res.json();
+        renderUI(data);
+      } catch (err) {
+        console.warn("Live API refresh error:", err);
+      } finally {
+        if (!isSilent && btn && btnText) {
+          btn.disabled = false;
+          btnText.innerText = "Sync GitHub";
+        }
+        if (icon) {
+          icon.classList.remove('animate-spin');
+        }
+      }
+    }
+
+    function exportStaticHTML() {
+      window.open('/export', '_blank');
+    }
+
+    // Initialize theme and auto-refresh from storage
+    initTheme();
+
+    const savedAutoRefresh = localStorage.getItem('jpluger-auto-refresh') || '0';
+    const autoRefreshSelect = document.getElementById('auto-refresh-select');
+    if (autoRefreshSelect) {
+      autoRefreshSelect.value = savedAutoRefresh;
+    }
+    setupAutoRefresh(parseInt(savedAutoRefresh, 10));
+
+    if (window.INITIAL_REPORT_DATA) {
+      renderUI(window.INITIAL_REPORT_DATA);
+    }
+  </script>
+</body>
+</html>

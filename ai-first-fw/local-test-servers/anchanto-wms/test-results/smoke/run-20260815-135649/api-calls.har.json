@@ -1,0 +1,3624 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "Anchanto WMS (Wareo3)",
+      "version": "1.0"
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-08-15T06:56:49.699Z",
+        "time": 0.476,
+        "_seq": 1,
+        "_rule": "token issued (grant or refresh)",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/oauth/token' -H 'Content-Type: application/json'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/oauth/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "0"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 187,
+            "mimeType": "application/json",
+            "text": "{\"access_token\": \"mock_wms3_access_token\", \"refresh_token\": \"mock_wms3_refresh_token\", \"token_type\": \"Bearer\", \"scope\": \"public\", \"created_at\": 1755225600, \"access_token_expire_in\": 7200}",
+            "_json": {
+              "access_token": "mock_wms3_access_token",
+              "refresh_token": "mock_wms3_refresh_token",
+              "token_type": "Bearer",
+              "scope": "public",
+              "created_at": 1755225600,
+              "access_token_expire_in": 7200
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 187
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.476,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.701Z",
+        "time": 0.487,
+        "_seq": 2,
+        "_rule": "token issued (grant or refresh)",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/oauth/token' -H 'Content-Type: application/json' --data-raw '{\"grant_type\": \"refresh_token\", \"refresh_token\": \"mock_wms3_refresh_token\", \"client_id\": \"jpluger-wms3\", \"client_secret\": \"s3cr3t\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/oauth/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "131"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"grant_type\": \"refresh_token\", \"refresh_token\": \"mock_wms3_refresh_token\", \"client_id\": \"jpluger-wms3\", \"client_secret\": \"s3cr3t\"}",
+            "_json": {
+              "grant_type": "refresh_token",
+              "refresh_token": "mock_wms3_refresh_token",
+              "client_id": "jpluger-wms3",
+              "client_secret": "s3cr3t"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 131
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 187,
+            "mimeType": "application/json",
+            "text": "{\"access_token\": \"mock_wms3_access_token\", \"refresh_token\": \"mock_wms3_refresh_token\", \"token_type\": \"Bearer\", \"scope\": \"public\", \"created_at\": 1755225600, \"access_token_expire_in\": 7200}",
+            "_json": {
+              "access_token": "mock_wms3_access_token",
+              "refresh_token": "mock_wms3_refresh_token",
+              "token_type": "Bearer",
+              "scope": "public",
+              "created_at": 1755225600,
+              "access_token_expire_in": 7200
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 187
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.487,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.703Z",
+        "time": 0.795,
+        "_seq": 3,
+        "_rule": "NOAUTH in client_id -- 401, credentials rejected",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/oauth/token' -H 'Content-Type: application/json' --data-raw '{\"client_id\": \"NOAUTH-client\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/oauth/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "30"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"client_id\": \"NOAUTH-client\"}",
+            "_json": {
+              "client_id": "NOAUTH-client"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 30
+        },
+        "response": {
+          "status": 401,
+          "statusText": "Unauthorized",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 70,
+            "mimeType": "application/json",
+            "text": "{\"error\": \"invalid_client\", \"message\": \"Client authentication failed\"}",
+            "_json": {
+              "error": "invalid_client",
+              "message": "Client authentication failed"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 70
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.795,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.705Z",
+        "time": 0.936,
+        "_seq": 4,
+        "_rule": "b2c order created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"SO-SMOKE-001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"shipping_type\": \"STANDARD\", \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 2, \"unit_price\": 70000.0, \"selling_price\": 63000.0}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "237"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"SO-SMOKE-001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"shipping_type\": \"STANDARD\", \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 2, \"unit_price\": 70000.0, \"selling_price\": 63000.0}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "SO-SMOKE-001",
+                "company_code": "ANCHANTO",
+                "currency_code": "MYR",
+                "shipping_type": "STANDARD",
+                "order_items_attributes": [
+                  {
+                    "sku": "SKU-W3-001",
+                    "quantity": 2,
+                    "unit_price": 70000.0,
+                    "selling_price": 63000.0
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 237
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 83,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Order created\", \"order_number\": \"SO-SMOKE-001\"}",
+            "_json": {
+              "response": "success",
+              "message": "Order created",
+              "order_number": "SO-SMOKE-001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 83
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.936,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.707Z",
+        "time": 0.957,
+        "_seq": 5,
+        "_rule": "validation failed (schema)",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"order_items_attributes\": []}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "45"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"order_items_attributes\": []}}",
+            "_json": {
+              "b2c_order": {
+                "order_items_attributes": []
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 45
+        },
+        "response": {
+          "status": 422,
+          "statusText": "Unprocessable Content",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 141,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"422\", \"message\": \"'b2c_order.number' is required; 'b2c_order.order_items_attributes' must not be empty\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "'b2c_order.number' is required; 'b2c_order.order_items_attributes' must not be empty"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 141
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.957,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.710Z",
+        "time": 0.46,
+        "_seq": 6,
+        "_rule": "b2c order cancelled",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/cancel' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"orderNumber\": \"SO-SMOKE-001\", \"remark\": \"Out of stock\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/cancel",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "57"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"orderNumber\": \"SO-SMOKE-001\", \"remark\": \"Out of stock\"}",
+            "_json": {
+              "orderNumber": "SO-SMOKE-001",
+              "remark": "Out of stock"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 57
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.46,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.711Z",
+        "time": 0.611,
+        "_seq": 7,
+        "_rule": "b2c order completed",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/complete' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"orderNumber\": \"SO-SMOKE-001\", \"deliveryDetails\": {\"deliveredTo\": \"Minh Nguyen\", \"deliveredRef\": \"REF-1\", \"handoverTo\": \"Reception\", \"cashReceived\": \"true\", \"receivedAmount\": \"148000\", \"comment\": \"\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/complete",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "201"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"orderNumber\": \"SO-SMOKE-001\", \"deliveryDetails\": {\"deliveredTo\": \"Minh Nguyen\", \"deliveredRef\": \"REF-1\", \"handoverTo\": \"Reception\", \"cashReceived\": \"true\", \"receivedAmount\": \"148000\", \"comment\": \"\"}}",
+            "_json": {
+              "orderNumber": "SO-SMOKE-001",
+              "deliveryDetails": {
+                "deliveredTo": "Minh Nguyen",
+                "deliveredRef": "REF-1",
+                "handoverTo": "Reception",
+                "cashReceived": "true",
+                "receivedAmount": "148000",
+                "comment": ""
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 201
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.611,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.713Z",
+        "time": 0.437,
+        "_seq": 8,
+        "_rule": "tracking recorded",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/tracking' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"tracking_number\": \"MYDHL0001234567\", \"orderNumber\": \"SO-SMOKE-001\", \"carrier\": {\"carrier_code\": \"DHL\", \"carrier_name\": \"DHL Express\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/tracking",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "136"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"tracking_number\": \"MYDHL0001234567\", \"orderNumber\": \"SO-SMOKE-001\", \"carrier\": {\"carrier_code\": \"DHL\", \"carrier_name\": \"DHL Express\"}}",
+            "_json": {
+              "tracking_number": "MYDHL0001234567",
+              "orderNumber": "SO-SMOKE-001",
+              "carrier": {
+                "carrier_code": "DHL",
+                "carrier_name": "DHL Express"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 136
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.437,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.715Z",
+        "time": 0.47,
+        "_seq": 9,
+        "_rule": "shipping docs recorded",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/shipping_docs' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"url_type\": \"URL\", \"tracking_number\": \"MYDHL0001234567\", \"orderNumber\": \"SO-SMOKE-001\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/shipping_docs",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "88"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"url_type\": \"URL\", \"tracking_number\": \"MYDHL0001234567\", \"orderNumber\": \"SO-SMOKE-001\"}",
+            "_json": {
+              "url_type": "URL",
+              "tracking_number": "MYDHL0001234567",
+              "orderNumber": "SO-SMOKE-001"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 88
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.47,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.717Z",
+        "time": 0.467,
+        "_seq": 10,
+        "_rule": "return initiated",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/initiate_return' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"orig_order_number\": \"SO-SMOKE-001\", \"externalReturnOrderNumber\": \"RET-EXT-001\", \"order\": {\"order_items\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 1}], \"pickup_date\": \"2026-08-22\", \"reason\": \"DAMAGED\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/initiate_return",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "197"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"orig_order_number\": \"SO-SMOKE-001\", \"externalReturnOrderNumber\": \"RET-EXT-001\", \"order\": {\"order_items\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 1}], \"pickup_date\": \"2026-08-22\", \"reason\": \"DAMAGED\"}}",
+            "_json": {
+              "orig_order_number": "SO-SMOKE-001",
+              "externalReturnOrderNumber": "RET-EXT-001",
+              "order": {
+                "order_items": [
+                  {
+                    "sku": "SKU-W3-001",
+                    "quantity": 1
+                  }
+                ],
+                "pickup_date": "2026-08-22",
+                "reason": "DAMAGED"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 197
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 107,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Return initiated\", \"data\": {\"return_order_number\": \"RET-SO-SMOKE-001\"}}",
+            "_json": {
+              "response": "success",
+              "message": "Return initiated",
+              "data": {
+                "return_order_number": "RET-SO-SMOKE-001"
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 107
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.467,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.719Z",
+        "time": 0.036,
+        "_seq": 11,
+        "_rule": "b2c order returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/SO-SMOKE-001/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 293,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"1001\", \"type\": \"b2c_order\", \"attributes\": {\"number\": \"SO-SMOKE-001\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "1001",
+                "type": "b2c_order",
+                "attributes": {
+                  "number": "SO-SMOKE-001",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 293
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.036,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.721Z",
+        "time": 0.031,
+        "_seq": 12,
+        "_rule": "9990404 / NOTFOUND -- 404",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/NOTFOUND-1/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders/NOTFOUND-1/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 72,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"404\", \"message\": \"Order not found\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "404",
+              "message": "Order not found"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 72
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.031,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.723Z",
+        "time": 19.195,
+        "_seq": 13,
+        "_rule": "unassigned order updated",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v1/b2c/orders/SO-SMOKE-001/update_unassigned_order' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"number\": \"SO-SMOKE-001\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v1/b2c/orders/SO-SMOKE-001/update_unassigned_order",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "26"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"number\": \"SO-SMOKE-001\"}",
+            "_json": {
+              "number": "SO-SMOKE-001"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 26
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 19.195,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.744Z",
+        "time": 0.959,
+        "_seq": 14,
+        "_rule": "b2b order created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2b_order\": {\"number\": \"PO-SMOKE-001\", \"supplier_code\": \"SUP-0001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"is_stock_transfer\": false, \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 100, \"uom\": \"EA\", \"uom_quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "250"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2b_order\": {\"number\": \"PO-SMOKE-001\", \"supplier_code\": \"SUP-0001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"is_stock_transfer\": false, \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 100, \"uom\": \"EA\", \"uom_quantity\": 1}]}}",
+            "_json": {
+              "b2b_order": {
+                "number": "PO-SMOKE-001",
+                "supplier_code": "SUP-0001",
+                "company_code": "ANCHANTO",
+                "currency_code": "MYR",
+                "is_stock_transfer": false,
+                "order_items_attributes": [
+                  {
+                    "sku": "SKU-W3-001",
+                    "quantity": 100,
+                    "uom": "EA",
+                    "uom_quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 250
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 83,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Order created\", \"order_number\": \"PO-SMOKE-001\"}",
+            "_json": {
+              "response": "success",
+              "message": "Order created",
+              "order_number": "PO-SMOKE-001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 83
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.959,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.747Z",
+        "time": 1.078,
+        "_seq": 15,
+        "_rule": "sto order created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/sto/orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2b_order\": {\"number\": \"STO-SMOKE-001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"is_stock_transfer\": true, \"destination_store_code\": \"STORE-02\", \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 5}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/sto/orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "225"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2b_order\": {\"number\": \"STO-SMOKE-001\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"is_stock_transfer\": true, \"destination_store_code\": \"STORE-02\", \"order_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 5}]}}",
+            "_json": {
+              "b2b_order": {
+                "number": "STO-SMOKE-001",
+                "company_code": "ANCHANTO",
+                "currency_code": "MYR",
+                "is_stock_transfer": true,
+                "destination_store_code": "STORE-02",
+                "order_items_attributes": [
+                  {
+                    "sku": "SKU-W3-001",
+                    "quantity": 5
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 225
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 84,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Order created\", \"order_number\": \"STO-SMOKE-001\"}",
+            "_json": {
+              "response": "success",
+              "message": "Order created",
+              "order_number": "STO-SMOKE-001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 84
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.078,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.750Z",
+        "time": 0.038,
+        "_seq": 16,
+        "_rule": "b2b order returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 296,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": 200, \"data\": {\"id\": \"2001\", \"type\": \"b2b_order\", \"attributes\": {\"number\": \"PO-SMOKE-001\", \"status\": \"RECEIVED\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": 200,
+              "data": {
+                "id": "2001",
+                "type": "b2b_order",
+                "attributes": {
+                  "number": "PO-SMOKE-001",
+                  "status": "RECEIVED",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 296
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.038,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.752Z",
+        "time": 0.05,
+        "_seq": 17,
+        "_rule": "b2b order items returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/order_items' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/PO-SMOKE-001/order_items",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 448,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"meta\": {\"total\": 1, \"page\": 1, \"per_page\": 50}, \"data\": [{\"id\": 88001, \"sku\": \"SKU-W3-001\", \"product_name\": \"Wareo Test Product\", \"unit_price\": \"70000\", \"retail_price\": \"75000\", \"selling_price\": \"63000\", \"quantity\": 2, \"status\": \"ALLOCATED\", \"line_number\": 1, \"order_number\": \"PO-SMOKE-001\", \"shipment_number\": \"SHP-W3-0001\", \"warehouse\": {\"code\": \"WH-KUL-01\", \"name\": \"Kuala Lumpur DC\"}, \"usns\": []}]}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "meta": {
+                "total": 1,
+                "page": 1,
+                "per_page": 50
+              },
+              "data": [
+                {
+                  "id": 88001,
+                  "sku": "SKU-W3-001",
+                  "product_name": "Wareo Test Product",
+                  "unit_price": "70000",
+                  "retail_price": "75000",
+                  "selling_price": "63000",
+                  "quantity": 2,
+                  "status": "ALLOCATED",
+                  "line_number": 1,
+                  "order_number": "PO-SMOKE-001",
+                  "shipment_number": "SHP-W3-0001",
+                  "warehouse": {
+                    "code": "WH-KUL-01",
+                    "name": "Kuala Lumpur DC"
+                  },
+                  "usns": []
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 448
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.05,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.755Z",
+        "time": 0.03,
+        "_seq": 18,
+        "_rule": "EMPTY -- 200 with no items",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/EMPTY-1/order_items' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2b_orders/EMPTY-1/order_items",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 105,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"meta\": {\"total\": 0, \"page\": 1, \"per_page\": 50}, \"data\": []}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "meta": {
+                "total": 0,
+                "page": 1,
+                "per_page": 50
+              },
+              "data": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 105
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.03,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.756Z",
+        "time": 0.461,
+        "_seq": 19,
+        "_rule": "product created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"product\": {\"sku\": \"SKU-SMOKE-001\", \"name\": \"Smoke Product\", \"company_code\": \"ANCHANTO\", \"base_uom_code\": \"EA\", \"country_of_origin_iso\": \"MY\", \"product_dimensions_attributes\": [{\"uom_code\": \"EA\", \"length_cm\": 12.0, \"width_cm\": 8.0, \"height_cm\": 10.0, \"weight_gm\": 400.0, \"no_of_units\": 1}], \"product_sales_informations_attributes\": [{\"currency_code\": \"MYR\", \"selling_price\": 63000.0, \"retail_price\": 75000.0, \"cost_price\": 35000.0, \"uom_code\": \"EA\"}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "453"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"product\": {\"sku\": \"SKU-SMOKE-001\", \"name\": \"Smoke Product\", \"company_code\": \"ANCHANTO\", \"base_uom_code\": \"EA\", \"country_of_origin_iso\": \"MY\", \"product_dimensions_attributes\": [{\"uom_code\": \"EA\", \"length_cm\": 12.0, \"width_cm\": 8.0, \"height_cm\": 10.0, \"weight_gm\": 400.0, \"no_of_units\": 1}], \"product_sales_informations_attributes\": [{\"currency_code\": \"MYR\", \"selling_price\": 63000.0, \"retail_price\": 75000.0, \"cost_price\": 35000.0, \"uom_code\": \"EA\"}]}}",
+            "_json": {
+              "product": {
+                "sku": "SKU-SMOKE-001",
+                "name": "Smoke Product",
+                "company_code": "ANCHANTO",
+                "base_uom_code": "EA",
+                "country_of_origin_iso": "MY",
+                "product_dimensions_attributes": [
+                  {
+                    "uom_code": "EA",
+                    "length_cm": 12.0,
+                    "width_cm": 8.0,
+                    "height_cm": 10.0,
+                    "weight_gm": 400.0,
+                    "no_of_units": 1
+                  }
+                ],
+                "product_sales_informations_attributes": [
+                  {
+                    "currency_code": "MYR",
+                    "selling_price": 63000.0,
+                    "retail_price": 75000.0,
+                    "cost_price": 35000.0,
+                    "uom_code": "EA"
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 453
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 189,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Product saved\", \"sku\": \"SKU-SMOKE-001\", \"status\": 200, \"data\": [{\"product_information_id\": [9001], \"product_dimensions_info\": {\"mfupc\": 8938505970019}}]}",
+            "_json": {
+              "response": "success",
+              "message": "Product saved",
+              "sku": "SKU-SMOKE-001",
+              "status": 200,
+              "data": [
+                {
+                  "product_information_id": [
+                    9001
+                  ],
+                  "product_dimensions_info": {
+                    "mfupc": 8938505970019
+                  }
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 189
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.461,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.759Z",
+        "time": 0.387,
+        "_seq": 20,
+        "_rule": "product updated",
+        "_curl": "curl -i -X PUT 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"product\": {\"sku\": \"SKU-SMOKE-001\", \"name\": \"Smoke Product v2\"}}'",
+        "request": {
+          "method": "PUT",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "65"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"product\": {\"sku\": \"SKU-SMOKE-001\", \"name\": \"Smoke Product v2\"}}",
+            "_json": {
+              "product": {
+                "sku": "SKU-SMOKE-001",
+                "name": "Smoke Product v2"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 65
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 104,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Product updated\", \"sku\": \"SKU-SMOKE-001\", \"status\": 200, \"data\": []}",
+            "_json": {
+              "response": "success",
+              "message": "Product updated",
+              "sku": "SKU-SMOKE-001",
+              "status": 200,
+              "data": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 104
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.387,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.761Z",
+        "time": 0.021,
+        "_seq": 21,
+        "_rule": null,
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"product\": {\"sku\": \"SKU-SMOKE-001\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "37"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"product\": {\"sku\": \"SKU-SMOKE-001\"}}",
+            "_json": {
+              "product": {
+                "sku": "SKU-SMOKE-001"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 37
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 122,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": true, \"ErrorMessages\": [\"mock_server: no route for POST /rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001\"]}",
+            "_json": {
+              "HasError": true,
+              "ErrorMessages": [
+                "mock_server: no route for POST /rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 122
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.021,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.764Z",
+        "time": 0.434,
+        "_seq": 22,
+        "_rule": "product status changed",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/change_status' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"sku\": \"SKU-SMOKE-001\", \"state\": \"INACTIVE\", \"remark\": \"Discontinued\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/change_status",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "71"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"sku\": \"SKU-SMOKE-001\", \"state\": \"INACTIVE\", \"remark\": \"Discontinued\"}",
+            "_json": {
+              "sku": "SKU-SMOKE-001",
+              "state": "INACTIVE",
+              "remark": "Discontinued"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 71
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 40,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"OK\"}",
+            "_json": {
+              "response": "success",
+              "message": "OK"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.434,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.767Z",
+        "time": 0.043,
+        "_seq": 23,
+        "_rule": "product returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/products/SKU-SMOKE-001",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 292,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"9001\", \"type\": \"product\", \"attributes\": {\"number\": \"SKU-SMOKE-001\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "9001",
+                "type": "product",
+                "attributes": {
+                  "number": "SKU-SMOKE-001",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 292
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.043,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.769Z",
+        "time": 0.403,
+        "_seq": 24,
+        "_rule": "supplier created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"supplier\": {\"code\": \"SUP-SMOKE-1\", \"name\": \"Acme Supplies\", \"email\": \"ops@acme.example\", \"active\": true, \"supplier_type\": \"VENDOR\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "134"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"supplier\": {\"code\": \"SUP-SMOKE-1\", \"name\": \"Acme Supplies\", \"email\": \"ops@acme.example\", \"active\": true, \"supplier_type\": \"VENDOR\"}}",
+            "_json": {
+              "supplier": {
+                "code": "SUP-SMOKE-1",
+                "name": "Acme Supplies",
+                "email": "ops@acme.example",
+                "active": true,
+                "supplier_type": "VENDOR"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 134
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 75,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Supplier creatd\", \"data\": {\"id\": 4401}}",
+            "_json": {
+              "response": "success",
+              "message": "Supplier creatd",
+              "data": {
+                "id": 4401
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 75
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.403,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.771Z",
+        "time": 0.425,
+        "_seq": 25,
+        "_rule": "supplier updated",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers/update_supplier' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"supplier\": {\"code\": \"SUP-SMOKE-1\", \"name\": \"Acme Supplies\", \"email\": \"ops@acme.example\", \"active\": true, \"supplier_type\": \"VENDOR\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers/update_supplier",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "134"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"supplier\": {\"code\": \"SUP-SMOKE-1\", \"name\": \"Acme Supplies\", \"email\": \"ops@acme.example\", \"active\": true, \"supplier_type\": \"VENDOR\"}}",
+            "_json": {
+              "supplier": {
+                "code": "SUP-SMOKE-1",
+                "name": "Acme Supplies",
+                "email": "ops@acme.example",
+                "active": true,
+                "supplier_type": "VENDOR"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 134
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 75,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Supplier updatd\", \"data\": {\"id\": 4401}}",
+            "_json": {
+              "response": "success",
+              "message": "Supplier updatd",
+              "data": {
+                "id": 4401
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 75
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.425,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.774Z",
+        "time": 0.432,
+        "_seq": 26,
+        "_rule": "buyer created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"buyer\": {\"code\": \"BUY-SMOKE-1\", \"name\": \"Retail Co\", \"active\": true, \"supplier_type\": \"VENDOR\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "98"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"buyer\": {\"code\": \"BUY-SMOKE-1\", \"name\": \"Retail Co\", \"active\": true, \"supplier_type\": \"VENDOR\"}}",
+            "_json": {
+              "buyer": {
+                "code": "BUY-SMOKE-1",
+                "name": "Retail Co",
+                "active": true,
+                "supplier_type": "VENDOR"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 98
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 72,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Buyer creatd\", \"data\": {\"id\": 5501}}",
+            "_json": {
+              "response": "success",
+              "message": "Buyer creatd",
+              "data": {
+                "id": 5501
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 72
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.432,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.777Z",
+        "time": 0.426,
+        "_seq": 27,
+        "_rule": "buyer updated",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers/update_buyer' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"buyer\": {\"code\": \"BUY-SMOKE-1\", \"name\": \"Retail Co\", \"active\": true, \"supplier_type\": \"VENDOR\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers/update_buyer",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "98"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"buyer\": {\"code\": \"BUY-SMOKE-1\", \"name\": \"Retail Co\", \"active\": true, \"supplier_type\": \"VENDOR\"}}",
+            "_json": {
+              "buyer": {
+                "code": "BUY-SMOKE-1",
+                "name": "Retail Co",
+                "active": true,
+                "supplier_type": "VENDOR"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 98
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 72,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Buyer updatd\", \"data\": {\"id\": 5501}}",
+            "_json": {
+              "response": "success",
+              "message": "Buyer updatd",
+              "data": {
+                "id": 5501
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 72
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.426,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.780Z",
+        "time": 0.04,
+        "_seq": 28,
+        "_rule": "supplier returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers/SUP-SMOKE-1' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/suppliers/SUP-SMOKE-1",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 291,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"4401\", \"type\": \"supplier\", \"attributes\": {\"number\": \"SUP-SMOKE-1\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "4401",
+                "type": "supplier",
+                "attributes": {
+                  "number": "SUP-SMOKE-1",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 291
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.04,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.782Z",
+        "time": 0.037,
+        "_seq": 29,
+        "_rule": "buyer returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers/BUY-SMOKE-1' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/buyers/BUY-SMOKE-1",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 288,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"5501\", \"type\": \"buyer\", \"attributes\": {\"number\": \"BUY-SMOKE-1\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "5501",
+                "type": "buyer",
+                "attributes": {
+                  "number": "BUY-SMOKE-1",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 288
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.037,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.785Z",
+        "time": 0.823,
+        "_seq": 30,
+        "_rule": "consignment created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/consignments' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"consignment\": {\"number\": \"CN-SMOKE-001\", \"supplier_code\": \"SUP-SMOKE-1\", \"po_ref_number\": \"PO-REF-1\", \"order_type\": \"PURCHASE\", \"ship_date\": \"2026-08-10\", \"receiving_date\": \"2026-08-14\", \"consignment_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 100}], \"consignment_vas_attributes\": [{\"shrink_wrapping\": true}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/consignments",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "322"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"consignment\": {\"number\": \"CN-SMOKE-001\", \"supplier_code\": \"SUP-SMOKE-1\", \"po_ref_number\": \"PO-REF-1\", \"order_type\": \"PURCHASE\", \"ship_date\": \"2026-08-10\", \"receiving_date\": \"2026-08-14\", \"consignment_items_attributes\": [{\"sku\": \"SKU-W3-001\", \"quantity\": 100}], \"consignment_vas_attributes\": [{\"shrink_wrapping\": true}]}}",
+            "_json": {
+              "consignment": {
+                "number": "CN-SMOKE-001",
+                "supplier_code": "SUP-SMOKE-1",
+                "po_ref_number": "PO-REF-1",
+                "order_type": "PURCHASE",
+                "ship_date": "2026-08-10",
+                "receiving_date": "2026-08-14",
+                "consignment_items_attributes": [
+                  {
+                    "sku": "SKU-W3-001",
+                    "quantity": 100
+                  }
+                ],
+                "consignment_vas_attributes": [
+                  {
+                    "shrink_wrapping": true
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 322
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 89,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"success\", \"message\": \"Consignment created\", \"order_number\": \"CN-SMOKE-001\"}",
+            "_json": {
+              "response": "success",
+              "message": "Consignment created",
+              "order_number": "CN-SMOKE-001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 89
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.823,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.787Z",
+        "time": 0.033,
+        "_seq": 31,
+        "_rule": "consignment returned",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/consignments/CN-SMOKE-001/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/consignments/CN-SMOKE-001/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 298,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": 200, \"data\": {\"id\": \"7001\", \"type\": \"consignment\", \"attributes\": {\"number\": \"CN-SMOKE-001\", \"status\": \"RECEIVED\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": 200,
+              "data": {
+                "id": "7001",
+                "type": "consignment",
+                "attributes": {
+                  "number": "CN-SMOKE-001",
+                  "status": "RECEIVED",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 298
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.033,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.790Z",
+        "time": 0.044,
+        "_seq": 32,
+        "_rule": "b2c_order returned (v1 / WREO_DOMAIN)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v1/b2c/orders/SO-SMOKE-001/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v1/b2c/orders/SO-SMOKE-001/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 293,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"1001\", \"type\": \"b2c_order\", \"attributes\": {\"number\": \"SO-SMOKE-001\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "1001",
+                "type": "b2c_order",
+                "attributes": {
+                  "number": "SO-SMOKE-001",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 293
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.044,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.793Z",
+        "time": 0.038,
+        "_seq": 33,
+        "_rule": "b2b_order returned (v1 / WREO_DOMAIN)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v1/b2b/orders/PO-SMOKE-001/details' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v1/b2b/orders/PO-SMOKE-001/details",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 293,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"success\", \"status_code\": \"200\", \"data\": {\"id\": \"2001\", \"type\": \"b2b_order\", \"attributes\": {\"number\": \"PO-SMOKE-001\", \"status\": \"RFP\", \"company_code\": \"ANCHANTO\", \"currency_code\": \"MYR\", \"created_at\": \"2026-08-01 10:00:00\", \"updated_at\": \"2026-08-01 10:05:00\", \"order_items\": []}}}",
+            "_json": {
+              "summary": "success",
+              "status_code": "200",
+              "data": {
+                "id": "2001",
+                "type": "b2b_order",
+                "attributes": {
+                  "number": "PO-SMOKE-001",
+                  "status": "RFP",
+                  "company_code": "ANCHANTO",
+                  "currency_code": "MYR",
+                  "created_at": "2026-08-01 10:00:00",
+                  "updated_at": "2026-08-01 10:05:00",
+                  "order_items": []
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 293
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.038,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.796Z",
+        "time": 0.948,
+        "_seq": 34,
+        "_rule": "9990500 / SERVERERROR -- 500",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"9990500\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "93"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"9990500\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "9990500",
+                "order_items_attributes": [
+                  {
+                    "sku": "S",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "response": {
+          "status": 500,
+          "statusText": "Internal Server Error",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 78,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"500\", \"message\": \"Internal server error\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 78
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.948,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.800Z",
+        "time": 0.836,
+        "_seq": 35,
+        "_rule": "9990429 / RATELIMIT -- 429",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"9990429\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "93"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"9990429\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "9990429",
+                "order_items_attributes": [
+                  {
+                    "sku": "S",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "response": {
+          "status": 429,
+          "statusText": "Too Many Requests",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 74,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"429\", \"message\": \"Too many requests\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 74
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.836,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.803Z",
+        "time": 0.976,
+        "_seq": 36,
+        "_rule": "9990422 / INVALID -- 422 unprocessable",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"9990422\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "93"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"9990422\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "9990422",
+                "order_items_attributes": [
+                  {
+                    "sku": "S",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "response": {
+          "status": 422,
+          "statusText": "Unprocessable Content",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 74,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"422\", \"message\": \"Validation failed\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 74
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.976,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.807Z",
+        "time": 0.961,
+        "_seq": 37,
+        "_rule": "9990401 / NOAUTH -- 401, token rejected",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"9990401\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "93"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"9990401\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "9990401",
+                "order_items_attributes": [
+                  {
+                    "sku": "S",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "response": {
+          "status": 401,
+          "statusText": "Unauthorized",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 69,
+            "mimeType": "application/json",
+            "text": "{\"summary\": \"error\", \"status_code\": \"401\", \"message\": \"Unauthorized\"}",
+            "_json": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 69
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.961,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.811Z",
+        "time": 1.057,
+        "_seq": 38,
+        "_rule": "9990001 / BIZERR -- 200 with response=error",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01' --data-raw '{\"b2c_order\": {\"number\": \"9990001\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/b2c_orders",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "93"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"b2c_order\": {\"number\": \"9990001\", \"order_items_attributes\": [{\"sku\": \"S\", \"quantity\": 1}]}}",
+            "_json": {
+              "b2c_order": {
+                "number": "9990001",
+                "order_items_attributes": [
+                  {
+                    "sku": "S",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 54,
+            "mimeType": "application/json",
+            "text": "{\"response\": \"error\", \"message\": \"Rejected by Wareo3\"}",
+            "_json": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 54
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.057,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-15T06:56:49.816Z",
+        "time": 0.016,
+        "_seq": 39,
+        "_rule": null,
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/definitely-not-an-endpoint' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' -H 'Warehouse-Code: WH-KUL-01'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23002/rest/v2/customers/ANCHANTO/definitely-not-an-endpoint",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23002"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Warehouse-Code",
+              "value": "WH-KUL-01"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 125,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": true, \"ErrorMessages\": [\"mock_server: no route for GET /rest/v2/customers/ANCHANTO/definitely-not-an-endpoint\"]}",
+            "_json": {
+              "HasError": true,
+              "ErrorMessages": [
+                "mock_server: no route for GET /rest/v2/customers/ANCHANTO/definitely-not-an-endpoint"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 125
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.016,
+          "receive": 0
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "orig_order_number": "SO-SMOKE-001",
+    "external_return_order_number": "RET-EXT-001",
+    "reason": "DAMAGED",
+    "pickup_date": "2026-08-22",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "orig_order_number": "SO-SMOKE-001",
+    "external_return_order_number": "RET-EXT-001",
+    "reason": "DAMAGED",
+    "pickup_date": "2026-08-22",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "orig_order_number": "SO-SMOKE-001",
+    "external_return_order_number": "RET-EXT-001",
+    "reason": "DAMAGED",
+    "pickup_date": "2026-08-22",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 1
+      }
+    ]
+  }
+]

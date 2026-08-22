@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "ai-first-fw-utilities",
+  "version": "1.0.0",
+  "description": "Standalone engineering utility skills for architecture review, diagram making, documentation writing, prompt building, and API extraction (lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, naver-api-extractor, lotteon-api-extractor).",
+  "author": {
+    "name": "Steven Nguyen"
+  }
+}

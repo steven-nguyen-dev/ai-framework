@@ -1,0 +1,62 @@
+[
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "refresh_token",
+    "client_id": "jpluger-wms3",
+    "had_refresh_token": "mock_wms3_refresh_token"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "NOAUTH-client",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "refresh_token",
+    "client_id": "jpluger-wms3",
+    "had_refresh_token": "mock_wms3_refresh_token"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "NOAUTH-client",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "<in Authorization header>",
+    "had_refresh_token": "no"
+  },
+  {
+    "grant_type": "refresh_token",
+    "client_id": "jpluger-wms3",
+    "had_refresh_token": "mock_wms3_refresh_token"
+  },
+  {
+    "grant_type": "<basic auth, no body>",
+    "client_id": "NOAUTH-client",
+    "had_refresh_token": "no"
+  }
+]

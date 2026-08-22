@@ -1,0 +1,33 @@
+# Environment variables & secrets
+.env
+.env.*
+*.env
+!.env.sample
+!.env.example
+!*.env.sample
+!*.env.example
+
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Downloads & local test outputs
+downloads/
+*.log
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+!*.zip
+!local-report-servers/**/*.zip
+!local-report-servers/*.zip

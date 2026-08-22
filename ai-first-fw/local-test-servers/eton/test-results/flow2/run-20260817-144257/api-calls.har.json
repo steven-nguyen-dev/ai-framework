@@ -1,0 +1,2289 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "Eton WMS",
+      "version": "1.0"
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-08-17T07:42:57.209Z",
+        "time": 1.764,
+        "_seq": 1,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92009666\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N12-PRICING-REJECT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "863"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92009666\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N12-PRICING-REJECT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92009666",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377",
+                  "Qty": 1,
+                  "Price": 105000.0,
+                  "Amount": 105000.0,
+                  "ActualAmount": 92850.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-N12-PRICING-REJECT",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 863
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 176,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92009666\", \"ExternalCode\": \"92009666\", \"RefExternalCode\": \"SO-ETON-CO-N12-PRICING-REJECT\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92009666",
+              "ExternalCode": "92009666",
+              "RefExternalCode": "SO-ETON-CO-N12-PRICING-REJECT",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 176
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.764,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:42:57.241Z",
+        "time": 1.339,
+        "_seq": 2,
+        "_rule": "rejected -- makes the create path throw so @Retryable replays the whole run",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "531"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 531
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 104,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"Pricing rejected by mock for soCode 92009666\"]}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Pricing rejected by mock for soCode 92009666"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 104
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.339,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:02.537Z",
+        "time": 4.269,
+        "_seq": 3,
+        "_rule": "rejected -- makes the create path throw so @Retryable replays the whole run",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "531"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 531
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 104,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"Pricing rejected by mock for soCode 92009666\"]}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Pricing rejected by mock for soCode 92009666"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 104
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 4.269,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:08.123Z",
+        "time": 2.109,
+        "_seq": 4,
+        "_rule": "rejected -- makes the create path throw so @Retryable replays the whole run",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92009666/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "531"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 531
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 104,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"Pricing rejected by mock for soCode 92009666\"]}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "Pricing rejected by mock for soCode 92009666"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 104
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.109,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:27.326Z",
+        "time": 1.021,
+        "_seq": 5,
+        "_rule": "validation failed (schema)",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000013\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[],\"RefCode\":\"SO-ETON-CO-N13-NO-ITEMS\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "718"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000013\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[],\"RefCode\":\"SO-ETON-CO-N13-NO-ITEMS\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000013",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [],
+              "RefCode": "SO-ETON-CO-N13-NO-ITEMS",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 718
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 92,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"'ListSODetail' must not be empty\"]}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "'ListSODetail' must not be empty"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 92
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.021,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:34.496Z",
+        "time": 2.049,
+        "_seq": 6,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000014\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N14-PAYLOAD-SHAPE\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "862"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000014\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N14-PAYLOAD-SHAPE\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000014",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377",
+                  "Qty": 1,
+                  "Price": 105000.0,
+                  "Amount": 105000.0,
+                  "ActualAmount": 92850.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-N14-PAYLOAD-SHAPE",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 862
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 175,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000014\", \"ExternalCode\": \"92000014\", \"RefExternalCode\": \"SO-ETON-CO-N14-PAYLOAD-SHAPE\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000014",
+              "ExternalCode": "92000014",
+              "RefExternalCode": "SO-ETON-CO-N14-PAYLOAD-SHAPE",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 175
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.049,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:34.518Z",
+        "time": 2.017,
+        "_seq": 7,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000014/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000014/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "531"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 531
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.017,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:41.621Z",
+        "time": 1.797,
+        "_seq": 8,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000015\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":2,\"Price\":52500.0,\"Amount\":52500.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N15-QTY2\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "851"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000015\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":2,\"Price\":52500.0,\"Amount\":52500.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N15-QTY2\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000015",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377",
+                  "Qty": 2,
+                  "Price": 52500.0,
+                  "Amount": 52500.0,
+                  "ActualAmount": 92850.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-N15-QTY2",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 851
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 166,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000015\", \"ExternalCode\": \"92000015\", \"RefExternalCode\": \"SO-ETON-CO-N15-QTY2\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000015",
+              "ExternalCode": "92000015",
+              "RefExternalCode": "SO-ETON-CO-N15-QTY2",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 166
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.797,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:41.640Z",
+        "time": 1.906,
+        "_seq": 9,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000015/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":2,\"BasePrice\":210000.0,\"SellerDiscount\":6300.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":18000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":210000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":12150.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000015/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "536"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":2,\"BasePrice\":210000.0,\"SellerDiscount\":6300.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":18000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":210000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":12150.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 2,
+                  "BasePrice": 210000.0,
+                  "SellerDiscount": 6300.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 18000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 210000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 12150.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 536
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.906,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:56.041Z",
+        "time": 2.397,
+        "_seq": 10,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000017\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"INV-UNPRICED\",\"Qty\":1,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N17-BLANK-SKU\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "989"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000017\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"INV-UNPRICED\",\"Qty\":1,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N17-BLANK-SKU\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000017",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377",
+                  "Qty": 1,
+                  "Price": 105000.0,
+                  "Amount": 105000.0,
+                  "ActualAmount": 92850.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "SKU": "INV-UNPRICED",
+                  "Qty": 1,
+                  "Price": 0.0,
+                  "Amount": 0.0,
+                  "ActualAmount": 0.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-N17-BLANK-SKU",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 989
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 171,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000017\", \"ExternalCode\": \"92000017\", \"RefExternalCode\": \"SO-ETON-CO-N17-BLANK-SKU\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000017",
+              "ExternalCode": "92000017",
+              "RefExternalCode": "SO-ETON-CO-N17-BLANK-SKU",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 171
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.397,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:43:56.072Z",
+        "time": 1.516,
+        "_seq": 11,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000017/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"INV-UNPRICED\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000017/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "691"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"INV-UNPRICED\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                },
+                {
+                  "SKU": "INV-UNPRICED",
+                  "Quantity": 1,
+                  "BasePrice": 0.0,
+                  "SellerDiscount": 0.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 0.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 691
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.516,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:03.296Z",
+        "time": 2.723,
+        "_seq": 12,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000101\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K1-KIT-SHOPEE\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "1009"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000101\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K1-KIT-SHOPEE\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000101",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377-A",
+                  "Qty": 6,
+                  "Price": 23333.333333333332,
+                  "Amount": 70000.0,
+                  "ActualAmount": 70000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Qty": 2,
+                  "Price": 35000.0,
+                  "Amount": 35000.0,
+                  "ActualAmount": 35000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-K1-KIT-SHOPEE",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 1009
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 171,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000101\", \"ExternalCode\": \"92000101\", \"RefExternalCode\": \"SO-ETON-CO-K1-KIT-SHOPEE\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000101",
+              "ExternalCode": "92000101",
+              "RefExternalCode": "SO-ETON-CO-K1-KIT-SHOPEE",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 171
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.723,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:03.324Z",
+        "time": 1.47,
+        "_seq": 13,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000101/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":70000.0,\"SellerDiscount\":2100.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":6000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":35000.0,\"SellerDiscount\":1050.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":3000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000101/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "699"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":70000.0,\"SellerDiscount\":2100.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":6000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":35000.0,\"SellerDiscount\":1050.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":3000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377-A",
+                  "Quantity": 6,
+                  "BasePrice": 70000.0,
+                  "SellerDiscount": 2100.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 6000.0,
+                  "CoinsOrCashback": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Quantity": 2,
+                  "BasePrice": 35000.0,
+                  "SellerDiscount": 1050.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 3000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 699
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.47,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:10.443Z",
+        "time": 1.66,
+        "_seq": 14,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000102\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K2-KIT-TIKTOK\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "1009"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000102\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K2-KIT-TIKTOK\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000102",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377-A",
+                  "Qty": 6,
+                  "Price": 23333.333333333332,
+                  "Amount": 70000.0,
+                  "ActualAmount": 70000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Qty": 2,
+                  "Price": 35000.0,
+                  "Amount": 35000.0,
+                  "ActualAmount": 35000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-K2-KIT-TIKTOK",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Tiktok",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 1009
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 171,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000102\", \"ExternalCode\": \"92000102\", \"RefExternalCode\": \"SO-ETON-CO-K2-KIT-TIKTOK\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000102",
+              "ExternalCode": "92000102",
+              "RefExternalCode": "SO-ETON-CO-K2-KIT-TIKTOK",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 171
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.66,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:10.467Z",
+        "time": 1.634,
+        "_seq": 15,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000102/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":200000.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":100000.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":300000.0,\"OrderSellerDiscount\":0.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":20000.0,\"ShippingDiscountSeller\":3000.0,\"ShippingDiscountPlatform\":12000.0,\"ServiceFee\":0.0,\"Tax\":1000.0,\"UnclassifiedDiscount\":50000.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000102/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "687"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":200000.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":100000.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":300000.0,\"OrderSellerDiscount\":0.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":20000.0,\"ShippingDiscountSeller\":3000.0,\"ShippingDiscountPlatform\":12000.0,\"ServiceFee\":0.0,\"Tax\":1000.0,\"UnclassifiedDiscount\":50000.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377-A",
+                  "Quantity": 6,
+                  "BasePrice": 200000.0,
+                  "SellerDiscount": 0.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 0.0,
+                  "CoinsOrCashback": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Quantity": 2,
+                  "BasePrice": 100000.0,
+                  "SellerDiscount": 0.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 0.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 300000.0,
+              "OrderSellerDiscount": 0.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 0.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 20000.0,
+              "ShippingDiscountSeller": 3000.0,
+              "ShippingDiscountPlatform": 12000.0,
+              "ServiceFee": 0.0,
+              "Tax": 1000.0,
+              "UnclassifiedDiscount": 50000.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 687
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.634,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:17.603Z",
+        "time": 4.006,
+        "_seq": 16,
+        "_rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000103\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"INV-PLAIN\",\"Qty\":1,\"Price\":45000.0,\"Amount\":45000.0,\"ActualAmount\":38650.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K3-KIT-PLUS-PLAIN\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "1153"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000103\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":6,\"Price\":23333.333333333332,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377-B\",\"Qty\":2,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"INV-PLAIN\",\"Qty\":1,\"Price\":45000.0,\"Amount\":45000.0,\"ActualAmount\":38650.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K3-KIT-PLUS-PLAIN\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000103",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377-A",
+                  "Qty": 6,
+                  "Price": 23333.333333333332,
+                  "Amount": 70000.0,
+                  "ActualAmount": 70000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Qty": 2,
+                  "Price": 35000.0,
+                  "Amount": 35000.0,
+                  "ActualAmount": 35000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "SKU": "INV-PLAIN",
+                  "Qty": 1,
+                  "Price": 45000.0,
+                  "Amount": 45000.0,
+                  "ActualAmount": 38650.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-K3-KIT-PLUS-PLAIN",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 1153
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 175,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": false, \"Code\": \"92000103\", \"ExternalCode\": \"92000103\", \"RefExternalCode\": \"SO-ETON-CO-K3-KIT-PLUS-PLAIN\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}",
+            "_json": {
+              "HasError": false,
+              "Code": "92000103",
+              "ExternalCode": "92000103",
+              "RefExternalCode": "SO-ETON-CO-K3-KIT-PLUS-PLAIN",
+              "Status": "New",
+              "ErrorCode": null,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 175
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 4.006,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:17.633Z",
+        "time": 3.808,
+        "_seq": 17,
+        "_rule": "no marker -- pricing push accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000103/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":70000.0,\"SellerDiscount\":2100.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":6000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":35000.0,\"SellerDiscount\":1050.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":3000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"INV-PLAIN\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000103/priceDetail",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "867"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"Items\":[{\"SKU\":\"1025377-A\",\"Quantity\":6,\"BasePrice\":70000.0,\"SellerDiscount\":2100.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":6000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377-B\",\"Quantity\":2,\"BasePrice\":35000.0,\"SellerDiscount\":1050.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":3000.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"INV-PLAIN\",\"Quantity\":1,\"BasePrice\":105000.0,\"SellerDiscount\":3150.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":9000.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":105000.0,\"OrderSellerDiscount\":3150.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":9000.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":16500.0,\"ShippingDiscountSeller\":1500.0,\"ShippingDiscountPlatform\":15000.0,\"ServiceFee\":8602.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}",
+            "_json": {
+              "Items": [
+                {
+                  "SKU": "1025377-A",
+                  "Quantity": 6,
+                  "BasePrice": 70000.0,
+                  "SellerDiscount": 2100.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 6000.0,
+                  "CoinsOrCashback": 0.0
+                },
+                {
+                  "SKU": "1025377-B",
+                  "Quantity": 2,
+                  "BasePrice": 35000.0,
+                  "SellerDiscount": 1050.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 3000.0,
+                  "CoinsOrCashback": 0.0
+                },
+                {
+                  "SKU": "INV-PLAIN",
+                  "Quantity": 1,
+                  "BasePrice": 105000.0,
+                  "SellerDiscount": 3150.0,
+                  "SellerVoucher": 0.0,
+                  "PlatformDiscount": 0.0,
+                  "PlatformVoucher": 9000.0,
+                  "CoinsOrCashback": 0.0
+                }
+              ],
+              "OrderBasePrice": 105000.0,
+              "OrderSellerDiscount": 3150.0,
+              "OrderSellerVoucher": 0.0,
+              "OrderPlatformDiscount": 0.0,
+              "OrderPlatformVoucher": 9000.0,
+              "OrderCoinsOrCashback": 0.0,
+              "ShippingFee": 16500.0,
+              "ShippingDiscountSeller": 1500.0,
+              "ShippingDiscountPlatform": 15000.0,
+              "ServiceFee": 8602.0,
+              "Tax": 0.0,
+              "UnclassifiedDiscount": 0.0,
+              "UnclassifiedFee": 0.0,
+              "CurrencyCode": "VND"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 867
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 59,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": false,
+              "ErrorMessages": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 59
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 3.808,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-17T07:44:24.760Z",
+        "time": 0.328,
+        "_seq": 18,
+        "_rule": "validation failed (schema)",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000104\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":1,\"Price\":70000.0,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"Qty\":1,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K4-KIT-NO-SKU\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Length",
+              "value": "980"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23101"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Apache-HttpClient/4.5.13 (Java/11.0.31)"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip,deflate"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ClientSoCode\":\"92000104\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377-A\",\"Qty\":1,\"Price\":70000.0,\"Amount\":70000.0,\"ActualAmount\":70000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"Qty\":1,\"Price\":35000.0,\"Amount\":35000.0,\"ActualAmount\":35000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-K4-KIT-NO-SKU\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}",
+            "_json": {
+              "ClientSoCode": "92000104",
+              "SourceClientBranch": "SS0000016643",
+              "CustPhone": "+84901234567",
+              "CustName": "Nguyen Van A",
+              "CustType": 0,
+              "ShippingServiceCode": "BCS",
+              "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+              "FinalCOD": 0.0,
+              "BizType": "B2C",
+              "ListSODetail": [
+                {
+                  "SKU": "1025377-A",
+                  "Qty": 1,
+                  "Price": 70000.0,
+                  "Amount": 70000.0,
+                  "ActualAmount": 70000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                },
+                {
+                  "Qty": 1,
+                  "Price": 35000.0,
+                  "Amount": 35000.0,
+                  "ActualAmount": 35000.0,
+                  "VATPercent": 0.0,
+                  "PromotionPercent": 0.0,
+                  "CODAmount": 0.0
+                }
+              ],
+              "RefCode": "SO-ETON-CO-K4-KIT-NO-SKU",
+              "ClientPickup": true,
+              "IsGotDocument": false,
+              "NoPack": false,
+              "IsPreOrder": false,
+              "IsLabelling": false,
+              "IsOnHold": false,
+              "WarehouseCode": "eton",
+              "SOType": 1,
+              "IsUsingClientShippingLabel": true,
+              "TotalAmount": 0.0,
+              "PromotionAmount": 0.0,
+              "ActualAmount": 0.0,
+              "TotalCODAmount": 0.0,
+              "SalesChannel": "Shopee",
+              "FulfillmentServiceCode": "Standard"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 980
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 93,
+            "mimeType": "application/json",
+            "text": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"'ListSODetail[1].SKU' is required\"]}",
+            "_json": {
+              "ErrorCode": null,
+              "HasError": true,
+              "ErrorMessages": [
+                "'ListSODetail[1].SKU' is required"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.328,
+          "receive": 0
+        }
+      }
+    ]
+  }
+}

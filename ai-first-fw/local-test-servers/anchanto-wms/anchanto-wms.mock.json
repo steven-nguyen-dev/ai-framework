@@ -1,0 +1,5247 @@
+{
+  "name": "Anchanto WMS (Wareo3)",
+  "port": 23002,
+  "_comment": "Anchanto's own WMS product, Wareo3 -- the API JPluger's wms3 area calls, via connector/wms3-connector and ${WMS_3_URL} (wms-api.anchanto.com in prod). This is NOT the OMS Open API. Reference: docs/anchanto-wms-api.md.",
+  "spec": "anchanto-wms-swagger.json",
+  "state_dir": "mock-data",
+  "log_file": "api-calls.har.json",
+  "log_format": "har",
+  "test_results_dir": "test-results",
+  "unmatched_status": 404,
+  "_comment_suites": "Only what is written here can be started from /test; the browser sends a suite id, never a command. Paths resolve relative to local-test-servers.",
+  "test_suites": [
+    {
+      "id": "smoke",
+      "name": "Mock smoke suite",
+      "description": "All 27 operations, the OAuth2 grant and refresh, every steering marker, the PUT-only product update, and the store write contracts. Drives the mock alone -- no app, no database, no Kafka -- so a red row is the mock or the spec, never an integration.",
+      "estimate": "~5 s",
+      "command": [
+        "python3",
+        "anchanto-wms/suite-smoke.py"
+      ],
+      "options": [
+        {
+          "flag": "--keep-state",
+          "label": "Keep state \u2014 do not reset the stores or the call log first"
+        }
+      ]
+    }
+  ],
+  "stores": {
+    "token_grants": {
+      "file": "token_grants.json",
+      "type": "list",
+      "_comment": "Every /oauth/token call, with the grant_type as sent. The initial grant carries no body (basic auth), the refresh grant does -- this file is how you tell them apart."
+    },
+    "created_orders": {
+      "file": "created_orders.json",
+      "type": "set",
+      "_comment": "Order numbers accepted, b2c and b2b/sto."
+    },
+    "order_pushes": {
+      "file": "order_pushes.json",
+      "type": "list",
+      "_comment": "Every order-lifecycle write, tagged with its kind, and each recording the warehouse-code HEADER so a test can prove it was sent."
+    },
+    "returns": {
+      "file": "returns.json",
+      "type": "list",
+      "_comment": "Return initiations, keyed by orig_order_number."
+    },
+    "product_pushes": {
+      "file": "product_pushes.json",
+      "type": "list",
+      "_comment": "Product create/update/change_status, recording length_cm and weight_gm to prove the unit-suffixed dimension fields arrived."
+    },
+    "party_pushes": {
+      "file": "party_pushes.json",
+      "type": "list",
+      "_comment": "Supplier and buyer writes. supplier_type_present shows the shared Wms3PartyDataDTO leaking a supplier field onto buyer payloads."
+    },
+    "created_consignments": {
+      "file": "created_consignments.json",
+      "type": "set",
+      "_comment": "Consignment numbers accepted."
+    },
+    "consignment_pushes": {
+      "file": "consignment_pushes.json",
+      "type": "list",
+      "_comment": "Consignment creates with their item lists."
+    }
+  },
+  "routes": [
+    {
+      "_comment": "THE live auth mechanism. Serves the initial basic-auth grant AND the refresh grant -- Wms3RequestHandler posts to the same URL for both. /rest/v1/tokens/generate is legacy v1 and deliberately absent from this mock: its token is never used for a v2 call, so a mock that answered it would let a broken auth path look healthy.",
+      "path": "/oauth/token",
+      "method": "POST",
+      "name": "token issued (grant or refresh)",
+      "before": [
+        {
+          "append": {
+            "store": "token_grants",
+            "entry": {
+              "grant_type": "${body.grant_type|<basic auth, no body>}",
+              "client_id": "${body.client_id|<in Authorization header>}",
+              "had_refresh_token": "${body.refresh_token|no}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "NOAUTH in client_id -- 401, credentials rejected",
+          "when": {
+            "body.client_id": {
+              "contains": "NOAUTH"
+            }
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "error": "invalid_client",
+              "message": "Client authentication failed"
+            }
+          }
+        },
+        {
+          "_comment": "Lets a test drive the refresh path deterministically: ask for a 1-second token and the client must come back.",
+          "name": "EXPIRE in client_id -- token valid for 1 second",
+          "when": {
+            "body.client_id": {
+              "contains": "EXPIRE"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "access_token": "mock_wms3_token_shortlived",
+              "refresh_token": "mock_wms3_refresh",
+              "token_type": "Bearer",
+              "scope": "public",
+              "created_at": 1755225600,
+              "access_token_expire_in": 1
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "access_token": "mock_wms3_access_token",
+          "refresh_token": "mock_wms3_refresh_token",
+          "token_type": "Bearer",
+          "scope": "public",
+          "created_at": 1755225600,
+          "access_token_expire_in": 7200
+        }
+      }
+    },
+    {
+      "_comment": "Body is wrapped as {\"b2c_order\":{...}}. Echoes the submitted number so a test can correlate; a static order number would make two runs indistinguishable.",
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders",
+      "method": "POST",
+      "name": "b2c order created",
+      "before": [
+        {
+          "record": {
+            "store": "created_orders",
+            "values": [
+              "${body.b2c_order.number}"
+            ]
+          }
+        },
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2c_create",
+              "customer_code": "${path.customer_code}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}",
+              "number": "${body.b2c_order.number}",
+              "currency_code": "${body.b2c_order.currency_code}",
+              "items": "${body.b2c_order.order_items_attributes}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2c_order.number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "b2c_order",
+              "b2c_order.number",
+              "b2c_order.order_items_attributes[*].sku"
+            ],
+            "non_empty": [
+              "b2c_order.order_items_attributes"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Order created",
+          "order_number": "${body.b2c_order.number}"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/cancel",
+      "method": "POST",
+      "name": "b2c order cancelled",
+      "before": [
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2c_cancel",
+              "customer_code": "${path.customer_code}",
+              "order_number": "${path.order_number}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}",
+              "remark": "${body.remark|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990001"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "BIZERR"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/complete",
+      "method": "POST",
+      "name": "b2c order completed",
+      "before": [
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2c_complete",
+              "customer_code": "${path.customer_code}",
+              "order_number": "${path.order_number}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}",
+              "delivered_to": "${body.deliveryDetails.deliveredTo|<none>}",
+              "received_amount": "${body.deliveryDetails.receivedAmount|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990001"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "BIZERR"
+                    }
+                  },
+                  {
+                    "body.orderNumber": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/tracking",
+      "method": "POST",
+      "name": "tracking recorded",
+      "before": [
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2c_tracking",
+              "customer_code": "${path.customer_code}",
+              "order_number": "${path.order_number}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}",
+              "tracking_number": "${body.tracking_number}",
+              "carrier_code": "${body.carrier.carrier_code|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990001"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "BIZERR"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/shipping_docs",
+      "method": "POST",
+      "name": "shipping docs recorded",
+      "before": [
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2c_shipping_docs",
+              "customer_code": "${path.customer_code}",
+              "order_number": "${path.order_number}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}",
+              "url_type": "${body.url_type|<none>}",
+              "tracking_number": "${body.tracking_number|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990001"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "BIZERR"
+                    }
+                  },
+                  {
+                    "body.tracking_number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "_comment": "Path variable is orig_order_number, not order_number. The caller persists data.return_order_number, so it must come back.",
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{orig_order_number}/initiate_return",
+      "method": "POST",
+      "name": "return initiated",
+      "before": [
+        {
+          "append": {
+            "store": "returns",
+            "entry": {
+              "orig_order_number": "${path.orig_order_number}",
+              "external_return_order_number": "${body.externalReturnOrderNumber|<none>}",
+              "reason": "${body.order.reason|<none>}",
+              "pickup_date": "${body.order.pickup_date|<none>}",
+              "items": "${body.order.order_items}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "9990500"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "9990429"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "9990422"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "INVALID"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "9990401"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.orig_order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  },
+                  {
+                    "body.externalReturnOrderNumber": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Return initiated",
+          "data": {
+            "return_order_number": "RET-${path.orig_order_number}"
+          }
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2c_orders/{order_number}/details",
+      "method": "GET",
+      "name": "b2c order returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "_comment": "404 must be distinguishable from a 200 carrying an empty resource; callers branch on it.",
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.order_number": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.order_number": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": "404",
+              "message": "Order not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "1001",
+            "type": "b2c_order",
+            "attributes": {
+              "number": "${path.order_number}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "A v1 path that is live and has no v2 equivalent (Wms3OrderService.java:361). Uses the {order_number} placeholder, not the v1 <number> style.",
+      "path": "/rest/v1/b2c/orders/{order_number}/update_unassigned_order",
+      "method": "POST",
+      "name": "unassigned order updated",
+      "before": [
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "update_unassigned",
+              "order_number": "${path.order_number}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/b2b_orders",
+      "method": "POST",
+      "name": "b2b order created",
+      "before": [
+        {
+          "record": {
+            "store": "created_orders",
+            "values": [
+              "${body.b2b_order.number}"
+            ]
+          }
+        },
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "b2b_create",
+              "customer_code": "${path.customer_code}",
+              "number": "${body.b2b_order.number}",
+              "supplier_code": "${body.b2b_order.supplier_code|<none>}",
+              "is_stock_transfer": "${body.b2b_order.is_stock_transfer|false}",
+              "destination_store_code": "${body.b2b_order.destination_store_code|<none>}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "b2b_order",
+              "b2b_order.number"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Order created",
+          "order_number": "${body.b2b_order.number}"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/sto/orders",
+      "method": "POST",
+      "name": "sto order created",
+      "before": [
+        {
+          "record": {
+            "store": "created_orders",
+            "values": [
+              "${body.b2b_order.number}"
+            ]
+          }
+        },
+        {
+          "append": {
+            "store": "order_pushes",
+            "entry": {
+              "kind": "sto_create",
+              "customer_code": "${path.customer_code}",
+              "number": "${body.b2b_order.number}",
+              "supplier_code": "${body.b2b_order.supplier_code|<none>}",
+              "is_stock_transfer": "${body.b2b_order.is_stock_transfer|false}",
+              "destination_store_code": "${body.b2b_order.destination_store_code|<none>}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.b2b_order.number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "b2b_order",
+              "b2b_order.number"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Order created",
+          "order_number": "${body.b2b_order.number}"
+        }
+      }
+    },
+    {
+      "_comment": "status_code is an Integer in WmsB2BGetOrderResponseDTO and a String on the b2c read. Same field, two Java types -- a mock returning a JSON number here and a string there is faithful, not sloppy.",
+      "path": "/rest/v2/customers/{customer_code}/b2b_orders/{order_number}/details",
+      "method": "GET",
+      "name": "b2b order returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.order_number": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.order_number": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": 404,
+              "message": "Order not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": 200,
+          "data": {
+            "id": "2001",
+            "type": "b2b_order",
+            "attributes": {
+              "number": "${path.order_number}",
+              "status": "RECEIVED",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "The only read that returns a list and the only one carrying meta pagination.",
+      "path": "/rest/v2/customers/{customer_code}/b2b_orders/{order_number}/order_items",
+      "method": "GET",
+      "name": "b2b order items returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "EMPTY -- 200 with no items",
+          "when": {
+            "path.order_number": {
+              "contains": "EMPTY"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "summary": "success",
+              "status_code": "200",
+              "meta": {
+                "total": 0,
+                "page": 1,
+                "per_page": 50
+              },
+              "data": []
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "meta": {
+            "total": 1,
+            "page": 1,
+            "per_page": 50
+          },
+          "data": [
+            {
+              "id": 88001,
+              "sku": "SKU-W3-001",
+              "product_name": "Wareo Test Product",
+              "unit_price": "70000",
+              "retail_price": "75000",
+              "selling_price": "63000",
+              "quantity": 2,
+              "status": "ALLOCATED",
+              "line_number": 1,
+              "order_number": "${path.order_number}",
+              "shipment_number": "SHP-W3-0001",
+              "warehouse": {
+                "code": "WH-KUL-01",
+                "name": "Kuala Lumpur DC"
+              },
+              "usns": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/products",
+      "method": "POST",
+      "name": "product created",
+      "before": [
+        {
+          "append": {
+            "store": "product_pushes",
+            "entry": {
+              "kind": "create",
+              "sku": "${body.product.sku}",
+              "name": "${body.product.name|<none>}",
+              "length_cm": "${body.product.product_dimensions_attributes.0.length_cm|<none>}",
+              "weight_gm": "${body.product.product_dimensions_attributes.0.weight_gm|<none>}",
+              "warehouse_code_header": "${header.warehouse-code|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.product.sku": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "product",
+              "product.sku"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Product saved",
+          "sku": "${body.product.sku}",
+          "status": 200,
+          "data": [
+            {
+              "product_information_id": [
+                9001
+              ],
+              "product_dimensions_info": {
+                "mfupc": 8938505970019
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "_comment": "THE ONLY PUT in the surface (Wms3ProductService.java:155). Declared with \"method\": \"PUT\" so a POST here 404s exactly as the real API would.",
+      "path": "/rest/v2/customers/{customer_code}/products/{sku}",
+      "method": "PUT",
+      "name": "product updated",
+      "before": [
+        {
+          "append": {
+            "store": "product_pushes",
+            "entry": {
+              "kind": "update",
+              "sku": "${path.sku}",
+              "name": "${body.product.name|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Product updated",
+          "sku": "${path.sku}",
+          "status": 200,
+          "data": []
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/products/change_status",
+      "method": "POST",
+      "name": "product status changed",
+      "before": [
+        {
+          "append": {
+            "store": "product_pushes",
+            "entry": {
+              "kind": "change_status",
+              "sku": "${body.sku}",
+              "state": "${body.state}",
+              "remark": "${body.remark|<none>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.sku": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "OK"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/products/{sku}",
+      "method": "GET",
+      "name": "product returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.sku": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.sku": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.sku": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": "404",
+              "message": "Product not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "9001",
+            "type": "product",
+            "attributes": {
+              "number": "${path.sku}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Wrapped as {\"supplier\":{...}} around the shared Wms3PartyDataDTO.",
+      "path": "/rest/v2/customers/{customer_code}/suppliers",
+      "method": "POST",
+      "name": "supplier created",
+      "before": [
+        {
+          "append": {
+            "store": "party_pushes",
+            "entry": {
+              "party": "supplier",
+              "kind": "create",
+              "code": "${body.supplier.code}",
+              "name": "${body.supplier.name|<none>}",
+              "supplier_type_present": "${body.supplier.supplier_type|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "supplier",
+              "supplier.code"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Supplier creatd",
+          "data": {
+            "id": 4401
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Update is a NAMED SUB-RESOURCE, not a PUT on the identifier.",
+      "path": "/rest/v2/customers/{customer_code}/suppliers/update_supplier",
+      "method": "POST",
+      "name": "supplier updated",
+      "before": [
+        {
+          "append": {
+            "store": "party_pushes",
+            "entry": {
+              "party": "supplier",
+              "kind": "update",
+              "code": "${body.supplier.code}",
+              "name": "${body.supplier.name|<none>}",
+              "supplier_type_present": "${body.supplier.supplier_type|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.supplier.code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "supplier",
+              "supplier.code"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Supplier updatd",
+          "data": {
+            "id": 4401
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Wrapped as {\"buyer\":{...}} around the shared Wms3PartyDataDTO.",
+      "path": "/rest/v2/customers/{customer_code}/buyers",
+      "method": "POST",
+      "name": "buyer created",
+      "before": [
+        {
+          "append": {
+            "store": "party_pushes",
+            "entry": {
+              "party": "buyer",
+              "kind": "create",
+              "code": "${body.buyer.code}",
+              "name": "${body.buyer.name|<none>}",
+              "supplier_type_present": "${body.buyer.supplier_type|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "buyer",
+              "buyer.code"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Buyer creatd",
+          "data": {
+            "id": 5501
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Update is a NAMED SUB-RESOURCE, not a PUT on the identifier.",
+      "path": "/rest/v2/customers/{customer_code}/buyers/update_buyer",
+      "method": "POST",
+      "name": "buyer updated",
+      "before": [
+        {
+          "append": {
+            "store": "party_pushes",
+            "entry": {
+              "party": "buyer",
+              "kind": "update",
+              "code": "${body.buyer.code}",
+              "name": "${body.buyer.name|<none>}",
+              "supplier_type_present": "${body.buyer.supplier_type|<absent>}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.buyer.code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "buyer",
+              "buyer.code"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Buyer updatd",
+          "data": {
+            "id": 5501
+          }
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/suppliers/{supplier_code}",
+      "method": "GET",
+      "name": "supplier returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.supplier_code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.supplier_code": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.supplier_code": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": "404",
+              "message": "Supplier not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "4401",
+            "type": "supplier",
+            "attributes": {
+              "number": "${path.supplier_code}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Path variable is `code` on the buyer read and `supplier_code` on the supplier read -- inconsistent, and faithful to the real API.",
+      "path": "/rest/v2/customers/{customer_code}/buyers/{code}",
+      "method": "GET",
+      "name": "buyer returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.code": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.code": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.code": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": "404",
+              "message": "Buyer not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "5501",
+            "type": "buyer",
+            "attributes": {
+              "number": "${path.code}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "A mock MUST return order_number -- the caller persists it. Note the DTO class name is misspelled Wms3ConsigmentDataDTO (one n) while the wire field is not.",
+      "path": "/rest/v2/customers/{customer_code}/consignments",
+      "method": "POST",
+      "name": "consignment created",
+      "before": [
+        {
+          "record": {
+            "store": "created_consignments",
+            "values": [
+              "${body.consignment.number}"
+            ]
+          }
+        },
+        {
+          "append": {
+            "store": "consignment_pushes",
+            "entry": {
+              "number": "${body.consignment.number}",
+              "supplier_code": "${body.consignment.supplier_code|<none>}",
+              "po_ref_number": "${body.consignment.po_ref_number|<none>}",
+              "order_type": "${body.consignment.order_type|<none>}",
+              "items": "${body.consignment.consignment_items_attributes}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990001 / BIZERR -- 200 with response=error",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "9990001"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "body.consignment.number": {
+                      "contains": "BIZERR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "response": "error",
+              "message": "Rejected by Wareo3"
+            }
+          }
+        },
+        {
+          "name": "validation failed (schema)",
+          "enabled": true,
+          "validate": {
+            "required": [
+              "consignment",
+              "consignment.number"
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "${validation.summary}"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "response": "success",
+          "message": "Consignment created",
+          "order_number": "${body.consignment.number}"
+        }
+      }
+    },
+    {
+      "path": "/rest/v2/customers/{customer_code}/consignments/{consignment_number}/details",
+      "method": "GET",
+      "name": "consignment returned",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.consignment_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        },
+        {
+          "name": "9990404 / NOTFOUND -- 404",
+          "when": {
+            "any": [
+              {
+                "path.consignment_number": {
+                  "contains": "9990404"
+                }
+              },
+              {
+                "path.consignment_number": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "summary": "error",
+              "status_code": 404,
+              "message": "Consignment not found"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": 200,
+          "data": {
+            "id": "7001",
+            "type": "consignment",
+            "attributes": {
+              "number": "${path.consignment_number}",
+              "status": "RECEIVED",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Declared with a %s placeholder and substituted by String.format -- the third placeholder style in this area. Lives under wms3-core/utils/oip/, whose handler injects WREO_DOMAIN; `oip` means the OMS platform everywhere else in the repo.",
+      "path": "/rest/v1/b2c/orders/{order_number}/details",
+      "method": "GET",
+      "name": "b2c_order returned (v1 / WREO_DOMAIN)",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "1001",
+            "type": "b2c_order",
+            "attributes": {
+              "number": "${path.order_number}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Declared with a %s placeholder and substituted by String.format -- the third placeholder style in this area. Lives under wms3-core/utils/oip/, whose handler injects WREO_DOMAIN; `oip` means the OMS platform everywhere else in the repo.",
+      "path": "/rest/v1/b2b/orders/{order_number}/details",
+      "method": "GET",
+      "name": "b2b_order returned (v1 / WREO_DOMAIN)",
+      "rules": [
+        {
+          "name": "9990500 / SERVERERROR -- 500",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990500"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "SERVERERROR"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "summary": "error",
+              "status_code": "500",
+              "message": "Internal server error"
+            }
+          }
+        },
+        {
+          "name": "9990429 / RATELIMIT -- 429",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990429"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "RATELIMIT"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "summary": "error",
+              "status_code": "429",
+              "message": "Too many requests"
+            }
+          }
+        },
+        {
+          "_comment": "Wareo3 answers 422 for a malformed resource, not 400. Using 400 here would mock the wrong contract.",
+          "name": "9990422 / INVALID -- 422 unprocessable",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990422"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "INVALID"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 422,
+            "body": {
+              "summary": "error",
+              "status_code": "422",
+              "message": "Validation failed"
+            }
+          }
+        },
+        {
+          "name": "9990401 / NOAUTH -- 401, token rejected",
+          "when": {
+            "any": [
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "9990401"
+                    }
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "path.order_number": {
+                      "contains": "NOAUTH"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "respond": {
+            "status": 401,
+            "body": {
+              "summary": "error",
+              "status_code": "401",
+              "message": "Unauthorized"
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "summary": "success",
+          "status_code": "200",
+          "data": {
+            "id": "2001",
+            "type": "b2b_order",
+            "attributes": {
+              "number": "${path.order_number}",
+              "status": "RFP",
+              "company_code": "ANCHANTO",
+              "currency_code": "MYR",
+              "created_at": "2026-08-01 10:00:00",
+              "updated_at": "2026-08-01 10:05:00",
+              "order_items": []
+            }
+          }
+        }
+      }
+    }
+  ]
+}

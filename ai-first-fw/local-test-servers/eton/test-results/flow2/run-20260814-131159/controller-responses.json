@@ -1,0 +1,102 @@
+[
+  {
+    "id": "N1",
+    "order_id": "92000001",
+    "order_number": "SO-ETON-CO-N1",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:00.415319+00:00",
+    "returned_at": "2026-08-14T06:12:00.486748+00:00",
+    "name": "N1. Plain item - happy path, no pricing carrier"
+  },
+  {
+    "id": "N2",
+    "order_id": "92000002",
+    "order_number": "SO-ETON-CO-N2-SHOPEE",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:07.599256+00:00",
+    "returned_at": "2026-08-14T06:12:07.645988+00:00",
+    "name": "N2. Shopee - order_adjustment pricing"
+  },
+  {
+    "id": "N3",
+    "order_id": "92000003",
+    "order_number": "SO-ETON-CO-N3-LAZADA",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:14.761532+00:00",
+    "returned_at": "2026-08-14T06:12:14.809348+00:00",
+    "name": "N3. Lazada - line_item_details"
+  },
+  {
+    "id": "N4",
+    "order_id": "92000004",
+    "order_number": "SO-ETON-CO-N4-TIKTOK",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:21.944901+00:00",
+    "returned_at": "2026-08-14T06:12:21.991402+00:00",
+    "name": "N4. TikTok - line_item_details"
+  },
+  {
+    "id": "N5",
+    "order_id": "92000005",
+    "order_number": "SO-ETON-CO-N5-TIKTOK-FLAT",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:29.132050+00:00",
+    "returned_at": "2026-08-14T06:12:29.197287+00:00",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)"
+  },
+  {
+    "id": "N6",
+    "order_id": "92000006",
+    "order_number": "SO-ETON-CO-N6-TIKTOK-ZERO",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:36.323094+00:00",
+    "returned_at": "2026-08-14T06:12:36.375102+00:00",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)"
+  },
+  {
+    "id": "N7",
+    "order_id": "92000007",
+    "order_number": "SO-ETON-CO-N7-HARAVAN",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:43.521179+00:00",
+    "returned_at": "2026-08-14T06:12:43.567164+00:00",
+    "name": "N7. Haravan - out of scope channel"
+  },
+  {
+    "id": "N8",
+    "order_id": "92000008",
+    "order_number": "SO-ETON-CO-N8-PACKED",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:50.673890+00:00",
+    "returned_at": "2026-08-14T06:12:50.715890+00:00",
+    "name": "N8. Packed order"
+  },
+  {
+    "id": "N9",
+    "order_id": "92000009",
+    "order_number": "SO-ETON-CO-N9-EXISTS",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:12:57.825983+00:00",
+    "returned_at": "2026-08-14T06:12:57.871370+00:00",
+    "name": "N9. Replay - Eton answers BESO05 already exists"
+  },
+  {
+    "id": "N10",
+    "order_id": "92000010",
+    "order_number": "SO-ETON-CO-N10-SERVERERROR",
+    "controller_status": "200",
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-14T06:13:05.000108+00:00",
+    "returned_at": "2026-08-14T06:13:05.043489+00:00",
+    "name": "N10. Eton 500 - retry then recover"
+  }
+]

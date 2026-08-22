@@ -1,0 +1,76 @@
+[
+  {
+    "kind": "brand_create",
+    "code": "AURORA_SMOKE",
+    "name": "Aurora Home",
+    "store_code": "SMOKE_STORE_01"
+  },
+  {
+    "kind": "brand_bulk_create",
+    "store_code_camel": "SMOKE_STORE_01",
+    "store_code_query": "SMOKE_STORE_01",
+    "first_code": "AURORA_SMOKE_B"
+  },
+  {
+    "kind": "brand_update",
+    "id": "71204",
+    "code": "AURORA_SMOKE"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "10000001",
+    "name": "Home & Living",
+    "children": [
+      {
+        "name": "Bedding",
+        "code": "10000002",
+        "active": true
+      }
+    ],
+    "store_code": "SMOKE_STORE_01"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "10000412",
+    "marketplace_code": "tiktok",
+    "attributes": [
+      {
+        "field_name": "Material",
+        "field_code": "material",
+        "data_type": "STRING",
+        "mandatory": true
+      }
+    ]
+  },
+  {
+    "kind": "category_create",
+    "code": "10000002",
+    "store_code_camel": "SMOKE_STORE_01",
+    "marketplace_code_camel": "tiktok",
+    "parent_code_camel": "10000001"
+  },
+  {
+    "kind": "category_update",
+    "id": "442001",
+    "code": "10000002"
+  },
+  {
+    "kind": "category_attributes_create",
+    "category_code": "10000412",
+    "marketplace_code": "tiktok",
+    "attributes": [
+      {
+        "field_name": "Colour",
+        "field_code": "colour",
+        "data_type": "STRING",
+        "mandatory": false
+      }
+    ]
+  },
+  {
+    "kind": "category_attribute_update",
+    "id": "990331",
+    "field_code_camel": "material",
+    "data_type_camel": "STRING"
+  }
+]

@@ -1,0 +1,114 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-16T17:52:54.313852+00:00",
+      "live_entries": 1,
+      "accumulated": 1,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:01.441220+00:00",
+      "live_entries": 3,
+      "accumulated": 3,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:08.576906+00:00",
+      "live_entries": 5,
+      "accumulated": 5,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:15.719070+00:00",
+      "live_entries": 7,
+      "accumulated": 7,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:22.854432+00:00",
+      "live_entries": 9,
+      "accumulated": 9,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:29.999812+00:00",
+      "live_entries": 10,
+      "accumulated": 10,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:37.118306+00:00",
+      "live_entries": 11,
+      "accumulated": 11,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:44.251987+00:00",
+      "live_entries": 12,
+      "accumulated": 12,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:53:51.372873+00:00",
+      "live_entries": 14,
+      "accumulated": 14,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:55:41.523460+00:00",
+      "live_entries": 17,
+      "accumulated": 17,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:55:48.668616+00:00",
+      "live_entries": 18,
+      "accumulated": 18,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:55:55.811719+00:00",
+      "live_entries": 20,
+      "accumulated": 20,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:02.945125+00:00",
+      "live_entries": 21,
+      "accumulated": 21,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:10.075426+00:00",
+      "live_entries": 23,
+      "accumulated": 23,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:17.206371+00:00",
+      "live_entries": 25,
+      "accumulated": 25,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:24.339769+00:00",
+      "live_entries": 27,
+      "accumulated": 27,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:31.480376+00:00",
+      "live_entries": 28,
+      "accumulated": 28,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-16T17:56:34.587229+00:00",
+      "live_entries": 28,
+      "accumulated": 28,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}

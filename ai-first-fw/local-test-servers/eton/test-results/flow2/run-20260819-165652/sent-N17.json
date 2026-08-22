@@ -1,0 +1,108 @@
+{
+  "event_parameters": {
+    "seller_code": "SSIN10000007004",
+    "seller_id": "7004",
+    "store_id": "16643",
+    "warehouse_code": "eton",
+    "store_code": "SS0000016643",
+    "store_name": "Shopee Store",
+    "zone_id": 1,
+    "event_name": "order_creation",
+    "marketplace_code": "shopee_vn"
+  },
+  "data": {
+    "order_id": "92000017",
+    "order_number": "SO-ETON-CO-N17-BLANK-SKU",
+    "market_place_order_number": "MP-428839066042874",
+    "warehouse_code": "eton",
+    "marketplace_code": "shopee_vn",
+    "store_code": "SS0000016643",
+    "seller_currency": "VND",
+    "customer_first_name": "Nguyen",
+    "customer_last_name": "Van A",
+    "customer_email": "customer@example.com",
+    "payment_method": "COD",
+    "created_at": "2026-08-13T10:24:33.000Z",
+    "shipping_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "billing_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "shipping_method": {
+      "shipping_type": "Standard"
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200117,
+        "name": "Combo Tra Oolong Cau Tre",
+        "sku": "1025377_CB3",
+        "inventory_sku": "1025377",
+        "item_price": "105000.0",
+        "paid_price": "92850.0",
+        "quantity": 1
+      },
+      {
+        "order_item_id": 9200118,
+        "name": "Combo Tra Oolong Cau Tre",
+        "sku": "",
+        "inventory_sku": "INV-UNPRICED",
+        "item_price": "0.0",
+        "paid_price": "0.0",
+        "quantity": 1
+      }
+    ],
+    "order_adjustment": {
+      "id": 90001,
+      "marketplace_discount": 9000,
+      "seller_discount": 3150,
+      "marketplace_wallet": 0,
+      "order_id": 90001,
+      "adjustments": {
+        "order_original_price": 105000,
+        "seller_discount": 3150,
+        "voucher_from_seller": 0,
+        "shopee_discount": 0,
+        "voucher_from_shopee": 9000,
+        "coins": 0,
+        "actual_shipping_fee": 16500,
+        "seller_shipping_discount": 1500,
+        "shopee_shipping_rebate": 15000,
+        "service_fee": 8602,
+        "buyer_total_amount": 92850,
+        "escrow_tax": 0,
+        "items": [
+          {
+            "item_sku": "",
+            "model_sku": "1025377_CB3",
+            "quantity_purchased": 1,
+            "original_price": 105000,
+            "selling_price": 92850.0,
+            "discounted_price": 92850.0,
+            "seller_discount": 3150,
+            "discount_from_voucher_shopee": 9000,
+            "discount_from_voucher_seller": 0.0,
+            "discount_from_coin": 0.0,
+            "is_main_item": true
+          }
+        ]
+      }
+    }
+  }
+}

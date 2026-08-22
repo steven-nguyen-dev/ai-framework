@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "payout",
+    "payment_id": "PAYOUT-SMOKE-001",
+    "settlement_amount": 16221.9,
+    "currency": "SGD",
+    "store_code": "SMOKE_STORE_01"
+  },
+  {
+    "kind": "promotion_failures",
+    "store_code": "SMOKE_STORE_01",
+    "promotions": [
+      {
+        "promotion_id": 5501,
+        "status": "FAILED",
+        "failure_reason": "sku not listed"
+      }
+    ]
+  },
+  {
+    "kind": "report",
+    "report_history_id": 660412,
+    "url": "https://reports.example.com/discrepancy/660412.csv",
+    "store_code": "SMOKE_STORE_01"
+  },
+  {
+    "kind": "transactions",
+    "store_code": "SMOKE_STORE_01",
+    "first_transaction_number": "TXN-SMOKE-001",
+    "count": [
+      {
+        "transaction_number": "TXN-SMOKE-001",
+        "transaction_type": "FEE",
+        "amount": -120.5,
+        "order_number": "SO-SMOKE-001"
+      }
+    ]
+  },
+  {
+    "kind": "report",
+    "report_history_id": 660412,
+    "url": "https://reports.example.com/x.csv",
+    "store_code": "SMOKE_STORE_01"
+  }
+]

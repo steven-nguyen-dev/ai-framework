@@ -1,0 +1,86 @@
+[
+  {
+    "party": "supplier",
+    "kind": "create",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "supplier",
+    "kind": "update",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "create",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "update",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "supplier",
+    "kind": "create",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "supplier",
+    "kind": "update",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "create",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "update",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "supplier",
+    "kind": "create",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "supplier",
+    "kind": "update",
+    "code": "SUP-SMOKE-1",
+    "name": "Acme Supplies",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "create",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  },
+  {
+    "party": "buyer",
+    "kind": "update",
+    "code": "BUY-SMOKE-1",
+    "name": "Retail Co",
+    "supplier_type_present": "VENDOR"
+  }
+]

@@ -1,0 +1,88 @@
+{
+  "name": "createOrder flow 2 (Anchanto OMS -> Eton WMS)",
+  "at": "2026-08-17T09:52:29.343930+00:00",
+  "run": "run-20260817-165229",
+  "suite": "flow2",
+  "summary": {
+    "pass": 1
+  },
+  "evidence": {
+    "status": "complete",
+    "mock log": "captured, 1 call(s)",
+    "database": "captured",
+    "pushUnsynchronizedOrder delta": 0,
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  },
+  "cases": [
+    {
+      "id": "N1",
+      "name": "Plain item - happy path, no pricing carrier",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "shopee_vn normally carries pricing. This is the case where it does not, so it proves buildShopeePayload returning empty skips the push rather than sending an empty or zeroed payload.",
+      "given": "A shopee_vn order with one plain item and no data.order_adjustment block.",
+      "then": [
+        "Eton accepts the create and answers Status 'New'.",
+        "One row is written to orders.",
+        "No price detail is pushed \u2014 price_details.json must not grow."
+      ],
+      "detail": {
+        "order_id": "92000001",
+        "order_number": "SO-ETON-CO-N1"
+      },
+      "calls": []
+    }
+  ]
+}

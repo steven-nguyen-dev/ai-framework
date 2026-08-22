@@ -1,0 +1,38 @@
+[
+  {
+    "number": "CN-SMOKE-001",
+    "supplier_code": "SUP-SMOKE-1",
+    "po_ref_number": "PO-REF-1",
+    "order_type": "PURCHASE",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "number": "CN-SMOKE-001",
+    "supplier_code": "SUP-SMOKE-1",
+    "po_ref_number": "PO-REF-1",
+    "order_type": "PURCHASE",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "number": "CN-SMOKE-001",
+    "supplier_code": "SUP-SMOKE-1",
+    "po_ref_number": "PO-REF-1",
+    "order_type": "PURCHASE",
+    "items": [
+      {
+        "sku": "SKU-W3-001",
+        "quantity": 100
+      }
+    ]
+  }
+]
