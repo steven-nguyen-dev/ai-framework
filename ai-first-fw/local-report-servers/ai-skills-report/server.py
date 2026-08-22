@@ -48,6 +48,7 @@ from scanner import (
     install_skill_to_targets,
     remove_marketplace,
     scan_all,
+    sync_and_update_all_marketplaces,
     toggle_mcp_target,
     uninstall_all_canonical_skills,
     uninstall_plugin_item,
@@ -134,8 +135,10 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
         except Exception:
             payload = {}
 
-        if path in ("/api/refresh", "/api/sync"):
+        if path == "/api/refresh":
             self._handle_refresh()
+        elif path in ("/api/sync", "/api/marketplace/sync_down", "/api/skills/sync_down"):
+            self._handle_sync_marketplaces()
         elif path == "/api/skill/install":
             self._handle_install_skill(payload)
         elif path == "/api/skill/uninstall":
@@ -205,6 +208,15 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
     def _handle_refresh(self):
         data = get_data(force_refresh=True)
         self._send_json(data)
+
+    def _handle_sync_marketplaces(self):
+        sync_res = sync_and_update_all_marketplaces()
+        data = get_data(force_refresh=True)
+        self._send_json({
+            "success": sync_res.get("success", True),
+            "sync_details": sync_res,
+            "data": data,
+        })
 
     def _handle_install_skill(self, payload: dict):
         skill_name = payload.get("name")

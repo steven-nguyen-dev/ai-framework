@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -964,25 +965,62 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
 # 4. Install & Uninstall Management Engine
 # ==============================================================================
 
+@dataclass
+class TargetSurfaceDef:
+    key: str
+    label: str
+    skills_dir: Path
+    creatable: bool = True
+
+TARGETS = [
+    TargetSurfaceDef(key="claude", label="Claude CLI", skills_dir=HOME / ".claude/skills"),
+    TargetSurfaceDef(key="agy", label="Antigravity App", skills_dir=HOME / ".gemini/config/skills"),
+    TargetSurfaceDef(key="agy-ide", label="Antigravity IDE", skills_dir=HOME / ".gemini/antigravity/skills"),
+    TargetSurfaceDef(key="agy-cli", label="Antigravity CLI", skills_dir=HOME / ".gemini/antigravity-cli/skills"),
+]
+
+
+def get_canonical_skill_dirs() -> list[Path]:
+    """Finds all canonical skill folders in workspace."""
+    dirs = []
+    for parent_sub in ["ai-first-fw/skills", "ai-first-fw/utilities", "skills", "utilities"]:
+        parent = WORKSPACE / parent_sub
+        if parent.is_dir():
+            for child in parent.iterdir():
+                if child.name.startswith(".") or not child.is_dir():
+                    continue
+                if (child / "SKILL.md").is_file():
+                    if child not in dirs:
+                        dirs.append(child)
+    return dirs
+
+
 def install_skill_to_targets(skill_name: str, target_keys: list[str] | None = None, force: bool = True) -> dict[str, Any]:
     """Installs/symlinks a skill from known plugin/workspace sources to target agent directories."""
     src: Path | None = None
 
-    # Search in all discovered plugins
-    for p in [*scan_claude_cli_plugins(), *scan_antigravity_cli_plugins()]:
-        for s in p.skills:
-            if s.name == skill_name:
-                cand = Path(s.path)
-                src = cand.parent if cand.is_file() else cand
-                break
-        if src:
+    # Search in canonical workspace directories
+    for cand_dir in get_canonical_skill_dirs():
+        if cand_dir.name == skill_name:
+            src = cand_dir
             break
 
-    # Search in workspace
+    # Search in workspace .agents/skills or .claude/skills
     if not src:
         for ws_dir in [WORKSPACE / ".agents/skills" / skill_name, WORKSPACE / ".claude/skills" / skill_name, WORKSPACE / ".gemini/skills" / skill_name]:
             if ws_dir.is_dir() and (ws_dir / "SKILL.md").is_file():
                 src = ws_dir
+                break
+
+    # Search in all discovered installed plugins
+    if not src:
+        for p in [*scan_claude_cli_plugins(), *scan_antigravity_cli_plugins()]:
+            for s in p.skills:
+                if s.name == skill_name:
+                    cand = Path(s.path)
+                    src = cand.parent if cand.is_file() else cand
+                    break
+            if src:
                 break
 
     if not src:
@@ -990,14 +1028,13 @@ def install_skill_to_targets(skill_name: str, target_keys: list[str] | None = No
 
     results = []
     target_list = [t for t in TARGETS if (not target_keys or t.key in target_keys or "all" in target_keys)]
-    
+
     for t in target_list:
         if not t.skills_dir.parent.is_dir() and not t.creatable:
             continue
         t.skills_dir.mkdir(parents=True, exist_ok=True)
         dest = t.skills_dir / skill_name
-        
-        # If dest exists
+
         if dest.is_symlink() or dest.exists():
             if dest.is_symlink():
                 dest.unlink()
@@ -1006,8 +1043,7 @@ def install_skill_to_targets(skill_name: str, target_keys: list[str] | None = No
             else:
                 results.append({"target": t.key, "status": "skipped", "message": "Real file exists (use force)"})
                 continue
-                
-        # Create atomic symlink
+
         tmp = dest.with_name(f".{skill_name}.installing-{os.getpid()}")
         if tmp.is_symlink() or tmp.exists():
             tmp.unlink()
@@ -1043,20 +1079,18 @@ def uninstall_skill_from_targets(skill_name: str, target_keys: list[str] | None 
 def install_all_canonical_skills() -> dict[str, Any]:
     """Installs all AI-First FW & Utility skills to all available agent surfaces."""
     installed = []
-    for source in SOURCES:
-        for skill_dir in source.skills():
-            res = install_skill_to_targets(skill_dir.name, target_keys=["all"], force=True)
-            installed.append(res)
+    for skill_dir in get_canonical_skill_dirs():
+        res = install_skill_to_targets(skill_dir.name, target_keys=["all"], force=True)
+        installed.append(res)
     return {"success": True, "count": len(installed), "details": installed}
 
 
 def uninstall_all_canonical_skills() -> dict[str, Any]:
     """Uninstalls all AI-First FW & Utility skills from all surfaces."""
     uninstalled = []
-    for source in SOURCES:
-        for skill_dir in source.skills():
-            res = uninstall_skill_from_targets(skill_dir.name, target_keys=["all"], force=True)
-            uninstalled.append(res)
+    for skill_dir in get_canonical_skill_dirs():
+        res = uninstall_skill_from_targets(skill_dir.name, target_keys=["all"], force=True)
+        uninstalled.append(res)
     return {"success": True, "count": len(uninstalled), "details": uninstalled}
 
 
@@ -1257,6 +1291,165 @@ def remove_marketplace(name: str) -> dict[str, Any]:
             pass
 
     return {"success": True, "marketplace": name, "message": f"Marketplace '{name}' removed successfully."}
+
+
+def sync_and_update_all_marketplaces() -> dict[str, Any]:
+    """Pulls down the latest updates from all registered marketplaces and updates all installed plugins."""
+    known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
+    installed_file = HOME / ".claude/plugins/installed_plugins.json"
+
+    marketplaces_updated = []
+    plugins_updated = []
+    errors = []
+
+    # 1. Update each registered marketplace repository
+    if known_mp_file.is_file():
+        try:
+            known = json.loads(known_mp_file.read_text(encoding="utf-8"))
+            for mp_name, info in known.items():
+                loc_str = info.get("installLocation")
+                if not loc_str:
+                    continue
+                loc = Path(loc_str)
+                src = info.get("source", {})
+                if src.get("source") == "github" and (loc / ".git").is_dir():
+                    try:
+                        subprocess.run(["git", "-C", str(loc), "fetch", "origin"], capture_output=True, check=True)
+                        branch_res = subprocess.run(["git", "-C", str(loc), "rev-parse", "--abbrev-ref", "origin/HEAD"], capture_output=True, text=True)
+                        target_ref = branch_res.stdout.strip() if branch_res.returncode == 0 and branch_res.stdout.strip() else "origin/main"
+                        subprocess.run(["git", "-C", str(loc), "reset", "--hard", target_ref], capture_output=True, check=True)
+                        info["lastUpdated"] = datetime.utcnow().isoformat() + "Z"
+                        marketplaces_updated.append(mp_name)
+                    except Exception as err:
+                        errors.append(f"Failed to pull marketplace {mp_name}: {err}")
+            known_mp_file.write_text(json.dumps(known, indent=2), encoding="utf-8")
+        except Exception as e:
+            errors.append(f"Failed reading known_marketplaces.json: {e}")
+
+    # 2. Update installed plugins from the freshly updated marketplaces
+    if installed_file.is_file() and known_mp_file.is_file():
+        try:
+            installed_data = json.loads(installed_file.read_text(encoding="utf-8"))
+            plugins_dict = installed_data.get("plugins", {})
+            known = json.loads(known_mp_file.read_text(encoding="utf-8"))
+
+            for plugin_id, installs in list(plugins_dict.items()):
+                if not installs or not isinstance(installs, list):
+                    continue
+                install_entry = installs[0]
+                old_version = install_entry.get("version")
+
+                if "@" not in plugin_id:
+                    continue
+                p_name, mp_name = plugin_id.split("@", 1)
+
+                mp_info = known.get(mp_name)
+                if not mp_info or not mp_info.get("installLocation"):
+                    continue
+                mp_loc = Path(mp_info["installLocation"])
+                if not mp_loc.is_dir():
+                    continue
+
+                mp_manifest_candidates = [
+                    mp_loc / ".claude-plugin/marketplace.json",
+                    mp_loc / "marketplace.json",
+                ]
+                plugin_rel_source = None
+                for cand in mp_manifest_candidates:
+                    if cand.is_file():
+                        try:
+                            m_json = json.loads(cand.read_text(encoding="utf-8"))
+                            for p in m_json.get("plugins", []):
+                                if p.get("name") == p_name:
+                                    plugin_rel_source = p.get("source", "")
+                                    break
+                        except Exception:
+                            pass
+                        if plugin_rel_source:
+                            break
+
+                plugin_src_dir = None
+                if isinstance(plugin_rel_source, str) and plugin_rel_source:
+                    plugin_src_dir = (mp_loc / plugin_rel_source).resolve()
+                elif isinstance(plugin_rel_source, dict):
+                    p_path = plugin_rel_source.get("path") or plugin_rel_source.get("source")
+                    if p_path and isinstance(p_path, str):
+                        plugin_src_dir = (mp_loc / p_path).resolve()
+
+                if not plugin_src_dir or not plugin_src_dir.is_dir():
+                    for fallback in [
+                        mp_loc / p_name,
+                        mp_loc / "skills" / p_name,
+                        mp_loc / "utilities" / p_name,
+                        mp_loc / "ai-first-fw" / "skills",
+                        mp_loc / "ai-first-fw" / "utilities",
+                        mp_loc / "plugins" / p_name,
+                    ]:
+                        if fallback.is_dir():
+                            plugin_src_dir = fallback
+                            break
+                    else:
+                        continue
+
+                new_ver = "1.0.0"
+                p_meta_candidates = [
+                    plugin_src_dir / ".claude-plugin/plugin.json",
+                    plugin_src_dir / "plugin.json",
+                ]
+                for p_cand in p_meta_candidates:
+                    if p_cand.is_file():
+                        try:
+                            p_json = json.loads(p_cand.read_text(encoding="utf-8"))
+                            new_ver = p_json.get("version", new_ver)
+                            break
+                        except Exception:
+                            pass
+
+                git_sha = None
+                if (mp_loc / ".git").is_dir():
+                    sha_res = subprocess.run(["git", "-C", str(mp_loc), "rev-parse", "HEAD"], capture_output=True, text=True)
+                    if sha_res.returncode == 0:
+                        git_sha = sha_res.stdout.strip()
+
+                dest_cache = HOME / f".claude/plugins/cache/{mp_name}/{p_name}/{new_ver}"
+                dest_cache.parent.mkdir(parents=True, exist_ok=True)
+
+                if dest_cache.exists():
+                    shutil.rmtree(dest_cache)
+                shutil.copytree(plugin_src_dir, dest_cache)
+
+                new_skills_list = []
+                for s_dir in dest_cache.rglob("SKILL.md"):
+                    new_skills_list.append(s_dir.parent.name)
+
+                install_entry["version"] = new_ver
+                install_entry["installPath"] = str(dest_cache)
+                install_entry["lastUpdated"] = datetime.utcnow().isoformat() + "Z"
+                if git_sha:
+                    install_entry["gitCommitSha"] = git_sha
+
+                plugins_updated.append({
+                    "plugin_id": plugin_id,
+                    "old_version": old_version,
+                    "new_version": new_ver,
+                    "skills_count": len(new_skills_list),
+                    "skills": new_skills_list,
+                })
+
+            installed_file.write_text(json.dumps(installed_data, indent=2), encoding="utf-8")
+        except Exception as e:
+            errors.append(f"Failed updating installed plugins: {e}")
+
+    # 3. Refresh local workspace symlinks as well
+    local_refresh_res = install_all_canonical_skills()
+
+    return {
+        "success": True,
+        "marketplaces_updated": marketplaces_updated,
+        "plugins_updated": plugins_updated,
+        "local_skills_refreshed": local_refresh_res.get("count", 0),
+        "errors": errors,
+    }
 
 
 # ==============================================================================
