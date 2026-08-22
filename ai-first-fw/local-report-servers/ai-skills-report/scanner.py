@@ -1088,6 +1088,20 @@ def uninstall_plugin_item(plugin_id: str, install_path_str: str) -> dict[str, An
         except Exception:
             pass
 
+    # Also clean up Cowork rpm manifest.json across sessions
+    sessions_root = HOME / "Library/Application Support/Claude/local-agent-mode-sessions"
+    if sessions_root.is_dir():
+        for m_file in sessions_root.rglob("rpm/manifest.json"):
+            try:
+                m_data = json.loads(m_file.read_text(encoding="utf-8"))
+                p_list = m_data.get("plugins", [])
+                p_id_cleaned = plugin_id.replace("claude:cowork:rpm:", "")
+                p_list = [p for p in p_list if p.get("id") != p_id_cleaned and p.get("name") != path.name]
+                m_data["plugins"] = p_list
+                m_file.write_text(json.dumps(m_data, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+
     return {"success": True, "plugin_id": plugin_id, "backup_path": str(dest)}
 
 
@@ -1335,6 +1349,53 @@ def sync_cowork_plugins() -> list[str]:
     return synced
 
 
+def sync_antigravity_plugins() -> list[str]:
+    """Syncs marketplace plugins to Antigravity global plugins directory (~/.gemini/config/plugins/)."""
+    synced = []
+    agy_plugins_dir = HOME / ".gemini/config/plugins"
+    agy_plugins_dir.mkdir(parents=True, exist_ok=True)
+    workspace = WORKSPACE
+
+    # 1. Sync ai-first-fw-skills
+    skills_src = workspace / "ai-first-fw/skills"
+    if skills_src.is_dir():
+        tgt = agy_plugins_dir / "ai-first-fw-skills"
+        if tgt.exists():
+            shutil.rmtree(tgt)
+        shutil.copytree(skills_src, tgt)
+        synced.append("ai-first-fw-skills")
+
+    # 2. Sync ai-first-fw-utilities
+    utils_src = workspace / "ai-first-fw/utilities"
+    if utils_src.is_dir():
+        tgt = agy_plugins_dir / "ai-first-fw-utilities"
+        if tgt.exists():
+            shutil.rmtree(tgt)
+        shutil.copytree(utils_src, tgt)
+        synced.append("ai-first-fw-utilities")
+
+    # 3. Sync cached marketplace plugins (e.g. mattpocock-skills)
+    cache_root = HOME / ".claude/plugins/cache"
+    if cache_root.is_dir():
+        for mp_dir in cache_root.iterdir():
+            if not mp_dir.is_dir():
+                continue
+            for p_dir in mp_dir.iterdir():
+                if not p_dir.is_dir() or p_dir.name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+                    continue
+                v_dirs = [v for v in p_dir.iterdir() if v.is_dir()]
+                if not v_dirs:
+                    continue
+                latest_v = sorted(v_dirs, key=lambda d: d.name)[-1]
+                tgt = agy_plugins_dir / p_dir.name
+                if tgt.exists():
+                    shutil.rmtree(tgt)
+                shutil.copytree(latest_v, tgt)
+                synced.append(p_dir.name)
+
+    return synced
+
+
 def sync_and_update_all_marketplaces() -> dict[str, Any]:
     """Pulls down the latest updates from all registered marketplaces and updates all installed plugins."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
@@ -1485,6 +1546,7 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
     # 3. Clean any legacy symlinks to maintain zero symlink footprint
     cleaned_symlinks = clean_legacy_symlinks()
     cowork_synced = sync_cowork_plugins()
+    antigravity_synced = sync_antigravity_plugins()
 
     return {
         "success": True,
@@ -1492,6 +1554,7 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
         "plugins_updated": plugins_updated,
         "cleaned_legacy_symlinks": len(cleaned_symlinks),
         "cowork_sessions_synced": len(cowork_synced),
+        "antigravity_plugins_synced": len(antigravity_synced),
         "errors": errors,
     }
 
