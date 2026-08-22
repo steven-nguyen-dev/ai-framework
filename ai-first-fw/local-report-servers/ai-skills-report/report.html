@@ -1279,6 +1279,10 @@
         <span id="syncText">Sync / Refresh</span>
       </button>
 
+      <button id="publishBtn" class="btn btn-action-install" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: rgba(192, 132, 252, 0.35);" title="Publish and push all skills dynamically to upstream marketplace" onclick="triggerPublishUpstream()">
+        <span>🚀 Publish to Marketplace</span>
+      </button>
+
       <a href="/export" download="ai-skills-report.html" class="btn" title="Download static standalone HTML export">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export
@@ -1774,6 +1778,30 @@
             await syncData();
           } catch (e) {
             showToast(`Uninstall all failed: ${e.message}`, 'error');
+          }
+        }
+      });
+    }
+
+    async function triggerPublishUpstream() {
+      openConfirmModal({
+        title: `Publish & Sync Upstream Marketplace`,
+        body: `This will dynamically scan all skills and utilities, update marketplace manifests (marketplace.json, plugin.json), compile README.md tables, and push the clean release to the public marketplace repository (ai-first-framework-skills).`,
+        confirmText: '🚀 Publish Now',
+        confirmClass: 'btn-action-install',
+        onConfirm: async () => {
+          try {
+            showToast('Publishing skills to marketplace upstream...', 'info');
+            const resp = await fetch('/api/marketplace/publish', { method: 'POST' });
+            const data = await resp.json();
+            if (data.success) {
+              showToast(`Successfully published ${data.skills_count} lifecycle skills & ${data.utilities_count} utilities!`, 'success');
+              await syncData();
+            } else {
+              showToast(`Publish failed: ${data.message || 'Unknown error'}`, 'error');
+            }
+          } catch (e) {
+            showToast(`Publish failed: ${e.message}`, 'error');
           }
         }
       });

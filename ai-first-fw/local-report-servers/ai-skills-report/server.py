@@ -17,6 +17,7 @@ import argparse
 import json
 import mimetypes
 import os
+import subprocess
 import sys
 import threading
 from datetime import datetime
@@ -149,6 +150,8 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
             self._handle_add_marketplace(payload)
         elif path == "/api/marketplace/remove":
             self._handle_remove_marketplace(payload)
+        elif path in ("/api/marketplace/publish", "/api/marketplace/sync_upstream", "/api/skills/publish_upstream"):
+            self._handle_publish_marketplace()
         elif path == "/api/mcp/toggle":
             self._handle_toggle_mcp(payload)
         else:
@@ -267,6 +270,25 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
         res = remove_marketplace(name=name)
         get_data(force_refresh=True)
         self._send_json(res)
+
+    def _handle_publish_marketplace(self):
+        try:
+            from scanner import WORKSPACE
+            sync_script = WORKSPACE / "scripts/sync_skills_repo.py"
+            if not sync_script.is_file():
+                self._send_json({"success": False, "message": "sync_skills_repo.py not found"}, status=HTTPStatus.NOT_FOUND)
+                return
+            res = subprocess.run([sys.executable, str(sync_script)], capture_output=True, text=True, check=True)
+            try:
+                out_data = json.loads(res.stdout.strip().split("\n")[-1])
+            except Exception:
+                out_data = {"success": True, "output": res.stdout}
+            get_data(force_refresh=True)
+            self._send_json(out_data)
+        except subprocess.CalledProcessError as cpe:
+            self._send_json({"success": False, "message": f"Sync failed: {cpe.stderr or cpe.stdout}"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            self._send_json({"success": False, "message": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def _handle_toggle_mcp(self, payload: dict):
         server_id = payload.get("server_id", "").strip()
