@@ -127,16 +127,10 @@ def extract_skill_info_from_file(skill_file: Path) -> tuple[str, str, dict[str, 
 
 def determine_local_source_label(path: Path) -> tuple[str, str, str | None]:
     """Returns (source_type, source_label, resolved_path) generically."""
-    if path.is_symlink():
-        try:
-            resolved = str(path.resolve())
-            return "local_symlink", "Local (Symlink)", resolved
-        except Exception:
-            return "local_symlink", "Local (Broken Symlink)", None
-    elif str(WORKSPACE) in str(path) and WORKSPACE != HOME:
-        return "local_workspace", "Local (Workspace)", str(path)
+    if str(WORKSPACE) in str(path) and WORKSPACE != HOME:
+        return "local_workspace", "Workspace", str(path)
     else:
-        return "local_user", "Local (User / Personal)", str(path)
+        return "local_user", "User / Personal", str(path)
 
 
 # ==============================================================================
@@ -936,20 +930,15 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
             t_key = t["key"]
             dest = t["skills_dir"] / name
 
-            is_symlink = dest.is_symlink()
             is_file = dest.is_file()
             is_dir = dest.is_dir()
-            target_link = str(dest.resolve()) if is_symlink else None
-
-            is_installed = is_symlink or is_file or is_dir
+            is_installed = is_file or is_dir
             if is_installed:
                 installed_count += 1
 
             skill_entry["targets"][t_key] = {
                 "target_name": t["label"],
                 "installed": is_installed,
-                "is_symlink": is_symlink,
-                "link_dest": target_link,
                 "path": str(dest),
             }
 

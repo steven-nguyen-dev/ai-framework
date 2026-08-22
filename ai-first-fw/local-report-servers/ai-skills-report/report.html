@@ -1473,9 +1473,7 @@
 
     function getSourceBadge(item) {
       const st = item.source_type || '';
-      if (st.includes('repo_symlink')) {
-        return `<span class="badge badge-local">🔗 Local Symlink</span>`;
-      } else if (st.includes('workspace')) {
+      if (st.includes('workspace')) {
         return `<span class="badge badge-workspace">📁 Workspace</span>`;
       } else if (st.includes('builtin')) {
         return `<span class="badge badge-builtin">⚡ Built-in</span>`;
@@ -1789,7 +1787,6 @@
     }
 
     function renderSkillCard(skill) {
-      const isSymlink = skill.source_type && skill.source_type.includes('symlink');
       const targetKey = (skill.metadata && skill.metadata.target_key) || 'all';
 
       return `
@@ -1813,11 +1810,6 @@
           <div class="path-row" onclick="copyPath(this, '${skill.path.replace(/'/g, "\\'")}')" title="Click to copy path: ${skill.path}">
             <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">📍 ${skill.path}</span>
           </div>
-          ${skill.resolved_path && isSymlink ? `
-            <div class="path-row resolved" onclick="copyPath(this, '${skill.resolved_path.replace(/'/g, "\\'")}')" title="Click to copy target path: ${skill.resolved_path}">
-              <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">↪️ Target: ${skill.resolved_path}</span>
-            </div>
-          ` : ''}
           <div class="meta-tags">
             ${skill.category ? `<span class="badge badge-neutral">📂 ${skill.category}</span>` : ''}
             ${skill.metadata && skill.metadata.scope ? `<span class="badge badge-neutral">Scope: ${skill.metadata.scope}</span>` : ''}
