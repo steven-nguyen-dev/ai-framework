@@ -334,7 +334,7 @@ def sync_and_publish(target_remote: str | None = None, dry_run: bool = False) ->
 
         # Copy trees
         for item in (MONOREPO_ROOT / "ai-first-fw/skills").iterdir():
-            if item.name.startswith("."):
+            if item.name == ".DS_Store":
                 continue
             dest = tmp_dir / "skills" / item.name
             if item.is_dir():
@@ -343,7 +343,7 @@ def sync_and_publish(target_remote: str | None = None, dry_run: bool = False) ->
                 shutil.copy2(item, dest)
 
         for item in (MONOREPO_ROOT / "ai-first-fw/utilities").iterdir():
-            if item.name.startswith("."):
+            if item.name == ".DS_Store":
                 continue
             dest = tmp_dir / "utilities" / item.name
             if item.is_dir():
