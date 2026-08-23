@@ -70,6 +70,22 @@
       color: #60a5fa;
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
     }
+    .agent-icon-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .agent-icon-slot svg,
+    .agent-svg-icon {
+      display: block;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
     /* Deep Thinking Toggle */
     .deep-toggle-container {
       display: inline-flex;
@@ -458,7 +474,7 @@
             value=""
           />
           <button class="btn-run" id="submitBtn">
-            <span id="btnIcon">⚡</span> <span id="btnText">Query ELK</span>
+            <span id="btnIcon" class="agent-icon-slot">⚡</span> <span id="btnText">Query ELK</span>
           </button>
         </div>
 
@@ -553,9 +569,31 @@
      */
     let LOG_DATA = [];
 
+    const AGENT_ICONS = {
+      gemini: `<svg class="agent-svg-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><defs><radialGradient id="gemini_sparkle_grad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(16.1326 5.4553 -43.70045 129.2322 1.588 6.503)"><stop offset=".067" stop-color="#9168C0"/><stop offset=".343" stop-color="#5684D1"/><stop offset=".672" stop-color="#1BA1E3"/></radialGradient></defs><path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z" fill="url(#gemini_sparkle_grad)"/></svg>`,
+      claude: `<svg class="agent-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:#D97757;" aria-hidden="true"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"/></svg>`,
+      cursor: `<svg class="agent-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:#38bdf8;" aria-hidden="true"><path d="M22.106 5.68L12.5.135a.998.998 0 00-.998 0L1.893 5.68a.84.84 0 00-.419.726v11.186c0 .3.16.577.42.727l9.607 5.547a.999.999 0 00.998 0l9.608-5.547a.84.84 0 00.42-.727V6.407a.84.84 0 00-.42-.726zm-.603 1.176L12.228 22.92c-.063.108-.228.064-.228-.061V12.34a.59.59 0 00-.295-.51l-9.11-5.26c-.107-.062-.063-.228.062-.228h18.55c.264 0 .428.286.296.514z" fill="#38bdf8"/></svg>`,
+      openai: `<svg class="agent-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:#10a37f;" aria-hidden="true"><path d="M22.282 9.821a5.985 5.985 0 00-.516-4.91 6.046 6.046 0 00-6.51-2.9A6.065 6.065 0 0010.74 0a6.033 6.033 0 00-5.772 4.29A6.04 6.04 0 001.35 7.14a6.05 6.05 0 00.521 6.57 6.066 6.066 0 00-.52 4.908 6.045 6.045 0 006.51 2.9A6.064 6.064 0 0013.26 24a6.033 6.033 0 005.772-4.29 6.04 6.04 0 003.618-2.85 6.05 6.05 0 00-.368-7.039zM13.26 22.47a4.526 4.526 0 01-2.905-1.05l.18-.1 4.795-2.768a.76.76 0 00.383-.664v-6.762l2.029 1.172a.08.08 0 01.043.064v5.578a4.536 4.536 0 01-4.525 4.53zm-8.868-3.92a4.528 4.528 0 01-.635-3.033l.18.106 4.794 2.769a.762.762 0 00.766 0l5.857-3.38v2.344a.08.08 0 01-.035.068l-4.832 2.79a4.536 4.536 0 01-6.095-.664zm-1.57-8.815a4.527 4.527 0 012.27-1.983V13.5a.76.76 0 00.383.664l5.856 3.382-2.029 1.171a.08.08 0 01-.078 0l-4.832-2.79a4.536 4.536 0 01-1.57-5.197zm14.88 2.05L11.845 8.406l2.029-1.172a.08.08 0 01.078 0l4.832 2.79a4.535 4.535 0 01-.482 8.163v-5.75a.76.76 0 00-.383-.663v.016zm2.03-3.07a4.528 4.528 0 01.636 3.033l-.18-.105-4.794-2.769a.762.762 0 00-.766 0l-5.857 3.38V8.71a.08.08 0 01.035-.068l4.832-2.79a4.536 4.536 0 016.094.664zm-8.23-7.185a4.526 4.526 0 012.905 1.05l-.18.1-4.795 2.769a.76.76 0 00-.383.663v6.763L7.994 13.08a.08.08 0 01-.043-.064V7.438a4.536 4.536 0 014.525-4.53zM12 13.73l-2.613-1.51 2.613-1.508 2.613 1.508L12 13.73z"/></svg>`,
+      copilot: `🤖`,
+      ollama: `🦙`,
+      openinterpreter: `🔓`,
+      aider: `🛠️`,
+      llm: `💻`,
+      sgpt: `🐚`,
+      direct: `🔍`
+    };
+
+    function getAgentIcon(agentId, fallbackIcon) {
+      if (AGENT_ICONS[agentId]) {
+        return AGENT_ICONS[agentId];
+      }
+      return fallbackIcon || "🤖";
+    }
+
     let availableAgents = [
-      { id: "gemini", name: "Gemini", icon: "⚡" },
-      { id: "claude", name: "Claude", icon: "🧠" }
+      { id: "gemini", name: "Gemini", icon: "gemini" },
+      { id: "claude", name: "Claude", icon: "claude" },
+      { id: "cursor", name: "Cursor", icon: "cursor" }
     ];
     let selectedAgent = "gemini";
     let isDeepThinking = false;
@@ -611,15 +649,16 @@
       let html = "";
       availableAgents.forEach(ag => {
         const isActive = (selectedAgent === ag.id);
+        const iconHtml = getAgentIcon(ag.id, ag.icon);
         html += `<button class="agent-btn ${isActive ? "active" : ""}" data-agent="${ag.id}" id="btnAgent-${ag.id}">
-          <span>${ag.icon}</span> ${escapeHtml(ag.name)}
+          <span class="agent-icon-slot">${iconHtml}</span> ${escapeHtml(ag.name)}
         </button>`;
       });
 
       // Always include Direct KQL button
       const isDirectActive = (selectedAgent === "direct");
       html += `<button class="agent-btn ${isDirectActive ? "active" : ""}" data-agent="direct" id="btnAgent-direct">
-        <span>🔍</span> Direct KQL
+        <span class="agent-icon-slot">🔍</span> Direct KQL
       </button>`;
 
       container.innerHTML = html;
@@ -673,7 +712,7 @@
     function getActiveAgentLabel() {
       if (selectedAgent === "direct") return "Direct KQL";
       const ag = availableAgents.find(x => x.id === selectedAgent);
-      const name = ag ? ag.name : (selectedAgent === "gemini" ? "Gemini" : "Claude");
+      const name = ag ? ag.name : (selectedAgent === "gemini" ? "Gemini" : selectedAgent === "claude" ? "Claude" : selectedAgent === "cursor" ? "Cursor" : selectedAgent);
       return isDeepThinking ? `${name} (Deep)` : name;
     }
 
@@ -686,7 +725,10 @@
       if (appsEl) appsEl.textContent = `${apps.size} Services`;
       
       const agentEl = document.getElementById("stat-agent");
-      if (agentEl) agentEl.textContent = getActiveAgentLabel();
+      if (agentEl) {
+        const iconHtml = getAgentIcon(selectedAgent, "");
+        agentEl.innerHTML = `<span class="agent-icon-slot" style="margin-right:6px; vertical-align:middle;">${iconHtml}</span><span>${escapeHtml(getActiveAgentLabel())}</span>`;
+      }
       
       const timeSelect = document.getElementById("timeRangeSelect");
       const timeEl = document.getElementById("stat-time");
@@ -853,6 +895,11 @@
 
           if (data.ai_summary) {
             analysisBox.classList.add("visible");
+            const boxTitle = document.getElementById("aiBoxTitle");
+            if (boxTitle) {
+              const iconHtml = getAgentIcon(selectedAgent, "✨");
+              boxTitle.innerHTML = `<span class="agent-icon-slot" style="margin-right:6px; vertical-align:middle;">${iconHtml}</span> ${escapeHtml(getActiveAgentLabel())} Analysis & Query`;
+            }
             analysisContent.innerHTML = `<strong>Executed KQL:</strong> <code>${escapeHtml(data.kql || prompt)}</code><br><br>${escapeHtml(data.ai_summary)}`;
           } else {
             analysisBox.classList.remove("visible");
@@ -862,7 +909,7 @@
         alert("Query error: " + err.message + "\nEnsure local server is running on port 24004!");
       } finally {
         btn.disabled = false;
-        icon.innerHTML = "⚡";
+        icon.innerHTML = `<span class="agent-icon-slot">${getAgentIcon(selectedAgent, "⚡")}</span>`;
         text.textContent = "Query ELK";
       }
     }

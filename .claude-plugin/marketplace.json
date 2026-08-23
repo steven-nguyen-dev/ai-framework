@@ -16,7 +16,7 @@
     {
       "name": "ai-first-fw-utilities",
       "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, glossary-maker, naver-api-extractor, and lotteon-api-extractor.",
-      "version": "1.1.1",
+      "version": "1.1.4",
       "source": "./ai-first-fw/utilities"
     }
   ]

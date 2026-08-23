@@ -404,11 +404,11 @@ def get_installed_agents() -> List[Dict[str, Any]]:
     
     # 1. Gemini (AGY / Gemini CLI)
     if _check_bin("agy") or _check_bin("gemini"):
-        agents.append({"id": "gemini", "name": "Gemini", "icon": "⚡"})
+        agents.append({"id": "gemini", "name": "Gemini", "icon": "gemini"})
         
     # 2. Claude Code
     if _check_bin("claude"):
-        agents.append({"id": "claude", "name": "Claude", "icon": "🧠"})
+        agents.append({"id": "claude", "name": "Claude", "icon": "claude"})
 
     # 3. Open Interpreter / OpenCode
     if _check_bin("interpreter") or _check_bin("opencode") or _check_bin("open-interpreter"):
@@ -416,7 +416,7 @@ def get_installed_agents() -> List[Dict[str, Any]]:
         
     # 4. Cursor Agent
     if _check_bin("cursor-agent") or _check_bin("cursor") or os.path.exists("/Applications/Cursor.app"):
-        agents.append({"id": "cursor", "name": "Cursor", "icon": "🖱️"})
+        agents.append({"id": "cursor", "name": "Cursor", "icon": "cursor"})
         
     # 5. Ollama (Local LLM)
     if _check_ollama():
