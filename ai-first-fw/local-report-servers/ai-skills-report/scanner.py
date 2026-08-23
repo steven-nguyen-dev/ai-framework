@@ -1265,7 +1265,7 @@ def remove_marketplace(name: str) -> dict[str, Any]:
 
 
 def sync_cowork_plugins() -> list[str]:
-    """Syncs ai-first-fw-skills and ai-first-fw-utilities to Claude Desktop Cowork sessions."""
+    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and installed marketplace plugins to Claude Desktop Cowork sessions."""
     synced = []
     app_supp = HOME / "Library/Application Support/Claude"
     sessions_root = app_supp / "local-agent-mode-sessions"
@@ -1273,17 +1273,27 @@ def sync_cowork_plugins() -> list[str]:
         return synced
 
     workspace = WORKSPACE
+    now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    cache_root = HOME / ".claude/plugins/cache"
+
     for manifest_file in sessions_root.rglob("rpm/manifest.json"):
         base_rpm = manifest_file.parent
         try:
             manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
             plugins_list = manifest_data.get("plugins", [])
 
-            # Sync ai-first-fw-skills directly to plugin root
-            skills_plugin_id = "plugin_01AiFirstFwSkills001"
-            skills_dest = base_rpm / skills_plugin_id
+            # Identify official/installed IDs from manifest or directory
+            skills_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-skills" or p.get("id") == "plugin_01NcPbSGH4AdLAJUHBHejvNR"), None)
+            utils_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-utilities" or p.get("id") == "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"), None)
+
+            # Preserve real ID if present; fallback to standard known installed ID
+            skills_plugin_id = skills_entry.get("id") if (skills_entry and skills_entry.get("id") and not skills_entry.get("id").startswith("plugin_01AiFirstFwSkills001")) else "plugin_01NcPbSGH4AdLAJUHBHejvNR"
+            utils_plugin_id = utils_entry.get("id") if (utils_entry and utils_entry.get("id") and not utils_entry.get("id").startswith("plugin_01AiFirstUtilities01")) else "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"
+
+            # 1. Sync ai-first-fw-skills directly to plugin root
             skills_src = workspace / "ai-first-fw/skills"
             if skills_src.is_dir():
+                skills_dest = base_rpm / skills_plugin_id
                 if skills_dest.exists():
                     shutil.rmtree(skills_dest)
                 shutil.copytree(skills_src, skills_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
@@ -1291,11 +1301,10 @@ def sync_cowork_plugins() -> list[str]:
                 if (skills_src / "plugin.json").is_file():
                     shutil.copy2(skills_src / "plugin.json", skills_dest / ".claude-plugin/plugin.json")
 
-            # Sync ai-first-fw-utilities directly to plugin root
-            utils_plugin_id = "plugin_01AiFirstUtilities01"
-            utils_dest = base_rpm / utils_plugin_id
+            # 2. Sync ai-first-fw-utilities directly to plugin root
             utils_src = workspace / "ai-first-fw/utilities"
             if utils_src.is_dir():
+                utils_dest = base_rpm / utils_plugin_id
                 if utils_dest.exists():
                     shutil.rmtree(utils_dest)
                 shutil.copytree(utils_src, utils_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
@@ -1303,37 +1312,106 @@ def sync_cowork_plugins() -> list[str]:
                 if (utils_src / "plugin.json").is_file():
                     shutil.copy2(utils_src / "plugin.json", utils_dest / ".claude-plugin/plugin.json")
 
-            # Update manifest entries
-            now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-            plugins_list = [p for p in plugins_list if p.get("id") not in (skills_plugin_id, utils_plugin_id) and p.get("name") not in ("ai-first-fw-skills", "ai-first-fw-utilities")]
-            plugins_list.append({
+            # 3. Clean up any obsolete temporary/duplicate IDs
+            for obsolete_id in ("plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01"):
+                if obsolete_id not in (skills_plugin_id, utils_plugin_id):
+                    obsolete_path = base_rpm / obsolete_id
+                    if obsolete_path.exists():
+                        shutil.rmtree(obsolete_path, ignore_errors=True)
+
+            # 4. Sync other installed marketplace plugins (e.g. mattpocock-skills)
+            for p in plugins_list:
+                p_name = p.get("name")
+                p_id = p.get("id")
+                if not p_name or not p_id or p_name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+                    continue
+                if cache_root.is_dir():
+                    matching_dirs = list(cache_root.glob(f"*/{p_name}/*"))
+                    if matching_dirs:
+                        latest_cached = sorted([d for d in matching_dirs if d.is_dir()], key=lambda d: d.name)[-1]
+                        dest = base_rpm / p_id
+                        if dest.exists():
+                            shutil.rmtree(dest)
+                        shutil.copytree(latest_cached, dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                        (dest / ".claude-plugin").mkdir(exist_ok=True)
+                        if (latest_cached / "plugin.json").is_file():
+                            shutil.copy2(latest_cached / "plugin.json", dest / ".claude-plugin/plugin.json")
+                p["updatedAt"] = now_iso
+                p["updatedAtVerified"] = True
+
+            # 5. Update manifest entries
+            updated_plugins = [
+                p for p in plugins_list
+                if p.get("id") not in (skills_plugin_id, utils_plugin_id, "plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01")
+                and p.get("name") not in ("ai-first-fw-skills", "ai-first-fw-utilities")
+            ]
+
+            skills_meta = skills_entry or {}
+            updated_plugins.append({
                 "id": skills_plugin_id,
                 "name": "ai-first-fw-skills",
-                "displayName": "AI-First Framework Skills",
+                "displayName": skills_meta.get("displayName", "AI-First Framework Skills"),
                 "updatedAt": now_iso,
                 "updatedAtVerified": True,
-                "marketplaceId": "marketplace_01LNsYsJd9mUgNiuPMytEouf",
-                "marketplaceName": "ai-framework",
-                "installedBy": "user",
-                "installationPreference": "available"
+                "marketplaceId": skills_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
+                "marketplaceName": skills_meta.get("marketplaceName", "ai-framework"),
+                "installedBy": skills_meta.get("installedBy", "user"),
+                "installationPreference": skills_meta.get("installationPreference", "available")
             })
-            plugins_list.append({
+
+            utils_meta = utils_entry or {}
+            updated_plugins.append({
                 "id": utils_plugin_id,
                 "name": "ai-first-fw-utilities",
-                "displayName": "AI-First Framework Utilities",
+                "displayName": utils_meta.get("displayName", "AI-First Framework Utilities"),
                 "updatedAt": now_iso,
                 "updatedAtVerified": True,
-                "marketplaceId": "marketplace_01LNsYsJd9mUgNiuPMytEouf",
-                "marketplaceName": "ai-framework",
-                "installedBy": "user",
-                "installationPreference": "available"
+                "marketplaceId": utils_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
+                "marketplaceName": utils_meta.get("marketplaceName", "ai-framework"),
+                "installedBy": utils_meta.get("installedBy", "user"),
+                "installationPreference": utils_meta.get("installationPreference", "available")
             })
-            manifest_data["plugins"] = plugins_list
+
+            manifest_data["plugins"] = updated_plugins
             manifest_data["lastUpdated"] = int(time.time() * 1000)
             manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
             synced.append(str(base_rpm))
         except Exception:
             pass
+
+    # Also sync ~/Claude/plugins if present
+    cfg_file = app_supp / "claude_desktop_config.json"
+    cowork_path = HOME / "Claude"
+    if cfg_file.is_file():
+        try:
+            cfg_data = json.loads(cfg_file.read_text(encoding="utf-8"))
+            cowork_path = Path(cfg_data.get("coworkUserFilesPath", str(HOME / "Claude")))
+        except Exception:
+            pass
+    cowork_plugins_dir = cowork_path / "plugins"
+    if cowork_plugins_dir.is_dir():
+        skills_link = cowork_plugins_dir / "ai-first-fw-skills"
+        utils_link = cowork_plugins_dir / "ai-first-fw-utilities"
+        if skills_link.is_symlink() or skills_link.exists():
+            try:
+                skills_link.unlink(missing_ok=True)
+            except Exception:
+                shutil.rmtree(skills_link, ignore_errors=True)
+        try:
+            skills_link.symlink_to(workspace / "ai-first-fw/skills", target_is_directory=True)
+        except Exception:
+            pass
+
+        if utils_link.is_symlink() or utils_link.exists():
+            try:
+                utils_link.unlink(missing_ok=True)
+            except Exception:
+                shutil.rmtree(utils_link, ignore_errors=True)
+        try:
+            utils_link.symlink_to(workspace / "ai-first-fw/utilities", target_is_directory=True)
+        except Exception:
+            pass
+
     return synced
 
 

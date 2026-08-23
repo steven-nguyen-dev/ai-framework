@@ -1,10 +1,8 @@
 # <Change name> — Analysis Handoff
 
-`<JIRA-123>` · <analyst> → <dev team> · <yyyy-MM-dd>
-
 | § | Section | Holds |
 | --- | --- | --- |
-| 1 | Why | the case that fails today, the budget, and the systems it lands in |
+| 1 | Why | the case that fails today, and the systems it lands in |
 | 2 | Today | the flows the change touches, and how the system behaves now |
 | 3 | Change | what must be different, and which components carry it |
 | 4 | Done when | acceptance criteria |
@@ -20,7 +18,7 @@
           component list written first misses the flows that only pass through a component, and
           those are the ones that break in the sprint.
        2. §2.2 Behaviour, from code you opened, or from the source the row names.
-       3. §1 Why, its budget, and the systems it lands in.
+       3. §1 Why, and the systems it lands in.
        4. §3 Change, then §4 Done when.
        5. §6 Dependencies, from the other system's published contract.
        6. §5 Watch out, from what surprised you in steps 1-2.
@@ -96,19 +94,15 @@
 <Two or three sentences: the specific case where today's behaviour fails, and who hits it.
 Link the source inline.>
 
-**Worth about:** `<X days>`
-
 **Lands in:** <Anchanto product> `<JIRA-n>` · <Anchanto product> — no ticket yet · <partner> — no ticket
 
 <!-- Write the failure, not the fix. Having no case where today's behaviour breaks is a round
      question, and the rest of the file waits on the answer.
-     The budget is a ceiling you were given or agreed. A delivery date, a sprint boundary and
-     another team's estimate are none of them a budget; say so here when nobody has set one.
      Lands in names every product and partner this change reaches, and which of them has a
      ticket of its own. This section names them; Dependencies (§6) says what each must change.
 
-     Check: the case names who hits it and what breaks today, the budget is one you were given or
-     agreed, and Lands in names every product and partner with its ticket or the absence of one. -->
+     Check: the case names who hits it and what breaks today, and Lands in names every product and
+     partner with its ticket or the absence of one. -->
 
 ## 2. Today
 

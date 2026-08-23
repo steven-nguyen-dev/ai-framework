@@ -10,7 +10,7 @@
     {
       "name": "ai-first-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: analysis-handoff, implementation-planner, specs-builder, specs-reviewer, plan-reviewer, and code-reviewer.",
-      "version": "1.0.5",
+      "version": "1.0.7",
       "source": "./ai-first-fw/skills"
     },
     {
