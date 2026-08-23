@@ -49,7 +49,6 @@ ai-framework/
 │   ├── local-report-servers/    # Live engineering dashboards & distribution .app installers
 │   ├── local-test-servers/      # Spec-driven mock engine & integration test runner
 │   └── local-mcps/              # FastMCP servers (Jira issue streamer, Kibana KQL engine)
-├── docs/                        # Framework documentation & guides
 └── README.md                    # Root architecture and onboarding guide
 ```
 

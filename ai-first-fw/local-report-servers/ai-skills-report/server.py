@@ -47,6 +47,7 @@ import scanner
 from scanner import (
     add_marketplace,
     clean_legacy_symlinks,
+    pull_updates_from_marketplaces,
     remove_marketplace,
     scan_all,
     sync_and_update_all_marketplaces,
@@ -140,16 +141,14 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
 
         if path == "/api/refresh":
             self._handle_refresh()
-        elif path in ("/api/sync", "/api/marketplace/sync_down", "/api/skills/sync_down"):
-            self._handle_sync_marketplaces()
+        elif path in ("/api/pull_updates", "/api/marketplace/pull_updates", "/api/sync", "/api/marketplace/sync_down", "/api/skills/sync_down"):
+            self._handle_pull_updates()
         elif path == "/api/plugin/uninstall":
             self._handle_uninstall_plugin(payload)
         elif path == "/api/marketplace/add":
             self._handle_add_marketplace(payload)
         elif path == "/api/marketplace/remove":
             self._handle_remove_marketplace(payload)
-        elif path in ("/api/marketplace/publish", "/api/marketplace/sync_upstream", "/api/skills/publish_upstream"):
-            self._handle_publish_marketplace()
         elif path == "/api/mcp/toggle":
             self._handle_toggle_mcp(payload)
         else:
@@ -204,12 +203,13 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
         data = get_data(force_refresh=True)
         self._send_json(data)
 
-    def _handle_sync_marketplaces(self):
-        sync_res = sync_and_update_all_marketplaces()
+    def _handle_pull_updates(self):
+        pull_res = pull_updates_from_marketplaces()
         data = get_data(force_refresh=True)
         self._send_json({
-            "success": sync_res.get("success", True),
-            "sync_details": sync_res,
+            "success": pull_res.get("success", True),
+            "pull_details": pull_res,
+            "sync_details": pull_res,
             "data": data,
         })
 
@@ -245,25 +245,6 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
         res = remove_marketplace(name=name)
         get_data(force_refresh=True)
         self._send_json(res)
-
-    def _handle_publish_marketplace(self):
-        try:
-            from scanner import WORKSPACE
-            sync_script = WORKSPACE / "scripts/sync_skills_repo.py"
-            if not sync_script.is_file():
-                self._send_json({"success": False, "message": "sync_skills_repo.py not found"}, status=HTTPStatus.NOT_FOUND)
-                return
-            res = subprocess.run([sys.executable, str(sync_script)], capture_output=True, text=True, check=True)
-            try:
-                out_data = json.loads(res.stdout.strip().split("\n")[-1])
-            except Exception:
-                out_data = {"success": True, "output": res.stdout}
-            get_data(force_refresh=True)
-            self._send_json(out_data)
-        except subprocess.CalledProcessError as cpe:
-            self._send_json({"success": False, "message": f"Sync failed: {cpe.stderr or cpe.stdout}"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            self._send_json({"success": False, "message": str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
     def _handle_toggle_mcp(self, payload: dict):
         server_id = payload.get("server_id", "").strip()
@@ -329,7 +310,36 @@ def main():
     parser.add_argument("--port", type=int, default=int(os.getenv("PORT", "24003")), help="Port to listen on (default: 24003 or $PORT)")
     parser.add_argument("--host", type=str, default=os.getenv("HOST", "127.0.0.1"), help="Host address (default: 127.0.0.1 or $HOST)")
     parser.add_argument("--export", action="store_true", help="Generate static standalone HTML report and exit")
+    parser.add_argument("--pull-updates", action="store_true", help="Pull down latest updates from registered public marketplaces and exit")
     args = parser.parse_args()
+
+    if args.pull_updates:
+        print("🔄 Pulling latest updates from registered public marketplaces...")
+        res = pull_updates_from_marketplaces()
+        print("\n" + "=" * 60)
+        print("📊 Public Marketplace Pull Summary:")
+        print(f"  • Status: {'✔ SUCCESS' if res.get('success') else '❌ FAILED'}")
+        if "marketplaces_updated" in res:
+            mps = res.get("marketplaces_updated", [])
+            print(f"  • Public Marketplaces Pulled: {len(mps)}")
+            for mp in mps:
+                print(f"      - {mp}")
+        if "plugins_updated" in res:
+            plugins = res.get("plugins_updated", [])
+            print(f"  • Plugins Updated: {len(plugins)}")
+            for p in plugins:
+                print(f"      - {p.get('plugin_id')}: v{p.get('old_version')} ➔ v{p.get('new_version')} ({p.get('skills_count')} skills)")
+        if "cowork_sessions_synced" in res:
+            print(f"  • Claude Cowork Sessions Updated: {res.get('cowork_sessions_synced')}")
+        if "antigravity_plugins_synced" in res:
+            print(f"  • Antigravity Plugins Updated: {res.get('antigravity_plugins_synced')}")
+        if res.get("errors"):
+            print("  • Errors encountered:")
+            for err in res["errors"]:
+                print(f"      ⚠️ {err}")
+        print("=" * 60)
+        print("✔ Pull updates complete (0 pushes performed).\n")
+        return
 
     if args.export:
         html = generate_static_report()

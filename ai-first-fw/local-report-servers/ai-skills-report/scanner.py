@@ -1396,8 +1396,8 @@ def sync_antigravity_plugins() -> list[str]:
     return synced
 
 
-def sync_and_update_all_marketplaces() -> dict[str, Any]:
-    """Pulls down the latest updates from all registered marketplaces and updates all installed plugins."""
+def pull_updates_from_marketplaces() -> dict[str, Any]:
+    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
     installed_file = HOME / ".claude/plugins/installed_plugins.json"
 
@@ -1405,7 +1405,7 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
     plugins_updated = []
     errors = []
 
-    # 1. Update each registered marketplace repository
+    # 1. Update each registered marketplace repository using public git
     if known_mp_file.is_file():
         try:
             known = json.loads(known_mp_file.read_text(encoding="utf-8"))
@@ -1415,16 +1415,28 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
                     continue
                 loc = Path(loc_str)
                 src = info.get("source", {})
-                if src.get("source") == "github" and (loc / ".git").is_dir():
+                if src.get("source") == "github":
+                    repo_slug = src.get("repo")
+                    if not repo_slug:
+                        continue
+                    public_git_url = f"https://github.com/{repo_slug}.git"
                     try:
-                        subprocess.run(["git", "-C", str(loc), "fetch", "origin"], capture_output=True, check=True)
-                        branch_res = subprocess.run(["git", "-C", str(loc), "rev-parse", "--abbrev-ref", "origin/HEAD"], capture_output=True, text=True)
-                        target_ref = branch_res.stdout.strip() if branch_res.returncode == 0 and branch_res.stdout.strip() else "origin/main"
-                        subprocess.run(["git", "-C", str(loc), "reset", "--hard", target_ref], capture_output=True, check=True)
+                        if not (loc / ".git").is_dir():
+                            loc.parent.mkdir(parents=True, exist_ok=True)
+                            if loc.exists():
+                                shutil.rmtree(loc)
+                            subprocess.run(["git", "clone", "--depth", "1", public_git_url, str(loc)], capture_output=True, check=True)
+                        else:
+                            # Ensure public remote URL without private tokens
+                            subprocess.run(["git", "-C", str(loc), "remote", "set-url", "origin", public_git_url], capture_output=True, check=True)
+                            subprocess.run(["git", "-C", str(loc), "fetch", "origin"], capture_output=True, check=True)
+                            branch_res = subprocess.run(["git", "-C", str(loc), "rev-parse", "--abbrev-ref", "origin/HEAD"], capture_output=True, text=True)
+                            target_ref = branch_res.stdout.strip() if branch_res.returncode == 0 and branch_res.stdout.strip() else "origin/main"
+                            subprocess.run(["git", "-C", str(loc), "reset", "--hard", target_ref], capture_output=True, check=True)
                         info["lastUpdated"] = datetime.utcnow().isoformat() + "Z"
-                        marketplaces_updated.append(mp_name)
+                        marketplaces_updated.append(f"{mp_name} ({repo_slug})")
                     except Exception as err:
-                        errors.append(f"Failed to pull marketplace {mp_name}: {err}")
+                        errors.append(f"Failed to pull public marketplace {mp_name} ({public_git_url}): {err}")
             known_mp_file.write_text(json.dumps(known, indent=2), encoding="utf-8")
         except Exception as e:
             errors.append(f"Failed reading known_marketplaces.json: {e}")
@@ -1557,6 +1569,10 @@ def sync_and_update_all_marketplaces() -> dict[str, Any]:
         "antigravity_plugins_synced": len(antigravity_synced),
         "errors": errors,
     }
+
+
+# Backward-compatible alias
+sync_and_update_all_marketplaces = pull_updates_from_marketplaces
 
 
 # ==============================================================================
