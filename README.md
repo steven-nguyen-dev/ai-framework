@@ -71,7 +71,7 @@ Gated AI skills that enforce engineering rigor before code is touched:
 * **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
 * **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.
 * **`lv1-prompt-builder`**: Compiles structured, context-rich system prompts for subagent workflows.
-* **`glossary-maker`**: Scans a repository and compiles an ISO 704:2022 standardized `GLOSSARY.md` terminology reference.
+* **`glossary-maker`**: Harvests a repository once into two documents — an ISO 704:2022 `GLOSSARY.md` terminology reference, and a `GOTCHAS` file per partition carrying the behaviours no single file states.
 * **`naver-api-extractor` & `lotteon-api-extractor`**: Automated tools for extracting, parsing, and documenting e-commerce APIs.
 
 ### 3. 📊 Local Report Servers (`ai-first-fw/local-report-servers/`)
