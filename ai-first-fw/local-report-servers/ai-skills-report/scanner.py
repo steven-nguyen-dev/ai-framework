@@ -1279,41 +1279,29 @@ def sync_cowork_plugins() -> list[str]:
             manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
             plugins_list = manifest_data.get("plugins", [])
 
-            # Sync ai-first-fw-skills
+            # Sync ai-first-fw-skills directly to plugin root
             skills_plugin_id = "plugin_01AiFirstFwSkills001"
             skills_dest = base_rpm / skills_plugin_id
             skills_src = workspace / "ai-first-fw/skills"
             if skills_src.is_dir():
-                skills_dest.mkdir(parents=True, exist_ok=True)
+                if skills_dest.exists():
+                    shutil.rmtree(skills_dest)
+                shutil.copytree(skills_src, skills_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
                 (skills_dest / ".claude-plugin").mkdir(exist_ok=True)
                 if (skills_src / "plugin.json").is_file():
                     shutil.copy2(skills_src / "plugin.json", skills_dest / ".claude-plugin/plugin.json")
-                skills_folder = skills_dest / "skills"
-                skills_folder.mkdir(exist_ok=True)
-                for item in skills_src.iterdir():
-                    if item.is_dir() and (item / "SKILL.md").is_file():
-                        tgt = skills_folder / item.name
-                        if tgt.exists():
-                            shutil.rmtree(tgt)
-                        shutil.copytree(item, tgt)
 
-            # Sync ai-first-fw-utilities
+            # Sync ai-first-fw-utilities directly to plugin root
             utils_plugin_id = "plugin_01AiFirstUtilities01"
             utils_dest = base_rpm / utils_plugin_id
             utils_src = workspace / "ai-first-fw/utilities"
             if utils_src.is_dir():
-                utils_dest.mkdir(parents=True, exist_ok=True)
+                if utils_dest.exists():
+                    shutil.rmtree(utils_dest)
+                shutil.copytree(utils_src, utils_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
                 (utils_dest / ".claude-plugin").mkdir(exist_ok=True)
                 if (utils_src / "plugin.json").is_file():
                     shutil.copy2(utils_src / "plugin.json", utils_dest / ".claude-plugin/plugin.json")
-                utils_folder = utils_dest / "skills"
-                utils_folder.mkdir(exist_ok=True)
-                for item in utils_src.iterdir():
-                    if item.is_dir() and (item / "SKILL.md").is_file():
-                        tgt = utils_folder / item.name
-                        if tgt.exists():
-                            shutil.rmtree(tgt)
-                        shutil.copytree(item, tgt)
 
             # Update manifest entries
             now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
