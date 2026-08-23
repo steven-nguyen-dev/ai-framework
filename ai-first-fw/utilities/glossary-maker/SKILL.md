@@ -2,7 +2,7 @@
 name: glossary-maker
 description: Harvest a repository once and write two documents — GLOSSARY.md, its terminology in ISO 704:2022 form, and a GOTCHAS file per partition, the behaviours no single file states.
 disable-model-invocation: true
-version: 0.7.1
+version: 0.9.2
 ---
 
 # glossary-maker
@@ -28,14 +28,29 @@ entry follows the code and the contradiction ships as drift with both citations.
 3. **Formats** — open [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md) and
    [GOTCHAS-FORMAT.md](./GOTCHAS-FORMAT.md) now, before the harvest.
 4. **Corpus** — an include list and an exclude list. Generated documentation renders source: read the
-   source it renders.
-5. **Partition** — take the target's own term for it: area, service, bounded context, package root.
-   One gotchas file per partition that earns one, plus `GOTCHAS-shared.md`.
-6. **Refresh only** — read every existing document in full before any harvest and set an untouched
-   copy of each aside. Their numbers are live citations.
+   source it renders. Between them the two lists account for the whole tree: what is read, and what
+   is left out with the reason.
+5. **Recon** — walk the target before any dispatch: the module list, the build graph's aggregators,
+   the abbreviations actually in circulation. Every seed a sub-agent is later given comes from this
+   walk. **Designations named in this file or in the format files are illustrations, never seeds** —
+   an agent handed one spends its budget disproving a term from a worked example.
+6. **Partition** — take the target's own term for it: area, service, bounded context, package root.
+   One gotchas file per partition that earns one, plus `GOTCHAS-shared.md`. The partition list covers
+   the tree: code owned by no partition — shared framework, connectors, edge services, CI, root docs
+   — is a residual partition, not a remainder to be dropped. It is where the worst traps live.
+7. **Measure** — per partition: files, modules, bytes of prose. A partition that will not fit one
+   context is marked for sharding in Step 2 and carries its measurement there. Nothing is sampled
+   here, and nothing is sampled later without saying so.
+8. **Refresh only** — read every existing document in full before any harvest and set an untouched
+   copy of each aside. Their numbers are live citations. **Grown, not guessed.** A trap earns its
+   entry when a model concluded wrong and a human corrected it — that wrong conclusion is the
+   headline.
 
 Completion: target, mode, both path lists and the partition's source named, both format files read;
-in refresh mode every existing headword and trap listed with its number, and a pre-refresh copy of each document aside.
+the recon walk done and its seed list written down, no seed taken from this file or the format files;
+the partition list covering the tree, its residual partition named and every exclusion given its
+reason; every partition measured and any one over a context marked for sharding; in refresh mode
+every existing headword and trap listed with its number, and a pre-refresh copy of each document aside.
 
 ## Step 2 — Harvest
 
@@ -72,33 +87,48 @@ entries is invisible from either one. Where a human had to settle it, record wha
 asking, because the next reader stops in the same place; where nobody can answer, it is a `GAP` and
 ships as a question.
 
-**Collision pass, last, over the candidates in hand. Four collisions:**
+**Collision pass, last, over the candidates in hand. Five collisions:**
 
 - one designation, two referents — the same word declared in unrelated packages, or naming a module
   in one document and a team in another
 - two designations, one referent — synonyms in circulation, of which one wins
 - an abbreviation expanded two ways, or expanded nowhere on disk
-- identifiers one edit apart where both are live (`nexusPath` beside `nexxusPath`) — a misspelling
-  the code reads is a designation
+- identifiers one edit apart where both are live — a misspelling the code reads is a designation
+- one designation, divergent extension across sibling partitions: the same word covering one thing in
+  one area and that thing plus another elsewhere, one enum name carrying disjoint constants in two, or
+  four areas naming one entry point four ways. Not a homonym across projects but across siblings of
+  one system, which is exactly what a reader arriving from another partition gets wrong. **No shard
+  agent can see it**, since the difference exists only between returns — this shape belongs to the
+  collision pass alone, and it ships as a `SET` line carrying one subject field per partition.
 
-**Sharding.** Where a load or a partition exceeds one context, split by directory and dispatch one
-sub-agent per shard, each running every lane its shard can answer and returning candidate lines only. Record the boundaries: a finding whose halves came back from two
-shards is settled after the shards return, on the collision pass's terms.
+**Sharding.** The unit of dispatch is the shard, never the lane: a sub-agent handed one lane across
+the tree re-reads the corpus once per lane and defeats the single read.
+
+**Shard boundaries follow partitions.** Take a partition whole wherever it fits one context — its
+source, its manifest and its prose in the same head — because a contradiction between two of its
+entries is invisible from either side of a boundary. Split *within* a partition, by directory, only
+where Step 1 measured it over one context. Dispatch one sub-agent per shard, each running every lane
+its shard can answer and returning candidate lines only.
+
+**Each agent states its coverage on return** — read in full, or sampled and how. Sampled is a fact on
+the page, never an inference from a thin return. Record the boundaries: a finding whose halves came
+back from two shards is settled after the shards return, on the collision pass's terms.
 
 Completion: every designation candidate carries its lane and at least one citation, and every trap
 candidate a citation for each of the places whose contradiction produced it; every lane has reported
 its drift lane by lane, naming none where it found none; the configuration key settled against both
 loads; every question put to a human logged with what was tried first; the collision pass has
-reported on all four collisions, naming any it found absent; every shard boundary recorded and every
-cross-shard finding settled.
+reported on all five collisions, naming any it found absent; every shard boundary recorded, every
+shard's coverage stated as read in full or sampled and how, and every cross-shard finding settled.
 
 ## Step 3 — Admit
 
 Two tests, run separately. These are the authority; each format file restates its own for that document's reader.
 
 **Glossary — collision.** Admit a designation where a reader meeting it cold, or carrying its sense
-from another project, lands on the wrong code. Never for importance: general programming vocabulary
-stays out however heavily the project uses it.
+from another project, lands on the wrong code. **The reader already knows the general case.**
+Whatever broad technical and business knowledge resolves correctly stays out, however heavily this
+project uses it. Admit only where that knowledge is confidently wrong here.
 
 | Verdict | When |
 |---|---|
@@ -106,12 +136,15 @@ stays out however heavily the project uses it.
 | `reject` | opening the class settles it, or it carries its ordinary meaning |
 | `defer` | admission turns on a fact no source settles — carries the question |
 
-**Gotcha — surprise, search, cost.** All three, or it is a `reject` naming the test it failed.
+**Gotcha — only what reading does not reveal.** All three, or it is a `reject` naming the test it
+failed.
 
-- **Surprise** — a competent reader reaches the wrong conclusion, or none. If opening the file
-  settles it, it is not this.
-- **Search** — it names a behaviour. A thing search finds is a glossary entry.
-- **Cost** — a wrong conclusion, or time.
+- **Silent** — nothing raises.
+- **Blind** — the deciding fact sits where the task gives no reason to look.
+- **Undocumented** — not in the partition's README or `CLAUDE.md`.
+
+Everything else goes back where it was read. Expect few entries. A finding search can find is a
+glossary entry, not a reject.
 
 **Routing:**
 
@@ -175,10 +208,13 @@ recorded.
 Report, in this order:
 
 1. **Drift** — each prose sentence the code contradicted, with both citations.
-2. **Counts** — entries and sections per document: new, changed, untouched.
-3. **Asked a human** — every question the code could not answer, with what was tried first.
-4. **GAPs** — every question left unanswered, glossary characteristic and behaviour alike.
-5. **Rejects worth arguing about** — candidates a reader expects to find, naming the test each failed.
+2. **Coverage** — the shard list with each shard's measurement and whether it was read in full or
+   sampled, and the lane-by-lane report naming every lane that found nothing. This is the only place
+   a thin harvest becomes visible: no gate downstream sees a lane or a shard.
+3. **Counts** — entries and sections per document: new, changed, untouched.
+4. **Asked a human** — every question the code could not answer, with what was tried first.
+5. **GAPs** — every question left unanswered, glossary characteristic and behaviour alike.
+6. **Rejects worth arguing about** — candidates a reader expects to find, naming the test each failed.
 
 Then offer the pointer:
 
@@ -193,5 +229,5 @@ Then offer the pointer:
 Report each file's size. Add `@GLOSSARY.md` beneath the pointer only for a glossary of roughly a
 thousand tokens or less, where paying it on every turn and every sub-agent dispatch beats one read.
 
-Completion: all five report sections delivered; every document's size reported; the pointer offered,
+Completion: all six report sections delivered; every document's size reported; the pointer offered,
 and written into `CLAUDE.md` or `AGENTS.md` on the user's word.

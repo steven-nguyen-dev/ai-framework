@@ -14,6 +14,14 @@ numbering contract below. You have no access to the target repo.
   each other, a gotcha and an entry that disagree. A finding carried by **both** documents is
   correct — check that the glossary holds the definition and the gotcha holds the `Do:`.
 - **Numbering** against the contract below.
+- **Prior knowledge, on the glossary** — you are the reader. Take each entry cold: does your own
+  technical or business knowledge already resolve it correctly? Then `fix` — it is not an entry,
+  however heavily the project uses it. This is the one check you are better placed to make than the
+  author, who cannot unsee the code.
+- **Reading, on the gotchas** — does the entry state what reading would have shown? A flow
+  walkthrough, a restated method body, an ordering the task meets on its way. Then `fix`. Silence you
+  can judge from the text; blind and undocumented you cannot — return those as `cannot judge without
+  the code`.
 
 ## Verdicts
 

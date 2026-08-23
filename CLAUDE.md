@@ -2,6 +2,12 @@
 
 Steve's workspace for building, testing, and refining AI skills, utilities, and local report servers.
 
+## Style
+- When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
+- Dereference every name before you write it — chat, docs, commits. A system to its full reach; a flow to its originator, every hop, its sink; a property, host or module name to the value it resolves to. Names drift from their targets and never say so.
+- Stop where evidence stops. Every verb you write is one you read in the source; elsewhere the line reads `unknown` or `not found by this search`.
+- Report each finding once.a
+
 ## Managed Repositories
 This workspace manages two repositories:
 1. **`ai-framework`** (`https://github.com/steven-nguyen-dev/ai-framework`) — Primary monorepo containing skills, utilities, test harnesses, local report servers, and shared theme tokens.

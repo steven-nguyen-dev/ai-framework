@@ -8,8 +8,9 @@ Concept system for <the thing>. Each entry gives the one designation to use for 
 designations that must not be used.
 
 An entry belongs here when a reader who resolves the designation from ordinary language, or from
-another context in this organisation, arrives at the wrong code. Anything unlisted carries its
-ordinary meaning.
+another context in this organisation, arrives at the wrong code. The reader already knows the general
+case: whatever broad technical and business knowledge resolves correctly is not listed here, however
+heavily this project uses it. Anything unlisted carries its ordinary meaning.
 
 Cite an entry by designation and number — "<designation> (1.3)". A number never changes meaning.
 

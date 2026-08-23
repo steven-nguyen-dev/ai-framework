@@ -7,9 +7,10 @@ Numbering and citation live in [AUDIT-BRIEF.md](./AUDIT-BRIEF.md).
 Traps in <the partition>. Each entry states a wrong conclusion a competent reader reaches, why the
 code lets them reach it, and what to do instead.
 
-An entry belongs here when all three hold: a reader following the code reaches the wrong conclusion
-or none; the finding names a **behaviour** rather than an identifier a search could find; and it
-costs either a wrong conclusion or time. A thing search can find belongs in `GLOSSARY.md`.
+Only what reading does not reveal. An entry belongs here when all three hold: **silent** — nothing
+raises; **blind** — the deciding fact sits where the task gives no reason to look; **undocumented** —
+not in this partition's README or `CLAUDE.md`. Everything else belongs where it was read, and a thing
+search can find belongs in `GLOSSARY.md`. Expect few entries.
 
 Cite an entry by file and number — "the swallowed dispatch (GOTCHAS-oms 4.2)". A number never
 changes meaning.
