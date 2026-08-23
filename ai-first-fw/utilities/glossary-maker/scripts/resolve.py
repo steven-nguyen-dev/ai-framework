@@ -29,9 +29,9 @@ from collections import defaultdict
 ENTRY = re.compile(r"^\*\*(\d+\.\d+)\s+(.+?)\*\*\s*$")
 ROW = re.compile(r"^\|\s*(\d+\.\d+)\s*\|\s*(.+?)\s*\|")
 SET = re.compile(r"^SET\s+(.+?)\s*((?:‹[^›]+›\s*)+)$")
-FIELD = re.compile(r"^(ADMITTED|DEPRECATED|CONFUSABLE|BROADER|NARROWER|PART OF|PARTS|COORDINATE|RELATED)\b:?\s*(.+)$")
+FIELD = re.compile(r"^(ADMITTED|DEPRECATED|CONFUSABLE|RELATED)\b:?\s*(.+)$")
 SUBJECT = re.compile(r"‹(.+?)›")
-RELATIONS = {"BROADER", "NARROWER", "PART OF", "PARTS", "COORDINATE", "RELATED"}
+RELATIONS = {"RELATED"}
 
 # "connector (1.3)" / "`WCONN` (7.1)" / "the double POST (GOTCHAS-oms 2.3)"
 CITE = re.compile(r"([`\w][`\w .\-/]{0,60}?)\s*\(\s*([A-Za-z][\w.\-]*)?\s*(\d+\.\d+)\s*\)")

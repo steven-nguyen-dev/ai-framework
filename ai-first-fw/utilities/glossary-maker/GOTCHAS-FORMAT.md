@@ -1,5 +1,5 @@
-A gotchas file's opening and the rules for writing an entry. The opening is copied into each
-`GOTCHAS-<partition>.md`; everything below it stays here.
+A gotchas file's opening and the rules for an entry. The opening is copied out; the rules stay here.
+Numbering and citation live in [AUDIT-BRIEF.md](./AUDIT-BRIEF.md).
 
 ## The opening — copy verbatim, filling `<the partition>`
 
@@ -32,39 +32,27 @@ Scope: ETON only. The other partners dispatch synchronously.
 
 | Line | Carries |
 |---|---|
-| `**N.M the trap in one sentence, bold**` | the **wrong conclusion a reader reaches**, not the mechanism |
-| the mechanism | why the code permits it, with `file:line` on every claim |
+| headline, bold | the **wrong conclusion a reader reaches**, in one sentence |
+| mechanism | why the code permits it, with `file:line` on every claim |
 | `Do:` | one sentence — what the reader does instead |
 | `Scope:` | only where the entry is partner- or tenant-specific, traced for the named one alone |
 
-**Every entry carries a `Do:`.** Without one it is a note, and it is rewritten until it has one. A
-`Do:` names the artefact the reader consults instead, or the check they run — "confirm by the audit
-row", not "be careful".
-
 **The headline states the conclusion, not the cause.** "A successful 202 does not mean the order
-reached the partner" is a headline; "the dispatcher swallows serialisation failures" is the
-mechanism line. A reader scanning headlines is looking for the belief they hold, not for the code
-they have not read.
+reached the partner" is the headline; "the dispatcher swallows serialisation failures" is the
+mechanism line.
+
+**Every entry carries a `Do:`**, naming the artefact the reader consults instead or the check they
+run — "confirm by the audit row", not "be careful". Without one the entry is a note, and it is
+rewritten until it has one.
 
 Where a trap is also a designation, the glossary carries the definition and this file carries the
 `Do:`. Each cites across; neither repeats the other.
 
-## Section order
+## Sections
 
-Sections are `## N`, ordered by the spine, so a reader walking a flow meets them in order:
-
-1. **Entry and admission** — how data gets in, including what no route table lists
-2. **Transformation and identity** — what the datum is called and shaped like between hops
-3. **Persistence** — write keys, read keys, and where they drift apart
-4. **Emission and terminus** — what leaves, and what silently does not
-5. **Human-only knowledge** — what the code cannot answer, with what was tried before asking
-6. **Aliases** — this partition's shorthand, as a local extension of the glossary's shorthand section
-
-A section with entries is written; the rest are dropped. An empty section reads as a clean walk.
-
-## Aliases
-
-Two columns, designation and glossary citation:
+`## N` sections, grouped however this partition's own structure groups its work. Where the partition
+has shorthand, one section is `## Aliases` — two columns, resolving to live glossary headwords and
+agreeing with the glossary's own shorthand entry, both of which the script checks:
 
 ```markdown
 | alias | glossary |
@@ -72,20 +60,9 @@ Two columns, designation and glossary citation:
 | `WCONN` | connector (7.1) |
 ```
 
-Every alias resolves to a live headword and agrees with the glossary's own shorthand entry — the
-gate checks both. This table extends the glossary locally; the glossary defines.
-
-## Numbers
-
-Entries are `N.M`, numbered per file. An entry keeps its number for life: new traps append within
-their section, and a trap that no longer holds keeps its number and moves to `## Retired` at the
-foot with one line saying what changed. A reused number rewrites every citation that pointed at the
-old one.
-
 ## What belongs elsewhere
 
-- A **`GAP`** — walked, still unknown, and nobody could answer. It ships as a question in the
-  handover.
-- A finding whose evidence spans two or more partitions. It belongs in the shared file, as one shape
-  with its exceptions.
-- Anything a search would have found. That is a glossary entry.
+- A `GAP` — unknown, and nobody could answer — ships as a question in the handover, not as an entry.
+- A finding whose evidence spans two or more partitions belongs in `GOTCHAS-shared.md`, as one
+  finding with its exceptions.
+- Anything a search would have found is a glossary entry.
