@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import mimetypes
 import os
@@ -42,6 +43,7 @@ def _read_version() -> str:
 
 __version__ = _read_version()
 
+import scanner
 from scanner import (
     add_marketplace,
     clean_legacy_symlinks,
@@ -64,7 +66,11 @@ def get_data(force_refresh: bool = False) -> dict:
     global CACHED_DATA, LAST_SCAN_TIME
     with DATA_LOCK:
         if CACHED_DATA is None or force_refresh:
-            CACHED_DATA = scan_all()
+            try:
+                importlib.reload(scanner)
+            except Exception:
+                pass
+            CACHED_DATA = scanner.scan_all()
             LAST_SCAN_TIME = CACHED_DATA.get("scan_time")
         return CACHED_DATA
 
