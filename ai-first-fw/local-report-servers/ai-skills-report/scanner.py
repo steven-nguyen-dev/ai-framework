@@ -410,7 +410,6 @@ def scan_claude_app_cowork() -> tuple[list[PluginItem], list[SkillItem], dict[st
                         skills=contained_skills,
                         metadata=p_meta,
                     ))
-                    skills.extend(contained_skills)
             except Exception:
                 pass
 
@@ -1843,7 +1842,7 @@ def scan_all() -> dict[str, Any]:
     mcp_servers = scan_mcp_servers()
 
     # Aggregate counts
-    all_claude_skills = claude_cli_skills + claude_cowork_skills + [s for p in claude_cli_plugins for s in p.skills]
+    all_claude_skills = claude_cli_skills + claude_cowork_skills + [s for p in (claude_cli_plugins + claude_cowork_plugins) for s in p.skills]
     all_agy_skills = agy_cli_skills + agy_app_skills + agy_ide_skills + [s for p in agy_cli_plugins for s in p.skills]
     
     total_skills = len(all_claude_skills) + len(all_agy_skills)
