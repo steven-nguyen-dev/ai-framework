@@ -1,0 +1,36 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-28T08:03:57.259141+00:00",
+      "live_entries": 2,
+      "accumulated": 2,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:04:04.432684+00:00",
+      "live_entries": 4,
+      "accumulated": 4,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:04:11.594839+00:00",
+      "live_entries": 6,
+      "accumulated": 6,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:04:18.782063+00:00",
+      "live_entries": 8,
+      "accumulated": 8,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:04:25.952229+00:00",
+      "live_entries": 10,
+      "accumulated": 10,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}

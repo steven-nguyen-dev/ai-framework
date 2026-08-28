@@ -1,0 +1,1076 @@
+{
+  "name": "Eton WMS",
+  "host": "http://127.0.0.1:23101",
+  "entries": [
+    {
+      "seq": 1,
+      "at": "2026-08-28T08:03:50.313Z",
+      "durationMs": 5.297,
+      "rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000351\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1022281\",\"Qty\":2,\"Price\":74000.0,\"Amount\":148000.0,\"ActualAmount\":148000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024681\",\"Qty\":2,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P6-TIKTOK-GIFT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "985",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000351",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "1022281",
+              "Qty": 2,
+              "Price": 74000.0,
+              "Amount": 148000.0,
+              "ActualAmount": 148000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1024681",
+              "Qty": 2,
+              "Price": 0.0,
+              "Amount": 0.0,
+              "ActualAmount": 0.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-P6-TIKTOK-GIFT",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Tiktok",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000351\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1022281\",\"Qty\":2,\"Price\":74000.0,\"Amount\":148000.0,\"ActualAmount\":148000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024681\",\"Qty\":2,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P6-TIKTOK-GIFT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "HasError": false,
+          "Code": "92000351",
+          "ExternalCode": "92000351",
+          "RefExternalCode": "SO-ETON-CO-P6-TIKTOK-GIFT",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"HasError\": false, \"Code\": \"92000351\", \"ExternalCode\": \"92000351\", \"RefExternalCode\": \"SO-ETON-CO-P6-TIKTOK-GIFT\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 2,
+      "at": "2026-08-28T08:03:50.334Z",
+      "durationMs": 2.033,
+      "rule": "no marker -- pricing push accepted, 200",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000351/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1022281\",\"Quantity\":2,\"BasePrice\":148000.0,\"SellerDiscount\":13400.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024681\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":148000.0,\"OrderSellerDiscount\":13400.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":28300.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":28300.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000351/priceDetail",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "676",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "Items": [
+            {
+              "SKU": "1022281",
+              "Quantity": 2,
+              "BasePrice": 148000.0,
+              "SellerDiscount": 13400.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1024681",
+              "Quantity": 2,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            }
+          ],
+          "OrderBasePrice": 148000.0,
+          "OrderSellerDiscount": 13400.0,
+          "OrderSellerVoucher": 0.0,
+          "OrderPlatformDiscount": 0.0,
+          "OrderPlatformVoucher": 0.0,
+          "OrderCoinsOrCashback": 0.0,
+          "ShippingFee": 28300.0,
+          "ShippingDiscountSeller": 0.0,
+          "ShippingDiscountPlatform": 28300.0,
+          "ServiceFee": 0.0,
+          "Tax": 0.0,
+          "UnclassifiedDiscount": 0.0,
+          "UnclassifiedFee": 0.0,
+          "CurrencyCode": "VND"
+        },
+        "bodyText": "{\"Items\":[{\"SKU\":\"1022281\",\"Quantity\":2,\"BasePrice\":148000.0,\"SellerDiscount\":13400.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024681\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":148000.0,\"OrderSellerDiscount\":13400.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":0.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":28300.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":28300.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 3,
+      "at": "2026-08-28T08:03:57.460Z",
+      "durationMs": 2.079,
+      "rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000361\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":5,\"Price\":35000.0,\"Amount\":175000.0,\"ActualAmount\":175000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P7-TIKTOK-CARRIED\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "988",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000361",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "1025377",
+              "Qty": 5,
+              "Price": 35000.0,
+              "Amount": 175000.0,
+              "ActualAmount": 175000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1025377",
+              "Qty": 1,
+              "Price": 0.0,
+              "Amount": 0.0,
+              "ActualAmount": 0.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-P7-TIKTOK-CARRIED",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Tiktok",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000361\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025377\",\"Qty\":5,\"Price\":35000.0,\"Amount\":175000.0,\"ActualAmount\":175000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025377\",\"Qty\":1,\"Price\":0.0,\"Amount\":0.0,\"ActualAmount\":0.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P7-TIKTOK-CARRIED\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "HasError": false,
+          "Code": "92000361",
+          "ExternalCode": "92000361",
+          "RefExternalCode": "SO-ETON-CO-P7-TIKTOK-CARRIED",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"HasError\": false, \"Code\": \"92000361\", \"ExternalCode\": \"92000361\", \"RefExternalCode\": \"SO-ETON-CO-P7-TIKTOK-CARRIED\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 4,
+      "at": "2026-08-28T08:03:57.477Z",
+      "durationMs": 1.655,
+      "rule": "no marker -- pricing push accepted, 200",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000361/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":5,\"BasePrice\":175000.0,\"SellerDiscount\":15001.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":16000.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":175000.0,\"OrderSellerDiscount\":15001.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":16000.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":52200.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":52200.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000361/priceDetail",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "684",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "Items": [
+            {
+              "SKU": "1025377",
+              "Quantity": 5,
+              "BasePrice": 175000.0,
+              "SellerDiscount": 15001.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 16000.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1025377",
+              "Quantity": 1,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            }
+          ],
+          "OrderBasePrice": 175000.0,
+          "OrderSellerDiscount": 15001.0,
+          "OrderSellerVoucher": 0.0,
+          "OrderPlatformDiscount": 16000.0,
+          "OrderPlatformVoucher": 0.0,
+          "OrderCoinsOrCashback": 0.0,
+          "ShippingFee": 52200.0,
+          "ShippingDiscountSeller": 0.0,
+          "ShippingDiscountPlatform": 52200.0,
+          "ServiceFee": 0.0,
+          "Tax": 0.0,
+          "UnclassifiedDiscount": 0.0,
+          "UnclassifiedFee": 0.0,
+          "CurrencyCode": "VND"
+        },
+        "bodyText": "{\"Items\":[{\"SKU\":\"1025377\",\"Quantity\":5,\"BasePrice\":175000.0,\"SellerDiscount\":15001.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":16000.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025377\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":175000.0,\"OrderSellerDiscount\":15001.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":16000.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":52200.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":52200.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 5,
+      "at": "2026-08-28T08:04:04.616Z",
+      "durationMs": 2.588,
+      "rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000391\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1027575\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027575\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027575\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P10-TIKTOK-GWP\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "2375",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000391",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "1027575",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027575",
+              "Qty": 1,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Qty": 1,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Qty": 1,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Qty": 1,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027575",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Qty": 2,
+              "Price": 15000.0,
+              "Amount": 15000.0,
+              "ActualAmount": 15000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-P10-TIKTOK-GWP",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Tiktok",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000391\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1027575\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027575\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":1,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027575\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027573\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027576\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1027574\",\"Qty\":2,\"Price\":15000.0,\"Amount\":15000.0,\"ActualAmount\":15000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P10-TIKTOK-GWP\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "HasError": false,
+          "Code": "92000391",
+          "ExternalCode": "92000391",
+          "RefExternalCode": "SO-ETON-CO-P10-TIKTOK-GWP",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"HasError\": false, \"Code\": \"92000391\", \"ExternalCode\": \"92000391\", \"RefExternalCode\": \"SO-ETON-CO-P10-TIKTOK-GWP\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 6,
+      "at": "2026-08-28T08:04:04.631Z",
+      "durationMs": 1.994,
+      "rule": "no marker -- pricing push accepted, 200",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000391/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1027575\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027575\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027575\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":120000.0,\"OrderSellerDiscount\":3602.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":45396.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":82300.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":82300.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000391/priceDetail",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "2260",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "Items": [
+            {
+              "SKU": "1027575",
+              "Quantity": 2,
+              "BasePrice": 30000.0,
+              "SellerDiscount": 900.5,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 11349.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Quantity": 2,
+              "BasePrice": 30000.0,
+              "SellerDiscount": 900.5,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 11349.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Quantity": 2,
+              "BasePrice": 30000.0,
+              "SellerDiscount": 900.5,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 11349.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Quantity": 2,
+              "BasePrice": 30000.0,
+              "SellerDiscount": 900.5,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 11349.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027575",
+              "Quantity": 1,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Quantity": 1,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Quantity": 1,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Quantity": 1,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027575",
+              "Quantity": 2,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027573",
+              "Quantity": 2,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027576",
+              "Quantity": 2,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1027574",
+              "Quantity": 2,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            }
+          ],
+          "OrderBasePrice": 120000.0,
+          "OrderSellerDiscount": 3602.0,
+          "OrderSellerVoucher": 0.0,
+          "OrderPlatformDiscount": 45396.0,
+          "OrderPlatformVoucher": 0.0,
+          "OrderCoinsOrCashback": 0.0,
+          "ShippingFee": 82300.0,
+          "ShippingDiscountSeller": 0.0,
+          "ShippingDiscountPlatform": 82300.0,
+          "ServiceFee": 0.0,
+          "Tax": 0.0,
+          "UnclassifiedDiscount": 0.0,
+          "UnclassifiedFee": 0.0,
+          "CurrencyCode": "VND"
+        },
+        "bodyText": "{\"Items\":[{\"SKU\":\"1027575\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":2,\"BasePrice\":30000.0,\"SellerDiscount\":900.5,\"SellerVoucher\":0.0,\"PlatformDiscount\":11349.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027575\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":1,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027575\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027573\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027576\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1027574\",\"Quantity\":2,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":120000.0,\"OrderSellerDiscount\":3602.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":45396.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":82300.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":82300.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 7,
+      "at": "2026-08-28T08:04:11.829Z",
+      "durationMs": 1.472,
+      "rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000401\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1024506\",\"Qty\":24,\"Price\":39000.0,\"Amount\":234000.0,\"ActualAmount\":234000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P11-TIKTOK-GIFTS4\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "1423",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000401",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "1024506",
+              "Qty": 24,
+              "Price": 39000.0,
+              "Amount": 234000.0,
+              "ActualAmount": 234000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Qty": 3,
+              "Price": 39000.0,
+              "Amount": 117000.0,
+              "ActualAmount": 117000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Qty": 3,
+              "Price": 39000.0,
+              "Amount": 117000.0,
+              "ActualAmount": 117000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Qty": 3,
+              "Price": 39000.0,
+              "Amount": 117000.0,
+              "ActualAmount": 117000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Qty": 3,
+              "Price": 39000.0,
+              "Amount": 117000.0,
+              "ActualAmount": 117000.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-P11-TIKTOK-GIFTS4",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Tiktok",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000401\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1024506\",\"Qty\":24,\"Price\":39000.0,\"Amount\":234000.0,\"ActualAmount\":234000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1024506\",\"Qty\":3,\"Price\":39000.0,\"Amount\":117000.0,\"ActualAmount\":117000.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P11-TIKTOK-GIFTS4\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "HasError": false,
+          "Code": "92000401",
+          "ExternalCode": "92000401",
+          "RefExternalCode": "SO-ETON-CO-P11-TIKTOK-GIFTS4",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"HasError\": false, \"Code\": \"92000401\", \"ExternalCode\": \"92000401\", \"RefExternalCode\": \"SO-ETON-CO-P11-TIKTOK-GIFTS4\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 8,
+      "at": "2026-08-28T08:04:11.852Z",
+      "durationMs": 4.791,
+      "rule": "no marker -- pricing push accepted, 200",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000401/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1024506\",\"Quantity\":24,\"BasePrice\":936000.0,\"SellerDiscount\":276000.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":99000.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":936000.0,\"OrderSellerDiscount\":276000.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":99000.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":356800.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":356800.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000401/priceDetail",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "1154",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "Items": [
+            {
+              "SKU": "1024506",
+              "Quantity": 24,
+              "BasePrice": 936000.0,
+              "SellerDiscount": 276000.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 99000.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Quantity": 3,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Quantity": 3,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Quantity": 3,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1024506",
+              "Quantity": 3,
+              "BasePrice": 0.0,
+              "SellerDiscount": 0.0,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 0.0,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            }
+          ],
+          "OrderBasePrice": 936000.0,
+          "OrderSellerDiscount": 276000.0,
+          "OrderSellerVoucher": 0.0,
+          "OrderPlatformDiscount": 99000.0,
+          "OrderPlatformVoucher": 0.0,
+          "OrderCoinsOrCashback": 0.0,
+          "ShippingFee": 356800.0,
+          "ShippingDiscountSeller": 0.0,
+          "ShippingDiscountPlatform": 356800.0,
+          "ServiceFee": 0.0,
+          "Tax": 0.0,
+          "UnclassifiedDiscount": 0.0,
+          "UnclassifiedFee": 0.0,
+          "CurrencyCode": "VND"
+        },
+        "bodyText": "{\"Items\":[{\"SKU\":\"1024506\",\"Quantity\":24,\"BasePrice\":936000.0,\"SellerDiscount\":276000.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":99000.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1024506\",\"Quantity\":3,\"BasePrice\":0.0,\"SellerDiscount\":0.0,\"SellerVoucher\":0.0,\"PlatformDiscount\":0.0,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":936000.0,\"OrderSellerDiscount\":276000.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":99000.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":356800.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":356800.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 9,
+      "at": "2026-08-28T08:04:19.003Z",
+      "durationMs": 2.857,
+      "rule": "no marker -- order accepted, 200 \"New\", recorded in created_orders",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000411\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025607\",\"Qty\":1,\"Price\":27000.0,\"Amount\":27000.0,\"ActualAmount\":11798.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025703\",\"Qty\":1,\"Price\":64000.0,\"Amount\":64000.0,\"ActualAmount\":29440.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P12-TIKTOK-SPLIT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "997",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000411",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "1025607",
+              "Qty": 1,
+              "Price": 27000.0,
+              "Amount": 27000.0,
+              "ActualAmount": 11798.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            },
+            {
+              "SKU": "1025703",
+              "Qty": 1,
+              "Price": 64000.0,
+              "Amount": 64000.0,
+              "ActualAmount": 29440.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-P12-TIKTOK-SPLIT",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Tiktok",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000411\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"1025607\",\"Qty\":1,\"Price\":27000.0,\"Amount\":27000.0,\"ActualAmount\":11798.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0},{\"SKU\":\"1025703\",\"Qty\":1,\"Price\":64000.0,\"Amount\":64000.0,\"ActualAmount\":29440.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-P12-TIKTOK-SPLIT\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Tiktok\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "HasError": false,
+          "Code": "92000411",
+          "ExternalCode": "92000411",
+          "RefExternalCode": "SO-ETON-CO-P12-TIKTOK-SPLIT",
+          "Status": "New",
+          "ErrorCode": null,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"HasError\": false, \"Code\": \"92000411\", \"ExternalCode\": \"92000411\", \"RefExternalCode\": \"SO-ETON-CO-P12-TIKTOK-SPLIT\", \"Status\": \"New\", \"ErrorCode\": null, \"ErrorMessages\": []}"
+      }
+    },
+    {
+      "seq": 10,
+      "at": "2026-08-28T08:04:19.036Z",
+      "durationMs": 2.064,
+      "rule": "no marker -- pricing push accepted, 200",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/92000411/priceDetail' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"Items\":[{\"SKU\":\"1025607\",\"Quantity\":1,\"BasePrice\":27000.0,\"SellerDiscount\":401.14285714285717,\"SellerVoucher\":0.0,\"PlatformDiscount\":14363.406593406593,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025703\",\"Quantity\":1,\"BasePrice\":64000.0,\"SellerDiscount\":950.8571428571429,\"SellerVoucher\":0.0,\"PlatformDiscount\":34046.593406593405,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":91000.0,\"OrderSellerDiscount\":1352.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":48410.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":29800.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":29800.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/92000411/priceDetail",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "736",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "Items": [
+            {
+              "SKU": "1025607",
+              "Quantity": 1,
+              "BasePrice": 27000.0,
+              "SellerDiscount": 401.14285714285717,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 14363.406593406593,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            },
+            {
+              "SKU": "1025703",
+              "Quantity": 1,
+              "BasePrice": 64000.0,
+              "SellerDiscount": 950.8571428571429,
+              "SellerVoucher": 0.0,
+              "PlatformDiscount": 34046.593406593405,
+              "PlatformVoucher": 0.0,
+              "CoinsOrCashback": 0.0
+            }
+          ],
+          "OrderBasePrice": 91000.0,
+          "OrderSellerDiscount": 1352.0,
+          "OrderSellerVoucher": 0.0,
+          "OrderPlatformDiscount": 48410.0,
+          "OrderPlatformVoucher": 0.0,
+          "OrderCoinsOrCashback": 0.0,
+          "ShippingFee": 29800.0,
+          "ShippingDiscountSeller": 0.0,
+          "ShippingDiscountPlatform": 29800.0,
+          "ServiceFee": 0.0,
+          "Tax": 0.0,
+          "UnclassifiedDiscount": 0.0,
+          "UnclassifiedFee": 0.0,
+          "CurrencyCode": "VND"
+        },
+        "bodyText": "{\"Items\":[{\"SKU\":\"1025607\",\"Quantity\":1,\"BasePrice\":27000.0,\"SellerDiscount\":401.14285714285717,\"SellerVoucher\":0.0,\"PlatformDiscount\":14363.406593406593,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0},{\"SKU\":\"1025703\",\"Quantity\":1,\"BasePrice\":64000.0,\"SellerDiscount\":950.8571428571429,\"SellerVoucher\":0.0,\"PlatformDiscount\":34046.593406593405,\"PlatformVoucher\":0.0,\"CoinsOrCashback\":0.0}],\"OrderBasePrice\":91000.0,\"OrderSellerDiscount\":1352.0,\"OrderSellerVoucher\":0.0,\"OrderPlatformDiscount\":48410.0,\"OrderPlatformVoucher\":0.0,\"OrderCoinsOrCashback\":0.0,\"ShippingFee\":29800.0,\"ShippingDiscountSeller\":0.0,\"ShippingDiscountPlatform\":29800.0,\"ServiceFee\":0.0,\"Tax\":0.0,\"UnclassifiedDiscount\":0.0,\"UnclassifiedFee\":0.0,\"CurrencyCode\":\"VND\"}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": false,
+          "ErrorMessages": []
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": false, \"ErrorMessages\": []}"
+      }
+    }
+  ]
+}

@@ -1708,12 +1708,26 @@ function drawTree(){
         '</div></details>';
     }
 
+    var isRunningThis = !!run.running && run.suite === s.id;
+    var btnText = 'Run All';
+    if(isRunningThis){
+      btnText = 'Running…';
+    } else {
+      var allCount = suiteCases.length;
+      if(caseSelection[s.id]){
+        var checkedCount = suiteCases.filter(function(c){ return caseSelection[s.id][c.id] !== false; }).length;
+        if(allCount > 0 && checkedCount < allCount){
+          btnText = 'Run (' + checkedCount + ')';
+        }
+      }
+    }
+
     return '<details class="grp" data-suite-grp="'+esc(s.id)+'"'+(isSuiteOpen?' open':'')+'>'+
       '<summary class="ghd">'+
         '<span class="s-arrow">&#9656;</span>'+
         '<span class="nm" title="'+esc(s.name||s.id)+'">'+esc(s.name||s.id)+'</span>'+
-        (s.orphan?'':'<button class="go" type="button" data-run-suite="'+esc(s.id)+'" id="run-btn-'+esc(s.id)+'"'+(busy?' disabled':'')+'>'+
-          (busy?'Running…':'Run All')+'</button>')+
+        (s.orphan?'':'<button class="go" type="button" data-run-suite="'+esc(s.id)+'" id="run-btn-'+esc(s.id)+'"'+(busy?' disabled'+(isRunningThis?'':' title="A test suite is currently running"'):'')+'>'+
+          esc(btnText)+'</button>')+
       '</summary>'+
       '<div class="grp-body">'+
         infoHtml+
@@ -1787,7 +1801,7 @@ function resumePending(suiteId){
 
 function updateRunBtnText(suiteId){
   var btn = document.getElementById('run-btn-' + suiteId);
-  if(!btn || run.running) return;
+  if(!btn || (run.running && run.suite === suiteId)) return;
   var all = document.querySelectorAll('input[data-suite="'+suiteId+'"][data-case]');
   var checked = document.querySelectorAll('input[data-suite="'+suiteId+'"][data-case]:checked');
   if(all.length > 0 && checked.length < all.length){
@@ -2257,13 +2271,14 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
                             if cid and cid not in all_known:
                                 all_known[cid] = {"id": cid, "name": c.get("name"), "shape": c.get("shape", "normal")}
                 if not all_known:
-                    cmd = g.get("command") or []
+                    orig = next((s for s in suites if s.get("id") == g.get("id")), {})
+                    cmd = orig.get("command") or g.get("command") or []
                     for part in cmd:
                         if isinstance(part, str) and part.endswith(".py") and "mock.py" not in part:
                             target = part if os.path.isabs(part) else os.path.normpath(os.path.join(suite_cwd or ".", part))
                             if os.path.isfile(target):
                                 try:
-                                    with open(target, "r") as f:
+                                    with open(target, "r", encoding="utf-8") as f:
                                         text = f.read()
                                     matches = re.findall(r'case\s*\(\s*["\']([A-Za-z0-9_.-]+)["\']\s*,\s*["\']([^"\']+)["\']', text)
                                     for cid, name in matches:
