@@ -1,0 +1,228 @@
+{
+  "source": "captured at 2026-08-24 00:32:17,057932, ETON sale order SOCJFH9YIF8HE",
+  "note": "Seven lines, per-line vouchers and tax read off line_item_details. The first line carries one detail row per unit, so the reader has to sum them rather than take the first.",
+  "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+  "data": {
+    "marketplace_code": "lazada_vn",
+    "seller_currency": "VND",
+    "voucher_seller": 13620.0,
+    "order_adjustment": {
+      "marketplace_discount": 20702.0,
+      "seller_discount": 13620.0,
+      "adjustments": {
+        "items": []
+      }
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200331,
+        "sku": "1024081",
+        "inventory_sku": "1024081",
+        "quantity": 2,
+        "item_price": "94000.0",
+        "paid_price": "82156.0",
+        "tax_amount": "8756.0",
+        "shipping_amount": "17379.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200331,
+            "item_original_price": 47000.0,
+            "item_paid_price": 41078.0,
+            "seller_voucher_amount": 2350.0,
+            "voucher_platform": 3572.0,
+            "tax_amount": 4378.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          },
+          {
+            "line_item_id": 9200331,
+            "item_original_price": 47000.0,
+            "item_paid_price": 41078.0,
+            "seller_voucher_amount": 2350.0,
+            "voucher_platform": 3572.0,
+            "tax_amount": 4378.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200332,
+        "sku": "1023222",
+        "inventory_sku": "1023222",
+        "quantity": 1,
+        "item_price": "26000.0",
+        "paid_price": "22724.0",
+        "tax_amount": "2146.0",
+        "shipping_amount": "1086.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200332,
+            "item_original_price": 26000.0,
+            "item_paid_price": 22724.0,
+            "seller_voucher_amount": 1300.0,
+            "voucher_platform": 1976.0,
+            "tax_amount": 2146.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200333,
+        "sku": "1023221",
+        "inventory_sku": "1023221",
+        "quantity": 1,
+        "item_price": "26000.0",
+        "paid_price": "22724.0",
+        "tax_amount": "2146.0",
+        "shipping_amount": "1086.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200333,
+            "item_original_price": 26000.0,
+            "item_paid_price": 22724.0,
+            "seller_voucher_amount": 1300.0,
+            "voucher_platform": 1976.0,
+            "tax_amount": 2146.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200334,
+        "sku": "1023786",
+        "inventory_sku": "1023786",
+        "quantity": 1,
+        "item_price": "26000.0",
+        "paid_price": "22724.0",
+        "tax_amount": "2146.0",
+        "shipping_amount": "1086.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200334,
+            "item_original_price": 26000.0,
+            "item_paid_price": 22724.0,
+            "seller_voucher_amount": 1300.0,
+            "voucher_platform": 1976.0,
+            "tax_amount": 2146.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200335,
+        "sku": "1023926",
+        "inventory_sku": "1023926",
+        "quantity": 1,
+        "item_price": "46000.0",
+        "paid_price": "40204.0",
+        "tax_amount": "3816.0",
+        "shipping_amount": "2172.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200335,
+            "item_original_price": 46000.0,
+            "item_paid_price": 40204.0,
+            "seller_voucher_amount": 2300.0,
+            "voucher_platform": 3496.0,
+            "tax_amount": 3816.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200336,
+        "sku": "1023025",
+        "inventory_sku": "1023025",
+        "quantity": 1,
+        "item_price": "23400.0",
+        "paid_price": "20452.0",
+        "tax_amount": "2261.0",
+        "shipping_amount": "5431.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200336,
+            "item_original_price": 23400.0,
+            "item_paid_price": 20452.0,
+            "seller_voucher_amount": 1170.0,
+            "voucher_platform": 1778.0,
+            "tax_amount": 2261.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200337,
+        "sku": "1023220",
+        "inventory_sku": "1023220",
+        "quantity": 1,
+        "item_price": "31000.0",
+        "paid_price": "27094.0",
+        "tax_amount": "2704.0",
+        "shipping_amount": "3260.0",
+        "seller_discount": "13620.0",
+        "channel_discount": "20702.0",
+        "is_gwp_item": false,
+        "line_item_details": [
+          {
+            "line_item_id": 9200337,
+            "item_original_price": 31000.0,
+            "item_paid_price": 27094.0,
+            "seller_voucher_amount": 1550.0,
+            "voucher_platform": 2356.0,
+            "tax_amount": 2704.0,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": null,
+            "marketplace_discount_on_retail_price": null
+          }
+        ]
+      }
+    ]
+  }
+}

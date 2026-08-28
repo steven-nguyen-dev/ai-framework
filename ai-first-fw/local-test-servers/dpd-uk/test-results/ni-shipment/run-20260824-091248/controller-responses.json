@@ -1,0 +1,34 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. B2B receiver, goods not at risk - the whole mapping",
+    "controller_status": 0,
+    "controller_body": "The read operation timed out",
+    "fired_at": "2026-08-24T02:12:48.597838+00:00",
+    "returned_at": "2026-08-24T02:13:18.615722+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. B2B receiver, goods at risk",
+    "controller_status": 0,
+    "controller_body": "The read operation timed out",
+    "fired_at": "2026-08-24T02:13:18.752053+00:00",
+    "returned_at": "2026-08-24T02:13:48.775468+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Individual receiver",
+    "controller_status": 0,
+    "controller_body": "The read operation timed out",
+    "fired_at": "2026-08-24T02:13:48.922384+00:00",
+    "returned_at": "2026-08-24T02:14:18.946679+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. Delivered duty paid",
+    "controller_status": 0,
+    "controller_body": "The read operation timed out",
+    "fired_at": "2026-08-24T02:14:19.104233+00:00",
+    "returned_at": "2026-08-24T02:14:49.127651+00:00"
+  }
+]

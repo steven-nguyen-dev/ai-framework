@@ -1,0 +1,75 @@
+{
+ "source": "ETON sale order SOCJFTVXHTNGA, masked",
+ "note": "A 1352 seller discount spread across lines of 27000 and 64000 — the order-level figure has to land exactly on the lines despite the division repeating.",
+ "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+ "data": {
+  "marketplace_code": "tiktok_vn",
+  "seller_currency": "VND",
+  "voucher_seller": 1352.0,
+  "order_adjustment": {
+   "marketplace_discount": 48410.0,
+   "seller_discount": 1352.0,
+   "adjustments": {
+    "items": []
+   }
+  },
+  "order_items": [
+   {
+    "order_item_id": 9200411,
+    "sku": "1025607",
+    "inventory_sku": "1025607",
+    "quantity": 1,
+    "item_price": "27000.0",
+    "paid_price": "11798.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "1352.0",
+    "channel_discount": "48410.0",
+    "is_gwp_item": false,
+    "line_item_details": [
+     {
+      "line_item_id": 9200411,
+      "item_original_price": "",
+      "item_paid_price": "",
+      "seller_voucher_amount": "1351.0",
+      "voucher_platform": "13851.0",
+      "tax_amount": "0.0",
+      "shipping_fee_original": "8841.76",
+      "shipping_fee_seller_discount": "0.0",
+      "shipping_fee_platform_discount": "8841.76",
+      "seller_discount_on_retail_price": "0.0",
+      "marketplace_discount_on_retail_price": "0.0"
+     }
+    ]
+   },
+   {
+    "order_item_id": 9200412,
+    "sku": "1025703",
+    "inventory_sku": "1025703",
+    "quantity": 1,
+    "item_price": "64000.0",
+    "paid_price": "29440.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "1352.0",
+    "channel_discount": "48410.0",
+    "is_gwp_item": false,
+    "line_item_details": [
+     {
+      "line_item_id": 9200412,
+      "item_original_price": "",
+      "item_paid_price": "",
+      "seller_voucher_amount": "1.0",
+      "voucher_platform": "34559.0",
+      "tax_amount": "0.0",
+      "shipping_fee_original": "20958.24",
+      "shipping_fee_seller_discount": "0.0",
+      "shipping_fee_platform_discount": "20958.24",
+      "seller_discount_on_retail_price": "0.0",
+      "marketplace_discount_on_retail_price": "0.0"
+     }
+    ]
+   }
+  ]
+ }
+}

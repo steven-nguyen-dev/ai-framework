@@ -1,0 +1,5033 @@
+[
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {}
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        }
+      }
+    },
+    "response": {
+      "payload": {}
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "V1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "cancellationReasonCode": {
+          "value": "V1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "NULL"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [cancellationReasonCode]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "cancellationReasonCode": {
+          "value": "NULL"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId, cancellationReasonCode]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "V1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedAction",
+          "message": "Not authorized to access this resource.Please check your input again",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_2",
+    "request": {
+      "parameters": {}
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "completedJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "V1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Job with jobId completedJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut and jobStatus COMPLETED cannot be cancelled",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "INV1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Received invalid input reason code IV1 for jobId validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/cancellations",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        },
+        "cancellationReasonCode": {
+          "value": "V1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Job not found for jobId invalidJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/completions",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/completions",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/completions",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedAction",
+          "message": "Not authorized to access this resource.Please check your input again",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/completions",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "cancelledJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Operation not allowed on job with jobId : cancelledJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut and jobState : CANCELLED",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/completions",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Job not found for jobId invalidJobId-48b6d5a3-b708-dbe9-038d-dd95e8d74iut",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "totalResultSize": 1,
+        "nextPageToken": "merchantSklktoreIdbcdcd2ad-5883-4e48-b114-f13328a9e9f",
+        "previousPageToken": "merchantSklktoreIdbcdcd2ad-5883-4e48-b114-f13328a9e9f",
+        "jobs": [
+          {
+            "serviceOrderId": "2345324",
+            "serviceJobId": "34534399990035",
+            "createTime": "2019-12-11T14:49:53.952Z",
+            "serviceJobStatus": "COMPLETED",
+            "buyer": {
+              "name": "nameExample"
+            },
+            "appointments": [
+              {
+                "appointmentId": "appointmentIdExample",
+                "appointmentStatus": "COMPLETED",
+                "appointmentTime": {
+                  "startTime": "2020-01-31T06:38:56.961Z",
+                  "durationInMinutes": 60
+                },
+                "assignedTechnicians": [
+                  {
+                    "technicianId": "technicianIdExample",
+                    "name": "nameExample"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "createdAfter": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "appointmentId": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-2-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "appointmentId": "validJobId-2-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedAction",
+          "message": "Not authorized to access this resource. Please check your input again.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000+05:30"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "ISO8601 time 2021-01-01T10:00:00.000+05:30 is not in UTC.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10-00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to parse ISO8601 input: 2021-01-01T10-00:00.000Z",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "No job exist with jobId : invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "completedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Operation not allowed on job with jobId : completedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468 and jobState : COMPLETED",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "withActiveAppointmentJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : withActiveAppointmentJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Job already has an active appointmentId.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_6",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2019-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Start time of appointment should be in the future.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_7",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2022-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Start time for appointment is beyond the maximum allowed period of 365 days.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_8",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:15:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Appointment slot is not available.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "appointmentId": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468_new_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-2-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-2-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "appointmentId": "validJobId-2-9cb9bc29-3d7d-5e49-5709-efb693d34468_new_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-3-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-3-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "appointmentId": "validJobId-3-9cb9bc29-3d7d-5e49-5709-efb693d34468_new_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a",
+      "warnings": [
+        {
+          "code": "RESOURCES_UNASSIGNED",
+          "message": "Unassigned resources : ATechnicianId,BTechnicianId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "appointmentId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "nullAppointmentId"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z",
+              "durationInMinutes": 60
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [appointmentId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "unauthorizedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedAction",
+          "message": "Not authorized to access this resource. Please check your input again.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000+05:30"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "ISO8601 time 2021-01-01T10:00:00.000+05:30 is not in UTC.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10-00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to parse ISO8601 input: 2021-01-01T10-00:00.000Z",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "No job exist with jobId : invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "completedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "completedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Operation not allowed on job with jobId : completedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468 and jobState : COMPLETED",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2019-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Start time of appointment should be in the future.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_6",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2022-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Start time for appointment is beyond the maximum allowed period of 365 days.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_7",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:15:00.000Z"
+            },
+            "rescheduleReasonCode": "R1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Appointment slot is not available.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_8",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            },
+            "rescheduleReasonCode": "U1"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to add appointment for jobId : validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468, reason : Appointment reschedule reason code is not valid.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {}
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "overBookedResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "warnings": [
+          {
+            "code": "RESOURCES_OVERBOOKED",
+            "message": "Resources overbooked for this time window."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "nullAppointmentId"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [appointmentId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "appointmentId": {
+          "value": "nullAppointmentId"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [appointmentId, serviceJobId]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Resources\u00a0not\u00a0provided\u00a0in\u00a0input\u00a0JSON\u00a0payload.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": []
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Resources\u00a0must\u00a0have\u00a0size\u00a0greater\u00a0than\u00a0or\u00a0equal\u00a0to\u00a01.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedAction",
+          "message": "Not authorized to access this resource. Please check your input again.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "No job exists with jobId : invalidJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "invalidAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Failed to Update Appointment for jobId : invalidJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687, appointmentId : invalidAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d, reason : No appointment exists with appointmentId: invalidAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "badResourceId"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid resourceId : badResourceId provided in the input.",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "completedJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "completedAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Operation not allowed on job with jobId : completedJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687 and jobState : COMPLETED",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "cancelledJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "cancelledAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Operation not allowed on job with jobId : cancelledJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687 and jobState : CANCELLED",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_6",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "cancelledAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "validResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "validResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Appointment metadata update is not allowed for appointmentId cancelledAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/resources",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_7",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "resources": [
+              {
+                "resourceId": "invalidResourceId-A8B3M999LMHF2"
+              },
+              {
+                "resourceId": "invalidResourceId-AMIDIAX1H5V"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RESOURCES_MISMATCHED_SERVICE_LOCATION_TYPE",
+          "message": "Resources do not have same service location type as job. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        },
+        {
+          "code": "RESOURCES_MISSING_REQUIRED_SKILLS",
+          "message": "Resources Missing required XYZ skills. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        },
+        {
+          "code": "RESOURCES_NOT_AVAILABLE_IN_LOCATION",
+          "message": "Resources are not available in the store. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        },
+        {
+          "code": "RESOURCES_NOT_REGISTERED_UNDER_MERCHANT",
+          "message": "Resources are not registered under this Merchant. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        },
+        {
+          "code": "RESOURCES_BACKGROUND_CHECK_INCOMPLETE",
+          "message": "Resources background check is incomplete. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        },
+        {
+          "code": "RESOURCES_NOT_AVAILABLE_IN_TIME_WINDOW",
+          "message": "Resources do not have sufficient available capacity. Applicable resources: A8B3M999LMHF2,AMIDIAX1H5V",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "estimatedArrivalTime": {
+              "startTime": "2000-01-01T09:00:00.000Z",
+              "endTime": "2000-01-01T09:30:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_6",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_7",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_8",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-1-9cb9bc29-3d7d-5e49-5709-efb693t25687_87b9d5f2-839d-y13e-sd4d-dae1c3996s3d"
+        },
+        "body": {
+          "value": {
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": ""
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        },
+        "appointmentId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Missing or invalid request parameters: [serviceJobId]"
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "nullAppointmentId"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Missing or invalid request parameters: [appointmentId]"
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "nullAppointmentId"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "No fulfillment artifacts provided in JSON payload.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "unauthorizedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "unauthorizedJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "UnauthorizedAction",
+        "message": "Not authorized to access this resource. Please check your input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "invalidAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "No job exist with jobId : invalidJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "InvalidStatusJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "invalidStatusAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Job with id InvalidStatusJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468 can not be updated. Please check if the job is in valid status.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "invalidAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment with id invalidAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468 is not present in the job. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_4",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "InvalidStatusCancelledAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-02T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment with appointment id InvalidStatusCancelledAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468 is not valid to update. Please check the input again",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_5",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "endTime": "2021-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment start time is required. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_6",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2021-01-01T10:00:00.000+05:30"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment end time is required. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_7",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2021-01-01T10:00:00.000+05:30",
+              "endTime": "2021-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "ISO8601 time 2021-01-01T10:00:00.000+05:30 is not in UTC format. Please provide time in UTC",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_8",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2021-01-01T10-00:00.000Z",
+              "endTime": "2021-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Could not parse given time input 2021-01-01T10-00:00.000Z. Please provide time in ISO8601 format",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_9",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "9999-01-01T10:00:00.000Z",
+              "endTime": "2021-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment start time should not be in future. Please check the input again",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_10",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-01T10:00:00.000+05:30",
+              "endTime": "9999-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment end time should not be in future. Please check the input again",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_11",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2020-01-04T10:00:00.000+05:30",
+              "endTime": "2020-01-03T13:18:10.668Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment end time should be after start time. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_12",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "estimatedArrivalTime": {
+              "startTime": "2021-01-01T10:00:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process input. Reason: ETA start and end time both are mandatory field as part of estimatedArrivalTime object. Please check the input again",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_13",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "estimatedArrivalTime": {
+              "startTime": "2021-01-01T10-00:00.000Z",
+              "endTime": "2000-01-01T10:30:00.000Z"
+            }
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Could not parse given time input 2021-01-01T10-00:00.000Z. Please provide time in ISO8601 format",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_14",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentResources": [
+              {
+                "resourceId": "InValidResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "One or more resources provided is invalid. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_15",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "appointmentResources": [
+              {
+                "resourceId": "ResourceIdNotExist-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "One or more resources provided does not exist or is deleted. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_16",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "InvalidUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Input document id does not exist. Please check the input",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_17",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "UploadDestinationIdExpired-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Input document parameters are invalid. Please check the input.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_18",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "InvalidDocumentTypeUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to meet content type restrictions. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_19",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "InvalidDocumentLengthUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Failed to retrieve document content length. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_20",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "ExceededDcoumentLengthUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to meet content length restrictions. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_21",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "DocumentNotUploadedUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document encrypted not found or exist. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_22",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "IncorrectEncryptedDocumentUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to decrypt or decipher. Please review the uploaded document",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_23",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDestinationId-9cb9bc29-3d7d-5e49-5709-efb693d34468",
+                "contentSha256": "InvalidSHA256GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to meet sanity check. Could not get a Sha256 Message Digest instance. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_24",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "UploadedFileDetectedMalwareUploadeDestinationId-348293-2384982-239847982379",
+                "contentSha256": "validSHA256GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to meet malware check. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_25",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "InValidResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "InValidUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "ne or more resources provided is invalid. Please check the input again.",
+        "details": ""
+      },
+      {
+        "code": "InvalidInput",
+        "message": "Appointment start time is required. Please check the input again.",
+        "details": ""
+      },
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Input document id does not exist. Please check the input",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_26",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "InValidUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment start time is required. Please check the input again.",
+        "details": ""
+      },
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Input document id does not exist. Please check the input",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_27",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Appointment start time is required. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_28",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2022-01-03T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "ResourceIdNotExist-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "validUploadDesitnationID348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "One or more resources provided does not exist or is deleted. Please check the input again.",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointments/{appointmentId}/fulfillment",
+    "method": "PUT",
+    "status": 422,
+    "test_case": "CASE_422_29",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJobId-1-9cb9bc29-3d7d-5e49-5709-efb693d34468"
+        },
+        "appointmentId": {
+          "value": "validAppointmentId-9cb9bc29-3d7d-5e49-5709-efb693d34468_00b9d5f2-839d-c13e-b8cd-dae1c3995b2a"
+        },
+        "body": {
+          "value": {
+            "fulfillmentTime": {
+              "startTime": "2022-01-03T13:18:10.668Z",
+              "endTime": "2022-01-03T13:18:10.668Z"
+            },
+            "appointmentResources": [
+              {
+                "resourceId": "validResourceId-20334421900"
+              },
+              {
+                "resourceId": "validResourceId-82309484378"
+              }
+            ],
+            "fulfillmentDocuments": [
+              {
+                "uploadDestinationId": "UploadedFileDetectedMalwareUploadeDestinationId-348293-2384982-239847982379",
+                "contentSha256": "z06EuBzgzc7GiDNVqcxMqYEr7n0BCS9EtNN7szHe0RT="
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "InvalidInput",
+        "message": "Failed to process proof of appointment input. Reason: Document failed to meet malware check. Please review document uploaded",
+        "details": ""
+      }
+    ]
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY",
+              "AVAILABLE_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "resourceId": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48",
+      "capacities": [
+        {
+          "capacityType": "SCHEDULED_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2021-04-04T00:00:00Z",
+              "endDateTime": "2021-04-04T02:00:00Z",
+              "capacity": 1
+            }
+          ]
+        },
+        {
+          "capacityType": "AVAILABLE_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2021-04-04T00:00:00Z",
+              "endDateTime": "2021-04-04T01:00:00Z",
+              "capacity": 0
+            },
+            {
+              "startDateTime": "2021-04-04T01:00:00Z",
+              "endDateTime": "2021-04-04T02:00:00Z",
+              "capacity": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f29"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY",
+              "AVAILABLE_CAPACITY"
+            ],
+            "startDateTime": "2022-03-01T00:00:00Z",
+            "endDateTime": "2022-05-30T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "resourceId": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48",
+      "nextPageToken": "MjAyMi0wNC0wNVQwMDowMDowMFo%3D",
+      "capacities": [
+        {
+          "capacityType": "SCHEDULED_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2022-03-01T00:00:00Z",
+              "endDateTime": "2022-04-05T00:00:00Z",
+              "capacity": 1
+            }
+          ]
+        },
+        {
+          "capacityType": "AVAILABLE_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2022-03-01T00:00:00Z",
+              "endDateTime": "2022-03-01T10:00:00Z",
+              "capacity": 0
+            },
+            {
+              "startDateTime": "2022-03-01T10:00:00Z",
+              "endDateTime": "2022-04-05T00:00:00Z",
+              "capacity": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f29"
+        },
+        "nextPageToken": {
+          "value": "MjAyMi0wNC0wNVQwMDowMDowMFo%3D"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY",
+              "AVAILABLE_CAPACITY"
+            ],
+            "startDateTime": "2022-03-01T00:00:00Z",
+            "endDateTime": "2022-05-30T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "resourceId": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48",
+      "capacities": [
+        {
+          "capacityType": "SCHEDULED_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2022-04-05T00:00:00Z",
+              "endDateTime": "2022-05-30T00:00:00Z",
+              "capacity": 1
+            }
+          ]
+        },
+        {
+          "capacityType": "AVAILABLE_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2022-04-05T00:00:00Z",
+              "endDateTime": "2022-05-30T10:00:00Z",
+              "capacity": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_4",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gbadfhak32"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "RESERVED_CAPACITY",
+              "AVAILABLE_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "resourceId": "validResourceId-9d267d55-9426-5bfp-cc47-f167gbadfhak32",
+      "capacities": [
+        {
+          "capacityType": "AVAILABLE_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2021-04-04T00:00:00Z",
+              "endDateTime": "2021-04-04T01:00:00Z",
+              "capacity": 0
+            },
+            {
+              "startDateTime": "2021-04-04T01:00:00Z",
+              "endDateTime": "2021-04-04T02:00:00Z",
+              "capacity": 1
+            }
+          ]
+        },
+        {
+          "capacityType": "RESERVED_CAPACITY",
+          "slots": [
+            {
+              "startDateTime": "2021-04-04T00:00:00Z",
+              "endDateTime": "2021-04-04T01:00:00Z",
+              "capacity": 1
+            },
+            {
+              "startDateTime": "2021-04-04T01:00:00Z",
+              "endDateTime": "2021-04-04T02:00:00Z",
+              "capacity": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [Missing or invalid request parameters: [resourceId]]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48a"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [startDateTime or endDateTime are not present]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48b"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T02:00:00Z",
+            "endDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [endDateTime should be after Start Time]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/range",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_4",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9426-5bfp-cc47-f167gb969f48c"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-0",
+            "endDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [startDateTime is not a valid ISO date/time object]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9e378g66-9537-6ggq-dd48-f167gb969f48"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY",
+              "RESERVED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z",
+            "slotDuration": 30
+          }
+        }
+      }
+    },
+    "response": {
+      "resourceId": "validResourceId-9e378g66-9537-6ggq-dd48-f167gb969f48",
+      "slotDuration": 30,
+      "capacities": [
+        {
+          "startDateTime": "2021-04-04T00:00:00Z",
+          "scheduledCapacity": 1,
+          "reservedCapacity": 1
+        },
+        {
+          "startDateTime": "2021-04-04T00:30:00Z",
+          "scheduledCapacity": 1,
+          "reservedCapacity": 0
+        },
+        {
+          "startDateTime": "2021-04-04T01:00:00Z",
+          "scheduledCapacity": 0,
+          "reservedCapacity": 0
+        },
+        {
+          "startDateTime": "2021-04-04T01:30:00Z",
+          "scheduledCapacity": 0,
+          "reservedCapacity": 0
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [Missing or invalid request parameters: [resourceId]]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9d267d55-9dfa-5bfp-cc47-f167gb969f48a"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z",
+            "endDateTime": "2021-04-04T02:00:00Z",
+            "slotDuration": 400
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [Slot duration is not valid, it should be a multiple of 5 and within allowed range.]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9e378g66-9537-6ggq-dd48-f1klmb969f48"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T02:00:00Z",
+            "endDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [endDateTime should be after Start Time]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_4",
+    "request": {
+      "parameters": {
+        "body": {
+          "resourceId": {
+            "value": "validResourceId-9e378g66-9537-6ggq-dd48-f1klmb969f482"
+          },
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [startDateTime or endDateTime are not present]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/capacity/fixed",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_5",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9e378g66-9537-6ggq-dd48-f1klmb969f483"
+        },
+        "body": {
+          "value": {
+            "capacityTypes": [
+              "SCHEDULED_CAPACITY"
+            ],
+            "startDateTime": "2021-0",
+            "endDateTime": "2021-04-04T00:00:00Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "This is invalid input",
+          "details": "Received the following errors: [startDateTime is not a valid ISO date/time object]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/schedules",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "body": {
+          "value": {
+            "schedules": [
+              {
+                "startTime": "2020-01-01T00:00:00.00-07",
+                "endTime": "2020-01-01T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-06T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY"
+                  ]
+                }
+              },
+              {
+                "startTime": "2020-01-11T00:00:00.00-07",
+                "endTime": "2020-01-11T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-16T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/schedules",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "body": {
+          "value": {
+            "schedules": [
+              {
+                "startTime": "2020-01-01T12:00:00.00-07",
+                "endTime": "2020-01-01T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-06T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY"
+                  ]
+                }
+              },
+              {
+                "startTime": "2020-01-11T00:00:00.00-07",
+                "endTime": "2020-01-11T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-16T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "availability": {
+            "startTime": "2025-07-22T22:38:02.283Z",
+            "endTime": "2025-07-22T22:38:02.283Z",
+            "recurrence": {
+              "endTime": "2025-07-22T22:38:02.283Z",
+              "daysOfWeek": [
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY"
+              ]
+            }
+          },
+          "warnings": [
+            {
+              "code": "ScheduleOverride",
+              "message": "This AvailabilityRecord will override the current schedule as the time-ranges overlap"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/schedules",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "invalidResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "body": {
+          "value": {
+            "schedules": [
+              {
+                "startTime": "2020-01-01T00:00:00.00-07",
+                "endTime": "2020-01-01T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-06T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY"
+                  ]
+                }
+              },
+              {
+                "startTime": "2020-01-11T00:00:00.00-07",
+                "endTime": "2020-01-11T23:59:00.00-07",
+                "recurrence": {
+                  "endTime": "2020-01-16T23:59:00.00-07",
+                  "daysOfWeek": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/schedules",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "null"
+        },
+        "body": {
+          "value": {
+            "schedules": []
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceResources/{resourceId}/schedules",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "resourceId": {
+          "value": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "body": {
+          "value": {
+            "schedules": []
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [schedule]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {
+              "availability": {
+                "startTime": "2020-04-01T10:00:00.00-07",
+                "endTime": "2020-04-01T11:00:00.00-07"
+              },
+              "type": "BREAK"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "reservation": {
+          "reservationId": "457",
+          "type": "APPOINTMENT",
+          "availability": {
+            "startTime": "2025-07-22T22:38:02.283Z",
+            "endTime": "2025-07-22T22:38:02.283Z",
+            "recurrence": {
+              "endTime": "2025-07-22T22:38:02.283Z"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "invalidResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {
+              "availability": {
+                "startTime": "2020-04-01T10:00:00.00-07",
+                "endTime": "2020-04-01T11:00:00.00-07"
+              },
+              "type": "BREAK"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "null",
+            "reservation": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [reservation]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "456"
+        },
+        "body": {
+          "value": {
+            "resourceId": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {
+              "availability": {
+                "startTime": "2020-04-01T10:00:00.00-07",
+                "endTime": "2020-04-01T11:00:00.00-07"
+              },
+              "type": "BREAK"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "reservation": {
+          "reservationId": "457",
+          "type": "APPOINTMENT",
+          "availability": {
+            "startTime": "2025-07-22T22:38:02.283Z",
+            "endTime": "2025-07-22T22:38:02.283Z",
+            "recurrence": {
+              "endTime": "2025-07-22T22:38:02.283Z"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "456"
+        },
+        "body": {
+          "value": {
+            "resourceId": "invalidResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {
+              "availability": {
+                "startTime": "2020-04-01T10:00:00.00-07",
+                "endTime": "2020-04-01T11:00:00.00-07"
+              },
+              "type": "BREAK"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "null",
+            "reservation": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [resourceId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "resourceId": "validResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [reservation]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "PUT",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "not-existent-456"
+        },
+        "body": {
+          "value": {
+            "resourceId": "invalidResourceId-9c156c44-8315-4aeb-bb36-e056fa827e36",
+            "reservation": {
+              "availability": {
+                "startTime": "2020-04-01T10:00:00.00-07",
+                "endTime": "2020-04-01T11:00:00.00-07"
+              },
+              "type": "BREAK"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Could not find reservation with ID: [not-existent-456]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "DELETE",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "validReservationId-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "invalidReservationId-a654baa-8315-4aeb-bb36-e056fa827e36"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Missing or invalid request parameters: [reservationId]",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/reservation/{reservationId}",
+    "method": "DELETE",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "reservationId": {
+          "value": "nonExistingReservationId-a3726c44-8315-4aeb-bb36-e056fa827e36"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "message": "Reservation does not exist",
+          "code": "InvalidInput"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointmentSlots",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJob-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "startTime": "2021-04-04T00:00:00Z",
+        "endTime": "2021-04-04T02:00:00Z",
+        "schedulingType": "REAL_TIME_SCHEDULING",
+        "appointmentSlots": [
+          {
+            "startTime": "2021-04-04T00:00:00Z",
+            "endTime": "2021-04-04T01:00:00Z",
+            "capacity": 20
+          },
+          {
+            "startTime": "2021-04-04T01:00:00Z",
+            "endTime": "2021-04-04T02:00:00Z",
+            "capacity": 0
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointmentSlots",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJob-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "startTime": {
+          "value": "2021-04-04T00:00:00Z"
+        },
+        "endTime": {
+          "value": "2021-04-04T02:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "startTime": "2021-04-04T00:00:00Z",
+        "endTime": "2021-04-04T02:00:00Z",
+        "schedulingType": "REAL_TIME_SCHEDULING",
+        "appointmentSlots": [
+          {
+            "startTime": "2021-04-04T00:00:00Z",
+            "endTime": "2021-04-04T01:00:00Z",
+            "capacity": 20
+          },
+          {
+            "startTime": "2021-04-04T01:00:00Z",
+            "endTime": "2021-04-04T02:00:00Z",
+            "capacity": 0
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "nullJobId"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [serviceJobId]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJob-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "endTime": {
+          "value": "20-21-04-04T01:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "End Time is not a valid ISO date/time object"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/serviceJobs/{serviceJobId}/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "serviceJobId": {
+          "value": "validJob-9c156c44-8315-4aeb-bb36-e056fa827e36"
+        },
+        "startTime": {
+          "value": "2021-04-04T05:00:00Z"
+        },
+        "endTime": {
+          "value": "2021-04-04T02:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "End Time should be after Start Time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/appointmentSlots",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07BB1RGT5"
+        },
+        "storeId": {
+          "value": "53694163-6dc8-4f80-b6b1-ec47b7b9747e"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "startTime": "2021-04-04T00:00:00Z",
+        "endTime": "2021-04-04T02:00:00Z",
+        "schedulingType": "REAL_TIME_SCHEDULING",
+        "appointmentSlots": [
+          {
+            "startTime": "2021-04-04T00:00:00Z",
+            "endTime": "2021-04-04T01:00:00Z",
+            "capacity": 20
+          },
+          {
+            "startTime": "2021-04-04T01:00:00Z",
+            "endTime": "2021-04-04T02:00:00Z",
+            "capacity": 0
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/appointmentSlots",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07BB1RGT6"
+        },
+        "storeId": {
+          "value": "53694163-6dc8-4f80-b6b1-ec47b7b9747f"
+        },
+        "startTime": {
+          "value": "2021-04-04T00:00:00Z"
+        },
+        "endTime": {
+          "value": "2021-04-04T02:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "startTime": "2021-04-04T00:00:00Z",
+        "endTime": "2021-04-04T02:00:00Z",
+        "schedulingType": "NON_REAL_TIME_SCHEDULING",
+        "appointmentSlots": [
+          {
+            "startTime": "2021-04-04T00:00:00Z",
+            "endTime": "2021-04-04T01:00:00Z",
+            "capacity": 20
+          },
+          {
+            "startTime": "2021-04-04T01:00:00Z",
+            "endTime": "2021-04-04T02:00:00Z",
+            "capacity": 0
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "nullValue"
+        },
+        "storeId": {
+          "value": "53694163-6dc8-4f80-b6b1-ec47b7b9747e"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [asin]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07BB1RGT5"
+        },
+        "storeId": {
+          "value": "53694163-6dc8-4f80-b6b1-ec47b7b9747e"
+        },
+        "endTime": {
+          "value": "20-21-04-04T01:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Range End Time is not a valid ISO date/time object"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/appointmentSlots",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07BB1RGT5"
+        },
+        "storeId": {
+          "value": "53694163-6dc8-4f80-b6b1-ec47b7b9747e"
+        },
+        "startTime": {
+          "value": "2021-04-04T05:00:00Z"
+        },
+        "endTime": {
+          "value": "2021-04-04T02:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Range End Time should be after Range Start Time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/documents",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contentType": "PNG",
+            "contentLength": 1386437,
+            "contentMD5": "97WrSKv9ffHkDopCdB32mw=="
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "encryptionDetails": {
+          "standard": "AES",
+          "initializationVector": "paPlpo1iBBLmyOhU0mIo5g==",
+          "key": "PDuDJm2l+0ydObrRpS48tB+t2qbtOmWhSEOiFWKnH2k="
+        },
+        "uploadDestinationId": "amzn1.tortuga.3.15ba627d-8e24-42ad-89d1-5eb01f5ba0af.T15MXQRST78UTC<->amzn1.tortuga.1.token.DizquVc+EoX/lWAV/7WTlw==",
+        "url": "https://tortuga-devo.s3-us-west-2.amazonaws.com/%2FThirtyDays/amzn1.tortuga.3.15ba627d-8e24-42ad-89d1-5eb01f5ba0af.T15MXQRST78UTC?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20210108T103450Z&X-Amz-SignedHeaders=content-type%3Bhost&X-Amz-Expires=300&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE%2F20210108%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Signature=dd2fefe6c6102aba14bab1481b33cf07dcc0385bd49f7eb5796d77b082ea5ba3"
+      }
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/documents",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [contentType, contentLength].",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/documents",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contentType": "PNG"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [contentLength].",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/documents",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_3",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contentLength": 123
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing or invalid request parameters: [contentType].",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/services-api-model/services.json",
+    "domain": "services",
+    "path": "/service/v1/documents",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contentType": "PNGr",
+            "contentLength": 1386437,
+            "contentMD5": "97WrSKv9ffHkDopCdB32mw=="
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "contentType parameter is invalid. Use one of ['TIFF', 'JPG', 'PNG', 'JPEG', 'GIF', 'PDF']",
+          "details": ""
+        }
+      ]
+    }
+  }
+]

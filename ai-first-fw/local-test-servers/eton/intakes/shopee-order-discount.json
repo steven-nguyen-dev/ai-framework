@@ -1,0 +1,94 @@
+{
+  "source": "captured at 2026-08-20 10:14:58,280357, ETON sale order SOCJF1AXKPACE",
+  "note": "adjustments.seller_discount is 3900 while order_adjustment.seller_discount is 6000: the order-level Shopee discount and the seller voucher are different figures carried under the same field name at two different depths.",
+  "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+  "data": {
+    "marketplace_code": "shopee_vn",
+    "seller_currency": "VND",
+    "voucher_seller": 6000.0,
+    "order_adjustment": {
+      "marketplace_discount": 14412.0,
+      "seller_discount": 6000.0,
+      "adjustments": {
+        "order_original_price": 130000,
+        "seller_discount": 3900,
+        "voucher_from_seller": 6000,
+        "shopee_discount": 0,
+        "voucher_from_shopee": 14412,
+        "coins": 0,
+        "actual_shipping_fee": 0,
+        "seller_shipping_discount": 0,
+        "shopee_shipping_rebate": 0,
+        "service_fee": 9606,
+        "buyer_total_amount": 105688,
+        "items": [
+          {
+            "item_sku": "",
+            "model_sku": "1024505_CB2A",
+            "quantity_purchased": 1,
+            "original_price": 130000,
+            "selling_price": 126100,
+            "discounted_price": 126100,
+            "seller_discount": 3900,
+            "shopee_discount": 0,
+            "discount_from_voucher_seller": 6000,
+            "discount_from_voucher_shopee": 14412,
+            "discount_from_coin": 0,
+            "is_main_item": false
+          }
+        ]
+      }
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200321,
+        "sku": "1024505_CB2A",
+        "inventory_sku": null,
+        "quantity": 1,
+        "item_price": "126100.0",
+        "paid_price": "105688.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "6000.0",
+        "channel_discount": "14412.0",
+        "is_gwp_item": false,
+        "kit_details": [
+          {
+            "inventory_product_sku": "1024505",
+            "quantity": 2,
+            "price": "130000.0"
+          }
+        ],
+        "line_item_details": [
+          {
+            "line_item_id": 9200321,
+            "item_original_price": 130000.0,
+            "item_paid_price": 126100.0,
+            "seller_voucher_amount": 6000.0,
+            "voucher_platform": 14412.0,
+            "tax_amount": null,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": 3900.0,
+            "marketplace_discount_on_retail_price": 0.0
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200322,
+        "sku": "1024505",
+        "inventory_sku": "1024505",
+        "quantity": 1,
+        "item_price": "0.0",
+        "paid_price": "0.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "6000.0",
+        "channel_discount": "14412.0",
+        "is_gwp_item": true,
+        "line_item_details": []
+      }
+    ]
+  }
+}

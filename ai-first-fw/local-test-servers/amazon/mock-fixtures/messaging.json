@@ -1,0 +1,574 @@
+[
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        }
+      }
+    },
+    "response": {
+      "_links": {
+        "actions": [
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmCustomizationDetails?marketplaceIds=ATVPDKIKX0DER",
+            "name": "confirmCustomizationDetails"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmDeliveryDetails?marketplaceIds=ATVPDKIKX0DER",
+            "name": "confirmDeliveryDetails"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/legalDisclosure?marketplaceIds=ATVPDKIKX0DER",
+            "name": "legalDisclosure"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/negativeFeedbackRemoval?marketplaceIds=ATVPDKIKX0DER",
+            "name": "negativeFeedbackRemoval"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmOrderDetails?marketplaceIds=ATVPDKIKX0DER",
+            "name": "confirmOrderDetails"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/confirmServiceDetails?marketplaceIds=ATVPDKIKX0DER",
+            "name": "confirmServiceDetails"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/amazonMotors?marketplaceIds=ATVPDKIKX0DER",
+            "name": "amazonMotors"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/digitalAccessKey?marketplaceIds=ATVPDKIKX0DER",
+            "name": "digitalAccessKey"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/unexpectedProblem?marketplaceIds=ATVPDKIKX0DER",
+            "name": "unexpectedProblem"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/messages/warranty?marketplaceIds=ATVPDKIKX0DER",
+            "name": "warranty"
+          },
+          {
+            "href": "/messaging/v1/orders/123-1234567-1234567/attributes?marketplaceIds=ATVPDKIKX0DER",
+            "name": "attributes"
+          }
+        ],
+        "self": {
+          "href": "/messaging/v1/orders/123-1234567-1234567?marketplaceIds=ATVPDKIKX0DER"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmCustomizationDetails",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message",
+            "attachments": [
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              },
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmCustomizationDetails",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmDeliveryDetails",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmDeliveryDetails",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/legalDisclosure",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "attachments": [
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              },
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/legalDisclosure",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmOrderDetails",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmOrderDetails",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmServiceDetails",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/confirmServiceDetails",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/warranty",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "attachments": [
+              {
+                "uploadDestinationId": "8634452c-4d4f-4703-8cea-2ecc9dcb3279",
+                "fileName": "warranty.txt"
+              }
+            ],
+            "coverageStartDate": "2004-12-13T21:39:45.618-08:00",
+            "coverageEndDate": "2005-12-13T21:39:45.618-08:00"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/warranty",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/attributes",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        }
+      }
+    },
+    "response": {
+      "buyer": {
+        "locale": "en-US"
+      }
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/attributes",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/digitalAccessKey",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message",
+            "attachments": [
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              },
+              {
+                "uploadDestinationId": "4e936e26-7b72-4b84-af27-e6baee1d546d",
+                "fileName": "AmazonMotors.txt"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/digitalAccessKey",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/unexpectedProblem",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "body": {
+          "value": {
+            "text": "My Message"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/unexpectedProblem",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-0000000"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/invoice",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/messaging-api-model/messaging.json",
+    "domain": "messaging",
+    "path": "/messaging/v1/orders/{amazonOrderId}/messages/invoice",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "badOrderId"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": ""
+        }
+      ]
+    }
+  }
+]

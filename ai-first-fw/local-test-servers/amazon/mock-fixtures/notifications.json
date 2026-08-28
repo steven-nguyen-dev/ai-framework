@@ -1,0 +1,176 @@
+[
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/subscriptions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "notificationTypes": {
+          "value": [
+            "ANY_OFFER_CHANGED"
+          ]
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "subscriptions": [
+          {
+            "subscriptionId": "7fcacc7e-727b-11e9-8848-1681be663d3e",
+            "payloadVersion": "1.0",
+            "destinationId": "3acafc7e-121b-1329-8ae8-1571be663aa2"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/subscriptions/{notificationType}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+        "payloadVersion": "1.0",
+        "destinationId": "TEST_CASE_200_DESTINATION_ID"
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/subscriptions/{notificationType}",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+        "payloadVersion": "1.0",
+        "destinationId": "TEST_CASE_200_DESTINATION_ID"
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/subscriptions/{notificationType}/{subscriptionId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+        "payloadVersion": "1.0",
+        "destinationId": "TEST_CASE_200_DESTINATION_ID"
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/subscriptions/{notificationType}/{subscriptionId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/destinations",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": [
+        {
+          "destinationId": "TEST_CASE_200",
+          "resource": {
+            "sqs": {
+              "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+            }
+          },
+          "name": "SQSDestination"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/destinations",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "destinationId": "TEST_CASE_200_DESTINATION_ID",
+        "resource": {
+          "sqs": {
+            "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+          }
+        },
+        "name": "SQSDestination"
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/destinations/{destinationId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "destinationId": "TEST_CASE_200_DESTINATION",
+        "resource": {
+          "sqs": {
+            "arn": "arn:aws:sqs:us-east-2:444455556666:queue1"
+          }
+        },
+        "name": "SQSDestination"
+      }
+    }
+  },
+  {
+    "source_file": "models/notifications-api-model/notifications.json",
+    "domain": "notifications",
+    "path": "/notifications/v1/destinations/{destinationId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {}
+  }
+]

@@ -1,0 +1,154 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. B2B receiver, goods not at risk - the whole mapping",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:58.892472+00:00",
+    "returned_at": "2026-08-23T17:26:59.328179+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. B2B receiver, goods at risk",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.395701+00:00",
+    "returned_at": "2026-08-23T17:26:59.434400+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Individual receiver",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.508273+00:00",
+    "returned_at": "2026-08-23T17:26:59.544006+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. Delivered duty paid",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.604969+00:00",
+    "returned_at": "2026-08-23T17:26:59.641751+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. Two packages in two package groups",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.698701+00:00",
+    "returned_at": "2026-08-23T17:26:59.735873+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. Sender holds the scheme number",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.787443+00:00",
+    "returned_at": "2026-08-23T17:26:59.825669+00:00"
+  },
+  {
+    "id": "D1",
+    "name": "D1. Great Britain domestic - no customs data at all",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:26:59.890382+00:00",
+    "returned_at": "2026-08-23T17:26:59.928401+00:00"
+  },
+  {
+    "id": "D2",
+    "name": "D2. International network code - the invoice as it always was",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:27:00.028623+00:00",
+    "returned_at": "2026-08-23T17:27:00.110083+00:00"
+  },
+  {
+    "id": "R1",
+    "name": "R1. Consumer type unresolved",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"consumer_type: must be resolved to business or individual, received unknown\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.196614+00:00",
+    "returned_at": "2026-08-23T17:27:00.216490+00:00"
+  },
+  {
+    "id": "R2",
+    "name": "R2. Not at risk, no scheme number anywhere",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"sender_ukims or shipping_address.receiver_ukims: one is required when the goods are not at risk\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.305830+00:00",
+    "returned_at": "2026-08-23T17:27:00.325971+00:00"
+  },
+  {
+    "id": "R3",
+    "name": "R3. Commodity code missing on one line",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"order_items.hs_code: is required for a Northern Ireland shipment, missing for SKU-002\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.404849+00:00",
+    "returned_at": "2026-08-23T17:27:00.426630+00:00"
+  },
+  {
+    "id": "R4",
+    "name": "R4. Stated customs total disagrees with the lines",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"total_customs_value: 30.0 does not match the item lines, which come to 36.0\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.526425+00:00",
+    "returned_at": "2026-08-23T17:27:00.548946+00:00"
+  },
+  {
+    "id": "R5",
+    "name": "R5. Package lighter than what is in it",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipment_weight: is lighter than the items it carries, 0.2 against 0.65\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.609174+00:00",
+    "returned_at": "2026-08-23T17:27:00.629793+00:00"
+  },
+  {
+    "id": "R6",
+    "name": "R6. Fulfilment code carries no network code",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipping_method.fulfilment_code: must carry the DPD network code after a /, received DPD_UK\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.701375+00:00",
+    "returned_at": "2026-08-23T17:27:00.720991+00:00"
+  },
+  {
+    "id": "R7",
+    "name": "R7. Customs currency DPD does not settle in",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"customs_currency: must be GBP or EUR for a Northern Ireland shipment\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.792482+00:00",
+    "returned_at": "2026-08-23T17:27:00.813396+00:00"
+  },
+  {
+    "id": "R8",
+    "name": "R8. Both parties hold a scheme number, neither is named",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"ukims_holder: must name sender or receiver when both hold a scheme number\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.898445+00:00",
+    "returned_at": "2026-08-23T17:27:00.927183+00:00"
+  },
+  {
+    "id": "E1",
+    "name": "E1. DPD rejects the postcode",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"deliveryDetails.address.postcode\\\\|validation\\\\|Invalid postcode value\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-23T17:27:00.990042+00:00",
+    "returned_at": "2026-08-23T17:27:01.017942+00:00"
+  },
+  {
+    "id": "E2",
+    "name": "E2. GeoSession dropped, renewed, shipment sent again",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"Something went wrong, please try after some time.\",\"summary\":\"Something went wrong, please try after some time.\"}",
+    "fired_at": "2026-08-23T17:27:01.083094+00:00",
+    "returned_at": "2026-08-23T17:27:01.133234+00:00"
+  },
+  {
+    "id": "E3",
+    "name": "E3. GeoSession refused even after renewal",
+    "controller_status": 401,
+    "controller_body": "{\"status\":\"UNAUTHORIZED\",\"message\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\",\"summary\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\"}",
+    "fired_at": "2026-08-23T17:27:01.199172+00:00",
+    "returned_at": "2026-08-23T17:27:01.235316+00:00"
+  }
+]

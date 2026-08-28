@@ -161,7 +161,9 @@ refuses the same calls the partner would.
 The rule answers **only when something is actually wrong**; a clean request falls through to the
 happy path. Paths are relative to the body unless they name another selector root, and `[*]`
 expands over an array so one line reports `'Lines[2].SKU' is required` against the element that
-broke it. Every violation is collected, and exposed to the response template as
+broke it. More than one `[*]` in a path is expanded left to right, each against the list the ones
+before it selected — `consignment[*].parcel[*].parcelProduct[*].productHarmonisedCode` is one rule
+over every customs line of every parcel of every consignment. Every violation is collected, and exposed to the response template as
 `${validation.errors}` (array), `${validation.summary}` (joined string) and `${validation.count}`.
 
 ---

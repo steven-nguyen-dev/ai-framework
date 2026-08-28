@@ -1,0 +1,91 @@
+{
+ "source": "ETON sale order SOCJFCX3KC8TF, masked",
+ "note": "One kit line exploding into three components priced 46000 / 34000 / 45000, so the parent's 105000 divides unevenly between them and every share is a repeating fraction.",
+ "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+ "data": {
+  "marketplace_code": "shopee_vn",
+  "seller_currency": "VND",
+  "voucher_seller": 0.0,
+  "order_adjustment": {
+   "marketplace_discount": 5000.0,
+   "seller_discount": 0.0,
+   "adjustments": {
+    "order_original_price": 105000,
+    "order_seller_discount": 0,
+    "seller_discount": 0,
+    "voucher_from_seller": 0,
+    "shopee_discount": 0,
+    "voucher_from_shopee": 5000,
+    "coins": 0,
+    "actual_shipping_fee": 0,
+    "seller_shipping_discount": 0,
+    "shopee_shipping_rebate": 0,
+    "service_fee": 8775,
+    "buyer_total_amount": 100000,
+    "items": [
+     {
+      "item_sku": "1023163_CB3MIX",
+      "model_sku": "1023163_CB3MIX",
+      "quantity_purchased": 1,
+      "original_price": 105000,
+      "selling_price": 105000,
+      "discounted_price": 105000,
+      "seller_discount": 0,
+      "shopee_discount": 0,
+      "discount_from_voucher_seller": 0,
+      "discount_from_voucher_shopee": 5000,
+      "discount_from_coin": 0,
+      "is_main_item": false
+     }
+    ]
+   }
+  },
+  "order_items": [
+   {
+    "order_item_id": 9200381,
+    "sku": "1023163_CB3MIX",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "105000.0",
+    "paid_price": "100000.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "0.0",
+    "channel_discount": "5000.0",
+    "is_gwp_item": false,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1023163",
+      "quantity": 1,
+      "price": "46000.0"
+     },
+     {
+      "inventory_product_sku": "1023165",
+      "quantity": 1,
+      "price": "34000.0"
+     },
+     {
+      "inventory_product_sku": "1023168",
+      "quantity": 1,
+      "price": "45000.0"
+     }
+    ],
+    "line_item_details": [
+     {
+      "line_item_id": 9200381,
+      "item_original_price": "105000.0",
+      "item_paid_price": "105000.0",
+      "seller_voucher_amount": "0.0",
+      "voucher_platform": "5000.0",
+      "tax_amount": "",
+      "shipping_fee_original": "0.0",
+      "shipping_fee_seller_discount": "0.0",
+      "shipping_fee_platform_discount": "0.0",
+      "seller_discount_on_retail_price": "0.0",
+      "marketplace_discount_on_retail_price": "0.0"
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,2482 @@
+[
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "CreatedAfter": {
+          "value": "TEST_CASE_200"
+        },
+        "MarketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "CreatedBefore": "1.569521782042E9",
+        "Orders": [
+          {
+            "AmazonOrderId": "902-1845936-5435065",
+            "PurchaseDate": "1970-01-19T03:58:30Z",
+            "LastUpdateDate": "1970-01-19T03:58:32Z",
+            "OrderStatus": "Unshipped",
+            "FulfillmentChannel": "MFN",
+            "SalesChannel": "Amazon.com",
+            "ShipServiceLevel": "Std US D2D Dom",
+            "OrderTotal": {
+              "CurrencyCode": "USD",
+              "Amount": "11.01"
+            },
+            "NumberOfItemsShipped": 0,
+            "NumberOfItemsUnshipped": 1,
+            "PaymentMethod": "Other",
+            "PaymentMethodDetails": [
+              "Standard"
+            ],
+            "IsReplacementOrder": false,
+            "MarketplaceId": "ATVPDKIKX0DER",
+            "ShipmentServiceLevelCategory": "Standard",
+            "OrderType": "StandardOrder",
+            "EarliestShipDate": "1970-01-19T03:59:27Z",
+            "LatestShipDate": "1970-01-19T04:05:13Z",
+            "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+            "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+            "IsBusinessOrder": false,
+            "IsPrime": false,
+            "IsGlobalExpressEnabled": false,
+            "IsPremiumOrder": false,
+            "IsSoldByAB": false,
+            "IsIBA": false,
+            "DefaultShipFromLocationAddress": {
+              "Name": "MFNIntegrationTestMerchant",
+              "AddressLine1": "2201 WESTLAKE AVE",
+              "City": "SEATTLE",
+              "StateOrRegion": "WA",
+              "PostalCode": "98121-2778",
+              "CountryCode": "US",
+              "Phone": "+1 480-386-0930 ext. 73824",
+              "AddressType": "Commercial"
+            },
+            "FulfillmentInstruction": {
+              "FulfillmentSupplySourceId": "sampleSupplySourceId"
+            },
+            "IsISPU": false,
+            "IsAccessPointOrder": false,
+            "AutomatedShippingSettings": {
+              "HasAutomatedShippingSettings": false
+            },
+            "EasyShipShipmentStatus": "PendingPickUp",
+            "ElectronicInvoiceStatus": "NotRequired"
+          },
+          {
+            "AmazonOrderId": "902-8745147-1934268",
+            "PurchaseDate": "1970-01-19T03:58:30Z",
+            "LastUpdateDate": "1970-01-19T03:58:32Z",
+            "OrderStatus": "Unshipped",
+            "FulfillmentChannel": "MFN",
+            "SalesChannel": "Amazon.com",
+            "ShipServiceLevel": "Std US D2D Dom",
+            "OrderTotal": {
+              "CurrencyCode": "USD",
+              "Amount": "11.01"
+            },
+            "NumberOfItemsShipped": 0,
+            "NumberOfItemsUnshipped": 1,
+            "PaymentMethod": "Other",
+            "PaymentMethodDetails": [
+              "Standard"
+            ],
+            "IsReplacementOrder": false,
+            "MarketplaceId": "ATVPDKIKX0DER",
+            "ShipmentServiceLevelCategory": "Standard",
+            "OrderType": "StandardOrder",
+            "EarliestShipDate": "1970-01-19T03:59:27Z",
+            "LatestShipDate": "1970-01-19T04:05:13Z",
+            "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+            "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+            "IsBusinessOrder": false,
+            "IsPrime": false,
+            "IsAccessPointOrder": false,
+            "IsGlobalExpressEnabled": false,
+            "IsPremiumOrder": false,
+            "IsSoldByAB": false,
+            "IsIBA": false,
+            "EasyShipShipmentStatus": "PendingPickUp",
+            "ElectronicInvoiceStatus": "NotRequired"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_NEXT_TOKEN",
+    "request": {
+      "parameters": {
+        "CreatedAfter": {
+          "value": "TEST_CASE_200_NEXT_TOKEN"
+        },
+        "MarketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+        "Orders": [
+          {
+            "AmazonOrderId": "902-3159896-1390916",
+            "PurchaseDate": "2017-01-20T19:49:35Z",
+            "LastUpdateDate": "2017-01-20T19:49:35Z",
+            "OrderStatus": "Pending",
+            "FulfillmentChannel": "MFN",
+            "NumberOfItemsShipped": 0,
+            "NumberOfItemsUnshipped": 0,
+            "PaymentMethod": "Other",
+            "PaymentMethodDetails": [
+              "CreditCard",
+              "GiftCertificate"
+            ],
+            "MarketplaceId": "ATVPDKIKX0DER",
+            "ShipmentServiceLevelCategory": "Standard",
+            "OrderType": "StandardOrder",
+            "EasyShipShipmentStatus": "PendingPickUp",
+            "ElectronicInvoiceStatus": "NotRequired",
+            "EarliestShipDate": "2017-01-20T19:51:16Z",
+            "LatestShipDate": "2017-01-25T19:49:35Z",
+            "IsBusinessOrder": false,
+            "IsPrime": false,
+            "IsAccessPointOrder": false,
+            "IsGlobalExpressEnabled": false,
+            "IsPremiumOrder": false,
+            "IsSoldByAB": false,
+            "IsIBA": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_NEXT_TOKEN",
+    "request": {
+      "parameters": {
+        "CreatedAfter": {
+          "value": "TEST_CASE_200_NEXT_TOKEN"
+        },
+        "MarketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "NextToken": {
+          "value": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "Orders": [
+          {
+            "AmazonOrderId": "902-3159896-1390916",
+            "PurchaseDate": "2017-01-20T19:49:35Z",
+            "LastUpdateDate": "2017-01-20T19:49:35Z",
+            "OrderStatus": "Pending",
+            "FulfillmentChannel": "MFN",
+            "NumberOfItemsShipped": 0,
+            "NumberOfItemsUnshipped": 0,
+            "PaymentMethod": "Other",
+            "PaymentMethodDetails": [
+              "CreditCard",
+              "GiftCertificate"
+            ],
+            "MarketplaceId": "ATVPDKIKX0DER",
+            "ShipmentServiceLevelCategory": "Standard",
+            "OrderType": "StandardOrder",
+            "EasyShipShipmentStatus": "PendingPickUp",
+            "ElectronicInvoiceStatus": "NotRequired",
+            "EarliestShipDate": "2017-01-20T19:51:16Z",
+            "LatestShipDate": "2017-01-25T19:49:35Z",
+            "IsBusinessOrder": false,
+            "IsPrime": false,
+            "IsAccessPointOrder": false,
+            "IsGlobalExpressEnabled": false,
+            "IsPremiumOrder": false,
+            "IsSoldByAB": false,
+            "IsIBA": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "CreatedAfter": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-1845936-5435065",
+        "PurchaseDate": "1970-01-19T03:58:30Z",
+        "LastUpdateDate": "1970-01-19T03:58:32Z",
+        "OrderStatus": "Unshipped",
+        "FulfillmentChannel": "MFN",
+        "SalesChannel": "Amazon.com",
+        "ShipServiceLevel": "Std US D2D Dom",
+        "OrderTotal": {
+          "CurrencyCode": "USD",
+          "Amount": "11.01"
+        },
+        "NumberOfItemsShipped": 0,
+        "NumberOfItemsUnshipped": 1,
+        "PaymentMethod": "Other",
+        "PaymentMethodDetails": [
+          "Standard"
+        ],
+        "IsReplacementOrder": false,
+        "MarketplaceId": "ATVPDKIKX0DER",
+        "ShipmentServiceLevelCategory": "Standard",
+        "OrderType": "StandardOrder",
+        "EarliestShipDate": "1970-01-19T03:59:27Z",
+        "LatestShipDate": "1970-01-19T04:05:13Z",
+        "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+        "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+        "IsBusinessOrder": false,
+        "IsPrime": false,
+        "IsGlobalExpressEnabled": false,
+        "IsPremiumOrder": false,
+        "IsSoldByAB": false,
+        "IsIBA": false,
+        "DefaultShipFromLocationAddress": {
+          "Name": "MFNIntegrationTestMerchant",
+          "AddressLine1": "2201 WESTLAKE AVE",
+          "City": "SEATTLE",
+          "StateOrRegion": "WA",
+          "PostalCode": "98121-2778",
+          "CountryCode": "US",
+          "Phone": "+1 480-386-0930 ext. 73824",
+          "AddressType": "Commercial"
+        },
+        "FulfillmentInstruction": {
+          "FulfillmentSupplySourceId": "sampleSupplySourceId"
+        },
+        "IsISPU": false,
+        "IsAccessPointOrder": false,
+        "AutomatedShippingSettings": {
+          "HasAutomatedShippingSettings": false
+        },
+        "EasyShipShipmentStatus": "PendingPickUp",
+        "ElectronicInvoiceStatus": "NotRequired"
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_IBA_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_IBA_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "921-3175655-0452641",
+        "PurchaseDate": "2019-05-07T15:42:57.058Z",
+        "LastUpdateDate": "2019-05-08T21:59:59Z",
+        "OrderStatus": "Shipped",
+        "FulfillmentChannel": "AFN",
+        "SalesChannel": "Amazon.de",
+        "ShipServiceLevel": "Standard",
+        "OrderTotal": {
+          "CurrencyCode": "EUR",
+          "Amount": "100.00"
+        },
+        "NumberOfItemsShipped": 1,
+        "NumberOfItemsUnshipped": 0,
+        "PaymentMethod": "Other",
+        "PaymentMethodDetails": [
+          "Invoice"
+        ],
+        "PaymentExecutionDetail": [
+          {
+            "Payment": {
+              "CurrencyCode": "BRL",
+              "Amount": "20.00"
+            },
+            "PaymentMethod": "Pix",
+            "AcquirerId": "XX.XXX.XXX/0001-ZZ",
+            "AuthorizationCode": "123456"
+          }
+        ],
+        "IsReplacementOrder": false,
+        "MarketplaceId": "A1PA6795UKMFR9",
+        "ShipmentServiceLevelCategory": "Standard",
+        "OrderType": "StandardOrder",
+        "EarliestShipDate": "1970-01-19T03:59:27Z",
+        "LatestShipDate": "2019-05-08T21:59:59Z",
+        "EarliestDeliveryDate": "2019-05-10T21:59:59Z",
+        "LatestDeliveryDate": "2019-05-12T21:59:59Z",
+        "IsBusinessOrder": true,
+        "IsPrime": false,
+        "IsGlobalExpressEnabled": false,
+        "IsPremiumOrder": false,
+        "IsSoldByAB": true,
+        "IsIBA": true,
+        "DefaultShipFromLocationAddress": {
+          "Name": "MFNIntegrationTestMerchant",
+          "AddressLine1": "2201 WESTLAKE AVE",
+          "City": "SEATTLE",
+          "StateOrRegion": "WA",
+          "PostalCode": "98121-2778",
+          "CountryCode": "US",
+          "Phone": "+1 480-386-0930 ext. 73824",
+          "AddressType": "Commercial"
+        },
+        "FulfillmentInstruction": {
+          "FulfillmentSupplySourceId": "sampleSupplySourceId"
+        },
+        "IsISPU": false,
+        "IsAccessPointOrder": false,
+        "AutomatedShippingSettings": {
+          "HasAutomatedShippingSettings": false
+        },
+        "EasyShipShipmentStatus": "PendingPickUp",
+        "ElectronicInvoiceStatus": "NotRequired"
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/buyerInfo",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-1845936-5435065",
+        "BuyerEmail": "fzyrv6gwkhbb15c@example.com",
+        "BuyerName": "MFNIntegrationTestMerchant"
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/buyerInfo",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/address",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-1845936-5435065",
+        "ShippingAddress": {
+          "Name": "MFNIntegrationTestMerchant",
+          "AddressLine1": "2201 WESTLAKE AVE",
+          "City": "SEATTLE",
+          "StateOrRegion": "WA",
+          "PostalCode": "98121-2778",
+          "CountryCode": "US",
+          "Phone": "+1 480-386-0930 ext. 73824",
+          "AddressType": "Commercial"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/address",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/orderItems",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-1845936-5435065",
+        "OrderItems": [
+          {
+            "ASIN": "B00551Q3CS",
+            "OrderItemId": "05015851154158",
+            "SellerSKU": "NABetaASINB00551Q3CS",
+            "Title": "B00551Q3CS [Card Book]",
+            "QuantityOrdered": 1,
+            "QuantityShipped": 0,
+            "ProductInfo": {
+              "NumberOfItems": "1"
+            },
+            "ItemPrice": {
+              "CurrencyCode": "USD",
+              "Amount": "10.00"
+            },
+            "ItemTax": {
+              "CurrencyCode": "USD",
+              "Amount": "1.01"
+            },
+            "PromotionDiscount": {
+              "CurrencyCode": "USD",
+              "Amount": "0.00"
+            },
+            "IsGift": "false",
+            "ConditionId": "New",
+            "ConditionSubtypeId": "New",
+            "IsTransparency": false,
+            "SerialNumberRequired": false,
+            "IossNumber": "",
+            "DeemedResellerCategory": "IOSS",
+            "StoreChainStoreId": "ISPU_StoreId",
+            "BuyerRequestedCancel": {
+              "IsBuyerRequestedCancel": "true",
+              "BuyerCancelReason": "Found cheaper somewhere else."
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/orderItems",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/orderItems/buyerInfo",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-1845936-5435065",
+        "OrderItems": [
+          {
+            "OrderItemId": "68828574383266",
+            "BuyerCustomizedInfo": {
+              "CustomizedURL": "https://zme-caps.amazon.com/t/bR6qHkzSOxuB/J8nbWhze0Bd3DkajkOdY-XQbWkFralegp2sr_QZiKEE/1"
+            },
+            "GiftMessageText": "Et toi!",
+            "GiftWrapPrice": {
+              "CurrencyCode": "JPY",
+              "Amount": "1.99"
+            },
+            "GiftWrapLevel": "Classic"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/orderItems/buyerInfo",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/shipment",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/shipment",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "marketplaceId": "1",
+            "shipmentStatus": "ReadyForPickup"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Marketplace ID is not defined",
+          "details": "1001"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "GET",
+    "status": 200,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-3159896-1390916",
+        "RequiresDosageLabel": false,
+        "RegulatedInformation": {
+          "Fields": [
+            {
+              "FieldId": "pet_prescription_name",
+              "FieldLabel": "Name",
+              "FieldType": "Text",
+              "FieldValue": "Ruffus"
+            },
+            {
+              "FieldId": "pet_prescription_species",
+              "FieldLabel": "Species",
+              "FieldType": "Text",
+              "FieldValue": "Dog"
+            }
+          ]
+        },
+        "RegulatedOrderVerificationStatus": {
+          "Status": "Pending",
+          "RequiresMerchantAction": true,
+          "ValidRejectionReasons": [
+            {
+              "RejectionReasonId": "shield_pom_vps_reject_product",
+              "RejectionReasonDescription": "This medicine is not suitable for your pet."
+            },
+            {
+              "RejectionReasonId": "shield_pom_vps_reject_age",
+              "RejectionReasonDescription": "Your pet is too young for this medicine."
+            },
+            {
+              "RejectionReasonId": "shield_pom_vps_reject_incorrect_weight",
+              "RejectionReasonDescription": "Your pet's weight does not match ordered size."
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "GET",
+    "status": 200,
+    "test_case": "902-2592119-3531015",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-2592119-3531015"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "AmazonOrderId": "902-2592119-3531015",
+        "RequiresDosageLabel": false,
+        "RegulatedInformation": {
+          "Fields": [
+            {
+              "FieldId": "pets_rx_scName",
+              "FieldLabel": "Pet name",
+              "FieldType": "Text",
+              "FieldValue": "Woofer"
+            },
+            {
+              "FieldId": "pets_rx_scType",
+              "FieldLabel": "Pet type",
+              "FieldType": "Text",
+              "FieldValue": "Dog"
+            },
+            {
+              "FieldId": "pets_rx_scBreed",
+              "FieldLabel": "Pet breed",
+              "FieldType": "Text",
+              "FieldValue": "Husky"
+            },
+            {
+              "FieldId": "pets_rx_scGender",
+              "FieldLabel": "Pet gender",
+              "FieldType": "Text",
+              "FieldValue": "Female"
+            },
+            {
+              "FieldId": "pets_rx_scDateOfBirth",
+              "FieldLabel": "Pet Birth Date",
+              "FieldType": "Text",
+              "FieldValue": "2016-05-01"
+            },
+            {
+              "FieldId": "pets_rx_scWeight",
+              "FieldLabel": "Weight",
+              "FieldType": "Text",
+              "FieldValue": "12"
+            },
+            {
+              "FieldId": "pets_rx_scWeightUnit",
+              "FieldLabel": "Weight Unit",
+              "FieldType": "Text",
+              "FieldValue": "Pound"
+            },
+            {
+              "FieldId": "pets_rx_scHasAllergies",
+              "FieldLabel": "Does your pet have allergies?",
+              "FieldType": "Text",
+              "FieldValue": "False"
+            },
+            {
+              "FieldId": "pets_rx_scTakesAdditionalMedications",
+              "FieldLabel": "Is your pet on any other medication?",
+              "FieldType": "Text",
+              "FieldValue": "False"
+            },
+            {
+              "FieldId": "pets_rx_scHasOtherProblems",
+              "FieldLabel": "Any pet health problems?",
+              "FieldType": "Text",
+              "FieldValue": "False"
+            },
+            {
+              "FieldId": "pets_rx_scSourceClinicId",
+              "FieldLabel": "Source Clinic ID",
+              "FieldType": "Text",
+              "FieldValue": "Clinic-1234"
+            },
+            {
+              "FieldId": "pets_rx_scVetClinicName",
+              "FieldLabel": "Vet Clinic Name",
+              "FieldType": "Text",
+              "FieldValue": "Test Clinic"
+            },
+            {
+              "FieldId": "pets_rx_scVetClinicCity",
+              "FieldLabel": "Vet Clinic City",
+              "FieldType": "Text",
+              "FieldValue": "Seattle"
+            },
+            {
+              "FieldId": "pets_rx_scVetClinicState",
+              "FieldLabel": "Vet Clinic State",
+              "FieldType": "Text",
+              "FieldValue": "WA"
+            },
+            {
+              "FieldId": "pets_rx_scVetClinicZipCode",
+              "FieldLabel": "Vet Clinic Zip Code",
+              "FieldType": "Text",
+              "FieldValue": "98000"
+            },
+            {
+              "FieldId": "pets_rx_scVetClinicPhoneNumber",
+              "FieldLabel": "Vet Clinic Phone Number",
+              "FieldType": "Text",
+              "FieldValue": "2060000000"
+            }
+          ]
+        },
+        "RegulatedOrderVerificationStatus": {
+          "Status": "Pending",
+          "RequiresMerchantAction": true,
+          "ValidRejectionReasons": [
+            {
+              "RejectionReasonId": "pets_rx_sc_incorrect_product",
+              "RejectionReasonDescription": "Canceled order due to veterinarian indicating wrong product ordered"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_no_vcpr",
+              "RejectionReasonDescription": "Canceled order due to veterinarian indicating they do not have you as their client"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_visit_required",
+              "RejectionReasonDescription": "Canceled order due to veterinarian indicating they need to see your pet for an appointment"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_wrx_required",
+              "RejectionReasonDescription": "Canceled order due to veterinarian policy requiring you pick up a written prescription and mail to pharmacy"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_other",
+              "RejectionReasonDescription": "Canceled order due to prescription denied - contact your vetinarian"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_therapy_change",
+              "RejectionReasonDescription": "Canceled order due to a change in therapy, follow up with your veterinarian"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_wrong_weight",
+              "RejectionReasonDescription": "Canceled order due to incorrect pet weight on file, update weight and replace order or order correct product"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_early_refill",
+              "RejectionReasonDescription": "Canceled due to refilling prescription order too soon"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_wrong_species",
+              "RejectionReasonDescription": "Canceled due to ordering for wrong pet species, replace order for correct product"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_duplicate",
+              "RejectionReasonDescription": "Canceled due to duplicate order identified"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_invalid_rx",
+              "RejectionReasonDescription": "Canceled due to not receiving a valid prescription"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_address_validation_error",
+              "RejectionReasonDescription": "Canceled due to a non-verified address, correct address and replace order"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_no_clinic_match",
+              "RejectionReasonDescription": "Canceled due to no valid clinic match, provide complete and accurate details for vet clinic and replace order"
+            },
+            {
+              "RejectionReasonId": "pets_rx_sc_pharmacist_canceled",
+              "RejectionReasonDescription": "Order canceled by pharmacy"
+            }
+          ],
+          "ValidVerificationDetails": [
+            {
+              "VerificationDetailType": "prescriptionDetail",
+              "ValidVerificationStatuses": [
+                "Approved"
+              ]
+            },
+            {
+              "VerificationDetailType": "approvedAlternativeDetails",
+              "ValidVerificationStatuses": [
+                "Rejected"
+              ]
+            },
+            {
+              "VerificationDetailType": "interimStatusDetail",
+              "ValidVerificationStatuses": [
+                "Pending"
+              ]
+            }
+          ],
+          "ValidInterimStatusCodes": [
+            {
+              "StatusCode": "awaiting_vet_response",
+              "StatusDescription": "Vetsource is contacting your vet. Response usually takes 1-2 business days."
+            },
+            {
+              "StatusCode": "vet_contacted_email",
+              "StatusDescription": "Vetsource contacted your vet via email."
+            },
+            {
+              "StatusCode": "vet_contacted_phone",
+              "StatusDescription": "Vetsource contacted your vet via phone."
+            },
+            {
+              "StatusCode": "vet_contacted_fax",
+              "StatusDescription": "Vetsource contacted your vet via fax."
+            },
+            {
+              "StatusCode": "communication_failure",
+              "StatusDescription": "We're having trouble reaching your vet. We'll keep trying."
+            },
+            {
+              "StatusCode": "no_vet_response",
+              "StatusDescription": "Your vet didn't respond. Contact them to confirm they'll approve your next order."
+            },
+            {
+              "StatusCode": "processing",
+              "StatusDescription": "Your order has been approved and is being processed."
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 204,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Rejected",
+              "externalReviewerId": "reviewer1234",
+              "rejectionReasonId": "shield_pom_vps_reject_incorrect_weight"
+            }
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 204,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "externalReviewerId": "reviewer1234",
+              "verificationDetails": {
+                "prescriptionDetail": {
+                  "prescriptionId": "Rx-1234",
+                  "expirationDate": "2024-01-01T00:00:00Z",
+                  "writtenQuantity": 3,
+                  "totalRefillsAuthorized": 10,
+                  "usageInstructions": "Take one per day by mouth with food",
+                  "refillsRemaining": 10,
+                  "clinicId": "ABC-1234"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Rejected"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing request parameter: rejectionReasonId."
+        },
+        {
+          "code": "InvalidInput",
+          "message": "Missing request parameter: externalReviewerId."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Cancelled",
+              "externalReviewerId": "reviewer1234"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid request parameter `status`. Must be one of [Approved, Rejected]."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Rejected",
+              "rejectionReasonId": "shield_pom_vps_reject_incorrect_weight",
+              "verificationDetails": {
+                "prescriptionDetail": {
+                  "prescriptionId": "Rx-1234",
+                  "expirationDate": "2024-01-01T00:00:00Z",
+                  "writtenQuantity": 3,
+                  "totalRefillsAuthorized": 10,
+                  "usageInstructions": "Take one per day by mouth with food",
+                  "refillsRemaining": 10,
+                  "clinicId": "ABC-1234"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Verification Detail `prescriptionDetail` is not supported when order is in Rejected status."
+        },
+        {
+          "code": "InvalidInput",
+          "message": "Missing request parameter: externalReviewerId."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-3159896-1390916",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-3159896-1390916"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "externalReviewerId": "reviewer1234",
+              "verificationDetails": {
+                "prescriptionDetail": {
+                  "prescriptionId": "Rx-1234",
+                  "expirationDate": "2024-01-01T00:00:00Z",
+                  "writtenQuantity": 3,
+                  "totalRefillsAuthorized": 10,
+                  "usageInstructions": "Take one per day by mouth with food",
+                  "refillsRemaining": 10
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Missing required parameter(s) from prescriptionDetail value: clinicId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-2592119-3531015",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-2592119-3531015"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Rejected",
+              "externalReviewerId": "vet_clinic_12345",
+              "rejectionReasonId": "pets_rx_sc_incorrect_product",
+              "verificationDetails": {
+                "approvedAlternativeDetails": [
+                  {
+                    "attributeName": "asin",
+                    "originalValue": "B00DOGMEDICINE",
+                    "approvedValue": "B00CATMEDICINE"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-2592119-3531015",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-2592119-3531015"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Pending",
+              "externalReviewerId": "vetsource_system",
+              "verificationDetails": {
+                "interimStatusDetail": {
+                  "statusCode": "vet_contacted_email",
+                  "statusDateTime": "2026-02-26T10:00:00Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/regulatedInfo",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "902-2592119-3531015",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-2592119-3531015"
+        },
+        "body": {
+          "value": {
+            "regulatedOrderVerificationStatus": {
+              "status": "Approved",
+              "externalReviewerId": "vet_clinic_12345",
+              "verificationDetails": {
+                "approvedAlternativeDetails": [
+                  {
+                    "attributeName": "asin",
+                    "originalValue": "B00DOGMEDICINE",
+                    "approvedValue": "B00CATMEDICINE"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Verification Detail `approvedAlternativeDetails` is not supported when order is in Approved status."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/shipmentConfirmation",
+    "method": "POST",
+    "status": 204,
+    "test_case": "902-1106328-1059050",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-1106328-1059050"
+        },
+        "body": {
+          "value": {
+            "marketplaceId": "ATVPDKIKX0DER",
+            "packageDetail": {
+              "packageReferenceId": "1",
+              "carrierCode": "FedEx",
+              "carrierName": "FedEx",
+              "shippingMethod": "FedEx Ground",
+              "trackingNumber": "112345678",
+              "shipDate": "2022-02-11T01:00:00.000Z",
+              "shipFromSupplySourceId": "057d3fcc-b750-419f-bbcd-4d340c60c430",
+              "orderItems": [
+                {
+                  "orderItemId": "79039765272157",
+                  "quantity": 1,
+                  "transparencyCodes": [
+                    "09876543211234567890"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/orders-api-model/ordersV0.json",
+    "domain": "orders",
+    "path": "/orders/v0/orders/{orderId}/shipmentConfirmation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "902-1106328-1059050",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "902-1106328-1059050"
+        },
+        "body": {
+          "value": {
+            "marketplaceId": "ATVPDKIKX0DER",
+            "packageDetail": {
+              "packageReferenceId": "1",
+              "carrierCode": "FedEx",
+              "carrierName": "FedEx",
+              "shippingMethod": "FedEx Ground",
+              "trackingNumber": "112345678",
+              "shipDate": "02/21/2022",
+              "shipFromSupplySourceId": "057d3fcc-b750-419f-bbcd-4d340c60c430",
+              "orderItems": [
+                {
+                  "orderItemId": "79039765272157",
+                  "quantity": 1,
+                  "transparencyCodes": [
+                    "09876543211234567890"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Invalid Input",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "createdAfter": {
+          "value": "2024-12-25T00:00:00Z"
+        },
+        "marketplaceIds": {
+          "value": [
+            "A1VC38T7YXB528"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "BUYER",
+            "RECIPIENT",
+            "PROCEEDS",
+            "EXPENSE",
+            "PROMOTION",
+            "CANCELLATION",
+            "FULFILLMENT",
+            "PACKAGES"
+          ]
+        }
+      }
+    },
+    "response": {
+      "orders": [
+        {
+          "orderId": "250-1234567-8901234",
+          "orderAliases": [
+            {
+              "aliasId": "JP-ORDER-2024-001",
+              "aliasType": "SELLER_ORDER_ID"
+            }
+          ],
+          "createdTime": "2024-12-25T02:30:00Z",
+          "lastUpdatedTime": "2024-12-25T06:45:00Z",
+          "programs": [
+            "PRIME"
+          ],
+          "associatedOrders": [],
+          "salesChannel": {
+            "channelName": "AMAZON",
+            "marketplaceId": "A1VC38T7YXB528",
+            "marketplaceName": "Amazon.co.jp"
+          },
+          "buyer": {
+            "buyerName": "John Smith",
+            "buyerEmail": "buyer-email@marketplace.amazon.co.jp"
+          },
+          "recipient": {
+            "deliveryAddress": {
+              "name": "John Smith",
+              "addressLine1": "123 Business Park",
+              "addressLine2": "Suite 456",
+              "city": "Tokyo",
+              "postalCode": "150-0002",
+              "countryCode": "JP",
+              "addressType": "RESIDENTIAL"
+            }
+          },
+          "proceeds": {
+            "grandTotal": {
+              "amount": "19940",
+              "currencyCode": "JPY"
+            }
+          },
+          "fulfillment": {
+            "fulfillmentStatus": "SHIPPED",
+            "fulfilledBy": "AMAZON",
+            "fulfillmentServiceLevel": "STANDARD",
+            "shipByWindow": {
+              "earliestDateTime": "2024-12-25T00:00:00Z",
+              "latestDateTime": "2024-12-25T23:59:59Z"
+            }
+          },
+          "orderItems": [
+            {
+              "orderItemId": "25012345678901",
+              "quantityOrdered": 1,
+              "programs": [
+                "TRANSPARENCY"
+              ],
+              "product": {
+                "asin": "B08C1W5N87",
+                "title": "Echo Dot (\u7b2c4\u4e16\u4ee3) \u30b9\u30de\u30fc\u30c8\u30b9\u30d4\u30fc\u30ab\u30fc with Alexa \u30c1\u30e3\u30b3\u30fc\u30eb",
+                "sellerSku": "ECHO-DOT-4-JP-CHARCOAL",
+                "condition": {
+                  "conditionType": "NEW",
+                  "conditionSubtype": "NEW",
+                  "conditionNote": ""
+                },
+                "price": {
+                  "unitPrice": {
+                    "amount": "5980",
+                    "currencyCode": "JPY"
+                  }
+                },
+                "serialNumbers": [
+                  "ED4JP-2024-ABC123456789"
+                ]
+              },
+              "proceeds": {
+                "proceedsTotal": {
+                  "amount": "5980",
+                  "currencyCode": "JPY"
+                },
+                "breakdowns": [
+                  {
+                    "type": "ITEM",
+                    "subtotal": {
+                      "amount": "5980",
+                      "currencyCode": "JPY"
+                    }
+                  }
+                ]
+              },
+              "expense": {
+                "pointsCost": {
+                  "pointsGranted": {
+                    "pointsNumber": 60,
+                    "pointsMonetaryValue": {
+                      "amount": "60",
+                      "currencyCode": "JPY"
+                    }
+                  }
+                }
+              },
+              "promotion": {
+                "breakdowns": [
+                  {
+                    "promotionId": "JP-WINTER-SALE-2024"
+                  }
+                ]
+              },
+              "fulfillment": {
+                "quantityFulfilled": 1,
+                "quantityUnfulfilled": 0
+              }
+            },
+            {
+              "orderItemId": "25012345678902",
+              "quantityOrdered": 2,
+              "product": {
+                "asin": "B07PFFMP9P",
+                "title": "Fire TV Stick 4K Max \u30b9\u30c8\u30ea\u30fc\u30df\u30f3\u30b0\u30c7\u30d0\u30a4\u30b9",
+                "sellerSku": "FIRE-TV-4K-MAX-JP",
+                "condition": {
+                  "conditionType": "NEW",
+                  "conditionSubtype": "NEW",
+                  "conditionNote": ""
+                },
+                "price": {
+                  "unitPrice": {
+                    "amount": "6980",
+                    "currencyCode": "JPY"
+                  }
+                },
+                "serialNumbers": [
+                  "FTV4KMAXJP-2024-GHI123456789",
+                  "FTV4KMAXJP-2024-JKL987654321"
+                ]
+              },
+              "proceeds": {
+                "proceedsTotal": {
+                  "amount": "13960",
+                  "currencyCode": "JPY"
+                },
+                "breakdowns": [
+                  {
+                    "type": "ITEM",
+                    "subtotal": {
+                      "amount": "13960",
+                      "currencyCode": "JPY"
+                    }
+                  }
+                ]
+              },
+              "expense": {
+                "pointsCost": {
+                  "pointsGranted": {
+                    "pointsNumber": 140,
+                    "pointsMonetaryValue": {
+                      "amount": "140",
+                      "currencyCode": "JPY"
+                    }
+                  }
+                }
+              },
+              "fulfillment": {
+                "quantityFulfilled": 2,
+                "quantityUnfulfilled": 0
+              }
+            }
+          ]
+        }
+      ],
+      "pagination": {
+        "nextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
+      },
+      "createdBefore": "2024-12-25T03:00:00Z"
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "createdAfter": {
+          "value": "2024-12-23T00:00:00Z"
+        },
+        "marketplaceIds": {
+          "value": [
+            "A1F83G8C2ARO7P"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "BUYER",
+            "RECIPIENT",
+            "PROCEEDS",
+            "EXPENSE",
+            "PROMOTION",
+            "CANCELLATION",
+            "FULFILLMENT",
+            "PACKAGES"
+          ]
+        },
+        "paginationToken": {
+          "value": "9ZhB4RmVyc2lvbiAxLjAgb2YgdGhl"
+        }
+      }
+    },
+    "response": {
+      "orders": [
+        {
+          "orderId": "202-7654321-1098765",
+          "orderAliases": [
+            {
+              "aliasId": "UK-CONSUMER-ORDER-2024-002",
+              "aliasType": "SELLER_ORDER_ID"
+            }
+          ],
+          "createdTime": "2024-12-24T14:20:00Z",
+          "lastUpdatedTime": "2024-12-24T18:45:00Z",
+          "programs": [
+            "PRIME"
+          ],
+          "salesChannel": {
+            "channelName": "AMAZON",
+            "marketplaceId": "A1F83G8C2ARO7P",
+            "marketplaceName": "Amazon.co.uk"
+          },
+          "buyer": {
+            "buyerName": "Sarah Thompson",
+            "buyerEmail": "buyer-email@marketplace.amazon.co.uk"
+          },
+          "recipient": {
+            "deliveryAddress": {
+              "name": "Sarah Thompson",
+              "addressLine1": "45 Oak Avenue",
+              "addressLine2": "Flat 2A",
+              "addressLine3": "",
+              "city": "London",
+              "districtOrCounty": "Greater London",
+              "stateOrRegion": "England",
+              "municipality": "",
+              "postalCode": "SW1A 1AA",
+              "countryCode": "GB",
+              "phone": "+44 20 7946 0958",
+              "addressType": "RESIDENTIAL"
+            }
+          },
+          "proceeds": {
+            "grandTotal": {
+              "amount": "34.99",
+              "currencyCode": "GBP"
+            }
+          },
+          "fulfillment": {
+            "fulfillmentStatus": "SHIPPED",
+            "fulfilledBy": "MERCHANT",
+            "fulfillmentServiceLevel": "STANDARD",
+            "shipByWindow": {
+              "earliestDateTime": "2024-12-24T00:00:00Z",
+              "latestDateTime": "2024-12-25T23:59:59Z"
+            },
+            "deliverByWindow": {
+              "earliestDateTime": "2024-12-26T00:00:00Z",
+              "latestDateTime": "2024-12-28T23:59:59Z"
+            }
+          },
+          "orderItems": [
+            {
+              "orderItemId": "20276543210987",
+              "quantityOrdered": 1,
+              "measurement": {
+                "unit": "COUNT",
+                "value": 1
+              },
+              "product": {
+                "asin": "B08C1W5N87",
+                "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Charcoal",
+                "sellerSku": "ECHO-DOT-4-UK-CHARCOAL-SINGLE",
+                "condition": {
+                  "conditionType": "NEW",
+                  "conditionSubtype": "NEW",
+                  "conditionNote": ""
+                },
+                "price": {
+                  "unitPrice": {
+                    "amount": "34.99",
+                    "currencyCode": "GBP"
+                  }
+                }
+              },
+              "proceeds": {
+                "proceedsTotal": {
+                  "amount": "34.99",
+                  "currencyCode": "GBP"
+                },
+                "breakdowns": [
+                  {
+                    "type": "ITEM",
+                    "subtotal": {
+                      "amount": "34.99",
+                      "currencyCode": "GBP"
+                    }
+                  }
+                ]
+              },
+              "fulfillment": {
+                "quantityFulfilled": 1,
+                "quantityUnfulfilled": 0,
+                "picking": {
+                  "substitutionPreference": {
+                    "substitutionType": "CUSTOMER_PREFERENCE",
+                    "substitutionOptions": [
+                      {
+                        "asin": "B08C1W5N88",
+                        "quantityOrdered": 1,
+                        "sellerSku": "ECHO-DOT-4-UK-WHITE-SINGLE",
+                        "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Glacier White",
+                        "measurement": {
+                          "unit": "COUNT",
+                          "value": 1
+                        }
+                      },
+                      {
+                        "asin": "B08C1W5N89",
+                        "quantityOrdered": 1,
+                        "sellerSku": "ECHO-DOT-4-UK-BLUE-SINGLE",
+                        "title": "Amazon Echo Dot (4th Generation) | Smart speaker with Alexa | Twilight Blue",
+                        "measurement": {
+                          "unit": "COUNT",
+                          "value": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "packages": [
+            {
+              "packageReferenceId": "UK-PKG-CONSUMER-2024-002",
+              "createdTime": "2024-12-24T19:00:00Z",
+              "packageStatus": {
+                "status": "IN_TRANSIT",
+                "detailedStatus": "OUT_FOR_DELIVERY"
+              },
+              "carrier": "DPD",
+              "shipTime": "2024-12-25T14:00:00Z",
+              "shippingService": "DPD Next Day Delivery",
+              "trackingNumber": "15501234567890123456",
+              "shipFromAddress": {
+                "name": "SmartHome Electronics Warehouse",
+                "addressLine1": "Unit 7, Technology Park",
+                "addressLine2": "Innovation Drive",
+                "addressLine3": "",
+                "city": "Reading",
+                "districtOrCounty": "Berkshire",
+                "stateOrRegion": "England",
+                "municipality": "",
+                "postalCode": "RG6 1AZ",
+                "countryCode": "GB"
+              },
+              "packageItems": [
+                {
+                  "orderItemId": "20276543210987",
+                  "quantity": 1,
+                  "transparencyCodes": [
+                    "T98765ZYXWV43210UK"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "createdBefore": "2024-12-24T15:00:00Z"
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "createdAfter": {
+          "value": "2024-12-20T00:00:00Z"
+        },
+        "marketplaceIds": {
+          "value": [
+            "A2Q3Y263D00KWC"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "BUYER",
+            "RECIPIENT",
+            "PROCEEDS",
+            "FULFILLMENT",
+            "TAX",
+            "PAYMENT"
+          ]
+        }
+      }
+    },
+    "response": {
+      "orders": [
+        {
+          "orderId": "171-2345678-9012345",
+          "orderAliases": [
+            {
+              "aliasId": "BR-BIZ-ORDER-2024-001",
+              "aliasType": "SELLER_ORDER_ID"
+            }
+          ],
+          "createdTime": "2024-12-22T15:30:00Z",
+          "lastUpdatedTime": "2024-12-23T10:00:00Z",
+          "programs": [
+            "AMAZON_BUSINESS",
+            "DELIVERY_BY_AMAZON"
+          ],
+          "salesChannel": {
+            "channelName": "AMAZON",
+            "marketplaceId": "A2Q3Y263D00KWC",
+            "marketplaceName": "Amazon.com.br"
+          },
+          "buyer": {
+            "buyerName": "Carlos Oliveira",
+            "buyerEmail": "buyer-email@marketplace.amazon.com.br",
+            "buyerCompanyName": "Oliveira Tecnologia Ltda",
+            "buyerPurchaseOrderNumber": "PO-BR-2024-5678"
+          },
+          "recipient": {
+            "deliveryAddress": {
+              "name": "Carlos Oliveira",
+              "companyName": "Oliveira Tecnologia Ltda",
+              "addressLine1": "Avenida Paulista, 1000",
+              "addressLine2": "Sala 301",
+              "city": "S\u00e3o Paulo",
+              "stateOrRegion": "SP",
+              "postalCode": "01310-100",
+              "countryCode": "BR",
+              "phone": "+55 11 91234-5678",
+              "extendedFields": {
+                "streetName": "Avenida Paulista",
+                "streetNumber": "1000",
+                "complement": "Sala 301",
+                "neighborhood": "Bela Vista"
+              },
+              "addressType": "COMMERCIAL"
+            }
+          },
+          "proceeds": {
+            "grandTotal": {
+              "amount": "1599.90",
+              "currencyCode": "BRL"
+            }
+          },
+          "tax": {
+            "taxRegistrations": [
+              {
+                "entityType": "BUYER",
+                "legalName": "Oliveira Tecnologia Ltda",
+                "taxRegistrationType": "VAT",
+                "taxRegistrationNumber": "1234567890"
+              },
+              {
+                "entityType": "MARKETPLACE",
+                "taxRegistrationType": "CNPJ",
+                "taxRegistrationNumber": "15436940"
+              },
+              {
+                "entityType": "MERCHANT",
+                "legalName": "TechStore"
+              }
+            ],
+            "taxInvoicing": {
+              "invoiceStatus": "PROCESSING"
+            }
+          },
+          "payment": {
+            "paymentExecutions": [
+              {
+                "paymentMethod": "CreditCard",
+                "paymentAmount": {
+                  "amount": "1599.90",
+                  "currencyCode": "BRL"
+                },
+                "acquirerId": "01.027.058/0001-91",
+                "cardBrand": "Visa",
+                "authorizationCode": "123456"
+              }
+            ]
+          },
+          "fulfillment": {
+            "fulfillmentStatus": "UNSHIPPED",
+            "fulfilledBy": "MERCHANT",
+            "fulfillmentServiceLevel": "STANDARD",
+            "shipByWindow": {
+              "earliestDateTime": "2024-12-23T00:00:00Z",
+              "latestDateTime": "2024-12-24T23:59:59Z"
+            },
+            "deliverByWindow": {
+              "earliestDateTime": "2024-12-26T00:00:00Z",
+              "latestDateTime": "2024-12-30T23:59:59Z"
+            }
+          },
+          "orderItems": [
+            {
+              "orderItemId": "17123456789012",
+              "quantityOrdered": 1,
+              "product": {
+                "asin": "B09B8V1LZ3",
+                "title": "Notebook Dell Inspiron 15 3000",
+                "sellerSku": "DELL-I15-BR-001",
+                "condition": {
+                  "conditionType": "NEW",
+                  "conditionSubtype": "NEW"
+                },
+                "price": {
+                  "unitPrice": {
+                    "amount": "1599.90",
+                    "currencyCode": "BRL"
+                  },
+                  "priceDesignation": "BUSINESS_PRICE"
+                }
+              },
+              "proceeds": {
+                "proceedsTotal": {
+                  "amount": "1599.90",
+                  "currencyCode": "BRL"
+                },
+                "breakdowns": [
+                  {
+                    "type": "ITEM",
+                    "subtotal": {
+                      "amount": "1599.90",
+                      "currencyCode": "BRL"
+                    }
+                  }
+                ]
+              },
+              "fulfillment": {
+                "quantityFulfilled": 0,
+                "quantityUnfulfilled": 1
+              }
+            }
+          ]
+        }
+      ],
+      "createdBefore": "2024-12-22T16:00:00Z"
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "createdAfter": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input",
+          "details": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "171-9876543-2109876"
+        },
+        "includedData": {
+          "value": [
+            "BUYER",
+            "RECIPIENT",
+            "PROCEEDS",
+            "EXPENSE",
+            "PROMOTION",
+            "CANCELLATION",
+            "FULFILLMENT",
+            "PACKAGES"
+          ]
+        }
+      }
+    },
+    "response": {
+      "order": {
+        "orderId": "171-9876543-2109876",
+        "orderAliases": [
+          {
+            "aliasId": "BR-CONSUMER-ORDER-2024-003",
+            "aliasType": "SELLER_ORDER_ID"
+          }
+        ],
+        "createdTime": "2024-12-24T20:30:00Z",
+        "lastUpdatedTime": "2024-12-25T08:15:00Z",
+        "programs": [
+          "PRIME"
+        ],
+        "salesChannel": {
+          "channelName": "AMAZON",
+          "marketplaceId": "A2Q3Y263D00KWC",
+          "marketplaceName": "Amazon.com.br"
+        },
+        "buyer": {
+          "buyerName": "Maria Silva Santos",
+          "buyerEmail": "buyer-email@marketplace.amazon.com.br"
+        },
+        "recipient": {
+          "deliveryAddress": {
+            "name": "Maria Silva Santos",
+            "addressLine1": "Rua das Flores, 123",
+            "addressLine2": "Apartamento 45",
+            "addressLine3": "",
+            "city": "S\u00e3o Paulo",
+            "districtOrCounty": "",
+            "stateOrRegion": "SP",
+            "municipality": "",
+            "postalCode": "01234-567",
+            "countryCode": "BR",
+            "phone": "+55 11 98765-4321",
+            "extendedFields": {
+              "streetName": "Rua das Flores",
+              "streetNumber": "123",
+              "complement": "Apartamento 45",
+              "neighborhood": "Vila Madalena"
+            },
+            "addressType": "RESIDENTIAL"
+          }
+        },
+        "proceeds": {
+          "grandTotal": {
+            "amount": "299.90",
+            "currencyCode": "BRL"
+          }
+        },
+        "fulfillment": {
+          "fulfillmentStatus": "UNSHIPPED",
+          "fulfilledBy": "MERCHANT",
+          "fulfillmentServiceLevel": "STANDARD",
+          "shipByWindow": {
+            "earliestDateTime": "2024-12-26T00:00:00Z",
+            "latestDateTime": "2024-12-27T23:59:59Z"
+          },
+          "deliverByWindow": {
+            "earliestDateTime": "2024-12-28T00:00:00Z",
+            "latestDateTime": "2024-12-31T23:59:59Z"
+          },
+          "labelPrintingWindow": {
+            "earliestDateTime": "2024-12-26T17:00:00Z"
+          }
+        },
+        "orderItems": [
+          {
+            "orderItemId": "17198765432109",
+            "quantityOrdered": 1,
+            "product": {
+              "asin": "B08N5WRWNW",
+              "title": "Echo Dot (4\u00aa Gera\u00e7\u00e3o) | Smart Speaker com Alexa | Cor Preta",
+              "sellerSku": "ECHO-DOT-4-BR-PRETO",
+              "condition": {
+                "conditionType": "NEW",
+                "conditionSubtype": "NEW",
+                "conditionNote": ""
+              },
+              "price": {
+                "unitPrice": {
+                  "amount": "299.90",
+                  "currencyCode": "BRL"
+                }
+              }
+            },
+            "proceeds": {
+              "proceedsTotal": {
+                "amount": "299.90",
+                "currencyCode": "BRL"
+              },
+              "breakdowns": [
+                {
+                  "type": "ITEM",
+                  "subtotal": {
+                    "amount": "299.90",
+                    "currencyCode": "BRL"
+                  }
+                }
+              ]
+            },
+            "promotion": {
+              "breakdowns": [
+                {
+                  "promotionId": "BR-NATAL-2024"
+                }
+              ]
+            },
+            "fulfillment": {
+              "quantityFulfilled": 0,
+              "quantityUnfulfilled": 1,
+              "packing": {
+                "giftOption": {
+                  "giftMessage": "Feliz Natal! Espero que goste do seu novo alto-falante inteligente!",
+                  "giftWrapLevel": "STANDARD"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "028-1234567-8901234"
+        },
+        "includedData": {
+          "value": [
+            "BUYER",
+            "RECIPIENT",
+            "PROCEEDS",
+            "FULFILLMENT",
+            "TAX"
+          ]
+        }
+      }
+    },
+    "response": {
+      "order": {
+        "orderId": "028-1234567-8901234",
+        "orderAliases": [
+          {
+            "aliasId": "TR-ORDER-2025-001",
+            "aliasType": "SELLER_ORDER_ID"
+          }
+        ],
+        "createdTime": "2025-03-15T10:30:00Z",
+        "lastUpdatedTime": "2025-03-15T14:20:00Z",
+        "salesChannel": {
+          "channelName": "AMAZON",
+          "marketplaceId": "A33AVAJ2PDY3EV",
+          "marketplaceName": "Amazon.com.tr"
+        },
+        "buyer": {
+          "buyerName": "Mehmet Yilmaz",
+          "buyerEmail": "buyer-email@marketplace.amazon.com.tr"
+        },
+        "recipient": {
+          "deliveryAddress": {
+            "name": "Mehmet Yilmaz",
+            "addressLine1": "Istiklal Caddesi No:42",
+            "addressLine2": "Kat 3",
+            "addressLine3": "",
+            "city": "Istanbul",
+            "districtOrCounty": "Beyoglu",
+            "stateOrRegion": "Istanbul",
+            "municipality": "",
+            "postalCode": "34430",
+            "countryCode": "TR",
+            "addressType": "COMMERCIAL"
+          }
+        },
+        "proceeds": {
+          "grandTotal": {
+            "amount": "125.00",
+            "currencyCode": "TRY"
+          }
+        },
+        "fulfillment": {
+          "fulfillmentStatus": "SHIPPED",
+          "fulfilledBy": "MERCHANT",
+          "fulfillmentServiceLevel": "STANDARD",
+          "shipByWindow": {
+            "earliestDateTime": "2025-03-16T00:00:00Z",
+            "latestDateTime": "2025-03-17T23:59:59Z"
+          },
+          "deliverByWindow": {
+            "earliestDateTime": "2025-03-18T00:00:00Z",
+            "latestDateTime": "2025-03-21T23:59:59Z"
+          }
+        },
+        "tax": {
+          "taxRegistrations": [
+            {
+              "entityType": "BUYER",
+              "taxRegistrationType": "BUSINESS",
+              "taxRegistrationNumber": "TR1234567890",
+              "legalName": "Test company name",
+              "taxRegistrationAddress": {
+                "name": "Mehmet Yilmaz",
+                "companyName": "Test company name",
+                "addressLine1": "Istiklal Caddesi No:42",
+                "addressLine2": "Kat 3",
+                "city": "Istanbul",
+                "stateOrRegion": "Istanbul",
+                "postalCode": "34430",
+                "countryCode": "TR"
+              },
+              "taxRegistrationAttributes": [
+                {
+                  "key": "TAX_OFFICE",
+                  "value": "tax office"
+                }
+              ]
+            }
+          ],
+          "taxInvoicing": {
+            "buyerInvoicePreference": "BUSINESS"
+          }
+        },
+        "orderItems": [
+          {
+            "orderItemId": "02812345678901",
+            "quantityOrdered": 2,
+            "product": {
+              "asin": "B09V3KXJPB",
+              "title": "Fire HD 10 tablet | 10.1 inch, 1080p Full HD",
+              "sellerSku": "FIRE-HD10-TR-BLK",
+              "condition": {
+                "conditionType": "NEW",
+                "conditionSubtype": "NEW",
+                "conditionNote": ""
+              },
+              "price": {
+                "unitPrice": {
+                  "amount": "62.50",
+                  "currencyCode": "TRY"
+                }
+              }
+            },
+            "proceeds": {
+              "proceedsTotal": {
+                "amount": "125.00",
+                "currencyCode": "TRY"
+              },
+              "breakdowns": [
+                {
+                  "type": "ITEM",
+                  "subtotal": {
+                    "amount": "125.00",
+                    "currencyCode": "TRY"
+                  }
+                }
+              ]
+            },
+            "fulfillment": {
+              "quantityFulfilled": 2,
+              "quantityUnfulfilled": 0
+            },
+            "tax": {
+              "taxCalculationBreakdowns": [
+                {
+                  "reportingScheme": "IOSS"
+                }
+              ],
+              "taxCollections": [
+                {
+                  "model": "MARKETPLACE_FACILITATOR",
+                  "responsibleParty": "Amazon Services Europe S.a.r.L."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "114-9876543-1234567"
+        },
+        "includedData": {
+          "value": [
+            "RECIPIENT",
+            "PROCEEDS",
+            "FULFILLMENT"
+          ]
+        }
+      }
+    },
+    "response": {
+      "order": {
+        "orderId": "114-9876543-1234567",
+        "createdTime": "2025-03-10T14:00:00Z",
+        "lastUpdatedTime": "2025-03-10T14:30:00Z",
+        "programs": [
+          "IN_STORE_PICK_UP"
+        ],
+        "salesChannel": {
+          "channelName": "AMAZON",
+          "marketplaceId": "ATVPDKIKX0DER",
+          "marketplaceName": "Amazon.com"
+        },
+        "recipient": {
+          "deliveryAddress": {
+            "name": "Test Store #1234",
+            "companyName": "Test Store",
+            "addressLine1": "100 Main Street",
+            "addressLine2": "Suite 200",
+            "addressLine3": "",
+            "city": "Seattle",
+            "districtOrCounty": "",
+            "stateOrRegion": "WA",
+            "municipality": "",
+            "postalCode": "98101",
+            "countryCode": "US",
+            "phone": "+1 206 555 0100",
+            "addressType": "COMMERCIAL"
+          }
+        },
+        "proceeds": {
+          "grandTotal": {
+            "amount": "49.99",
+            "currencyCode": "USD"
+          }
+        },
+        "fulfillment": {
+          "fulfillmentStatus": "UNSHIPPED",
+          "fulfilledBy": "MERCHANT",
+          "fulfillmentServiceLevel": "STANDARD"
+        },
+        "orderItems": [
+          {
+            "orderItemId": "11498765431234",
+            "quantityOrdered": 1,
+            "product": {
+              "asin": "B0BSHF7WHW",
+              "title": "All-new Echo Pop | Full sound compact smart speaker with Alexa",
+              "sellerSku": "ECHO-POP-US-BLK",
+              "condition": {
+                "conditionType": "NEW",
+                "conditionSubtype": "NEW",
+                "conditionNote": ""
+              },
+              "price": {
+                "unitPrice": {
+                  "amount": "39.99",
+                  "currencyCode": "USD"
+                }
+              }
+            },
+            "proceeds": {
+              "proceedsTotal": {
+                "amount": "49.99",
+                "currencyCode": "USD"
+              },
+              "breakdowns": [
+                {
+                  "type": "ITEM",
+                  "subtotal": {
+                    "amount": "39.99",
+                    "currencyCode": "USD"
+                  }
+                },
+                {
+                  "type": "TAX",
+                  "subtotal": {
+                    "amount": "10.00",
+                    "currencyCode": "USD"
+                  }
+                }
+              ]
+            },
+            "fulfillment": {
+              "quantityFulfilled": 0,
+              "quantityUnfulfilled": 1
+            },
+            "associatedOrderItems": [
+              {
+                "orderId": "333-1234567-7654321",
+                "orderItemId": "11498765435678",
+                "associationType": "VALUE_ADD_SERVICE"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/orders-api-model/orders_2026-01-01.json",
+    "domain": "orders",
+    "path": "/orders/2026-01-01/orders/{orderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  }
+]

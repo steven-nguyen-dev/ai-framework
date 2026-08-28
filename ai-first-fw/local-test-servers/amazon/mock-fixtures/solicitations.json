@@ -1,0 +1,51 @@
+[
+  {
+    "source_file": "models/solicitations-api-model/solicitations.json",
+    "domain": "solicitations",
+    "path": "/solicitations/v1/orders/{amazonOrderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      }
+    },
+    "response": {
+      "_links": {
+        "actions": [
+          {
+            "href": "/solicitations/v1/orders/123-1234567-1234567/solicitations/productReviewAndSellerFeedback?marketplaceIds=ATVPDKIKX0DER",
+            "name": "productReviewAndSellerFeedback"
+          }
+        ],
+        "self": {
+          "href": "/solicitations/v1/orders/123-1234567-1234567?marketplaceIds=ATVPDKIKX0DER"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/solicitations-api-model/solicitations.json",
+    "domain": "solicitations",
+    "path": "/solicitations/v1/orders/{amazonOrderId}/solicitations/productReviewAndSellerFeedback",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "amazonOrderId": {
+          "value": "123-1234567-1234567"
+        }
+      }
+    },
+    "response": {}
+  }
+]

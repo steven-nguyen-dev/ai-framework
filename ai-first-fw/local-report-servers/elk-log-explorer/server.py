@@ -53,16 +53,51 @@ try:
 except ImportError:
     kql = None
 
+def _find_theme_dir() -> Optional[Path]:
+    candidates = [
+        SCRIPT_DIR / "local-theme",
+        SCRIPT_DIR / "theme",
+        SCRIPT_DIR.parent.parent / "local-theme",
+        REPO_ROOT / "ai-first-fw" / "local-theme",
+    ]
+    for c in candidates:
+        if c.is_dir() and (c / "theme.css").exists():
+            return c
+    return None
+
+def _get_theme_css() -> str:
+    if (SCRIPT_DIR / "theme.css").is_file():
+        try:
+            return (SCRIPT_DIR / "theme.css").read_text(encoding="utf-8")
+        except Exception:
+            pass
+    td = _find_theme_dir()
+    if td and (td / "theme.css").is_file():
+        try:
+            return (td / "theme.css").read_text(encoding="utf-8")
+        except Exception:
+            pass
+    return ""
+
 # Load credentials from local .env or fallback to kibana MCP .env
-for env_path in [SCRIPT_DIR / ".env", KIBANA_MCP_DIR / ".env"]:
+for env_path in [
+    SCRIPT_DIR / ".env",
+    SCRIPT_DIR.parent.parent / "local-mcps" / "kibana" / ".env",
+    KIBANA_MCP_DIR / ".env",
+]:
     if env_path.exists():
         with open(env_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
                     k, v = line.split("=", 1)
-                    os.environ.setdefault(k.strip(), v.strip())
-        break
+                    k = k.strip()
+                    v = v.strip()
+                    curr = os.environ.get(k, "")
+                    if not curr or curr.startswith("your_"):
+                        os.environ[k] = v
+                    else:
+                        os.environ.setdefault(k, v)
 
 DEFAULT_INDEX_PATTERN = os.environ.get("KIBANA_INDEX_PATTERN", "logs-*-*,logs-*,filebeat-*")
 KIBANA_URL = os.environ.get("KIBANA_URL", "https://apac-elk.anchanto.com:5601").rstrip("/")
@@ -605,6 +640,28 @@ def run_ai_agent_query(prompt: str, agent: str = "gemini", deep: bool = False, t
 
     return search_res
 
+def generate_static_export() -> str:
+    """Renders report.html with inlined theme styles for 100% offline portability."""
+    report_file = SCRIPT_DIR / "report.html"
+    if not report_file.exists():
+        return ""
+
+    html = report_file.read_text(encoding="utf-8")
+    theme_css = _get_theme_css()
+    if theme_css:
+        html = re.sub(
+            r'<link\s+rel=["\']stylesheet["\']\s+href=["\'][^"\']*theme\.css["\']\s*/?>',
+            f'<style id="inlined-theme">\n{theme_css}\n</style>',
+            html,
+            flags=re.IGNORECASE,
+        )
+
+    out_file = SCRIPT_DIR / "elk-log-explorer.html"
+    out_file.write_text(html, encoding="utf-8")
+    return str(out_file)
+
+FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0f1115"/><path d="M7 26V9C7 7.34 8.34 6 10 6H22C23.66 6 25 7.34 25 9V26" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/><path d="M11 11H21M11 16H21M11 21H17" stroke="#34d399" stroke-width="2" stroke-linecap="round"/><circle cx="21" cy="21" r="2.5" fill="#f59e0b"/></svg>"""
+
 class LogExplorerHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         sys.stdout.write(f"[{time.strftime('%H:%M:%S')}] {args[0]} {args[1]} -> {args[2]}\n")
@@ -626,7 +683,9 @@ class LogExplorerHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path in ("/", "/index.html", "/report.html"):
+        path = self.path.split("?")[0]
+
+        if path in ("/", "/index.html", "/report.html"):
             report_file = SCRIPT_DIR / "report.html"
             content = report_file.read_bytes()
             self.send_response(200)
@@ -636,7 +695,42 @@ class LogExplorerHandler(BaseHTTPRequestHandler):
             self.wfile.write(content)
             return
 
-        if self.path in ("/api/status", "/api/capabilities", "/api/agents"):
+        if path == "/elk-log-explorer.html":
+            export_file = SCRIPT_DIR / "elk-log-explorer.html"
+            if not export_file.exists():
+                generate_static_export()
+            if export_file.exists():
+                content = export_file.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        if path == "/export":
+            export_path = generate_static_export()
+            if export_path and os.path.exists(export_path):
+                with open(export_path, "rb") as f:
+                    content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="elk-log-explorer.html"')
+                self.send_header("Content-Length", str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        if path in ("/favicon.ico", "/favicon.svg"):
+            body = FAVICON_SVG.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        if path in ("/api/status", "/api/capabilities", "/api/agents"):
             agents = get_installed_agents()
             self.send_json({
                 "success": True,
@@ -648,10 +742,10 @@ class LogExplorerHandler(BaseHTTPRequestHandler):
             })
             return
 
-        if self.path.endswith("theme.css"):
-            css_file = LOCAL_THEME_DIR / "theme.css"
-            if css_file.exists():
-                content = css_file.read_bytes()
+        if path.endswith("theme.css") or path.startswith("/theme/"):
+            theme_css = _get_theme_css()
+            if theme_css:
+                content = theme_css.encode("utf-8")
                 self.send_response(200)
                 self.send_header("Content-Type", "text/css; charset=utf-8")
                 self.send_header("Content-Length", str(len(content)))
@@ -709,6 +803,11 @@ def main():
 
     if args.export:
         print("[Export] Building self-contained offline export...")
+        out_path = generate_static_export()
+        if out_path and os.path.exists(out_path):
+            print(f"✔ Standalone offline export generated: {out_path}")
+        else:
+            print("❌ Failed to generate standalone export.")
         return
 
     try:

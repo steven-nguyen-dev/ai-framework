@@ -1,0 +1,109 @@
+[
+  {
+    "source_file": "models/sellers-api-model/sellers.json",
+    "domain": "sellers",
+    "path": "/sellers/v1/marketplaceParticipations",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": [
+        {
+          "marketplace": {
+            "id": "ATVPDKIKX0DER",
+            "countryCode": "US",
+            "name": "Amazon.com",
+            "defaultCurrencyCode": "USD",
+            "defaultLanguageCode": "en_US",
+            "domainName": "www.amazon.com"
+          },
+          "storeName": "BestSellerStore",
+          "participation": {
+            "isParticipating": true,
+            "hasSuspendedListings": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/sellers-api-model/sellers.json",
+    "domain": "sellers",
+    "path": "/sellers/v1/account",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "businessType": "PRIVATE_LIMITED",
+        "marketplaceParticipationList": [
+          {
+            "marketplace": {
+              "id": "ATVPDKIKX0DER",
+              "name": "United States",
+              "countryCode": "US",
+              "domainName": "www.amazon.com"
+            },
+            "storeName": "BestSellerStore",
+            "participation": {
+              "isParticipating": true,
+              "hasSuspendedListings": false
+            }
+          }
+        ],
+        "sellingPlan": "PROFESSIONAL",
+        "business": {
+          "name": "BestSeller Inc.",
+          "nonLatinName": "\u30d9\u30b9\u30c8\u30bb\u30e9\u30fc\u682a\u5f0f\u4f1a\u793e",
+          "registeredBusinessAddress": {
+            "addressLine1": "123 Main St",
+            "addressLine2": "Suite 500",
+            "city": "Seattle",
+            "stateOrProvinceCode": "WA",
+            "postalCode": "98101",
+            "countryCode": "US"
+          },
+          "companyRegistrationNumber": "123456789",
+          "companyTaxIdentificationNumber": "987654321"
+        },
+        "primaryContact": {
+          "name": "John Doe",
+          "nonLatinName": "\u30b8\u30e7\u30f3\u30fb\u30c9\u30a5",
+          "address": {
+            "addressLine1": "456 Oak St",
+            "addressLine2": "Apt 12",
+            "city": "Seattle",
+            "stateOrProvinceCode": "WA",
+            "postalCode": "98102",
+            "countryCode": "US"
+          }
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/sellers-api-model/sellers.json",
+    "domain": "sellers",
+    "path": "/sellers/v1/account",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  }
+]

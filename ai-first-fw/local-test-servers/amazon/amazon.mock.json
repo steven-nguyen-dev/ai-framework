@@ -1,0 +1,2371 @@
+{
+  "name": "Amazon SP-API",
+  "port": 23103,
+  "host": "127.0.0.1",
+  "spec": "amazon-sp-api-swagger.json",
+  "state_dir": "mock-data",
+  "log_file": "api-calls.har.json",
+  "log_format": "har",
+  "log_redact_headers": [
+    "authorization",
+    "x-amz-access-token",
+    "cookie"
+  ],
+  "test_results_dir": "test-results",
+  "unmatched_status": 404,
+  "_comment_suites": "Test suites runnable from /test dashboard or CLI.",
+  "test_suites": [
+    {
+      "id": "smoke",
+      "name": "Amazon SP-API Smoke Suite",
+      "description": "Comprehensive validation of Amazon SP-API mock endpoints and official sandbox fixtures (LWA Auth, Orders, Feeds, Reports, Listings, Pricing, FBA, MFN, RDT)",
+      "estimate": "~5s",
+      "command": [
+        "python3",
+        "amazon/suite-smoke.py"
+      ],
+      "options": [
+        {
+          "flag": "--fast",
+          "label": "Fast — core flows only"
+        }
+      ]
+    }
+  ],
+  "_comment_stores": "JSON stores recording write operations for state inspection and assertion.",
+  "stores": {
+    "lwa_tokens": {
+      "file": "lwa_tokens.json",
+      "type": "list",
+      "_comment": "OAuth tokens issued by POST /auth/o2/token"
+    },
+    "created_orders": {
+      "file": "created_orders.json",
+      "type": "set",
+      "_comment": "Amazon Order IDs tracked in local state"
+    },
+    "shipment_confirmations": {
+      "file": "shipment_confirmations.json",
+      "type": "list",
+      "_comment": "Shipment confirmations posted via POST /orders/v0/orders/{orderId}/shipmentConfirmation"
+    },
+    "order_acknowledgements": {
+      "file": "order_acknowledgements.json",
+      "type": "list",
+      "_comment": "Order acknowledgements posted via POST /vendor/orders/v1/acknowledgements or /orders/v0/orders/{orderId}/acknowledgement"
+    },
+    "feeds": {
+      "file": "feeds.json",
+      "type": "list",
+      "_comment": "Feed submissions created via POST /feeds/2021-06-30/feeds"
+    },
+    "feed_documents": {
+      "file": "feed_documents.json",
+      "type": "list",
+      "_comment": "Feed documents created via POST /feeds/2021-06-30/documents"
+    },
+    "reports": {
+      "file": "reports.json",
+      "type": "list",
+      "_comment": "Report requests created via POST /reports/2021-06-30/reports"
+    },
+    "listings": {
+      "file": "listings.json",
+      "type": "list",
+      "_comment": "Listings created/updated via PUT /listings/2021-08-01/items/{sellerId}/{sku}"
+    },
+    "mfn_shipments": {
+      "file": "mfn_shipments.json",
+      "type": "list",
+      "_comment": "Merchant Fulfilled shipments created via POST /mfn/v0/shipments"
+    },
+    "feed_uploads": {
+      "file": "feed_uploads.json",
+      "type": "list",
+      "_comment": "Raw feed bodies PUT to the mock's stand-in S3 upload URL."
+    }
+  },
+  "routes": [
+    {
+      "_comment": "Login with Amazon (LWA) OAuth token endpoint for offline client authentication",
+      "path": "/auth/o2/token",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "any": [
+              {
+                "raw_body": {
+                  "contains": "SERVERERROR"
+                }
+              },
+              {
+                "body.client_id": {
+                  "contains": "SERVERERROR"
+                }
+              },
+              {
+                "body.refresh_token": {
+                  "contains": "SERVERERROR"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "error": "server_error",
+              "error_description": "Internal server error occurred while processing token request."
+            }
+          }
+        },
+        {
+          "name": "400 -- invalid credentials or refresh token",
+          "when": {
+            "any": [
+              {
+                "raw_body": {
+                  "contains": "INVALID"
+                }
+              },
+              {
+                "body.client_secret": {
+                  "contains": "INVALID"
+                }
+              },
+              {
+                "body.refresh_token": {
+                  "contains": "INVALID"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "error": "invalid_grant",
+              "error_description": "The client credentials or refresh token is invalid."
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "lwa_tokens",
+            "entry": {
+              "grant_type": "${body.grant_type|refresh_token}",
+              "client_id": "${body.client_id|amzn_client}",
+              "token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890"
+            }
+          }
+        }
+      ],
+      "name": "token issued -- 200 LWA bearer token",
+      "respond": {
+        "status": 200,
+        "body": {
+          "access_token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890",
+          "token_type": "bearer",
+          "expires_in": 3600,
+          "refresh_token": "rws_mock_refresh_token_12345"
+        }
+      }
+    },
+    {
+      "path": "/tokens/2021-03-01/restrictedDataToken",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "body.targetApplication": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Internal server error occurred."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- invalid restricted resources request",
+          "when": {
+            "body.restrictedResources": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid restricted resources list."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "RDT issued -- 200 Restricted Data Token",
+      "respond": {
+        "status": 200,
+        "body": {
+          "restrictedDataToken": "Atz.sprdt|mock_rdt_token_restricted_data_987654321",
+          "expiresIn": 3600
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "any": [
+              {
+                "query.CreatedAfter": {
+                  "contains": "SERVERERROR"
+                }
+              },
+              {
+                "query.MarketplaceIds": {
+                  "contains": "SERVERERROR"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Encountered an internal error processing orders list request."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "429 -- rate limit exceeded",
+          "when": {
+            "query.CreatedAfter": {
+              "contains": "RATELIMIT"
+            }
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "errors": [
+                {
+                  "code": "QuotaExceeded",
+                  "message": "You exceeded your quota for the requested resource."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400 or invalid input",
+          "when": {
+            "any": [
+              {
+                "query.CreatedAfter": {
+                  "equals": "TEST_CASE_400"
+                }
+              },
+              {
+                "query.MarketplaceIds": {
+                  "contains": "INVALID"
+                }
+              },
+              {
+                "query.CreatedAfter": {
+                  "contains": "INVALID"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid query parameters provided."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "empty orders list -- 200 with empty array",
+          "when": {
+            "query.CreatedAfter": {
+              "contains": "EMPTY"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "Orders": []
+              }
+            }
+          }
+        },
+        {
+          "name": "paginated orders -- 200 page 2 with NextToken (official sandbox & cursor)",
+          "when": {
+            "any": [
+              {
+                "query.NextToken": {
+                  "equals": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
+                }
+              },
+              {
+                "query.NextToken": {
+                  "exists": true
+                }
+              },
+              {
+                "query.CreatedAfter": {
+                  "contains": "PAGE2"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-3159896-1390916",
+                    "PurchaseDate": "2017-01-20T19:49:35Z",
+                    "LastUpdateDate": "2017-01-20T19:49:35Z",
+                    "OrderStatus": "Pending",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "24.99"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "CreditCard",
+                      "GiftCertificate"
+                    ],
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired",
+                    "EarliestShipDate": "2017-01-20T19:51:16Z",
+                    "LatestShipDate": "2017-01-25T19:49:35Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "official sandbox TEST_CASE_200_NEXT_TOKEN -- first page returning NextToken",
+          "when": {
+            "query.CreatedAfter": {
+              "equals": "TEST_CASE_200_NEXT_TOKEN"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-3159896-1390916",
+                    "PurchaseDate": "2017-01-20T19:49:35Z",
+                    "LastUpdateDate": "2017-01-20T19:49:35Z",
+                    "OrderStatus": "Pending",
+                    "FulfillmentChannel": "MFN",
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 0,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "CreditCard",
+                      "GiftCertificate"
+                    ],
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired",
+                    "EarliestShipDate": "2017-01-20T19:51:16Z",
+                    "LatestShipDate": "2017-01-25T19:49:35Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "name": "official sandbox TEST_CASE_200 / default -- 200 list of active orders with NextToken",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+            "CreatedBefore": "1.569521782042E9",
+            "Orders": [
+              {
+                "AmazonOrderId": "902-1845936-5435065",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Unshipped",
+                "FulfillmentChannel": "MFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "11.01"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 1,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "DefaultShipFromLocationAddress": {
+                  "Name": "MFNIntegrationTestMerchant",
+                  "AddressLine1": "2201 WESTLAKE AVE",
+                  "City": "SEATTLE",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98121-2778",
+                  "CountryCode": "US",
+                  "Phone": "+1 480-386-0930 ext. 73824",
+                  "AddressType": "Commercial"
+                },
+                "FulfillmentInstruction": {
+                  "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                },
+                "IsISPU": false,
+                "IsAccessPointOrder": false,
+                "AutomatedShippingSettings": {
+                  "HasAutomatedShippingSettings": false
+                },
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired"
+              },
+              {
+                "AmazonOrderId": "902-8745147-1934268",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Unshipped",
+                "FulfillmentChannel": "MFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "11.01"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 1,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsAccessPointOrder": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders/{orderId}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "path.orderId": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Internal error retrieving order."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 -- order not found",
+          "when": {
+            "path.orderId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Order ${path.orderId} does not exist."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400 or invalid order ID",
+          "when": {
+            "any": [
+              {
+                "path.orderId": {
+                  "equals": "TEST_CASE_400"
+                }
+              },
+              {
+                "path.orderId": {
+                  "contains": "INVALID"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid order ID format: ${path.orderId}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "official sandbox TEST_CASE_IBA_200",
+          "when": {
+            "path.orderId": {
+              "equals": "TEST_CASE_IBA_200"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "921-3175655-0452641",
+                "PurchaseDate": "2019-05-07T15:42:57.058Z",
+                "LastUpdateDate": "2019-05-08T21:59:59Z",
+                "OrderStatus": "Shipped",
+                "FulfillmentChannel": "AFN",
+                "SalesChannel": "Amazon.de",
+                "ShipServiceLevel": "Standard",
+                "OrderTotal": {
+                  "CurrencyCode": "EUR",
+                  "Amount": "25.00"
+                },
+                "NumberOfItemsShipped": 1,
+                "NumberOfItemsUnshipped": 0,
+                "PaymentMethod": "Other",
+                "MarketplaceId": "A1PA6795UKMFR9",
+                "IsIBA": true
+              }
+            }
+          }
+        }
+      ],
+      "name": "official sandbox TEST_CASE_200 / default -- 200 single order details",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "AmazonOrderId": "${path.orderId}",
+            "PurchaseDate": "1970-01-19T03:58:30Z",
+            "LastUpdateDate": "1970-01-19T03:58:32Z",
+            "OrderStatus": "Unshipped",
+            "FulfillmentChannel": "MFN",
+            "SalesChannel": "Amazon.com",
+            "ShipServiceLevel": "Std US D2D Dom",
+            "OrderTotal": {
+              "CurrencyCode": "USD",
+              "Amount": "42.50"
+            },
+            "NumberOfItemsShipped": 0,
+            "NumberOfItemsUnshipped": 1,
+            "PaymentMethod": "Other",
+            "PaymentMethodDetails": [
+              "Standard"
+            ],
+            "IsReplacementOrder": false,
+            "MarketplaceId": "ATVPDKIKX0DER",
+            "ShipmentServiceLevelCategory": "Standard",
+            "OrderType": "StandardOrder",
+            "EarliestShipDate": "1970-01-19T03:59:27Z",
+            "LatestShipDate": "1970-01-19T04:05:13Z",
+            "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+            "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+            "IsBusinessOrder": false,
+            "IsPrime": false,
+            "IsGlobalExpressEnabled": false,
+            "IsPremiumOrder": false,
+            "IsSoldByAB": false,
+            "IsIBA": false,
+            "DefaultShipFromLocationAddress": {
+              "Name": "MFNIntegrationTestMerchant",
+              "AddressLine1": "2201 WESTLAKE AVE",
+              "City": "SEATTLE",
+              "StateOrRegion": "WA",
+              "PostalCode": "98121-2778",
+              "CountryCode": "US",
+              "Phone": "+1 480-386-0930 ext. 73824",
+              "AddressType": "Commercial"
+            },
+            "FulfillmentInstruction": {
+              "FulfillmentSupplySourceId": "sampleSupplySourceId"
+            },
+            "IsISPU": false,
+            "IsAccessPointOrder": false,
+            "AutomatedShippingSettings": {
+              "HasAutomatedShippingSettings": false
+            },
+            "EasyShipShipmentStatus": "PendingPickUp",
+            "ElectronicInvoiceStatus": "NotRequired"
+          }
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders/{orderId}/orderItems",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- order items not found",
+          "when": {
+            "path.orderId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Order items for ${path.orderId} not found."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400",
+          "when": {
+            "path.orderId": {
+              "equals": "TEST_CASE_400"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid order ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "path.orderId": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Internal server error retrieving order items."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "official sandbox TEST_CASE_200 / default -- 200 order items",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "AmazonOrderId": "${path.orderId}",
+            "OrderItems": [
+              {
+                "ASIN": "B00005N5PF",
+                "SellerSKU": "SKU-AMZN-PROD-001",
+                "OrderItemId": "65432109876543",
+                "Title": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                "QuantityOrdered": 1,
+                "QuantityShipped": 0,
+                "ItemPrice": {
+                  "CurrencyCode": "USD",
+                  "Amount": "35.00"
+                },
+                "ShippingPrice": {
+                  "CurrencyCode": "USD",
+                  "Amount": "7.50"
+                },
+                "ItemTax": {
+                  "CurrencyCode": "USD",
+                  "Amount": "2.80"
+                },
+                "ConditionId": "New",
+                "ConditionSubtypeId": "New"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders/{orderId}/address",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "403 -- Restricted Data Token required",
+          "when": {
+            "path.orderId": {
+              "contains": "RDT_REQUIRED"
+            }
+          },
+          "respond": {
+            "status": 403,
+            "body": {
+              "errors": [
+                {
+                  "code": "Unauthorized",
+                  "message": "Restricted data token required to access PII address fields."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400",
+          "when": {
+            "path.orderId": {
+              "equals": "TEST_CASE_400"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid order ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 -- address not found",
+          "when": {
+            "path.orderId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Order ${path.orderId} address not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "official sandbox TEST_CASE_200 / default -- 200 shipping address",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "AmazonOrderId": "${path.orderId}",
+            "ShippingAddress": {
+              "Name": "John Buyer",
+              "AddressLine1": "410 Terry Ave N",
+              "City": "Seattle",
+              "StateOrRegion": "WA",
+              "PostalCode": "98109",
+              "CountryCode": "US",
+              "Phone": "+1 206-555-0100",
+              "AddressType": "Residential"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders/{orderId}/buyerInfo",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "400 -- official sandbox TEST_CASE_400",
+          "when": {
+            "path.orderId": {
+              "equals": "TEST_CASE_400"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid order ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 -- buyerInfo not found",
+          "when": {
+            "path.orderId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Buyer info for ${path.orderId} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "official sandbox TEST_CASE_200 / default -- 200 buyer info",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "AmazonOrderId": "${path.orderId}",
+            "BuyerEmail": "buyer-mock@marketplace.amazon.com",
+            "BuyerName": "John Buyer",
+            "BuyerCounty": "King"
+          }
+        }
+      }
+    },
+    {
+      "path": "/orders/v0/orders/{orderId}/shipmentConfirmation",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "404 -- order not found for confirmation",
+          "when": {
+            "path.orderId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Order ${path.orderId} does not exist."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- invalid tracking or carrier code",
+          "when": {
+            "body.packageDetail.carrierCode": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Carrier code ${body.packageDetail.carrierCode} is invalid."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- server error",
+          "when": {
+            "path.orderId": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Failed to confirm shipment."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "shipment_confirmations",
+            "entry": {
+              "orderId": "${path.orderId}",
+              "marketplaceId": "${body.marketplaceId|ATVPDKIKX0DER}",
+              "trackingNumber": "${body.packageDetail.trackingNumber|TRACK12345}",
+              "carrierCode": "${body.packageDetail.carrierCode|UPS}",
+              "shipDate": "${body.packageDetail.shipDate|2026-08-26T00:00:00Z}"
+            }
+          }
+        }
+      ],
+      "name": "shipment confirmed -- 204 No Content",
+      "respond": {
+        "status": 204,
+        "body": {}
+      }
+    },
+    {
+      "path": "/vendor/orders/v1/acknowledgements",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "400 -- invalid acknowledgement",
+          "when": {
+            "body.orderAcknowledgements.0.purchaseOrderNumber": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid acknowledgement data."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "order_acknowledgements",
+            "entry": {
+              "payload": "${body}"
+            }
+          }
+        }
+      ],
+      "name": "acknowledgements accepted -- 202 Accepted",
+      "respond": {
+        "status": 202,
+        "body": {
+          "payload": {
+            "transactionId": "txn-ack-100001"
+          }
+        }
+      }
+    },
+    {
+      "path": "/feeds/2021-06-30/documents",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "400 -- invalid content type",
+          "when": {
+            "body.contentType": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Unsupported content type: ${body.contentType}"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "feed_documents",
+            "entry": {
+              "feedDocumentId": "feed-doc-100001",
+              "contentType": "${body.contentType|text/xml}"
+            }
+          }
+        }
+      ],
+      "name": "feed document created -- 201 Created",
+      "respond": {
+        "status": 201,
+        "body": {
+          "feedDocumentId": "feed-doc-100001",
+          "url": "http://127.0.0.1:23103/s3/feed-upload/feed-doc-100001"
+        }
+      }
+    },
+    {
+      "path": "/feeds/2021-06-30/feeds",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "400 -- invalid feed type",
+          "when": {
+            "body.feedType": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Feed type is invalid: ${body.feedType}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "body.feedType": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Failed to create feed."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "feeds",
+            "entry": {
+              "feedId": "feed-100001",
+              "feedType": "${body.feedType}",
+              "inputFeedDocumentId": "${body.inputFeedDocumentId}",
+              "marketplaceIds": "${body.marketplaceIds}"
+            }
+          }
+        }
+      ],
+      "name": "feed submitted -- 202 Accepted",
+      "respond": {
+        "status": 202,
+        "body": {
+          "feedId": "feed-100001"
+        }
+      }
+    },
+    {
+      "path": "/feeds/2021-06-30/feeds/{feedId}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- feed not found",
+          "when": {
+            "path.feedId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Feed ${path.feedId} not found."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "IN_PROGRESS feed status",
+          "when": {
+            "path.feedId": {
+              "contains": "INPROGRESS"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "IN_PROGRESS"
+            }
+          }
+        },
+        {
+          "name": "FATAL feed status",
+          "when": {
+            "path.feedId": {
+              "contains": "FATAL"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "FATAL",
+              "resultFeedDocumentId": "feed-doc-fatal-res"
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 feed DONE",
+      "respond": {
+        "status": 200,
+        "body": {
+          "feedId": "${path.feedId}",
+          "feedType": "POST_FLAT_FILE_INVLOADER_DATA",
+          "createdTime": "2026-08-26T00:00:00Z",
+          "processingStartTime": "2026-08-26T00:01:00Z",
+          "processingEndTime": "2026-08-26T00:02:00Z",
+          "processingStatus": "DONE",
+          "resultFeedDocumentId": "feed-doc-res-100001"
+        }
+      }
+    },
+    {
+      "path": "/reports/2021-06-30/reports",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "400 -- invalid report type",
+          "when": {
+            "body.reportType": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid reportType: ${body.reportType}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "body.reportType": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Report generation failed."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "browse tree requested -- reportId carries reportOptions.MarketplaceId",
+          "when": {
+            "body.reportType": {
+              "contains": "BROWSE_TREE"
+            }
+          },
+          "then": [
+            {
+              "append": {
+                "store": "reports",
+                "entry": {
+                  "reportId": "rep-browsetree-${body.reportOptions.MarketplaceId|DEFAULTSTORE}",
+                  "reportType": "${body.reportType}",
+                  "marketplaceIds": "${body.marketplaceIds}",
+                  "reportOptions": "${body.reportOptions|null}"
+                }
+              }
+            }
+          ],
+          "respond": {
+            "status": 202,
+            "body": {
+              "reportId": "rep-browsetree-${body.reportOptions.MarketplaceId|DEFAULTSTORE}"
+            }
+          }
+        },
+        {
+          "name": "merchant listings requested -- reportId carries the marketplace",
+          "when": {
+            "body.reportType": {
+              "contains": "MERCHANT_LISTINGS"
+            }
+          },
+          "then": [
+            {
+              "append": {
+                "store": "reports",
+                "entry": {
+                  "reportId": "rep-listings-${body.marketplaceIds.0|DEFAULTSTORE}",
+                  "reportType": "${body.reportType}",
+                  "marketplaceIds": "${body.marketplaceIds}",
+                  "reportOptions": "${body.reportOptions|null}"
+                }
+              }
+            }
+          ],
+          "respond": {
+            "status": 202,
+            "body": {
+              "reportId": "rep-listings-${body.marketplaceIds.0|DEFAULTSTORE}"
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "reports",
+            "entry": {
+              "reportId": "rep-100001",
+              "reportType": "${body.reportType}",
+              "marketplaceIds": "${body.marketplaceIds}",
+              "reportOptions": "${body.reportOptions|null}"
+            }
+          }
+        }
+      ],
+      "name": "report requested -- 202 Accepted",
+      "respond": {
+        "status": 202,
+        "body": {
+          "reportId": "rep-100001"
+        }
+      }
+    },
+    {
+      "path": "/reports/2021-06-30/reports/{reportId}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- report not found",
+          "when": {
+            "path.reportId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Report ${path.reportId} not found."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "IN_PROGRESS report status",
+          "when": {
+            "path.reportId": {
+              "contains": "INPROGRESS"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "reportId": "${path.reportId}",
+              "reportType": "GET_FLAT_FILE_OPEN_LISTINGS_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "IN_PROGRESS"
+            }
+          }
+        },
+        {
+          "name": "CANCELLED report status",
+          "when": {
+            "path.reportId": {
+              "contains": "CANCELLED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "reportId": "${path.reportId}",
+              "reportType": "GET_FLAT_FILE_OPEN_LISTINGS_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "CANCELLED"
+            }
+          }
+        },
+        {
+          "name": "browse tree report -- DONE",
+          "when": {
+            "path.reportId": {
+              "contains": "browsetree"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "reportId": "${path.reportId}",
+              "reportType": "GET_XML_BROWSE_TREE_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStartTime": "2026-08-26T00:01:00Z",
+              "processingEndTime": "2026-08-26T00:02:00Z",
+              "processingStatus": "DONE",
+              "reportDocumentId": "rep-doc-${path.reportId}"
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 report DONE",
+      "respond": {
+        "status": 200,
+        "body": {
+          "reportId": "${path.reportId}",
+          "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+          "createdTime": "2026-08-26T00:00:00Z",
+          "processingStartTime": "2026-08-26T00:01:00Z",
+          "processingEndTime": "2026-08-26T00:02:00Z",
+          "processingStatus": "DONE",
+          "reportDocumentId": "rep-doc-${path.reportId}"
+        }
+      }
+    },
+    {
+      "path": "/reports/2021-06-30/documents/{reportDocumentId}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- report document not found",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Report document ${path.reportDocumentId} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 report document download URL",
+      "respond": {
+        "status": 200,
+        "body": {
+          "reportDocumentId": "${path.reportDocumentId}",
+          "url": "http://127.0.0.1:23103/s3/report-download/${path.reportDocumentId}"
+        }
+      }
+    },
+    {
+      "path": "/catalog/2022-04-01/items/{asin}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- catalog ASIN not found or official sandbox TEST_CASE_404",
+          "when": {
+            "any": [
+              {
+                "path.asin": {
+                  "equals": "TEST_CASE_404"
+                }
+              },
+              {
+                "path.asin": {
+                  "contains": "NOTFOUND"
+                }
+              }
+            ]
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Catalog item with ASIN ${path.asin} not found."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400",
+          "when": {
+            "path.asin": {
+              "equals": "TEST_CASE_400"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid ASIN value provided: ${path.asin}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "429 -- official sandbox TEST_CASE_429",
+          "when": {
+            "path.asin": {
+              "equals": "TEST_CASE_429"
+            }
+          },
+          "respond": {
+            "status": 429,
+            "body": {
+              "errors": [
+                {
+                  "code": "QuotaExceeded",
+                  "message": "Request rate limit exceeded"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- official sandbox TEST_CASE_500",
+          "when": {
+            "path.asin": {
+              "equals": "TEST_CASE_500"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Internal error"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 catalog item details",
+      "respond": {
+        "status": 200,
+        "body": {
+          "asin": "${path.asin}",
+          "attributes": {
+            "item_name": [
+              {
+                "value": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                "marketplace_id": "ATVPDKIKX0DER"
+              }
+            ],
+            "brand": [
+              {
+                "value": "Amazon Basics",
+                "marketplace_id": "ATVPDKIKX0DER"
+              }
+            ]
+          },
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brand": "Amazon Basics",
+              "itemName": "Amazon Basics Wireless Bluetooth Speaker - Black",
+              "itemClassification": "BASE_PRODUCT"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+      "method": "PUT",
+      "rules": [
+        {
+          "name": "400 -- invalid listing payload",
+          "when": {
+            "path.sku": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "sku": "${path.sku}",
+              "status": "INVALID",
+              "submissionId": "sub-err-001",
+              "issues": [
+                {
+                  "code": "90001",
+                  "message": "Missing required field: item_name",
+                  "severity": "ERROR"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "path.sku": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Listing submission failed."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "listings",
+            "entry": {
+              "sellerId": "${path.sellerId}",
+              "sku": "${path.sku}",
+              "productType": "${body.productType|PRODUCT}"
+            }
+          }
+        }
+      ],
+      "name": "listing updated -- 200 ACCEPTED",
+      "respond": {
+        "status": 200,
+        "body": {
+          "sku": "${path.sku}",
+          "status": "ACCEPTED",
+          "submissionId": "sub-100001",
+          "issues": []
+        }
+      }
+    },
+    {
+      "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "404 -- listing not found",
+          "when": {
+            "path.sku": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Listing for SKU ${path.sku} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 listing item details",
+      "respond": {
+        "status": 200,
+        "body": {
+          "sku": "${path.sku}",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "asin": "B00005N5PF",
+              "productType": "SPEAKER",
+              "status": [
+                "BUYABLE"
+              ],
+              "itemName": "Amazon Basics Wireless Bluetooth Speaker - Black"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/products/pricing/v0/price",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "500 -- server error marker",
+          "when": {
+            "query.Skus": {
+              "contains": "SERVERERROR"
+            }
+          },
+          "respond": {
+            "status": 500,
+            "body": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Pricing calculation error."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "400 -- official sandbox TEST_CASE_400",
+          "when": {
+            "query.Asin": {
+              "equals": "TEST_CASE_400"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidParameterValue",
+                  "message": "Invalid ASIN value"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "404 -- pricing SKU not found",
+          "when": {
+            "query.Skus": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Pricing not found for requested SKU."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 product pricing",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": [
+            {
+              "status": "Success",
+              "SellerSKU": "SKU-AMZN-PROD-001",
+              "Product": {
+                "Identifiers": {
+                  "MarketplaceASIN": {
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ASIN": "B00005N5PF"
+                  },
+                  "SKUIdentifier": {
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "SellerId": "A2EUQ1WTGCTBG2",
+                    "SellerSKU": "SKU-AMZN-PROD-001"
+                  }
+                },
+                "Offers": [
+                  {
+                    "BuyingPrice": {
+                      "ListingPrice": {
+                        "CurrencyCode": "USD",
+                        "Amount": 35.0
+                      },
+                      "Shipping": {
+                        "CurrencyCode": "USD",
+                        "Amount": 0.0
+                      }
+                    },
+                    "RegularPrice": {
+                      "CurrencyCode": "USD",
+                      "Amount": 39.99
+                    },
+                    "ItemCondition": "New",
+                    "ItemSubCondition": "New",
+                    "SellerSKU": "SKU-AMZN-PROD-001"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/fba/inventory/v1/summaries",
+      "method": "GET",
+      "rules": [
+        {
+          "name": "empty inventory -- 200 empty array",
+          "when": {
+            "query.sellerSkus": {
+              "contains": "EMPTY"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "inventorySummaries": []
+              }
+            }
+          }
+        },
+        {
+          "name": "404 -- SKU not found in FBA inventory",
+          "when": {
+            "query.sellerSkus": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "FBA inventory summary not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 FBA inventory summaries",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "inventorySummaries": [
+              {
+                "asin": "B00005N5PF",
+                "fnSku": "X000123456",
+                "sellerSku": "SKU-AMZN-PROD-001",
+                "condition": "NewItem",
+                "inventoryDetails": {
+                  "fulfillableQuantity": 150,
+                  "inboundWorkingQuantity": 20,
+                  "inboundShippedQuantity": 50,
+                  "inboundReceivingQuantity": 10,
+                  "reservedQuantity": {
+                    "totalReservedQuantity": 5,
+                    "pendingCustomerOrderQuantity": 3,
+                    "fcProcessingQuantity": 2
+                  },
+                  "unfulfillableQuantity": {
+                    "totalUnfulfillableQuantity": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "/mfn/v0/eligibleShippingServices",
+      "method": "POST",
+      "name": "no marker -- 200 eligible shipping services",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "ShippingServiceList": [
+              {
+                "ShippingServiceName": "UPS Ground",
+                "CarrierName": "UPS",
+                "ShippingServiceId": "UPS_GROUND_PKG",
+                "Rate": {
+                  "CurrencyCode": "USD",
+                  "Amount": 8.45
+                },
+                "DeliveryExperience": "DeliveryConfirmationWithoutSignature"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "/mfn/v0/shipments",
+      "method": "POST",
+      "rules": [
+        {
+          "name": "400 -- invalid order ID for MFN shipment",
+          "when": {
+            "body.ShipmentRequestDetails.AmazonOrderId": {
+              "contains": "INVALID"
+            }
+          },
+          "respond": {
+            "status": 400,
+            "body": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid AmazonOrderId provided in shipment request."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "then": [
+        {
+          "append": {
+            "store": "mfn_shipments",
+            "entry": {
+              "shipmentId": "mfn-ship-100001",
+              "amazonOrderId": "${body.ShipmentRequestDetails.AmazonOrderId|902-1845936-5435065}",
+              "serviceId": "${body.ShippingServiceId|UPS_GROUND_PKG}"
+            }
+          }
+        }
+      ],
+      "name": "MFN shipment created -- 200 Purchased",
+      "respond": {
+        "status": 200,
+        "body": {
+          "payload": {
+            "ShipmentId": "mfn-ship-100001",
+            "AmazonOrderId": "${body.ShipmentRequestDetails.AmazonOrderId|902-1845936-5435065}",
+            "Status": "Purchased",
+            "TrackingId": "1Z9999999999999999",
+            "Label": {
+              "FileContents": {
+                "Contents": "JVBERi0xLjQKJcOkw7zDtsOfCDCkCg==",
+                "FileType": "application/pdf"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/s3/report-download/{reportDocumentId}",
+      "method": "GET",
+      "_comment": "Stand-in for the presigned S3 URL. Bodies are served UNCOMPRESSED and getReportDocument returns no compressionAlgorithm, so a client must not assume GZIP. Real Amazon usually gzips these.",
+      "rules": [
+        {
+          "name": "browse tree -- Germany",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "browsetree-A1PA6795UKMFR9"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "<?xml version=\"1.0\"?>\n<Result>\n  <query>3167641</query>\n  <Node>\n    <browseNodeId>908824031</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">major_appliances</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Elektro-Gro&#223;ger&#228;te</browseNodeName>\n    <browseNodeStoreContextName>Elektro-Gro&#223;ger&#228;te</browseNodeStoreContextName>\n    <browsePathById>908823031,908824031</browsePathById>\n    <browsePathByName>Elektro-Gro&#223;ger&#228;te</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>13528201031</id>\n    </childNodes>\n    <productTypeDefinitions>MAJOR_APPLIANCES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>13528201031</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">refrigerator</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>K&#252;hlschr&#228;nke, Gefrierschr&#228;nke &amp; Eisw&#252;rfelbereiter</browseNodeName>\n    <browseNodeStoreContextName>K&#252;hlschr&#228;nke, Gefrierschr&#228;nke &amp; Eisw&#252;rfelbereiter</browseNodeStoreContextName>\n    <browsePathById>908823031,908824031,13528201031</browsePathById>\n    <browsePathByName>Elektro-Gro&#223;ger&#228;te,K&#252;hlschr&#228;nke, Gefrierschr&#228;nke &amp; Eisw&#252;rfelbereiter</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"3\">\n      <id>3495086031</id>\n      <id>1399937031</id>\n      <id>16231641</id>\n    </childNodes>\n    <productTypeDefinitions>REFRIGERATOR</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>3169011</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">home</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>K&#252;che, Haushalt &amp; Wohnen</browseNodeName>\n    <browseNodeStoreContextName>K&#252;che, Haushalt &amp; Wohnen</browseNodeStoreContextName>\n    <browsePathById>3167641,3169011</browsePathById>\n    <browsePathByName>K&#252;che, Haushalt &amp; Wohnen</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>16075741</id>\n    </childNodes>\n    <productTypeDefinitions>HOME</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>16075741</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">major_appliances</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Haushaltsgro&#223;ger&#228;te</browseNodeName>\n    <browseNodeStoreContextName>Haushaltsgro&#223;ger&#228;te</browseNodeStoreContextName>\n    <browsePathById>3167641,3169011,16075741</browsePathById>\n    <browsePathByName>K&#252;che, Haushalt &amp; Wohnen,Haushaltsgro&#223;ger&#228;te</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>13528201031</id>\n    </childNodes>\n    <productTypeDefinitions>MAJOR_APPLIANCES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>13528201031</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">refrigerator</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>K&#252;hl- &amp; Gefrierschr&#228;nke</browseNodeName>\n    <browseNodeStoreContextName>K&#252;hlschr&#228;nke, Gefrierschr&#228;nke &amp; Eisw&#252;rfelbereiter</browseNodeStoreContextName>\n    <browsePathById>3167641,3169011,16075741,13528201031</browsePathById>\n    <browsePathByName>K&#252;che, Haushalt &amp; Wohnen,Haushaltsgro&#223;ger&#228;te,K&#252;hl- &amp; Gefrierschr&#228;nke</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"3\">\n      <id>3495086031</id>\n      <id>1399937031</id>\n      <id>16231641</id>\n    </childNodes>\n    <productTypeDefinitions>REFRIGERATOR</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
+            "headers": {
+              "Content-Type": "text/xml; charset=UTF-8"
+            }
+          }
+        },
+        {
+          "name": "browse tree -- France",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "browsetree-A13V1IB3VIYZZH"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "<?xml version=\"1.0\"?>\n<Result>\n  <query>340858031</query>\n  <Node>\n    <browseNodeId>340859031</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">home</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Cuisine, Maison &amp; Bricolage</browseNodeName>\n    <browseNodeStoreContextName>Cuisine, Maison &amp; Bricolage</browseNodeStoreContextName>\n    <browsePathById>340858031,340859031</browsePathById>\n    <browsePathByName>Cuisine, Maison &amp; Bricolage</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>3557017031</id>\n    </childNodes>\n    <productTypeDefinitions>HOME</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>3557017031</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">major_appliances</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Gros &#233;lectrom&#233;nager</browseNodeName>\n    <browseNodeStoreContextName>Gros &#233;lectrom&#233;nager</browseNodeStoreContextName>\n    <browsePathById>340858031,340859031,3557017031</browsePathById>\n    <browsePathByName>Cuisine, Maison &amp; Bricolage,Gros &#233;lectrom&#233;nager</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>MAJOR_APPLIANCES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
+            "headers": {
+              "Content-Type": "text/xml; charset=UTF-8"
+            }
+          }
+        },
+        {
+          "name": "browse tree -- US / seller default store",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "browsetree"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "<?xml version=\"1.0\"?>\n<Result>\n  <query>2619525011</query>\n  <Node>\n    <browseNodeId>000000001</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">blue-product</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Items: Blue</browseNodeName>\n    <browseNodeStoreContextName>Powersports Condensers</browseNodeStoreContextName>\n    <browsePathById>10000001,10000002,10000003,10000004,10000005,10000006</browsePathById>\n    <browsePathByName>Items, Blue &amp; Aqua,Royal,Teal,Azure</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>BLUE_PRODUCT_ITEM</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172282</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Electronics</browseNodeName>\n    <browseNodeStoreContextName>Electronics</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282</browsePathById>\n    <browsePathByName>Electronics</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>281052</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>281052</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Audio &amp; Video</browseNodeName>\n    <browseNodeStoreContextName>Audio &amp; Video</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>172541</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172541</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">headphones</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Headphones, Earbuds &amp; Accessories</browseNodeName>\n    <browseNodeStoreContextName>Headphones &amp; Earbuds</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052,172541</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video,Headphones, Earbuds &amp; Accessories</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>HEADPHONES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
+            "headers": {
+              "Content-Type": "text/xml; charset=UTF-8"
+            }
+          }
+        },
+        {
+          "name": "merchant listings -- France, localised column headers",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "listings-A13V1IB3VIYZZH"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "nom-produit\titem-description\tid-offre\tsku-vendeur\tprix\tquantité\tdate-ouverture\timage-url\titem-is-marketplace\tproduct-id-type\tzshop-shipping-fee\titem-note\titem-condition\tzshop-category1\tzshop-browse-path\tzshop-storefront-feature\tasin1\tasin2\tasin3\twill-ship-internationally\texpedited-shipping\tzshop-boldface\tid-produit\tbid-for-featured-placement\tadd-delete\tpending-quantity\tfulfillment-channel\tmerchant-shipping-group\tétat\nGalaxy Buds2 Pro\tÉcouteurs sans fil à réduction de bruit active\t0729M4XFPTM\tSKU-1001\t20.00\t42\t2026-03-14 08:12:41 PDT\thttps://m.media-amazon.com/images/I/61x.jpg\ty\t4\t\t\t11\t\t\t\tB0B2SH4CN6\t\t\ty\t\t\t8806094768831\t\t\t0\tDEFAULT\t\tActive\n",
+            "headers": {
+              "Content-Type": "text/tab-separated-values; charset=UTF-8"
+            }
+          }
+        },
+        {
+          "name": "merchant listings -- Japan",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "listings-A1VC38T7YXB528"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "item-name\titem-description\tlisting-id\tseller-sku\tprice\tquantity\topen-date\timage-url\titem-is-marketplace\tproduct-id-type\tzshop-shipping-fee\titem-note\titem-condition\tzshop-category1\tzshop-browse-path\tzshop-storefront-feature\tasin1\tasin2\tasin3\twill-ship-internationally\texpedited-shipping\tzshop-boldface\tproduct-id\tbid-for-featured-placement\tadd-delete\tpending-quantity\tfulfillment-channel\tmerchant-shipping-group\tstatus\nGalaxy Buds2 Pro ワイヤレスイヤホン\tノイズキャンセリング\t0729M4XFPTP\tSKU-1001\t3500\t42\t2026-03-14 08:12:41 PDT\thttps://m.media-amazon.com/images/I/61x.jpg\ty\t4\t\t\t11\t\t\t\tB0B2X9QK7L\t\t\ty\t\t\t8806094768831\t\t\t0\tDEFAULT\t\tActive\n",
+            "headers": {
+              "Content-Type": "text/tab-separated-values; charset=UTF-8"
+            }
+          }
+        },
+        {
+          "name": "404 -- report document not found",
+          "when": {
+            "path.reportDocumentId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Report document ${path.reportDocumentId} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- merchant listings TSV, English column headers",
+      "respond": {
+        "status": 200,
+        "body": "item-name\titem-description\tlisting-id\tseller-sku\tprice\tquantity\topen-date\timage-url\titem-is-marketplace\tproduct-id-type\tzshop-shipping-fee\titem-note\titem-condition\tzshop-category1\tzshop-browse-path\tzshop-storefront-feature\tasin1\tasin2\tasin3\twill-ship-internationally\texpedited-shipping\tzshop-boldface\tproduct-id\tbid-for-featured-placement\tadd-delete\tpending-quantity\tfulfillment-channel\tmerchant-shipping-group\tstatus\nGalaxy Buds2 Pro\tWireless noise cancelling earbuds\t0729M4XFPTM\tSKU-1001\t25.00\t42\t2026-03-14 08:12:41 PDT\thttps://m.media-amazon.com/images/I/61x.jpg\ty\t4\t\t\t11\t\t\t\tB0B2SH4CN6\t\t\ty\t\t\t8806094768831\t\t\t0\tDEFAULT\t\tActive\nGalaxy Watch6\tSmart watch\t0729M4XFPTN\tSKU-2002\t199.00\t7\t2026-03-14 08:12:41 PDT\thttps://m.media-amazon.com/images/I/61x.jpg\ty\t4\t\t\t11\t\t\t\tB0C9X1YQ33\t\t\ty\t\t\t8806095111222\t\t\t0\tDEFAULT\t\tActive\n",
+        "headers": {
+          "Content-Type": "text/tab-separated-values; charset=UTF-8"
+        }
+      }
+    },
+    {
+      "path": "/s3/feed-upload/{feedDocumentId}",
+      "methods": [
+        "PUT",
+        "POST"
+      ],
+      "_comment": "Stand-in for the presigned S3 feed upload. Records the raw body so a test can assert what the client actually sent.",
+      "then": [
+        {
+          "append": {
+            "store": "feed_uploads",
+            "entry": {
+              "feedDocumentId": "${path.feedDocumentId}",
+              "contentType": "${header.content-type|unset}",
+              "body": "${raw_body}"
+            }
+          }
+        }
+      ],
+      "name": "feed body accepted -- 200, empty body (S3 semantics)",
+      "respond": {
+        "status": 200,
+        "body": null
+      }
+    },
+    {
+      "path": "/definitions/2020-09-01/productTypes/{productType}",
+      "method": "GET",
+      "_comment": "schema is a SchemaLink, not an inline schema. The client must make a second GET to schema.link.resource. productTypeVersion is an object.",
+      "rules": [
+        {
+          "name": "404 -- product type has no definition",
+          "when": {
+            "path.productType": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Product type ${path.productType} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 definition envelope with a resolvable schema link",
+      "respond": {
+        "status": 200,
+        "body": {
+          "metaSchema": {
+            "link": {
+              "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+              "verb": "GET"
+            },
+            "checksum": "c7af9479ca7261645cea9db56c5f720d"
+          },
+          "schema": {
+            "link": {
+              "resource": "http://127.0.0.1:23103/s3/ptd-schema/${path.productType}",
+              "verb": "GET"
+            },
+            "checksum": "4f2e1b8c9d0a7e6f5c4b3a2918273645"
+          },
+          "requirements": "${query.requirements|LISTING}",
+          "requirementsEnforced": "${query.requirementsEnforced|ENFORCED}",
+          "propertyGroups": {
+            "product_identity": {
+              "title": "Product Identity",
+              "description": "Information to uniquely identify your product",
+              "propertyNames": [
+                "item_name",
+                "brand",
+                "external_product_id",
+                "product_type"
+              ]
+            },
+            "product_details": {
+              "title": "Product Details",
+              "description": "Attributes that describe the product",
+              "propertyNames": [
+                "color_name",
+                "connectivity_technology",
+                "item_weight",
+                "battery"
+              ]
+            }
+          },
+          "locale": "${query.locale|en_US}",
+          "marketplaceIds": [
+            "${query.marketplaceIds|ATVPDKIKX0DER}"
+          ],
+          "productType": "${path.productType}",
+          "displayName": "${path.productType}",
+          "productTypeVersion": {
+            "version": "UHqSqmb4FNUk=",
+            "latest": true,
+            "releaseCandidate": false
+          }
+        }
+      }
+    },
+    {
+      "path": "/s3/ptd-schema/{productType}",
+      "method": "GET",
+      "_comment": "The document Amazon serves at schema.link.resource -- the actual JSON Schema. Measurement attributes are {value, unit} objects, not a scalar plus a unit list.",
+      "name": "no marker -- 200 product type JSON Schema",
+      "respond": {
+        "status": 200,
+        "body": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "$comment": "Mock stand-in for the document Amazon serves at schema.link.resource.",
+          "type": "object",
+          "required": [
+            "item_name",
+            "color_name"
+          ],
+          "properties": {
+            "item_name": {
+              "title": "Item Name",
+              "description": "The name or title of the product.",
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "value"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "language_tag": {
+                    "type": "string"
+                  },
+                  "marketplace_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "color_name": {
+              "title": "Color",
+              "description": "The primary colour.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "enum": [
+                      "black",
+                      "white",
+                      "bora_purple"
+                    ],
+                    "enumNames": [
+                      "Black",
+                      "White",
+                      "Bora Purple"
+                    ]
+                  },
+                  "language_tag": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "connectivity_technology": {
+              "title": "Connectivity Technology",
+              "description": "Supported connection methods.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "enum": [
+                      "bluetooth",
+                      "usb_c",
+                      "3_5mm_jack"
+                    ],
+                    "enumNames": [
+                      "Bluetooth",
+                      "USB-C",
+                      "3.5 mm Jack"
+                    ]
+                  }
+                }
+              }
+            },
+            "item_weight": {
+              "title": "Item Weight",
+              "description": "Weight without packaging.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5000,
+                    "multipleOf": 0.01
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": [
+                      "grams",
+                      "kilograms",
+                      "ounces",
+                      "pounds"
+                    ],
+                    "enumNames": [
+                      "Grams",
+                      "Kilograms",
+                      "Ounces",
+                      "Pounds"
+                    ],
+                    "default": "grams"
+                  }
+                }
+              }
+            },
+            "battery": {
+              "title": "Battery",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "cell_composition": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string",
+                          "enum": [
+                            "lithium_ion",
+                            "lithium_polymer"
+                          ],
+                          "enumNames": [
+                            "Lithium Ion",
+                            "Lithium Polymer"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "weight": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "grams"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

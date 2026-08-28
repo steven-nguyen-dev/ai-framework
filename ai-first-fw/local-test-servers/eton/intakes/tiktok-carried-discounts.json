@@ -1,0 +1,68 @@
+{
+  "source": "captured at 2026-08-22 00:18:49,148985, ETON sale order SOCJFYWUKIKI6",
+  "note": "Both order-level discounts are carried on order_adjustment -- seller_discount 15001 and marketplace_discount 16000 -- which is the first source in the precedence, ahead of the detail rows and the flat per-item copies.",
+  "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+  "data": {
+    "marketplace_code": "tiktok_vn",
+    "seller_currency": "VND",
+    "voucher_seller": 15001.0,
+    "order_adjustment": {
+      "marketplace_discount": 16000.0,
+      "seller_discount": 15001.0,
+      "adjustments": {
+        "items": []
+      }
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200361,
+        "sku": "1025377_CB5",
+        "inventory_sku": null,
+        "quantity": 1,
+        "item_price": "175000.0",
+        "paid_price": "143999.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "15001.0",
+        "channel_discount": "16000.0",
+        "is_gwp_item": false,
+        "kit_details": [
+          {
+            "inventory_product_sku": "1025377",
+            "quantity": 5,
+            "price": "175000.0"
+          }
+        ],
+        "line_item_details": [
+          {
+            "line_item_id": 9200361,
+            "item_original_price": null,
+            "item_paid_price": null,
+            "seller_voucher_amount": 15001.0,
+            "voucher_platform": 16000.0,
+            "tax_amount": 0.0,
+            "shipping_fee_original": 52200.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "52200.0",
+            "seller_discount_on_retail_price": 0.0,
+            "marketplace_discount_on_retail_price": 0.0
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200362,
+        "sku": "1025377",
+        "inventory_sku": "1025377",
+        "quantity": 1,
+        "item_price": "0.0",
+        "paid_price": "0.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "15001.0",
+        "channel_discount": "16000.0",
+        "is_gwp_item": true,
+        "line_item_details": []
+      }
+    ]
+  }
+}

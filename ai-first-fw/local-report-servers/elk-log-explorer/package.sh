@@ -15,6 +15,12 @@ ZIP_NAME="${SERVER_NAME}-${VERSION}.zip"
 echo "📦 Packaging ${SERVER_NAME} v${VERSION} -> ${ZIP_NAME}..."
 rm -f "${SERVER_NAME}-"*.zip
 
+# Copy theme.css if available so zip is self-contained
+THEME_CSS="${HERE}/../../local-theme/theme.css"
+if [ -f "$THEME_CSS" ] && [ ! -f "${HERE}/theme.css" ]; then
+    cp "$THEME_CSS" "${HERE}/theme.css"
+fi
+
 if [ -f "${HERE}/server.py" ]; then
     python3 "${HERE}/server.py" --export >/dev/null 2>&1 || true
 fi

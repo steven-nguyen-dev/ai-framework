@@ -1,0 +1,19 @@
+[
+  {
+    "source_file": "models/application-management-api-model/application_2023-11-30.json",
+    "domain": "application-management",
+    "path": "/applications/2023-11-30/clientSecret",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {},
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Application is not enrolled for rotation notification. Please update application notification preference in Developer console."
+        }
+      ]
+    }
+  }
+]

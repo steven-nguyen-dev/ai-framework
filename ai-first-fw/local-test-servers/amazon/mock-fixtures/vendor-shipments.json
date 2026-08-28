@@ -1,0 +1,83 @@
+[
+  {
+    "source_file": "models/vendor-shipments-api-model/vendorShipments.json",
+    "domain": "vendor-shipments",
+    "path": "/vendor/shipping/v1/shipmentConfirmations",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "shipmentConfirmations": [
+              {
+                "shipmentIdentifier": "TestShipmentConfirmation202",
+                "shipmentConfirmationDate": "2021-03-11T12:38:23.388Z",
+                "sellingParty": {
+                  "partyId": "ABCD1"
+                },
+                "shipFromParty": {
+                  "partyId": "EFGH1"
+                },
+                "shipToParty": {
+                  "partyId": "JKL1"
+                },
+                "shipmentConfirmationType": "Original",
+                "shippedItems": [
+                  {
+                    "itemSequenceNumber": "001",
+                    "shippedQuantity": {
+                      "amount": 100,
+                      "unitOfMeasure": "Eaches"
+                    },
+                    "itemDetails": {
+                      "purchaseOrderNumber": "TestOrder202"
+                    }
+                  },
+                  {
+                    "itemSequenceNumber": "002",
+                    "shippedQuantity": {
+                      "amount": 100,
+                      "unitOfMeasure": "Cases",
+                      "totalWeight": {
+                        "amount": "332.8",
+                        "unitOfMeasure": "POUNDS"
+                      }
+                    },
+                    "itemDetails": {
+                      "purchaseOrderNumber": "TestOrder202"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionId": "20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-shipments-api-model/vendorShipments.json",
+    "domain": "vendor-shipments",
+    "path": "/vendor/shipping/v1/shipmentConfirmations",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_2",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionId": "mock-TransactionId-20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+      }
+    }
+  }
+]

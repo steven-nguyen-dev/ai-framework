@@ -1,0 +1,97 @@
+[
+  {
+    "source_file": "models/vendor-direct-fulfillment-transactions-api-model/vendorDirectFulfillmentTransactionsV1.json",
+    "domain": "vendor-direct-fulfillment-transactions",
+    "path": "/vendor/directFulfillment/transactions/v1/transactions/{transactionId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "20190904190535-eef8cad8-418e-4ed3-ac72-789e2ee6214a"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionStatus": {
+          "transactionId": "20190904190535-eef8cad8-418e-4ed3-ac72-789e2ee6214a",
+          "status": "Processing"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-direct-fulfillment-transactions-api-model/vendorDirectFulfillmentTransactionsV1.json",
+    "domain": "vendor-direct-fulfillment-transactions",
+    "path": "/vendor/directFulfillment/transactions/v1/transactions/{transactionId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "20190918190535-eef8cad8-418e-456f-ac72-789e2ee6813c"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionStatus": {
+          "transactionId": "20190918190535-eef8cad8-418e-456f-ac72-789e2ee6813c",
+          "status": "Failure",
+          "errors": [
+            {
+              "code": "INVALID_ORDER_ID",
+              "message": "Invalid order ID."
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-direct-fulfillment-transactions-api-model/vendorDirectFulfillmentTransactionsV1.json",
+    "domain": "vendor-direct-fulfillment-transactions",
+    "path": "/vendor/directFulfillment/transactions/v1/transactions/{transactionId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "transactionStatus": {
+          "transactionId": "20190904190535-eef8cad8-418e-4ed3-ac72-789e2ee6214a",
+          "status": "Processing"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-direct-fulfillment-transactions-api-model/vendorDirectFulfillmentTransactionsV1.json",
+    "domain": "vendor-direct-fulfillment-transactions",
+    "path": "/vendor/directFulfillment/transactions/v1/transactions/{transactionId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "Tran0904190535-eef8cad8-418e-4ed3-ac72-789e2ee6214a"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid transmission ID.",
+          "details": ""
+        }
+      ]
+    }
+  }
+]

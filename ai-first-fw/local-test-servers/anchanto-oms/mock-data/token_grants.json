@@ -1,9 +1,1 @@
-[
-  {
-    "kind": "oauth_token",
-    "grant_type": "authorization_code",
-    "client_id": "jpluger-smoke",
-    "code": "9c4d1f7a3b8e",
-    "redirect_uri": "https://jplugger-dev.selluseller.com:3004/jpluger/mp/callback"
-  }
-]
+[]

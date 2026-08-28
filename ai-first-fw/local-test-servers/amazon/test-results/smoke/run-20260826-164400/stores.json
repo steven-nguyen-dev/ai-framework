@@ -1,0 +1,74 @@
+{
+  "lwa_tokens": [
+    {
+      "grant_type": "refresh_token",
+      "client_id": "amzn_client",
+      "token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890"
+    }
+  ],
+  "created_orders": [],
+  "shipment_confirmations": [
+    {
+      "orderId": "902-1845936-5435065",
+      "marketplaceId": "ATVPDKIKX0DER",
+      "trackingNumber": "1Z9999999999999999",
+      "carrierCode": "UPS",
+      "shipDate": "2026-08-26T12:00:00Z"
+    }
+  ],
+  "order_acknowledgements": [
+    {
+      "payload": {
+        "orderAcknowledgements": [
+          {
+            "purchaseOrderNumber": "PO-AMZN-2026-001",
+            "acknowledgementDate": "2026-08-26T12:00:00Z",
+            "acknowledgementStatus": {
+              "code": "Acknowledged",
+              "description": "Order accepted"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "feeds": [
+    {
+      "feedId": "feed-100001",
+      "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+      "inputFeedDocumentId": "feed-doc-100001",
+      "marketplaceIds": [
+        "ATVPDKIKX0DER"
+      ]
+    }
+  ],
+  "feed_documents": [
+    {
+      "feedDocumentId": "feed-doc-100001",
+      "contentType": "text/xml; charset=UTF-8"
+    }
+  ],
+  "reports": [
+    {
+      "reportId": "rep-100001",
+      "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+      "marketplaceIds": [
+        "ATVPDKIKX0DER"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "sellerId": "A2EUQ1WTGCTBG2",
+      "sku": "SKU-AMZN-PROD-001",
+      "productType": "SPEAKER"
+    }
+  ],
+  "mfn_shipments": [
+    {
+      "shipmentId": "mfn-ship-100001",
+      "amazonOrderId": "902-1845936-5435065",
+      "serviceId": "UPS_GROUND_PKG"
+    }
+  ]
+}

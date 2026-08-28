@@ -1,0 +1,303 @@
+[
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "feedTypes": {
+          "value": [
+            "POST_PRODUCT_DATA"
+          ]
+        },
+        "pageSize": {
+          "value": 10
+        },
+        "processingStatuses": {
+          "value": [
+            "CANCELLED",
+            "DONE"
+          ]
+        }
+      }
+    },
+    "response": {
+      "feeds": [
+        {
+          "feedId": "FeedId1",
+          "feedType": "POST_PRODUCT_DATA",
+          "createdTime": "2024-03-11T13:16:24.630Z",
+          "processingStatus": "CANCELLED",
+          "processingStartTime": "2024-03-11T13:16:24.630Z",
+          "processingEndTime": "2024-03-11T13:16:24.630Z"
+        }
+      ],
+      "nextToken": "VGhpcyB0b2tlbiBpcyBvcGFxdWUgYW5kIGludGVudGlvbmFsbHkgb2JmdXNjYXRlZA=="
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "feedTypes": {
+          "value": [
+            "POST_PRODUCT_DATA"
+          ]
+        },
+        "processingStatuses": {
+          "value": [
+            "BAD_VALUE",
+            "DONE"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Dates were not provided"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "feedType": "POST_PRODUCT_DATA",
+            "marketplaceIds": [
+              "ATVPDKIKX0DER",
+              "A1F83G8C2ARO7P"
+            ],
+            "inputFeedDocumentId": "3d4e42b5-1d6e-44e8-a89c-2abfca0625bb"
+          }
+        }
+      }
+    },
+    "response": {
+      "feedId": "3485934"
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "marketplaceIds": [
+              "ATVPDKIKX0DER",
+              "A1F83G8C2ARO7P"
+            ],
+            "inputFeedDocumentId": "badDocumentId"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds/{feedId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "feedId": {
+          "value": "ID1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds/{feedId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "feedId": {
+          "value": "BADID1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds/{feedId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "feedId": {
+          "value": "feedId1"
+        }
+      }
+    },
+    "response": {
+      "feedId": "FeedId1",
+      "feedType": "POST_PRODUCT_DATA",
+      "createdTime": "2024-03-11T13:16:24.630Z",
+      "processingStatus": "CANCELLED",
+      "processingStartTime": "2024-03-11T13:16:24.630Z",
+      "processingEndTime": "2024-03-11T13:16:24.630Z"
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/feeds/{feedId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "feedId": {
+          "value": "badFeedId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/documents",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contentType": "text/tab-separated-values; charset=UTF-8"
+          }
+        }
+      }
+    },
+    "response": {
+      "feedDocumentId": "3d4e42b5-1d6e-44e8-a89c-2abfca0625bb",
+      "url": "https://d34o8swod1owfl.cloudfront.net/Feed_101__POST_PRODUCT_DATA_.xml"
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/documents",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/documents/{feedDocumentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "feedDocumentId": {
+          "value": "0356cf79-b8b0-4226-b4b9-0ee058ea5760"
+        }
+      }
+    },
+    "response": {
+      "feedDocumentId": "0356cf79-b8b0-4226-b4b9-0ee058ea5760",
+      "url": "https://d34o8swod1owfl.cloudfront.net/Feed_101__POST_PRODUCT_DATA_.xml"
+    }
+  },
+  {
+    "source_file": "models/feeds-api-model/feeds_2021-06-30.json",
+    "domain": "feeds",
+    "path": "/feeds/2021-06-30/documents/{feedDocumentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "feedDocumentId": {
+          "value": "badDocumentId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

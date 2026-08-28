@@ -1,0 +1,10 @@
+[
+  {
+    "feedId": "feed-100001",
+    "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+    "inputFeedDocumentId": "feed-doc-100001",
+    "marketplaceIds": [
+      "ATVPDKIKX0DER"
+    ]
+  }
+]

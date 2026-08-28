@@ -1,0 +1,77 @@
+#!/bin/sh
+# A stand-in for wkhtmltopdf, for a machine that cannot install it.
+#
+# DpdUKCarrierService converts the DPD label HTML with wkhtmltopdf and splits the PDF per parcel, so
+# without the binary the shipment is created on DPD and then never reported to the product -- and
+# the suite reports every such case `blocked` rather than `pass`. Homebrew dropped the cask when
+# upstream archived the project, so on macOS there is nothing to install.
+#
+# This does the same job through Chrome's own print-to-PDF: it reads the HTML wkhtmltopdf would have
+# read and writes the PDF wkhtmltopdf would have written. It is a real conversion of the real label,
+# not a canned file -- what it does not prove is anything about wkhtmltopdf itself.
+#
+# Opt in for one run, so nothing about the default is changed:
+#
+#   PATH="$PWD/dpd-uk/tools:$PATH" python3 dpd-uk/suite-ni-shipment.py
+#
+# Called the way wkhtmltopdf is: `wkhtmltopdf <flags> <input> <output>`, where an input of `-` means
+# stdin and an output of `-` means stdout. java-wkhtmltopdf-wrapper writes the page to a temporary
+# file and passes its path, so reading stdin unconditionally waits for an EOF that never comes -- one
+# request took over two minutes before this told the two apart. Every flag is page geometry Chrome
+# decides for itself.
+set -e
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+[ -x "$CHROME" ] || { echo "wkhtmltopdf stand-in: no Chrome at $CHROME" >&2; exit 127; }
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+# The arguments, in order: the last existing file is the page, and a trailing path that is not one is
+# where the PDF goes. Anything starting with - is a flag, except a bare - .
+source=""
+target="-"
+for arg in "$@"; do
+  case "$arg" in
+    -) target="-" ;;
+    -*) continue ;;
+    *)
+      if [ -f "$arg" ]; then
+        source="$arg"
+      else
+        target="$arg"
+      fi
+      ;;
+  esac
+done
+
+if [ -z "$source" ]; then
+  source="$work/page.html"
+  cat > "$source"
+fi
+
+"$CHROME" --headless=new --disable-gpu --no-pdf-header-footer \
+  --user-data-dir="$work/profile" \
+  --print-to-pdf="$work/out.pdf" "file://$source" >/dev/null 2>&1 &
+chrome=$!
+
+# Chrome writes the PDF and then keeps running, so it is stopped the moment the file is complete
+# rather than waited on. Two hundred tries of 0.1s is twenty seconds, far longer than a label needs.
+tries=0
+while [ $tries -lt 200 ]; do
+  if [ -s "$work/out.pdf" ]; then
+    sleep 0.2
+    break
+  fi
+  sleep 0.1
+  tries=$((tries + 1))
+done
+kill -9 $chrome 2>/dev/null || true
+wait $chrome 2>/dev/null || true
+
+[ -s "$work/out.pdf" ] || { echo "wkhtmltopdf stand-in: Chrome produced no PDF" >&2; exit 1; }
+
+if [ "$target" = "-" ]; then
+  cat "$work/out.pdf"
+else
+  cp "$work/out.pdf" "$target"
+fi

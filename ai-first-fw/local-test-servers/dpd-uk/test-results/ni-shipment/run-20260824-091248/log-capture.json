@@ -1,0 +1,30 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-24T02:13:18.631092+00:00",
+      "live_entries": 4,
+      "accumulated": 4,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-24T02:13:48.795258+00:00",
+      "live_entries": 7,
+      "accumulated": 7,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-24T02:14:18.959788+00:00",
+      "live_entries": 10,
+      "accumulated": 10,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-24T02:14:49.142783+00:00",
+      "live_entries": 13,
+      "accumulated": 13,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}

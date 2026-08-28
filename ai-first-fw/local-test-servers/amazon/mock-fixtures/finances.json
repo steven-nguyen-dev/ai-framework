@@ -1,0 +1,1661 @@
+[
+  {
+    "source_file": "models/finances-api-model/financesInvoices_2026-06-25.json",
+    "domain": "finances",
+    "path": "/finances/invoices/2026-06-25/invoices",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "ATVPDKIKX0DER"
+        }
+      }
+    },
+    "response": {
+      "invoices": [
+        {
+          "invoiceNumber": "INV-202505001",
+          "invoiceIdentifier": "INV-202505001~ABCDEF",
+          "invoiceStatus": "IN_PROGRESS",
+          "invoiceType": "AP_INVENTORY",
+          "billingPeriod": {
+            "startDate": "2025-06-01T14:30:00Z",
+            "endDate": "2025-06-30T14:30:00Z"
+          },
+          "payee": {
+            "partnerId": "PAY123456",
+            "partnerType": "VENDOR",
+            "partnerName": "Example Vendor",
+            "partnerEntities": [
+              "ABCDEF",
+              "GHIJKL"
+            ]
+          },
+          "payer": {
+            "partnerId": "AMAZON_US",
+            "partnerType": "AMAZON",
+            "partnerName": "Amazon",
+            "partnerEntities": []
+          },
+          "issueDate": "2025-06-18T14:30:00Z",
+          "dueDate": "2025-07-18T14:30:00Z",
+          "paymentTerms": "NET30",
+          "creationDate": "2025-06-18T14:30:00Z",
+          "lastUpdatedDate": "2025-09-27T09:00:00Z",
+          "invoiceAmount": {
+            "currencyCode": "USD",
+            "currencyAmount": 2500.0
+          },
+          "invoiceAmountBreakdowns": [
+            {
+              "breakdownType": "Total",
+              "breakdownAmount": {
+                "currencyCode": "USD",
+                "currencyAmount": 2500.0
+              },
+              "breakdowns": []
+            }
+          ],
+          "relatedIdentifiers": [
+            {
+              "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+              "relatedIdentifierValue": [
+                "PO123456",
+                "PO789012"
+              ]
+            }
+          ]
+        }
+      ],
+      "numOfRecords": 1,
+      "nextToken": "1"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesInvoices_2026-06-25.json",
+    "domain": "finances",
+    "path": "/finances/invoices/2026-06-25/invoices",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInputCode",
+          "message": "Invalid input message",
+          "details": "Invalid input details"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesInvoices_2026-06-25.json",
+    "domain": "finances",
+    "path": "/finances/invoices/2026-06-25/invoices/{invoiceIdentifier}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "ATVPDKIKX0DER"
+        },
+        "invoiceIdentifier": {
+          "value": "INV-202505001~ABCDEF"
+        }
+      }
+    },
+    "response": {
+      "invoiceHeader": {
+        "invoiceNumber": "INV-202505001",
+        "invoiceIdentifier": "INV-202505001~ABCDEF",
+        "invoiceStatus": "IN_PROGRESS",
+        "invoiceType": "AP_INVENTORY",
+        "billingPeriod": {
+          "startDate": "2025-06-01T14:30:00Z",
+          "endDate": "2025-06-30T14:30:00Z"
+        },
+        "payee": {
+          "partnerId": "PAY123456",
+          "partnerType": "VENDOR",
+          "partnerName": "Example Vendor",
+          "partnerEntities": [
+            "ABCDEF",
+            "GHIJKL"
+          ]
+        },
+        "payer": {
+          "partnerId": "AMAZON_US",
+          "partnerType": "AMAZON",
+          "partnerName": "Amazon",
+          "partnerEntities": []
+        },
+        "issueDate": "2025-06-18T14:30:00Z",
+        "dueDate": "2025-07-18T14:30:00Z",
+        "paymentTerms": "NET30",
+        "invoiceAmount": {
+          "currencyCode": "USD",
+          "currencyAmount": 540.0
+        },
+        "invoiceAmountBreakdowns": [
+          {
+            "breakdownType": "Total",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 540.0
+            },
+            "breakdowns": [
+              {
+                "breakdownType": "InvoiceAmountWithoutTax",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 500.0
+                },
+                "breakdowns": []
+              },
+              {
+                "breakdownType": "TaxAmount",
+                "breakdownAmount": {
+                  "currencyCode": "USD",
+                  "currencyAmount": 40.0
+                },
+                "breakdowns": []
+              }
+            ]
+          }
+        ],
+        "invoiceSettlementBreakdowns": [
+          {
+            "breakdownType": "AmountPaid",
+            "breakdownAmount": {
+              "currencyCode": "USD",
+              "currencyAmount": 540.0
+            },
+            "breakdowns": []
+          }
+        ],
+        "creationDate": "2025-06-18T14:30:00Z",
+        "lastUpdatedDate": "2025-09-27T09:00:00Z"
+      },
+      "invoiceItems": [
+        {
+          "lineItemId": "LI-001",
+          "unitCost": {
+            "currencyCode": "USD",
+            "currencyAmount": 50.0
+          },
+          "quantity": 10,
+          "taxRateCodes": [
+            "DE 19"
+          ],
+          "totalAmount": {
+            "currencyCode": "USD",
+            "currencyAmount": 540.0
+          },
+          "totalAmountBreakdown": [
+            {
+              "breakdownType": "ItemCostWithoutTax",
+              "breakdownAmount": {
+                "currencyCode": "USD",
+                "currencyAmount": 500.0
+              },
+              "breakdowns": []
+            },
+            {
+              "breakdownType": "ItemTaxAmount",
+              "breakdownAmount": {
+                "currencyCode": "USD",
+                "currencyAmount": 40.0
+              },
+              "breakdowns": []
+            }
+          ],
+          "lineItemContext": {
+            "lineItemType": "GOODS",
+            "itemIdentifiers": [
+              {
+                "itemIdentifierName": "ASIN",
+                "itemIdentifierValue": "B0EXAMPLE1"
+              }
+            ],
+            "itemDescription": "Widget A"
+          },
+          "relatedItemIdentifiers": [
+            {
+              "relatedIdentifierName": "PURCHASE_ORDER_IDS",
+              "relatedIdentifierValue": [
+                "PO123456"
+              ]
+            }
+          ]
+        }
+      ],
+      "nextTokenForLineItems": "5"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesInvoices_2026-06-25.json",
+    "domain": "finances",
+    "path": "/finances/invoices/2026-06-25/invoices/{invoiceIdentifier}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInputCode",
+          "message": "Invalid input message",
+          "details": "Invalid input details"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEventGroups",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 1
+        },
+        "FinancialEventGroupStartedBefore": {
+          "value": "2019-10-31"
+        },
+        "FinancialEventGroupStartedAfter": {
+          "value": "2019-10-13"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "NextToken": "3493805734095308457308475",
+        "FinancialEventGroupList": [
+          {
+            "FinancialEventGroupId": "1",
+            "ProcessingStatus": "PROCESSED",
+            "FundTransferStatus": "TRANSFERED",
+            "OriginalTotal": {
+              "CurrencyCode": "USD",
+              "CurrencyAmount": 10.34
+            },
+            "ConvertedTotal": {
+              "CurrencyCode": "USD",
+              "CurrencyAmount": 39.43
+            },
+            "FundTransferDate": "2020-02-07T14:38:42.128Z",
+            "TraceId": "34550454504545",
+            "AccountTail": "4854564857",
+            "BeginningBalance": {
+              "CurrencyCode": "USD",
+              "CurrencyAmount": 55.33
+            },
+            "FinancialEventGroupStart": "2020-02-07T14:38:42.128Z",
+            "FinancialEventGroupEnd": "2020-02-07T14:38:42.128Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEventGroups",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 10
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Date range is invalid."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEventGroups/{eventGroupId}/financialEvents",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 10
+        },
+        "eventGroupId": {
+          "value": "485734534857"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "NextToken": "Next token value",
+        "FinancialEvents": {
+          "ChargebackEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "SellerOrderId": "454645645656456",
+              "MarketplaceName": "1",
+              "OrderChargeList": [
+                {
+                  "ChargeType": "Tax",
+                  "ChargeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "OrderChargeAdjustmentList": [
+                {
+                  "ChargeType": "Tax",
+                  "ChargeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "ShipmentFeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "ShipmentFeeAdjustmentList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "OrderFeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "OrderFeeAdjustmentList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "DirectPaymentList": [
+                {
+                  "DirectPaymentType": "StoredValueCardRevenue",
+                  "DirectPaymentAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "ShipmentItemList": [
+                {
+                  "SellerSKU": "456454455464",
+                  "OrderItemId": "4565465645646",
+                  "OrderAdjustmentItemId": "456456465464",
+                  "QuantityShipped": 0,
+                  "ItemChargeList": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemChargeAdjustmentList": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemFeeList": [
+                    {
+                      "FeeType": "FixedClosingFee",
+                      "FeeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemFeeAdjustmentList": [
+                    {
+                      "FeeType": "FixedClosingFee",
+                      "FeeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemTaxWithheldList": [
+                    {
+                      "TaxCollectionModel": "Free",
+                      "TaxesWithheld": [
+                        {
+                          "ChargeType": "Tax",
+                          "ChargeAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "PromotionList": [
+                    {
+                      "PromotionType": "Free",
+                      "PromotionId": "546564565",
+                      "PromotionAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "PromotionAdjustmentList": [
+                    {
+                      "PromotionType": "Free",
+                      "PromotionId": "546564565",
+                      "PromotionAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "CostOfPointsGranted": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  },
+                  "CostOfPointsReturned": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "ShipmentItemAdjustmentList": [
+                {
+                  "SellerSKU": "456454455464",
+                  "OrderItemId": "4565465645646",
+                  "OrderAdjustmentItemId": "456456465464",
+                  "QuantityShipped": 0,
+                  "ItemChargeList": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemChargeAdjustmentList": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemFeeList": [
+                    {
+                      "FeeType": "FixedClosingFee",
+                      "FeeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemFeeAdjustmentList": [
+                    {
+                      "FeeType": "FixedClosingFee",
+                      "FeeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "ItemTaxWithheldList": [
+                    {
+                      "TaxCollectionModel": "Free",
+                      "TaxesWithheld": [
+                        {
+                          "ChargeType": "Tax",
+                          "ChargeAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "PromotionList": [
+                    {
+                      "PromotionType": "Free",
+                      "PromotionId": "546564565",
+                      "PromotionAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "PromotionAdjustmentList": [
+                    {
+                      "PromotionType": "Free",
+                      "PromotionId": "546564565",
+                      "PromotionAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ],
+                  "CostOfPointsGranted": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  },
+                  "CostOfPointsReturned": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ]
+            }
+          ],
+          "ImagingServicesFeeEventList": [
+            {
+              "ImagingRequestBillingItemID": "456456456",
+              "ASIN": "4564565456456546456",
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "FeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ]
+            }
+          ],
+          "NetworkComminglingTransactionEventList": [
+            {
+              "TransactionType": "Free",
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "NetCoTransactionID": "4565645",
+              "SwapReason": "None",
+              "ASIN": "464567656576",
+              "MarketplaceId": "string",
+              "TaxExclusiveAmount": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TaxAmount": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              }
+            }
+          ],
+          "AffordabilityExpenseReversalEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "MarketplaceId": "1",
+              "TransactionType": "Free",
+              "BaseExpense": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TaxTypeCGST": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TaxTypeSGST": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TaxTypeIGST": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TotalExpense": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              }
+            }
+          ],
+          "TrialShipmentEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "FinancialEventGroupId": "1",
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "SKU": "456454455464",
+              "FeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ]
+            }
+          ],
+          "TaxWithholdingEventList": [
+            {
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "BaseAmount": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "WithheldAmount": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TaxWithholdingPeriod": {
+                "StartDate": "2020-02-05T13:56:00.363Z",
+                "EndDate": "2020-02-05T13:56:00.363Z"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEventGroups/{eventGroupId}/financialEvents",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "eventGroupId": {
+          "value": "BADID"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Bad event group ID provided."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/orders/{orderId}/financialEvents",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 10
+        },
+        "orderId": {
+          "value": "485-734-5434857"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "NextToken": "Next token value",
+        "FinancialEvents": {
+          "RetrochargeEventList": [
+            {
+              "RetrochargeEventType": "Retrocharge",
+              "AmazonOrderId": "444-555-3343433",
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "BaseTax": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "ShippingTax": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "MarketplaceName": "1",
+              "RetrochargeTaxWithheldList": [
+                {
+                  "TaxCollectionModel": "Free",
+                  "TaxesWithheld": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "RentalTransactionEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "RentalEventType": "string",
+              "ExtensionLength": 0,
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "RentalChargeList": [
+                {
+                  "ChargeType": "Tax",
+                  "ChargeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "RentalFeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "MarketplaceName": "1",
+              "RentalInitialValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "RentalReimbursement": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "RentalTaxWithheldList": [
+                {
+                  "TaxCollectionModel": "Free",
+                  "TaxesWithheld": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "ProductAdsPaymentEventList": [
+            {
+              "postedDate": "2020-02-05T13:56:00.363Z",
+              "transactionType": "Free",
+              "invoiceId": "3454535453",
+              "baseValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "taxValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "transactionValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              }
+            }
+          ],
+          "ServiceFeeEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "FeeReason": "Free",
+              "FeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "SellerSKU": "456454455464",
+              "FnSKU": "Fn134",
+              "FeeDescription": "FeeDescription",
+              "ASIN": "KJHJ457648GHD"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/orders/{orderId}/financialEvents",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "BAD-ORDER"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Bad order ID provided."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEvents",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 10
+        },
+        "NextToken": {
+          "value": "jehgri34yo7jr9e8f984tr9i4o"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "NextToken": "Next token value",
+        "FinancialEvents": {
+          "PayWithAmazonEventList": [
+            {
+              "SellerOrderId": "454645645656456",
+              "TransactionPostedDate": "2020-02-05T13:56:00.363Z",
+              "BusinessObjectType": "Free",
+              "SalesChannel": "None",
+              "Charge": {
+                "ChargeType": "Tax",
+                "ChargeAmount": {
+                  "CurrencyCode": "USD",
+                  "CurrencyAmount": 25.37
+                }
+              },
+              "FeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "PaymentAmountType": "Tax",
+              "AmountDescription": "Tax",
+              "FulfillmentChannel": "FulfillmentChannel",
+              "StoreName": "Etsy"
+            }
+          ],
+          "ServiceProviderCreditEventList": [
+            {
+              "ProviderTransactionType": "Free",
+              "SellerOrderId": "454645645656456",
+              "MarketplaceId": "1",
+              "MarketplaceCountryCode": "US",
+              "SellerId": "4564565546",
+              "SellerStoreName": "Etsy",
+              "ProviderId": "1",
+              "ProviderStoreName": "Etsy",
+              "TransactionAmount": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "TransactionCreationDate": "2020-02-05T13:56:00.363Z"
+            }
+          ],
+          "RentalTransactionEventList": [
+            {
+              "AmazonOrderId": "444-555-3343433",
+              "RentalEventType": "string",
+              "ExtensionLength": 0,
+              "PostedDate": "2020-02-05T13:56:00.363Z",
+              "RentalChargeList": [
+                {
+                  "ChargeType": "Tax",
+                  "ChargeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "RentalFeeList": [
+                {
+                  "FeeType": "FixedClosingFee",
+                  "FeeAmount": {
+                    "CurrencyCode": "USD",
+                    "CurrencyAmount": 25.37
+                  }
+                }
+              ],
+              "MarketplaceName": "1",
+              "RentalInitialValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "RentalReimbursement": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "RentalTaxWithheldList": [
+                {
+                  "TaxCollectionModel": "Free",
+                  "TaxesWithheld": [
+                    {
+                      "ChargeType": "Tax",
+                      "ChargeAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "ProductAdsPaymentEventList": [
+            {
+              "postedDate": "2020-02-05T13:56:00.363Z",
+              "transactionType": "Free",
+              "invoiceId": "3454535453",
+              "baseValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "taxValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              },
+              "transactionValue": {
+                "CurrencyCode": "USD",
+                "CurrencyAmount": 25.37
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/financesV0.json",
+    "domain": "finances",
+    "path": "/finances/v0/financialEvents",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "MaxResultsPerPage": {
+          "value": 2
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Input not valid."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/transactions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "postedAfter": {
+          "value": "2023-03-07"
+        },
+        "nextToken": {
+          "value": "jehgri34yo7jr9e8f984tr9i4o"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "nextToken": "Next token value",
+        "transactions": [
+          {
+            "sellingPartnerMetadata": {
+              "sellingPartnerId": "A3TH9S8BH6GOGM",
+              "accountType": "PAYABLE",
+              "marketplaceId": "ATIV93840DER"
+            },
+            "relatedIdentifiers": [
+              {
+                "relatedIdentifierName": "FINANCIAL_EVENT_GROUP_ID",
+                "relatedIdentifierValue": "4MVaHcsAfaYAlwlaPWrXJxrfUiKfYZ2ooWtY7528FUA"
+              },
+              {
+                "relatedIdentifierName": "ORDER_ID",
+                "relatedIdentifierValue": "8129762527551"
+              }
+            ],
+            "transactionType": "Shipment",
+            "postedDate": "2020-07-14T03:35:13.214Z",
+            "totalAmount": {
+              "currencyAmount": 10,
+              "currencyCode": "USD"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/transactions",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "postedBefore": {
+          "value": "2022-03-07"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Start date cannot be null",
+          "details": "Start date cannot be null"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/balances",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "AXXXXXXXXXER"
+          ]
+        },
+        "balanceType": {
+          "value": "TOTAL"
+        }
+      }
+    },
+    "response": {
+      "balances": [
+        {
+          "partnerMetadata": {
+            "partnerId": "XXXXXXXXXXXXXX",
+            "accountType": "Standard Orders",
+            "marketplaceId": "AXXXXXXXXXER"
+          },
+          "balanceType": "TOTAL",
+          "amount": {
+            "currencyAmount": 15000,
+            "currencyCode": "USD"
+          },
+          "lastUpdatedTime": "2025-01-12T10:30:00+09:00",
+          "balances": [
+            {
+              "balanceType": "AVAILABLE",
+              "amount": {
+                "currencyAmount": 8000,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "balanceType": "RESERVED",
+              "amount": {
+                "currencyAmount": 7000,
+                "currencyCode": "USD"
+              },
+              "balances": [
+                {
+                  "balanceType": "DEFERRED",
+                  "amount": {
+                    "currencyAmount": 9000,
+                    "currencyCode": "USD"
+                  }
+                },
+                {
+                  "balanceType": "ACCOUNT_LEVEL_RESERVE",
+                  "amount": {
+                    "currencyAmount": -2000,
+                    "currencyCode": "USD"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "nextToken": "jehgri34yo7jr9e8f984tr9i4o"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/balances",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "AXXXXXXXXXER"
+          ]
+        },
+        "balanceType": {
+          "value": "TOTAL"
+        },
+        "asOfDate": {
+          "value": "2025-01-12"
+        }
+      }
+    },
+    "response": {
+      "balances": [
+        {
+          "partnerMetadata": {
+            "partnerId": "XXXXXXXXXXXXXX",
+            "accountType": "Standard Orders",
+            "marketplaceId": "AXXXXXXXXXER"
+          },
+          "balanceType": "TOTAL",
+          "amount": {
+            "currencyAmount": 15000,
+            "currencyCode": "USD"
+          },
+          "asOfDate": "2025-01-12",
+          "balances": [
+            {
+              "balanceType": "AVAILABLE",
+              "amount": {
+                "currencyAmount": 8000,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "balanceType": "RESERVED",
+              "amount": {
+                "currencyAmount": 7000,
+                "currencyCode": "USD"
+              },
+              "balances": [
+                {
+                  "balanceType": "DEFERRED",
+                  "amount": {
+                    "currencyAmount": 9000,
+                    "currencyCode": "USD"
+                  }
+                },
+                {
+                  "balanceType": "ACCOUNT_LEVEL_RESERVE",
+                  "amount": {
+                    "currencyAmount": -2000,
+                    "currencyCode": "USD"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "nextToken": "jehgri34yo7jr9e8f984tr9i4o"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/balances",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "INVALID_MARKETPLACE_ID"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/summary",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "AXXXXXXXXXER"
+          ]
+        },
+        "periodStart": {
+          "value": "2025-01-12"
+        },
+        "periodEnd": {
+          "value": "2025-01-12"
+        }
+      }
+    },
+    "response": {
+      "summaries": [
+        {
+          "partnerMetadata": {
+            "partnerId": "XXXXXXXXXXXXXX",
+            "accountType": "Standard Orders",
+            "marketplaceId": "AXXXXXXXXXER"
+          },
+          "periodStart": "2025-01-12",
+          "periodEnd": "2025-01-12",
+          "netProceeds": {
+            "currencyAmount": 8000,
+            "currencyCode": "USD"
+          },
+          "breakdowns": [
+            {
+              "breakdownType": "Sales",
+              "breakdownAmount": {
+                "currencyAmount": 8000,
+                "currencyCode": "USD"
+              },
+              "breakdowns": [
+                {
+                  "breakdownType": "Product Charges",
+                  "breakdownAmount": {
+                    "currencyAmount": 9000,
+                    "currencyCode": "USD"
+                  },
+                  "breakdowns": []
+                }
+              ]
+            },
+            {
+              "breakdownType": "Expenses",
+              "breakdownAmount": {
+                "currencyAmount": -1000,
+                "currencyCode": "USD"
+              },
+              "breakdowns": [
+                {
+                  "breakdownType": "FBA fees",
+                  "breakdownAmount": {
+                    "currencyAmount": -1000,
+                    "currencyCode": "USD"
+                  },
+                  "breakdowns": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "nextToken": "jehgri34yo7jr9e8f984tr9i4o"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/finances_2024-06-19.json",
+    "domain": "finances",
+    "path": "/finances/2024-06-19/summary",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "INVALID_MARKETPLACE_ID"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "marketplaceId": "A1PA6795UKMFR9",
+            "accountType": "Standard Orders"
+          }
+        }
+      }
+    },
+    "response": {
+      "payoutReferenceId": "3DM7DQi8DPAMOLOSaN5HxT0q2waNwH95fopx3AD2Lgc"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "marketplaceId": "A1F83G8C2ARO7P",
+            "accountType": "Standard Orders"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NoDepositMethod",
+          "message": "No deposit method found for the selling partner. Add a valid deposit method and try again."
+        },
+        {
+          "code": "InsufficientPayoutAmount",
+          "message": "The available balance is less than the minimum permissible payout amount. No payout will be initiated."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "createdAfter": {
+          "value": "2024-06-01T00:00:00Z"
+        },
+        "createdBefore": {
+          "value": "2024-06-30T00:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "payouts": [
+        {
+          "id": "11888387941",
+          "partnerMetadata": {
+            "partnerId": "AXXXXXXXXXXXXX",
+            "accountType": "STANDARD_ORDERS",
+            "marketplaceId": "ATVPDKIKX0DER"
+          },
+          "currentStatus": "PAID",
+          "statusHistory": [
+            {
+              "status": "STARTED",
+              "lastUpdatedDate": "2024-06-01T00:00:00Z"
+            },
+            {
+              "status": "IN_TRANSIT",
+              "lastUpdatedDate": "2024-06-01T06:00:00Z"
+            },
+            {
+              "status": "PAID",
+              "lastUpdatedDate": "2024-06-02T12:00:00Z"
+            }
+          ],
+          "type": "SCHEDULED",
+          "amount": {
+            "currencyCode": "USD",
+            "currencyAmount": 1250.75
+          },
+          "accountTail": "1234",
+          "paymentMethod": "BANK_ACCOUNT",
+          "creationDate": "2024-06-01T00:00:00Z",
+          "paymentRail": "ACH",
+          "traceId": "4B03616UONXSAWP",
+          "period": {
+            "startDate": "2025-12-13T06:26:45Z",
+            "endDate": "2025-12-14T06:30:45Z"
+          },
+          "relatedIdentifiers": [
+            {
+              "relatedIdentifierName": "SETTLEMENT_ID",
+              "relatedIdentifierValue": "11888387941"
+            }
+          ]
+        }
+      ],
+      "nextToken": "eyJhbGciOiJIUzI1NiJ9"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "INVALID_MARKETPLACE"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/paymentMethods",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "ATVPDKIKX0DER"
+        }
+      }
+    },
+    "response": {
+      "paymentMethods": [
+        {
+          "countryCode": "US",
+          "accountHolderName": "John Doe",
+          "paymentMethodId": "0h_TU_CUS_4058fe2a-da6b-4b82-8e48-b20ff2eb4f6d",
+          "paymentMethodType": "BANK_ACCOUNT",
+          "tail": "677"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/paymentMethods",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "ABCMARKET"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Validation failed for: ABCMARKET"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts/expected",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      }
+    },
+    "response": {
+      "expectedPayouts": [
+        {
+          "partnerMetadata": {
+            "partnerId": "A1B2C3D4E5F6G7",
+            "accountType": "STANDARD_ORDERS",
+            "marketplaceId": "ATVPDKIKX0DER"
+          },
+          "amount": {
+            "currencyCode": "USD",
+            "currencyAmount": 2547.89
+          },
+          "status": "SCHEDULED",
+          "scheduledDate": "2024-03-22T14:00:00Z",
+          "accountTail": "1234",
+          "paymentMethod": "BANK_ACCOUNT",
+          "period": {
+            "startDate": "2024-03-08T14:00:00Z",
+            "endDate": "2024-03-22T14:00:00Z"
+          },
+          "relatedIdentifiers": [
+            {
+              "relatedIdentifierName": "SETTLEMENT_ID",
+              "relatedIdentifierValue": "SGI_20240308_001"
+            }
+          ]
+        }
+      ],
+      "nextToken": "eyJhbGciOiJIUzI1NiJ9"
+    }
+  },
+  {
+    "source_file": "models/finances-api-model/transfers_2024-06-01.json",
+    "domain": "finances",
+    "path": "/finances/transfers/2024-06-01/payouts/expected",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceIds": {
+          "value": [
+            "INVALID_MARKETPLACE"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

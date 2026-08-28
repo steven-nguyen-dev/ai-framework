@@ -1,0 +1,101 @@
+{
+  "source": "captured at 2026-08-23 15:19:16,200000, ETON sale order SOCJFCMPHTTDR",
+  "note": "One priced line and the zero-priced gift OMS emits beside it, both carrying model SKU 1027575_CB15 against a single adjustments entry. Both lines took the entry in full before the fix -- 225000 pushed twice against an order level of 225000.",
+  "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+  "data": {
+    "marketplace_code": "shopee_vn",
+    "seller_currency": "VND",
+    "voucher_seller": 18000.0,
+    "order_adjustment": {
+      "marketplace_discount": 37260.0,
+      "seller_discount": 18000.0,
+      "adjustments": {
+        "order_original_price": 225000,
+        "seller_discount": 0,
+        "voucher_from_seller": 18000,
+        "shopee_discount": 0,
+        "voucher_from_shopee": 37260,
+        "coins": 0,
+        "actual_shipping_fee": 0,
+        "seller_shipping_discount": 0,
+        "shopee_shipping_rebate": 0,
+        "service_fee": 14385,
+        "buyer_total_amount": 169740,
+        "items": [
+          {
+            "item_sku": "",
+            "model_sku": "1027575_CB15",
+            "quantity_purchased": 1,
+            "original_price": 225000,
+            "selling_price": 225000,
+            "discounted_price": 225000,
+            "seller_discount": 0,
+            "shopee_discount": 0,
+            "discount_from_voucher_seller": 18000,
+            "discount_from_voucher_shopee": 37260,
+            "discount_from_coin": 0,
+            "is_main_item": false
+          }
+        ]
+      }
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200311,
+        "sku": "1027575_CB15",
+        "inventory_sku": null,
+        "quantity": 1,
+        "item_price": "225000.0",
+        "paid_price": "169740.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "18000.0",
+        "channel_discount": "37260.0",
+        "is_gwp_item": false,
+        "kit_details": [
+          {
+            "inventory_product_sku": "1027575",
+            "quantity": 15,
+            "price": "225000.0"
+          }
+        ],
+        "line_item_details": [
+          {
+            "line_item_id": 9200311,
+            "item_original_price": 225000.0,
+            "item_paid_price": 225000.0,
+            "seller_voucher_amount": 18000.0,
+            "voucher_platform": 37260.0,
+            "tax_amount": null,
+            "shipping_fee_original": 0.0,
+            "shipping_fee_seller_discount": 0.0,
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": 0.0,
+            "marketplace_discount_on_retail_price": 0.0
+          }
+        ]
+      },
+      {
+        "order_item_id": 9200312,
+        "sku": "1027575_CB15",
+        "inventory_sku": null,
+        "quantity": 1,
+        "item_price": "0.0",
+        "paid_price": "0.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "18000.0",
+        "channel_discount": "37260.0",
+        "is_gwp_item": true,
+        "kit_details": [
+          {
+            "inventory_product_sku": "1027575",
+            "quantity": 15,
+            "price": "225000.0"
+          }
+        ],
+        "line_item_details": []
+      }
+    ]
+  }
+}

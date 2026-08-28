@@ -1,0 +1,57 @@
+[
+  {
+    "source_file": "models/listings-restrictions-api-model/listingsRestrictions_2021-08-01.json",
+    "domain": "listings-restrictions",
+    "path": "/listings/2021-08-01/restrictions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "restrictions": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "conditionType": "used_acceptable",
+          "reasons": [
+            {
+              "message": "You cannot list the product in this condition.",
+              "links": [
+                {
+                  "resource": "https://sellercentral.amazon.com/hz/approvalrequest/restrictions/approve?asin=B0000ASIN1",
+                  "verb": "GET",
+                  "title": "Request Approval via Seller Central.",
+                  "type": "text/html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-restrictions-api-model/listingsRestrictions_2021-08-01.json",
+    "domain": "listings-restrictions",
+    "path": "/listings/2021-08-01/restrictions",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "BAD_ASIN"
+        }
+      }
+    },
+    "response": [
+      {
+        "code": "BAD_REQUEST",
+        "message": "Invalid 'asin' provided."
+      }
+    ]
+  }
+]

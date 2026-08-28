@@ -1,0 +1,298 @@
+[
+  {
+    "id": "N1",
+    "name": "N1. B2B receiver, goods not at risk - the whole mapping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:08.400777+00:00",
+    "returned_at": "2026-08-24T09:33:12.137446+00:00"
+  },
+  {
+    "id": "N2",
+    "name": "N2. B2B receiver, goods at risk",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:12.258732+00:00",
+    "returned_at": "2026-08-24T09:33:14.461825+00:00"
+  },
+  {
+    "id": "N3",
+    "name": "N3. Individual receiver",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:14.539347+00:00",
+    "returned_at": "2026-08-24T09:33:16.748708+00:00"
+  },
+  {
+    "id": "N4",
+    "name": "N4. Delivered duty paid",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:16.853217+00:00",
+    "returned_at": "2026-08-24T09:33:19.072487+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. Two packages in two package groups",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:19.163379+00:00",
+    "returned_at": "2026-08-24T09:33:21.431177+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. Sender holds the scheme number",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:21.563197+00:00",
+    "returned_at": "2026-08-24T09:33:23.900060+00:00"
+  },
+  {
+    "id": "D1",
+    "name": "D1. Great Britain domestic - no customs data at all",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:24.018528+00:00",
+    "returned_at": "2026-08-24T09:33:26.356629+00:00"
+  },
+  {
+    "id": "D2",
+    "name": "D2. International network code - the invoice as it always was",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:26.502595+00:00",
+    "returned_at": "2026-08-24T09:33:29.511645+00:00"
+  },
+  {
+    "id": "R1",
+    "name": "R1. Consumer type unresolved",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"consumer_type: must be resolved to business or individual, received unknown\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:29.942535+00:00",
+    "returned_at": "2026-08-24T09:33:30.083488+00:00"
+  },
+  {
+    "id": "R2",
+    "name": "R2. Not at risk, no scheme number anywhere",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"sender_ukims or shipping_address.receiver_ukims: one is required when the goods are not at risk\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:30.263440+00:00",
+    "returned_at": "2026-08-24T09:33:33.208468+00:00"
+  },
+  {
+    "id": "R3",
+    "name": "R3. Commodity code missing on one line",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"order_items.hs_code: is required for a Northern Ireland shipment, missing for SKU-002\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.375109+00:00",
+    "returned_at": "2026-08-24T09:33:33.405762+00:00"
+  },
+  {
+    "id": "R4",
+    "name": "R4. Stated customs total disagrees with the lines",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"total_customs_value: 30.0 does not match the item lines, which come to 36.0\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.496734+00:00",
+    "returned_at": "2026-08-24T09:33:33.519988+00:00"
+  },
+  {
+    "id": "R5",
+    "name": "R5. Package lighter than what is in it",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipment_weight: is lighter than the items it carries, 0.2 against 0.65\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.605780+00:00",
+    "returned_at": "2026-08-24T09:33:33.631874+00:00"
+  },
+  {
+    "id": "R6",
+    "name": "R6. Fulfilment code carries no network code",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipping_method.fulfilment_code: must carry the DPD network code after a /, received DPD_UK\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.734756+00:00",
+    "returned_at": "2026-08-24T09:33:33.763730+00:00"
+  },
+  {
+    "id": "R7",
+    "name": "R7. Customs currency DPD does not settle in",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"customs_currency: must be GBP or EUR for a Northern Ireland shipment\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.858798+00:00",
+    "returned_at": "2026-08-24T09:33:33.883517+00:00"
+  },
+  {
+    "id": "R8",
+    "name": "R8. Both parties hold a scheme number, neither is named",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"ukims_holder: must name sender or receiver when both hold a scheme number\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:33.971352+00:00",
+    "returned_at": "2026-08-24T09:33:33.994746+00:00"
+  },
+  {
+    "id": "E1",
+    "name": "E1. DPD rejects the postcode",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"deliveryDetails.address.postcode\\\\|validation\\\\|Invalid postcode value\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:34.076897+00:00",
+    "returned_at": "2026-08-24T09:33:34.118465+00:00"
+  },
+  {
+    "id": "E2",
+    "name": "E2. GeoSession dropped, renewed, shipment sent again",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:34.196424+00:00",
+    "returned_at": "2026-08-24T09:33:36.588874+00:00"
+  },
+  {
+    "id": "E3",
+    "name": "E3. GeoSession refused even after renewal",
+    "controller_status": 401,
+    "controller_body": "{\"status\":\"UNAUTHORIZED\",\"message\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\",\"summary\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\"}",
+    "fired_at": "2026-08-24T09:33:36.699136+00:00",
+    "returned_at": "2026-08-24T09:33:36.768764+00:00"
+  },
+  {
+    "id": "P1",
+    "name": "P1. Destination postcode in lower case, with spaces",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:36.865505+00:00",
+    "returned_at": "2026-08-24T09:33:39.122995+00:00"
+  },
+  {
+    "id": "P2",
+    "name": "P2. Origin outside Great Britain",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:39.217422+00:00",
+    "returned_at": "2026-08-24T09:33:41.420705+00:00"
+  },
+  {
+    "id": "P3",
+    "name": "P3. Individual receiver with a risk status set",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:41.526538+00:00",
+    "returned_at": "2026-08-24T09:33:43.719873+00:00"
+  },
+  {
+    "id": "P4",
+    "name": "P4. Business receiver with no risk status",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"risk_status: is required for a business receiver, at_risk or not_at_risk\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:43.821879+00:00",
+    "returned_at": "2026-08-24T09:33:43.847276+00:00"
+  },
+  {
+    "id": "P5",
+    "name": "P5. Both parties hold a scheme number, the receiver is named",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:43.935210+00:00",
+    "returned_at": "2026-08-24T09:33:46.390703+00:00"
+  },
+  {
+    "id": "P6",
+    "name": "P6. Receiver's scheme number without the receiver's EORI",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"buyer_eori: is required alongside shipping_address.receiver_ukims\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:46.547014+00:00",
+    "returned_at": "2026-08-24T09:33:46.573851+00:00"
+  },
+  {
+    "id": "P7",
+    "name": "P7. No sender EORI number",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"eori_no: is required for a Northern Ireland shipment\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:46.672083+00:00",
+    "returned_at": "2026-08-24T09:33:46.695714+00:00"
+  },
+  {
+    "id": "P8",
+    "name": "P8. No Incoterm configured",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"shipment\\\\|validation\\\\|'invoice.invoiceTermsOfDelivery' is required -- required once generateCustomsData is Y\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:46.786032+00:00",
+    "returned_at": "2026-08-24T09:33:46.842017+00:00"
+  },
+  {
+    "id": "P9",
+    "name": "P9. No package allocation - one physical package",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:46.937534+00:00",
+    "returned_at": "2026-08-24T09:33:49.436443+00:00"
+  },
+  {
+    "id": "P10",
+    "name": "P10. Free sample - product cost stands in for the price",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:49.550461+00:00",
+    "returned_at": "2026-08-24T09:33:51.818224+00:00"
+  },
+  {
+    "id": "P11",
+    "name": "P11. Free sample with no product cost",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"order_items.unit_customs_value: must be greater than zero for SKU-002, send product_cost for a free sample\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:51.951202+00:00",
+    "returned_at": "2026-08-24T09:33:51.984116+00:00"
+  },
+  {
+    "id": "P12",
+    "name": "P12. No customs total stated - summed from the lines",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:52.095698+00:00",
+    "returned_at": "2026-08-24T09:33:54.355926+00:00"
+  },
+  {
+    "id": "P13",
+    "name": "P13. Currency taken from the item lines",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:54.454608+00:00",
+    "returned_at": "2026-08-24T09:33:56.716547+00:00"
+  },
+  {
+    "id": "P14",
+    "name": "P14. A package holding less than the order line ships",
+    "controller_status": 500,
+    "controller_body": "{\"status\":\"BAD_REQUEST\",\"message\":\"order_items.quantity: SKU-001 ships 2 but the packages declare 1\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+    "fired_at": "2026-08-24T09:33:56.831475+00:00",
+    "returned_at": "2026-08-24T09:33:56.862533+00:00"
+  },
+  {
+    "id": "P15",
+    "name": "P15. The item's own description and origin win",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:56.963341+00:00",
+    "returned_at": "2026-08-24T09:33:59.288033+00:00"
+  },
+  {
+    "id": "P16",
+    "name": "P16. Long descriptions, one product named twice",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:33:59.426010+00:00",
+    "returned_at": "2026-08-24T09:34:01.715301+00:00"
+  },
+  {
+    "id": "P17",
+    "name": "P17. Street longer than the field",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:34:01.863744+00:00",
+    "returned_at": "2026-08-24T09:34:04.115727+00:00"
+  },
+  {
+    "id": "P18",
+    "name": "P18. No shipping charge stated",
+    "controller_status": 200,
+    "controller_body": "{\"status\":\"OK\",\"message\":\"Order Created Successfully\",\"summary\":\"Order Created Successfully\"}",
+    "fired_at": "2026-08-24T09:34:04.217599+00:00",
+    "returned_at": "2026-08-24T09:34:06.559348+00:00"
+  }
+]

@@ -78,7 +78,9 @@ what stands on its own — an API document no mock answers from, and application
 | Integration / Service | Folder | Launch | Port |
 |---|---|---|---|
 | **Central Portal** | [`portal.py`](portal.py) | `python3 portal.py` | `23000` |
+| **Amazon SP-API** (third-party marketplace) | [`amazon/`](amazon/README.md) | `python3 mock.py amazon` | `23103` |
 | **Eton WMS** (third-party partner) | [`eton/`](eton/README.md) | `python3 mock.py eton` | `23101` |
+| **DPD UK** (third-party carrier) | [`dpd-uk/`](dpd-uk/README.md) | `python3 mock.py dpd-uk` | `23102` |
 | **Anchanto WMS (Wareo3)** | [`anchanto-wms/`](anchanto-wms/README.md) | `python3 mock.py anchanto-wms` | `23002` |
 | **Anchanto OMS (SelluSeller)** | [`anchanto-oms/`](anchanto-oms/README.md) | `python3 mock.py anchanto-oms` | `23001` |
 
@@ -94,7 +96,7 @@ never reused after a mock is deleted.
 |---|---|---|
 | `23000` | Management Portal | `23000` portal |
 | `23001`– | Anchanto products | `23001` anchanto-oms · `23002` anchanto-wms |
-| `23101`– | third-party systems | `23101` eton |
+| `23101`– | third-party systems | `23101` eton · `23102` dpd-uk · `23103` amazon |
 
 The block a mock sits in tells you which side of an integration it stands on: a `2300x` address is
 Anchanto answering, a `2310x` address is a partner answering. Reading a call log or a HAR, the port
@@ -103,6 +105,11 @@ alone settles the direction.
 `--port` overrides the config for one run. Use it to run two copies of a mock, not to move a mock
 off its allocated number — the number is what the READMEs, the smoke runners and the JPluger local
 profile all point at.
+
+`amazon` is the **Amazon Selling Partner API (SP-API)**, `sellingpartnerapi-na.amazon.com` in prod. 371
+operations covering Orders, Feeds, Reports, Listings, Pricing, FBA Inventory, Merchant Fulfillment (MFN),
+and Login with Amazon (LWA) token authentication, generated from `amzn/selling-partner-api-models` into
+[`amazon/amazon-sp-api-swagger.json`](amazon/amazon-sp-api-swagger.json).
 
 `anchanto-wms` is **Anchanto's own WMS product**, Wareo3 — `wms-api.anchanto.com` in prod, called by
 `connector/wms3-connector` in the `wms3` area. 27 operations, reference in
@@ -118,7 +125,15 @@ OMS and WMS3 are **two different Anchanto products** behind two different base U
 alone does not tell them apart — OMS has its own v2 inventory endpoints. Each mock answers 404 on
 the other's paths, on purpose, so a misrouted call fails instead of looking healthy.
 
-`eton` is a **third-party** WMS, one of the partners the separate `wms` area integrates with. The two
+`eton` is a **third-party** WMS, one of the partners the separate `wms` area integrates with.
+
+`dpd-uk` is a **third-party** carrier, `api.dpd.co.uk` in prod, called by
+`carrier-integrations/dpdUK-integration` in the `carrier` area under both `dpd_uk` and `dpd_local`.
+Reached through `DPD_UK_BASE_URL` / `DPD_UK_LOCAL_BASE_URL`, which the app takes from its own
+properties file and not from `secrets/` — see [`dpd-uk/README.md`](dpd-uk/README.md). 4 operations,
+transcribed from the partner's PDF specification into `dpd-uk/dpd-uk-openapi.json`; DPD publishes no
+OpenAPI document.
+
 Every mock also serves:
 - **`/`** (root): Test Server dashboard, Living Specs, and test suite runner.
 - **`/api`**: API root for mock requests (all spec/config endpoints are reachable under `/api` or directly).

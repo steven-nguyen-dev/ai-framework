@@ -1,0 +1,1471 @@
+{
+  "name": "Amazon Selling Partner API (SP-API) Mock Smoke Suite",
+  "suite": "smoke",
+  "at": "2026-08-26T09:43:36Z",
+  "base_url": "http://127.0.0.1:23103",
+  "summary": {
+    "pass": 34,
+    "fail": 0,
+    "blocked": 0
+  },
+  "evidence": {
+    "status": "complete",
+    "mock call log": "captured -- 43 entries",
+    "mock stores": "captured -- 9 files",
+    "server": "Amazon SP-API mock at http://127.0.0.1:23103"
+  },
+  "cases": [
+    {
+      "id": "AUTH-1",
+      "name": "LWA OAuth Token Exchange",
+      "given": "valid refresh_token and client credentials",
+      "then": [
+        "200 OK",
+        "access_token present",
+        "recorded in lwa_tokens store"
+      ],
+      "note": "Integrations obtain OAuth tokens from /auth/o2/token before calling SP-API endpoints.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "LWA token exchange",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "access_token",
+          "what": "Bearer access token for SP-API",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "token_type",
+          "what": "bearer token format",
+          "expected": "bearer",
+          "actual": "bearer",
+          "ok": true
+        },
+        {
+          "label": "expires_in",
+          "what": "token validity duration",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "recorded in store",
+          "what": "lwa_tokens records the token issuance",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /auth/o2/token [refresh_token] -> 200"
+      ],
+      "detail": {
+        "issued_token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890"
+      },
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "AUTH-2",
+      "name": "LWA Rejection on Invalid Token",
+      "given": "refresh_token with INVALID marker",
+      "then": [
+        "400 Bad Request",
+        "error: invalid_grant"
+      ],
+      "note": "Ensures client properly handles expired or revoked refresh tokens.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "invalid credentials rejected",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "error",
+          "what": "LWA standard error code",
+          "expected": "invalid_grant",
+          "actual": "invalid_grant",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /auth/o2/token [INVALID] -> 400"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "AUTH-3",
+      "name": "LWA Server Error Marker",
+      "given": "refresh_token with SERVERERROR marker",
+      "then": [
+        "500 Internal Server Error",
+        "error: server_error"
+      ],
+      "note": "Verifies retry logic on transient OAuth auth failures.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "LWA server error marker",
+          "expected": "500",
+          "actual": "500",
+          "ok": true
+        },
+        {
+          "label": "error",
+          "what": "server_error code",
+          "expected": "server_error",
+          "actual": "server_error",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /auth/o2/token [SERVERERROR] -> 500"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "RDT-1",
+      "name": "Restricted Data Token (RDT) Exchange",
+      "given": "POST to /tokens/2021-03-01/restrictedDataToken",
+      "then": [
+        "200 OK",
+        "restrictedDataToken present",
+        "expiresIn: 3600"
+      ],
+      "note": "SP-API requires RDTs to decrypt customer PII data.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "RDT token exchange",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "restrictedDataToken",
+          "what": "RDT token string",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "expiresIn",
+          "what": "RDT expiry in seconds",
+          "expected": "3600",
+          "actual": "3600",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /tokens/2021-03-01/restrictedDataToken -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "ORD-1",
+      "name": "Orders List \u2014 Happy Path",
+      "given": "GET /orders/v0/orders with marketplace and date filter",
+      "then": [
+        "200 OK",
+        "Orders array populated",
+        "NextToken present"
+      ],
+      "note": "Core order synchronization flow for pulling new marketplace orders.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "list orders happy path",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Orders list",
+          "what": "contains simulated orders",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "NextToken",
+          "what": "pagination token present for multi-page results",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "AmazonOrderId",
+          "what": "valid Amazon order ID format",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "MarketplaceId",
+          "what": "US marketplace ID",
+          "expected": "ATVPDKIKX0DER",
+          "actual": "ATVPDKIKX0DER",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders -> 200"
+      ],
+      "detail": {
+        "order_count": 2
+      },
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "ORD-2",
+      "name": "Orders List \u2014 Empty Window",
+      "given": "GET /orders/v0/orders with EMPTY marker",
+      "then": [
+        "200 OK",
+        "Orders: []"
+      ],
+      "note": "Verifies sync loop handles empty order windows gracefully.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "empty orders response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Orders is empty array",
+          "what": "returns empty array [] rather than 404",
+          "expected": "[]",
+          "actual": "[]",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders [EMPTY marker] -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "ORD-3",
+      "name": "Orders List \u2014 NextToken Pagination",
+      "given": "GET /orders/v0/orders with NextToken query parameter",
+      "then": [
+        "200 OK",
+        "Page 2 orders returned"
+      ],
+      "note": "Validates multi-page cursor pagination.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "paginated page 2 orders",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Page 2 orders",
+          "what": "returns second page items",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "Page 2 Order ID",
+          "what": "matches second page fixture",
+          "expected": "902-3159896-1390916",
+          "actual": "902-3159896-1390916",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders [NextToken] -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "ORD-4",
+      "name": "Orders List \u2014 Rate Limit 429",
+      "given": "GET /orders/v0/orders with RATELIMIT marker",
+      "then": [
+        "429 Too Many Requests",
+        "code: QuotaExceeded"
+      ],
+      "note": "Tests client exponential backoff and rate limit recovery.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "rate limit exceeded",
+          "expected": "429",
+          "actual": "429",
+          "ok": true
+        },
+        {
+          "label": "errors array",
+          "what": "standard SP-API error format",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "error code",
+          "what": "QuotaExceeded error",
+          "expected": "QuotaExceeded",
+          "actual": "QuotaExceeded",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders [RATELIMIT marker] -> 429"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "ORD-5",
+      "name": "Orders List \u2014 Server Error 500",
+      "given": "GET /orders/v0/orders with SERVERERROR marker",
+      "then": [
+        "500 Internal Server Error",
+        "code: InternalServerError"
+      ],
+      "note": "Tests client resilience against transient Amazon 500 errors.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "server error 500",
+          "expected": "500",
+          "actual": "500",
+          "ok": true
+        },
+        {
+          "label": "error code",
+          "what": "InternalServerError code",
+          "expected": "InternalServerError",
+          "actual": "InternalServerError",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders [SERVERERROR marker] -> 500"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "ORD-6",
+      "name": "Single Order Details",
+      "given": "GET /orders/v0/orders/{orderId}",
+      "then": [
+        "200 OK",
+        "AmazonOrderId matches path parameter",
+        "OrderStatus present"
+      ],
+      "note": "Retrieval of detailed order metadata.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "retrieve single order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "AmazonOrderId echoed",
+          "what": "matches requested path order ID",
+          "expected": "902-1845936-5435065",
+          "actual": "902-1845936-5435065",
+          "ok": true
+        },
+        {
+          "label": "OrderStatus",
+          "what": "order fulfillment status",
+          "expected": "Unshipped",
+          "actual": "Unshipped",
+          "ok": true
+        },
+        {
+          "label": "DefaultShipFromLocationAddress",
+          "what": "warehouse address",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/902-1845936-5435065 -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "ORD-7",
+      "name": "Order Not Found 404",
+      "given": "GET /orders/v0/orders/NOTFOUND-902-000",
+      "then": [
+        "404 Not Found",
+        "code: NotFound"
+      ],
+      "note": "Validates handling of non-existent order IDs.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "order not found returns 404",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        },
+        {
+          "label": "error code",
+          "what": "NotFound code",
+          "expected": "NotFound",
+          "actual": "NotFound",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/NOTFOUND-902-0000000-0000000 [NOTFOUND] -> 404"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "ORD-8",
+      "name": "Order Items Retrieval",
+      "given": "GET /orders/v0/orders/{orderId}/orderItems",
+      "then": [
+        "200 OK",
+        "OrderItems array with ASIN, SKU, ItemPrice"
+      ],
+      "note": "Retrieval of line items for fulfillment and inventory reservation.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "get order items",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "OrderItems list",
+          "what": "order items array",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "ASIN",
+          "what": "item ASIN",
+          "expected": "B00005N5PF",
+          "actual": "B00005N5PF",
+          "ok": true
+        },
+        {
+          "label": "SellerSKU",
+          "what": "item SellerSKU",
+          "expected": "SKU-AMZN-PROD-001",
+          "actual": "SKU-AMZN-PROD-001",
+          "ok": true
+        },
+        {
+          "label": "ItemPrice",
+          "what": "item price object",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/902-1845936-5435065/orderItems -> 200"
+      ],
+      "detail": {},
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "ORD-9",
+      "name": "Order Shipping Address",
+      "given": "GET /orders/v0/orders/{orderId}/address",
+      "then": [
+        "200 OK",
+        "ShippingAddress with City, State, PostalCode"
+      ],
+      "note": "Delivery address extraction for warehouse packing slips and carrier label generation.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "get shipping address",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "City",
+          "what": "shipping city",
+          "expected": "Seattle",
+          "actual": "Seattle",
+          "ok": true
+        },
+        {
+          "label": "StateOrRegion",
+          "what": "shipping state",
+          "expected": "WA",
+          "actual": "WA",
+          "ok": true
+        },
+        {
+          "label": "PostalCode",
+          "what": "postal code",
+          "expected": "98109",
+          "actual": "98109",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/902-1845936-5435065/address -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "ORD-10",
+      "name": "Order Address \u2014 RDT Access Denied",
+      "given": "GET /orders/v0/orders/RDT_REQUIRED-902/address",
+      "then": [
+        "403 Forbidden / AccessDenied"
+      ],
+      "note": "Validates client handles PII token refusal.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "RDT requirement returns 403",
+          "expected": "403",
+          "actual": "403",
+          "ok": true
+        },
+        {
+          "label": "error code",
+          "what": "Unauthorized code",
+          "expected": "Unauthorized",
+          "actual": "Unauthorized",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/RDT_REQUIRED-902-1111111-2222222/address [RDT_REQUIRED] -> 403"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "ORD-11",
+      "name": "Order Buyer Info",
+      "given": "GET /orders/v0/orders/{orderId}/buyerInfo",
+      "then": [
+        "200 OK",
+        "BuyerEmail present"
+      ],
+      "note": "Buyer details for invoice creation and customer support.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status",
+          "what": "get buyer info",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "BuyerEmail",
+          "what": "buyer email",
+          "expected": "buyer-mock@marketplace.amazon.com",
+          "actual": "buyer-mock@marketplace.amazon.com",
+          "ok": true
+        },
+        {
+          "label": "BuyerName",
+          "what": "buyer name",
+          "expected": "John Buyer",
+          "actual": "John Buyer",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/902-1845936-5435065/buyerInfo -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "CONF-1",
+      "name": "Shipment Confirmation",
+      "given": "POST /orders/v0/orders/{orderId}/shipmentConfirmation",
+      "then": [
+        "204 No Content",
+        "recorded in shipment_confirmations store"
+      ],
+      "note": "Confirms order shipment to Amazon with tracking number and carrier code.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 204",
+          "what": "shipment confirmation success",
+          "expected": "204",
+          "actual": "204",
+          "ok": true
+        },
+        {
+          "label": "recorded in store",
+          "what": "confirmation appended to shipment_confirmations.json",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "carrier recorded",
+          "what": "UPS carrier code recorded",
+          "expected": "UPS",
+          "actual": "UPS",
+          "ok": true
+        },
+        {
+          "label": "tracking recorded",
+          "what": "tracking number stored",
+          "expected": "1Z9999999999999999",
+          "actual": "1Z9999999999999999",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /orders/v0/orders/902-1845936-5435065/shipmentConfirmation -> 204"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "CONF-2",
+      "name": "Shipment Confirmation Refusal",
+      "given": "POST shipmentConfirmation with INVALID carrier code",
+      "then": [
+        "400 Bad Request",
+        "InvalidInput error"
+      ],
+      "note": "Rejects invalid carrier tracking submissions before push.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 400",
+          "what": "invalid carrier rejected",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /orders/v0/orders/902-1845936-5435065/shipmentConfirmation [INVALID carrier] -> 400"
+      ],
+      "detail": {},
+      "summary": "1/1 checks passed"
+    },
+    {
+      "id": "ACK-1",
+      "name": "Order Acknowledgement",
+      "given": "POST /vendor/orders/v1/acknowledgements",
+      "then": [
+        "202 Accepted",
+        "recorded in order_acknowledgements store"
+      ],
+      "note": "Direct/vendor order acknowledgement flow.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 202",
+          "what": "order acknowledgement accepted",
+          "expected": "202",
+          "actual": "202",
+          "ok": true
+        },
+        {
+          "label": "recorded in store",
+          "what": "recorded in order_acknowledgements.json",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /vendor/orders/v1/acknowledgements -> 202"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "FEED-1",
+      "name": "Feeds Lifecycle \u2014 Submit & Query",
+      "given": "POST /feeds/documents, POST /feeds, GET /feeds/{feedId}",
+      "then": [
+        "201 Created doc",
+        "202 Accepted feed",
+        "200 feed DONE",
+        "recorded in feeds store"
+      ],
+      "note": "Asynchronous data exchange for bulk inventory and order updates.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "doc status is 201",
+          "what": "feed document creation",
+          "expected": "201",
+          "actual": "201",
+          "ok": true
+        },
+        {
+          "label": "feedDocumentId",
+          "what": "returned document ID",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "upload url",
+          "what": "S3 upload URL",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "feed submit status is 202",
+          "what": "feed acceptance",
+          "expected": "202",
+          "actual": "202",
+          "ok": true
+        },
+        {
+          "label": "feedId",
+          "what": "assigned feed ID",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "feed query status is 200",
+          "what": "feed status inquiry",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "processingStatus is DONE",
+          "what": "completed feed status",
+          "expected": "DONE",
+          "actual": "DONE",
+          "ok": true
+        },
+        {
+          "label": "feed recorded in store",
+          "what": "feeds.json tracking",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /feeds/2021-06-30/documents -> 201",
+        "POST /feeds/2021-06-30/feeds -> 202",
+        "GET /feeds/2021-06-30/feeds/feed-100001 -> 200"
+      ],
+      "detail": {},
+      "summary": "8/8 checks passed"
+    },
+    {
+      "id": "FEED-2",
+      "name": "Feeds Status Steering",
+      "given": "GET /feeds with INPROGRESS and FATAL markers",
+      "then": [
+        "IN_PROGRESS status",
+        "FATAL status"
+      ],
+      "note": "Simulates long-running and failing background feed tasks.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "IN_PROGRESS status",
+          "what": "steered feed status",
+          "expected": "IN_PROGRESS",
+          "actual": "IN_PROGRESS",
+          "ok": true
+        },
+        {
+          "label": "FATAL status",
+          "what": "steered fatal status",
+          "expected": "FATAL",
+          "actual": "FATAL",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /feeds/2021-06-30/feeds/INPROGRESS-FEED-99 -> 200",
+        "GET /feeds/2021-06-30/feeds/FATAL-FEED-99 -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "REP-1",
+      "name": "Reports Lifecycle",
+      "given": "POST /reports, GET /reports/{reportId}, GET /reports/documents/{id}",
+      "then": [
+        "202 Accepted report",
+        "200 report DONE",
+        "200 download URL"
+      ],
+      "note": "End-to-end report generation and download flow.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "report submit status is 202",
+          "what": "report acceptance",
+          "expected": "202",
+          "actual": "202",
+          "ok": true
+        },
+        {
+          "label": "reportId",
+          "what": "assigned report ID",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "report status is 200",
+          "what": "report status response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "processingStatus is DONE",
+          "what": "report completed",
+          "expected": "DONE",
+          "actual": "DONE",
+          "ok": true
+        },
+        {
+          "label": "reportDocumentId",
+          "what": "document ID present",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "doc status is 200",
+          "what": "report document URL response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "download url",
+          "what": "presigned S3 download URL",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /reports/2021-06-30/reports -> 202",
+        "GET /reports/2021-06-30/reports/rep-100001 -> 200",
+        "GET /reports/2021-06-30/documents/rep-doc-100001 -> 200"
+      ],
+      "detail": {},
+      "summary": "7/7 checks passed"
+    },
+    {
+      "id": "CAT-1",
+      "name": "Catalog Items Query",
+      "given": "GET /catalog/2022-04-01/items/{asin}",
+      "then": [
+        "200 OK",
+        "asin echoed",
+        "summaries present"
+      ],
+      "note": "Catalog product info and brand lookup.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "catalog query response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "asin echoed",
+          "what": "matches requested ASIN",
+          "expected": "B00005N5PF",
+          "actual": "B00005N5PF",
+          "ok": true
+        },
+        {
+          "label": "summaries",
+          "what": "product summary list",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "brand",
+          "what": "brand name",
+          "expected": "Amazon Basics",
+          "actual": "Amazon Basics",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /catalog/2022-04-01/items/B00005N5PF -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "LIST-1",
+      "name": "Listings Items CRUD",
+      "given": "PUT /listings/2021-08-01/items/{sellerId}/{sku} and GET",
+      "then": [
+        "200 ACCEPTED",
+        "recorded in listings store",
+        "200 GET listing"
+      ],
+      "note": "Updating and reading SKU listings catalog definitions.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "PUT listing status is 200",
+          "what": "listing update accepted",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "status is ACCEPTED",
+          "what": "listing status",
+          "expected": "ACCEPTED",
+          "actual": "ACCEPTED",
+          "ok": true
+        },
+        {
+          "label": "recorded in store",
+          "what": "listings.json tracking",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "GET listing status is 200",
+          "what": "listing read",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "sku echoed",
+          "what": "listing SKU matches",
+          "expected": "SKU-AMZN-PROD-001",
+          "actual": "SKU-AMZN-PROD-001",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "PUT /listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001 -> 200",
+        "GET /listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001 -> 200"
+      ],
+      "detail": {},
+      "summary": "5/5 checks passed"
+    },
+    {
+      "id": "PRC-1",
+      "name": "Product Pricing API",
+      "given": "GET /products/pricing/v0/price",
+      "then": [
+        "200 OK",
+        "BuyingPrice present",
+        "status: Success"
+      ],
+      "note": "Fetch competitive and listing prices for SKUs.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "pricing query response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "pricing payload",
+          "what": "returns pricing entries",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "pricing status",
+          "what": "pricing status Success",
+          "expected": "Success",
+          "actual": "Success",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /products/pricing/v0/price -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "FBA-1",
+      "name": "FBA Inventory Summaries",
+      "given": "GET /fba/inventory/v1/summaries",
+      "then": [
+        "200 OK",
+        "fulfillableQuantity present"
+      ],
+      "note": "Query Amazon FBA fulfillment center inventory balances.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "FBA inventory summaries",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "inventorySummaries",
+          "what": "FBA inventory list",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "fulfillableQuantity",
+          "what": "fulfillable stock quantity",
+          "expected": "150",
+          "actual": "150",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /fba/inventory/v1/summaries -> 200"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "MFN-1",
+      "name": "Merchant Fulfillment Shipping",
+      "given": "POST /mfn/v0/eligibleShippingServices & POST /mfn/v0/shipments",
+      "then": [
+        "200 eligible services",
+        "200 Purchased shipment with label PDF",
+        "recorded in mfn_shipments store"
+      ],
+      "note": "Buy Shipping services and label generation for Seller Fulfilled Prime / MFN orders.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "eligible services status is 200",
+          "what": "MFN services query",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "ShippingServiceList",
+          "what": "available carrier services",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "shipment status is 200",
+          "what": "MFN shipment purchase",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Status",
+          "what": "shipment purchase status",
+          "expected": "Purchased",
+          "actual": "Purchased",
+          "ok": true
+        },
+        {
+          "label": "TrackingId",
+          "what": "carrier tracking ID",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "Label",
+          "what": "printable label payload",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "recorded in store",
+          "what": "mfn_shipments.json tracking",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "POST /mfn/v0/eligibleShippingServices -> 200",
+        "POST /mfn/v0/shipments -> 200"
+      ],
+      "detail": {},
+      "summary": "7/7 checks passed"
+    },
+    {
+      "id": "SB-ORD-1",
+      "name": "Sandbox: Orders TEST_CASE_200",
+      "given": "GET /orders/v0/orders?CreatedAfter=TEST_CASE_200",
+      "then": [
+        "200 OK",
+        "Orders fixture populated with 902-1845936-5435065 & 902-8745147-1934268"
+      ],
+      "note": "Matches official Amazon sandbox TEST_CASE_200 static response payload.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "official sandbox TEST_CASE_200",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Orders list present",
+          "what": "orders in fixture",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "first order ID",
+          "what": "order fixture 1",
+          "expected": "902-1845936-5435065",
+          "actual": "902-1845936-5435065",
+          "ok": true
+        },
+        {
+          "label": "second order ID",
+          "what": "order fixture 2",
+          "expected": "902-8745147-1934268",
+          "actual": "902-8745147-1934268",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders?CreatedAfter=TEST_CASE_200 -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "SB-ORD-2",
+      "name": "Sandbox: Orders TEST_CASE_200_NEXT_TOKEN",
+      "given": "GET /orders/v0/orders?CreatedAfter=TEST_CASE_200_NEXT_TOKEN",
+      "then": [
+        "200 OK",
+        "NextToken: 2YgYW55IGNhcm5hbCBwbGVhc3VyZS4"
+      ],
+      "note": "Matches official Amazon sandbox pagination test case token.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "official sandbox pagination",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "NextToken matches upstream fixture",
+          "what": "exact sandbox next token",
+          "expected": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+          "actual": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders?CreatedAfter=TEST_CASE_200_NEXT_TOKEN -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "SB-ORD-3",
+      "name": "Sandbox: Orders TEST_CASE_400",
+      "given": "GET /orders/v0/orders?CreatedAfter=TEST_CASE_400",
+      "then": [
+        "400 Bad Request",
+        "errors array present"
+      ],
+      "note": "Matches official Amazon sandbox 400 error test case.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 400",
+          "what": "official sandbox error TEST_CASE_400",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "errors payload",
+          "what": "errors array returned",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders?CreatedAfter=TEST_CASE_400 -> 400"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "SB-ORD-4",
+      "name": "Sandbox: Order TEST_CASE_IBA_200",
+      "given": "GET /orders/v0/orders/TEST_CASE_IBA_200",
+      "then": [
+        "200 OK",
+        "IsIBA: true",
+        "AmazonOrderId: 921-3175655-0452641"
+      ],
+      "note": "Matches official Amazon sandbox Invoicing by Amazon (IBA) order fixture.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 200",
+          "what": "official sandbox IBA order",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "IsIBA is true",
+          "what": "IBA order flag",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "AmazonOrderId matches fixture",
+          "what": "order ID",
+          "expected": "921-3175655-0452641",
+          "actual": "921-3175655-0452641",
+          "ok": true
+        },
+        {
+          "label": "SalesChannel",
+          "what": "German marketplace",
+          "expected": "Amazon.de",
+          "actual": "Amazon.de",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /orders/v0/orders/TEST_CASE_IBA_200 -> 200"
+      ],
+      "detail": {},
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "SB-CAT-1",
+      "name": "Sandbox: Catalog Error Test Cases",
+      "given": "GET /catalog/items with TEST_CASE_404, 429, 500",
+      "then": [
+        "404 NotFound",
+        "429 QuotaExceeded",
+        "500 InternalServerError"
+      ],
+      "note": "Matches official Amazon sandbox error fixtures for catalog lookups.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "catalog 404",
+          "what": "TEST_CASE_404 status",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        },
+        {
+          "label": "catalog 429",
+          "what": "TEST_CASE_429 rate limit",
+          "expected": "429",
+          "actual": "429",
+          "ok": true
+        },
+        {
+          "label": "catalog 500",
+          "what": "TEST_CASE_500 server error",
+          "expected": "500",
+          "actual": "500",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /catalog/items/TEST_CASE_404 -> 404",
+        "GET /catalog/items/TEST_CASE_429 -> 429",
+        "GET /catalog/items/TEST_CASE_500 -> 500"
+      ],
+      "detail": {},
+      "summary": "3/3 checks passed"
+    },
+    {
+      "id": "SB-REPO-1",
+      "name": "Sandbox: Fixtures Repository Integrity",
+      "given": "Inspect mock-fixtures/ and schemas/",
+      "then": [
+        "all-sandbox-fixtures.json >800 items",
+        "44 domain files present",
+        "schemas/ populated"
+      ],
+      "note": "Guarantees that all extracted mock data fixtures and schemas are present and accessible.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "all-sandbox-fixtures.json exists",
+          "what": "extracted master fixtures file",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "domain fixture files",
+          "what": "extracted domain fixture files (>40)",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "schema files",
+          "what": "synced schema files (>40)",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        },
+        {
+          "label": "sandbox fixture count",
+          "what": "contains >800 sandbox test cases",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [],
+      "detail": {
+        "total_extracted_fixtures": 900,
+        "total_domain_files": 45,
+        "total_schema_files": 50
+      },
+      "summary": "4/4 checks passed"
+    },
+    {
+      "id": "SPEC-1",
+      "name": "Spec Pass-Through Coverage",
+      "given": "GET unconfigured routes /sellers/v1/marketplaceParticipations & /finances/v0/financialEvents",
+      "then": [
+        "200 OK for both routes"
+      ],
+      "note": "Verifies that all 371 declared routes across the 66 SP-API model files answer correctly.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "sellers route status",
+          "what": "unconfigured spec route answers 200",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "finances route status",
+          "what": "unconfigured spec route answers 200",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /sellers/v1/marketplaceParticipations [spec default] -> 200",
+        "GET /finances/v0/financialEvents [spec default] -> 200"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    },
+    {
+      "id": "NEG-1",
+      "name": "Unmatched Endpoint Handling",
+      "given": "GET /some/completely/unknown/endpoint/path",
+      "then": [
+        "404 Not Found",
+        "structured error message"
+      ],
+      "note": "Ensures unrecognized endpoints fail loudly rather than succeeding silently.",
+      "verdict": "pass",
+      "checks": [
+        {
+          "label": "status is 404",
+          "what": "unknown path fails loudly with 404",
+          "expected": "404",
+          "actual": "404",
+          "ok": true
+        },
+        {
+          "label": "error messages",
+          "what": "contains route failure explanation",
+          "expected": "present",
+          "actual": "present",
+          "ok": true
+        }
+      ],
+      "calls": [
+        "GET /some/completely/unknown/endpoint/path -> 404"
+      ],
+      "detail": {},
+      "summary": "2/2 checks passed"
+    }
+  ]
+}

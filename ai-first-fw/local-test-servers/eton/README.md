@@ -122,26 +122,63 @@ down so it can be switched on the moment that is settled.
 
 ---
 
-## Test suite — createOrder flow 2
+## Test suite — createOrder
 
-21 cases covering `EtonWmsService.createOrder` in both payload shapes. Start it from
+26 cases covering `EtonWmsService.createOrder`: twelve built from masked production intakes — five
+Shopee, two Lazada, five TikTok — and fourteen hand-written for the structural, boundary and
+failure paths no real payload produces.
+
+createOrder is four suites, not one. The three channels are three different mappings that happen to
+share a wire, so each gets its own suite and its own run folder; what is left over is the
+transport, which belongs to no channel. A channel's cases now fail together and read together, and
+each suite is small enough to run while working on that one channel. Start any of them from
 <http://127.0.0.1:23101/test>, or:
 
 ```bash
-python3 eton/suite-flow2.py                 # all 21, ~5 min
-python3 eton/suite-flow2.py --fast          # skips N10, ~90s
-python3 eton/suite-flow2.py N1 K1           # only these
-python3 eton/suite-flow2.py --list          # the cases and what each expects
-python3 eton/suite-flow2.py --judge eton/test-results/flow2/run-…
+python3 eton/suite-create-order-shopee.py          # 7 cases, the adjustments{} hash and its join
+python3 eton/suite-create-order-lazada.py          # 2 cases, order_items[] with a detail row per unit
+python3 eton/suite-create-order-tiktok.py          # 7 cases, an order-level discount spread across lines
+python3 eton/suite-create-order.py                 # 10 cases, create/replay/retry/failure/payload shape
+python3 eton/suite-create-order.py --fast          # skips N10, the one retry case
+python3 eton/suite-create-order-tiktok.py P10 P11  # only these
+python3 eton/suite-create-order-shopee.py --list   # the cases and what each expects
+python3 eton/suite-create-order-tiktok.py --judge eton/test-results/create-order-tiktok/run-…
 ```
 
-The suite is one file: payloads, expectations and the reasoning behind each case all live in
-`eton/suite-flow2.py`, and the engine it runs on is `suite/`. Change a
-requirement there and re-score the runs already on disk with `--judge` before firing anything.
+All four reset the same `orders` rows, so **do not run two of them against one database at once.**
+
+Expectations and the reasoning behind each case live in the suite that owns it. Everything the four
+share — the base order, the intake loader, the five body checks and the Suite itself — is in
+`eton/create_order.py`, and the engine they run on is `suite/`. Change a requirement and re-score the
+runs already on disk with `--judge` before firing anything. Case ids are never reused or
+renumbered, so a run recorded before the split still lines up case for case; each suite's header
+lists what it inherited.
+
+The twelve production payloads are the exception to "the suite is one file": they sit in
+`eton/intakes/`, one JSON per order, because a real intake is too long to read inline. Each file
+carries only the fields the create and pricing paths read and says in its own header which sale
+order it came from and what it is worth testing; the order's identity, its customer and its
+addresses are not in the file at all — the suite's own base order supplies those, so nothing
+personal was carried over. Every price, quantity and SKU in them is what OMS sent. Five of the
+twelve were mapped wrong in production, and the numbers the suites state are what the corrected
+mapper produces from them:
+
+| Case | Channel | What the payload holds | What went out before |
+|---|---|---|---|
+| P1 | Shopee | an adjustments entry stating `quantity_purchased` 2 | `BasePrice` 408000 instead of 204000 |
+| P2 | Shopee | a priced line and its zero-priced twin sharing an SKU | 225000 pushed twice, order level 225000 |
+| P8 | Shopee | the gift's discount reported only in `order_seller_discount` | a 1000000 gift at full list with nothing against it |
+| P6 | TikTok | the order's discount beside a zero-priced gift line | 400 `Promo amount is over total.`, three times |
+| P10 | TikTok | a gift line carrying the purchased line's price | `OrderBasePrice` 240000 instead of 120000 |
 
 | Piece | Where |
 |---|---|
-| The suite — payloads, expectations, reasoning | `eton/suite-flow2.py` |
+| Shopee pricing — expectations, reasoning | `eton/suite-create-order-shopee.py` |
+| Lazada pricing | `eton/suite-create-order-lazada.py` |
+| TikTok pricing | `eton/suite-create-order-tiktok.py` |
+| Transport, replay, retry, failure, payload shape | `eton/suite-create-order.py` |
+| What all four share — payloads, checks, the Suite | `eton/create_order.py` |
+| The production payloads the P cases are built from | `eton/intakes/*.json` |
 | The engine every suite shares | `suite/`, [TESTING.md](../TESTING.md#writing-a-suite) |
 | Plan the suite was written from | `docs/eton-createorder-test-plan.md` |
 | Postman collection | `local-resources/eton/oms_eton_app_controllers_postman_collection.json`, folder **createOrder E2E (normal + kit)** |
@@ -162,8 +199,8 @@ docker exec -i -e MYSQL_PWD="$MYSQL_PWD" mysql \
 `wms_integrations_test`. With `createDatabaseIfNotExist=true` an empty schema is created silently,
 so the app starts cleanly and then fails per message with a `NullPointerException` in
 `WmsIntegrationParamFactory:273` — the credential lookup after `CustomORM.getSeller(7004)`. No Eton
-call is made at all, so `/log` stays empty and all 17 cases fail for a reason unrelated to
-`createOrder`. The runner's preflight now checks for the seller and its four `eton` credentials and
+call is made at all, so `/log` stays empty and every case in every suite fails for a reason
+unrelated to `createOrder`. The runner's preflight now checks for the seller and its four `eton` credentials and
 names the database that does have them. Pass a different schema with `DB_NAME=…`.
 
 ### Known gap — `event_name`
@@ -176,7 +213,7 @@ Postman fixtures send exactly that, so retry exhaustion reports nothing to OMS.
 The runner sends `order_creation` by default. To reproduce the fixture behaviour:
 
 ```bash
-EVENT_NAME=order_created python3 eton/suite-flow2.py N10
+EVENT_NAME=order_created python3 eton/suite-create-order.py N10
 ```
 
 Under `order_created`, N10 is reported `blocked` rather than `pass`: everything observable matches,

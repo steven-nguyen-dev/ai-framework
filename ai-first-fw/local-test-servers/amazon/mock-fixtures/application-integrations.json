@@ -1,0 +1,148 @@
+[
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "templateId": "PRICE_CHANGE",
+            "marketplaceId": "ATVPDKIKX0DER",
+            "notificationParameters": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "notificationId": "0cf25616-f68c-4eba-a5d3-6823b61506c0"
+    }
+  },
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "templateId": "BAD_TEMPLATE_ID",
+            "marketplaceId": "ATVPDKIKX0DER",
+            "notificationParameters": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Template Identifier(templateId)",
+          "details": "'BAD_TEMPLATE_ID' is an invalid templateId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications/deletion",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "templateId": "PRICE_CHANGE",
+            "deletionReason": "INCORRECT_RECIPIENT"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications/deletion",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "templateId": "PRICE_CHANGE_INVALID",
+            "deletionReason": "INCORRECT_RECIPIENT"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Template Id(templateId)",
+          "details": "'PRICE_CHANGE_INVALID' is an invalid templateId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications/{notificationId}/feedback",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "notificationId": {
+          "value": "0cf25616-f68c-1234-a5d3-6823b61506c0"
+        },
+        "body": {
+          "value": {
+            "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/application-integrations-api-model/appIntegrations-2024-04-01.json",
+    "domain": "application-integrations",
+    "path": "/appIntegrations/2024-04-01/notifications/{notificationId}/feedback",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "notificationId": {
+          "value": "0cf25616-f68c-a5d3-6823b61506c0"
+        },
+        "body": {
+          "value": {
+            "feedbackActionCode": "SELLER_ACTION_COMPLETED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid notificationId",
+          "details": "'0cf25616-f68c-a5d3-6823b61506c0' is an invalid notificationId"
+        }
+      ]
+    }
+  }
+]

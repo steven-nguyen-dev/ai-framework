@@ -1,0 +1,457 @@
+[
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportTypes": {
+          "value": [
+            "FEE_DISCOUNTS_REPORT",
+            "GET_AFN_INVENTORY_DATA"
+          ]
+        },
+        "processingStatuses": {
+          "value": [
+            "IN_QUEUE",
+            "IN_PROGRESS"
+          ]
+        }
+      }
+    },
+    "response": {
+      "nextToken": "VGhpcyB0b2tlbiBpcyBvcGFxdWUgYW5kIGludGVudGlvbmFsbHkgb2JmdXNjYXRlZA==",
+      "reports": [
+        {
+          "reportId": "ReportId1",
+          "reportType": "FEE_DISCOUNTS_REPORT",
+          "dataStartTime": "2024-03-11T13:47:20.677Z",
+          "dataEndTime": "2024-03-12T13:47:20.677Z",
+          "createdTime": "2024-03-10T13:47:20.677Z",
+          "processingStatus": "IN_PROGRESS",
+          "processingStartTime": "2024-03-10T13:47:20.677Z",
+          "processingEndTime": "2024-03-12T13:47:20.677Z"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reportTypes": {
+          "value": [
+            "FEE_DISCOUNTS_REPORT",
+            "GET_AFN_INVENTORY_DATA"
+          ]
+        },
+        "processingStatuses": {
+          "value": [
+            "BAD_VALUE",
+            "IN_PROGRESS"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input in processing status"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+            "dataStartTime": "2024-03-10T20:11:24.000Z",
+            "marketplaceIds": [
+              "A1PA6795UKMFR9",
+              "ATVPDKIKX0DER"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "reportId": "ID323"
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "reportType": "BAD_FEE_DISCOUNTS_REPORT",
+            "dataStartTime": "2024-03-10T20:11:24.000Z",
+            "marketplaceIds": [
+              "A1PA6795UKMFR9",
+              "ATVPDKIKX0DER"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports/{reportId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportId": {
+          "value": "ID"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports/{reportId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports/{reportId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportId": {
+          "value": "ID323"
+        }
+      }
+    },
+    "response": {
+      "reportId": "ReportId1",
+      "reportType": "FEE_DISCOUNTS_REPORT",
+      "dataStartTime": "2024-03-11T13:47:20.677Z",
+      "dataEndTime": "2024-03-12T13:47:20.677Z",
+      "createdTime": "2024-03-10T13:47:20.677Z",
+      "processingStatus": "IN_PROGRESS",
+      "processingStartTime": "2024-03-10T13:47:20.677Z",
+      "processingEndTime": "2024-03-12T13:47:20.677Z"
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/reports/{reportId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reportId": {
+          "value": "badReportId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportTypes": {
+          "value": [
+            "FEE_DISCOUNTS_REPORT",
+            "GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
+          ]
+        }
+      }
+    },
+    "response": {
+      "reportSchedules": [
+        {
+          "reportType": "FEE_DISCOUNTS_REPORT",
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ],
+          "reportScheduleId": "ID1",
+          "period": "PT5M",
+          "nextReportCreationTime": "2024-03-11T15:03:44.973Z"
+        },
+        {
+          "reportType": "GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA",
+          "reportScheduleId": "ID2",
+          "period": "PT5M",
+          "nextReportCreationTime": "2024-03-11T15:03:44.973Z"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reportTypes": {
+          "value": [
+            "BAD_FEE_DISCOUNTS_REPORT",
+            "BAD_GET_FBA_FULFILLMENT_CUSTOMER_TAXES_DATA"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "reportType": "FEE_DISCOUNTS_REPORT",
+            "period": "PT5M",
+            "nextReportCreationTime": "2024-03-10T20:11:24.000Z",
+            "marketplaceIds": [
+              "A1PA6795UKMFR9",
+              "ATVPDKIKX0DER"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "reportScheduleId": "ID323"
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "reportType": "BAD_FEE_DISCOUNTS_REPORT",
+            "period": "PT5M",
+            "nextReportCreationTime": "2024-03-10T20:11:24.000Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules/{reportScheduleId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportScheduleId": {
+          "value": "ID"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules/{reportScheduleId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules/{reportScheduleId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportScheduleId": {
+          "value": "ID323"
+        }
+      }
+    },
+    "response": {
+      "reportScheduleId": "ReportScheduleId1",
+      "reportType": "FEE_DISCOUNTS_REPORT",
+      "period": "PT5M",
+      "nextReportCreationTime": "2024-03-12T13:47:20.677Z"
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/schedules/{reportScheduleId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reportScheduleId": {
+          "value": "badReportId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/documents/{reportDocumentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "reportDocumentId": {
+          "value": "0356cf79-b8b0-4226-b4b9-0ee058ea5760"
+        }
+      }
+    },
+    "response": {
+      "reportDocumentId": "0356cf79-b8b0-4226-b4b9-0ee058ea5760",
+      "url": "https://d34o8swod1owfl.cloudfront.net/Report_47700__GET_MERCHANT_LISTINGS_ALL_DATA_.txt"
+    }
+  },
+  {
+    "source_file": "models/reports-api-model/reports_2021-06-30.json",
+    "domain": "reports",
+    "path": "/reports/2021-06-30/documents/{reportDocumentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "reportDocumentId": {
+          "value": "badDocumentId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

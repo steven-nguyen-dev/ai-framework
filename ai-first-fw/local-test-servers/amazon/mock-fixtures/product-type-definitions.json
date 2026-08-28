@@ -1,0 +1,132 @@
+[
+  {
+    "source_file": "models/product-type-definitions-api-model/definitionsProductTypes_2020-09-01.json",
+    "domain": "product-type-definitions",
+    "path": "/definitions/2020-09-01/productTypes",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "productTypes": [
+        {
+          "name": "LUGGAGE",
+          "displayName": "Luggage",
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      ],
+      "productTypeVersion": "UHqSqmb4FNUk="
+    }
+  },
+  {
+    "source_file": "models/product-type-definitions-api-model/definitionsProductTypes_2020-09-01.json",
+    "domain": "product-type-definitions",
+    "path": "/definitions/2020-09-01/productTypes",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "keywords": {
+          "value": [
+            "Invalid Request"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/product-type-definitions-api-model/definitionsProductTypes_2020-09-01.json",
+    "domain": "product-type-definitions",
+    "path": "/definitions/2020-09-01/productTypes/{productType}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "metaSchema": {
+        "link": {
+          "resource": "https://meta-schema-url",
+          "verb": "GET"
+        },
+        "checksum": "c7af9479ca7261645cea9db56c5f720d"
+      },
+      "schema": {
+        "link": {
+          "resource": "https://schema-url",
+          "verb": "GET"
+        },
+        "checksum": "c7af9479ca7261645cea9db56c5f720d"
+      },
+      "requirements": "LISTING",
+      "requirementsEnforced": "ENFORCED",
+      "propertyGroups": {
+        "product_identity": {
+          "title": "Product Identity",
+          "description": "Information to uniquely identify your product (e.g., UPC, EAN, GTIN, Product Type, Brand)",
+          "propertyNames": [
+            "item_name",
+            "brand",
+            "external_product_id",
+            "gtin_exemption_reason",
+            "merchant_suggested_asin",
+            "product_type",
+            "product_category",
+            "product_subcategory",
+            "item_type_keyword"
+          ]
+        }
+      },
+      "locale": "en_US",
+      "marketplaceIds": [
+        "ATVPDKIKX0DER"
+      ],
+      "productType": "LUGGAGE",
+      "displayName": "Luggage",
+      "productTypeVersion": {
+        "version": "UHqSqmb4FNUk=",
+        "latest": true,
+        "releaseCandidate": false
+      }
+    }
+  },
+  {
+    "source_file": "models/product-type-definitions-api-model/definitionsProductTypes_2020-09-01.json",
+    "domain": "product-type-definitions",
+    "path": "/definitions/2020-09-01/productTypes/{productType}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "productType": {
+          "value": "INVALID"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

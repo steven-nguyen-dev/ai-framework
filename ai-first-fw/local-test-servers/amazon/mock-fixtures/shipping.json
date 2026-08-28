@@ -1,0 +1,1267 @@
+[
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_200"
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "shipmentId": "TEST_CASE_200",
+        "eligibleRates": [
+          {
+            "billedWeight": {
+              "value": 4,
+              "unit": "kg"
+            },
+            "totalCharge": {
+              "value": 3.25,
+              "unit": "GBP"
+            },
+            "serviceType": "Amazon Shipping Standard",
+            "promise": {
+              "deliveryWindow": {
+                "start": "2018-08-25T20:22:30.737Z",
+                "end": "2018-08-26T20:22:30.737Z"
+              },
+              "receiveWindow": {
+                "start": "2018-08-23T09:22:30.737Z",
+                "end": "2018-08-23T11:22:30.737Z"
+              }
+            },
+            "rateId": "RI123456",
+            "expirationTime": "2018-08-22T09:22:30.737Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_400"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 401,
+    "test_case": "CASE_401_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_401"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_403"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_404"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The requested resource doesn't exist."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_429"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "QuotaExceeded",
+          "message": "You exceeded your quota for the requested resource."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_500"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "We encountered an internal error. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments",
+    "method": "POST",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_503"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Service is temporarily unavailable. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "shipmentId": "TEST_CASE_200",
+        "clientReferenceId": "911-7267646-6348616",
+        "shipFrom": {},
+        "shipTo": {},
+        "acceptedRate": {
+          "billedWeight": {
+            "value": 4,
+            "unit": "kg"
+          },
+          "totalCharge": {
+            "value": 3.5,
+            "unit": "GBP"
+          },
+          "serviceType": "Amazon Shipping Standard",
+          "promise": {
+            "deliveryWindow": {
+              "start": "2018-08-25T20:22:30.737Z",
+              "end": "2018-08-26T20:22:30.737Z"
+            },
+            "receiveWindow": {
+              "start": "2018-08-23T09:22:30.737Z",
+              "end": "2018-08-23T11:22:30.737Z"
+            }
+          }
+        },
+        "shipper": {
+          "accountId": "2755049166"
+        },
+        "containers": [
+          {
+            "containerReferenceId": "CRI123456789",
+            "items": [
+              {
+                "title": "String",
+                "unitWeight": {
+                  "value": 0.08164656,
+                  "unit": "kg"
+                },
+                "quantity": 2,
+                "unitPrice": {
+                  "value": 14.99,
+                  "unit": "GBP"
+                }
+              }
+            ],
+            "dimensions": {
+              "height": 12.0,
+              "length": 36.0,
+              "width": 31.0,
+              "unit": "CM"
+            },
+            "containerType": "PACKAGE",
+            "weight": {
+              "unit": "kg",
+              "value": 4
+            },
+            "value": {
+              "value": 29.98,
+              "unit": "GBP"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 401,
+    "test_case": "TEST_CASE_401",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_401"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 403,
+    "test_case": "TEST_CASE_403",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "TEST_CASE_404",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The requested resource doesn't exist."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 429,
+    "test_case": "TEST_CASE_429",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "QuotaExceeded",
+          "message": "You exceeded your quota for the requested resource."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 500,
+    "test_case": "TEST_CASE_500",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "We encountered an internal error. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 503,
+    "test_case": "TEST_CASE_503",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Service is temporarily unavailable. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 401,
+    "test_case": "TEST_CASE_401",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_401"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 403,
+    "test_case": "TEST_CASE_403",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 404,
+    "test_case": "TEST_CASE_404",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The requested resource doesn't exist."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 429,
+    "test_case": "TEST_CASE_429",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "QuotaExceeded",
+          "message": "You exceeded your quota for the requested resource."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 500,
+    "test_case": "TEST_CASE_500",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "We encountered an internal error. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/cancel",
+    "method": "POST",
+    "status": 503,
+    "test_case": "TEST_CASE_503",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Service is temporarily unavailable. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "shipmentId": "TEST_CASE_200",
+        "clientReferenceId": "911-7267646-6348616",
+        "acceptedRate": {
+          "billedWeight": {
+            "value": 4,
+            "unit": "kg"
+          },
+          "totalCharge": {
+            "value": 3.5,
+            "unit": "GBP"
+          },
+          "serviceType": "Amazon Shipping Standard",
+          "promise": {
+            "deliveryWindow": {
+              "start": "2018-08-25T20:22:30.737Z",
+              "end": "2018-08-26T20:22:30.737Z"
+            },
+            "receiveWindow": {
+              "start": "2018-08-23T09:22:30.737Z",
+              "end": "2018-08-23T11:22:30.737Z"
+            }
+          }
+        },
+        "labelResults": [
+          {
+            "containerReferenceId": "CRI123456789",
+            "trackingId": "1512748795322",
+            "label": {
+              "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+              "labelSpecification": {
+                "labelFormat": "PNG",
+                "labelStockSize": "4x6"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 401,
+    "test_case": "TEST_CASE_401",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_401"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 403,
+    "test_case": "TEST_CASE_403",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 404,
+    "test_case": "TEST_CASE_404",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The requested resource doesn't exist."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 429,
+    "test_case": "TEST_CASE_429",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "QuotaExceeded",
+          "message": "You exceeded your quota for the requested resource."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 500,
+    "test_case": "TEST_CASE_500",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "We encountered an internal error. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/purchaseLabels",
+    "method": "POST",
+    "status": 503,
+    "test_case": "TEST_CASE_503",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Service is temporarily unavailable. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+        "labelSpecification": {
+          "labelFormat": "PNG",
+          "labelStockSize": "4x6"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 401,
+    "test_case": "TEST_CASE_401",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_401"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 403,
+    "test_case": "TEST_CASE_403",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Unauthorized",
+          "message": "Access to requested resource is denied."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 404,
+    "test_case": "TEST_CASE_404",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The requested resource doesn't exist."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 429,
+    "test_case": "TEST_CASE_429",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "QuotaExceeded",
+          "message": "You exceeded your quota for the requested resource."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 500,
+    "test_case": "TEST_CASE_500",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "We encountered an internal error. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/shipments/{shipmentId}/containers/{trackingId}/label",
+    "method": "POST",
+    "status": 503,
+    "test_case": "TEST_CASE_503",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Service is temporarily unavailable. Please try again."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/purchaseShipment",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_2000"
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "shipmentId": "TEST_CASE_200",
+        "serviceRate": {
+          "billableWeight": {
+            "value": 4,
+            "unit": "kg"
+          },
+          "totalCharge": {
+            "value": 3.5,
+            "unit": "GBP"
+          },
+          "serviceType": "Amazon Shipping Standard",
+          "promise": {
+            "deliveryWindow": {
+              "start": "2018-08-25T20:22:30.737Z",
+              "end": "2018-08-26T20:22:30.737Z"
+            },
+            "receiveWindow": {
+              "start": "2018-08-23T09:22:30.737Z",
+              "end": "2018-08-23T11:22:30.737Z"
+            }
+          }
+        },
+        "labelResults": [
+          {
+            "containerReferenceId": "CRI123456789",
+            "trackingId": "1512748795322",
+            "label": {
+              "labelStream": "iVBORw0KGgo...AAAARK5CYII=(Truncated)",
+              "labelSpecification": {
+                "labelFormat": "PNG",
+                "labelStockSize": "4x6"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/purchaseShipment",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "clientReferenceId": "TEST_CASE_200"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/account",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "payload": {
+        "accountId": "2755049166"
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/account",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/tracking/{trackingId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "trackingId": {
+          "value": "TEST_CASE_200"
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "trackingId": "TEST_CASE_200",
+        "eventHistory": [
+          {
+            "eventCode": "Delivered",
+            "location": {
+              "city": "San Bernardino",
+              "countryCode": "US",
+              "stateOrRegion": "CA",
+              "postalCode": "92404"
+            },
+            "eventTime": "2019-04-04T06:45:12Z"
+          }
+        ],
+        "promisedDeliveryDate": "2019-04-04T07:05:06Z",
+        "summary": {
+          "status": "Delivered"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shipping.json",
+    "domain": "shipping",
+    "path": "/shipping/v1/tracking/{trackingId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "trackingId": {
+          "value": "TEST_CASE_400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shippingV2.json",
+    "domain": "shipping",
+    "path": "/shipping/v2/shipments/additionalInputs/schema",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "requestToken": {
+          "value": "amzn1.rq.123456789.101"
+        },
+        "rateId": {
+          "value": "122324234543535321345436534321423423523452345"
+        }
+      }
+    },
+    "response": {
+      "payload": {}
+    }
+  },
+  {
+    "source_file": "models/shipping-api-model/shippingV2.json",
+    "domain": "shipping",
+    "path": "/shipping/v2/shipments/additionalInputs/schema",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "requestToken": {
+          "value": "null"
+        },
+        "rateId": {
+          "value": "2314346237423894905834905890346890789075"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidRequest",
+          "message": "Request is missing or has invalid parameters",
+          "details": "RequestToken cannot be null"
+        }
+      ]
+    }
+  }
+]

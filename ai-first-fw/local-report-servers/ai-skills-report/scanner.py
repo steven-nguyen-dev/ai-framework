@@ -1642,6 +1642,7 @@ sync_and_update_all_marketplaces = pull_updates_from_marketplaces
 
 
 # ==============================================================================
+# ==============================================================================
 # MCP Servers Scanner & Manager
 # ==============================================================================
 
@@ -1650,6 +1651,7 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
     agy_global_file = HOME / ".gemini/config/mcp_config.json"
     claude_desktop_file = HOME / "Library/Application Support/Claude/claude_desktop_config.json"
     claude_code_file = HOME / ".claude.json"
+    workspace_mcp_file = WORKSPACE / ".mcp.json"
 
     agy_mcps = {}
     if agy_global_file.is_file():
@@ -1675,6 +1677,14 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         except Exception:
             pass
 
+    workspace_mcps = {}
+    if workspace_mcp_file.is_file():
+        try:
+            with open(workspace_mcp_file) as f:
+                workspace_mcps = json.load(f).get("mcpServers", {})
+        except Exception:
+            pass
+
     mcps: dict[str, dict[str, Any]] = {}
     local_mcps_dir = WORKSPACE / "ai-first-fw/local-mcps"
 
@@ -1683,7 +1693,9 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         for d in sorted(local_mcps_dir.iterdir()):
             if d.is_dir() and not d.name.startswith("."):
                 server_py = d / "server.py"
+                launch_sh = d / "launch.sh"
                 env_file = d / ".env"
+                env_sample_file = d / ".env.sample"
                 venv_dir = d / ".venv"
 
                 desc = ""
@@ -1696,11 +1708,36 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                             desc = doc_m.group(1).strip().splitlines()[0]
                         tools = re.findall(r"@mcp\.tool\(\)\s*\ndef\s+([a-zA-Z0-9_]+)", content)
                         if not tools:
-                            tools = re.findall(r"def\s+([a-zA-Z0-9_]+)\(", content)
+                            tools = re.findall(r'"name":\s*"(jira_[a-zA-Z0-9_]+|kibana_[a-zA-Z0-9_]+|[a-zA-Z0-9_]+)"', content)
+                        if not tools:
+                            tools = [fn for fn in re.findall(r"def\s+([a-zA-Z0-9_]+)\(", content) if not fn.startswith("_")]
                     except Exception:
                         pass
 
-                python_cmd = str(venv_dir / "bin/python3") if (venv_dir / "bin/python3").is_file() else "/Users/nguyennguyen.anchanto/Projects/ai-framework/ai-first-fw/local-mcps/jira/.venv/bin/python3"
+                # Preferred launcher strategy: launch.sh (self-healing) > .venv python > python3
+                if launch_sh.is_file():
+                    python_cmd = "bash"
+                    exec_target = str(launch_sh)
+                elif (venv_dir / "bin/python3").is_file():
+                    python_cmd = str(venv_dir / "bin/python3")
+                    exec_target = str(server_py)
+                else:
+                    python_cmd = "python3"
+                    exec_target = str(server_py) if server_py.is_file() else None
+
+                has_env = env_file.is_file()
+                env_status = "missing"
+                if has_env:
+                    try:
+                        env_text = env_file.read_text(encoding="utf-8", errors="replace")
+                        if "your_" in env_text.lower() or "<placeholder>" in env_text.lower():
+                            env_status = "sample_unconfigured"
+                        else:
+                            env_status = "configured"
+                    except Exception:
+                        env_status = "configured"
+                elif env_sample_file.is_file():
+                    env_status = "sample_available"
 
                 mcps[d.name] = {
                     "id": d.name,
@@ -1709,10 +1746,13 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                     "description": desc or f"Local {d.name} Model Context Protocol server",
                     "local_path": str(d),
                     "server_script": str(server_py) if server_py.is_file() else None,
+                    "launcher_script": str(launch_sh) if launch_sh.is_file() else None,
                     "python_executable": python_cmd,
+                    "exec_target": exec_target,
                     "is_local": True,
                     "has_venv": venv_dir.is_dir(),
-                    "has_env": env_file.is_file(),
+                    "has_env": has_env,
+                    "env_status": env_status,
                     "tools": tools,
                     "tools_count": len(tools),
                     "ecosystems": {
@@ -1727,9 +1767,14 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                             "details": claude_desktop_mcps.get(d.name)
                         },
                         "claude_code": {
-                            "configured": (d.name in claude_code_mcps) or (f"{d.name}-local" in claude_code_mcps),
+                            "configured": (d.name in claude_code_mcps) or (f"{d.name}-local" in claude_code_mcps) or (d.name in workspace_mcps),
                             "config_path": str(claude_code_file),
-                            "details": claude_code_mcps.get(d.name) or claude_code_mcps.get(f"{d.name}-local")
+                            "details": claude_code_mcps.get(d.name) or claude_code_mcps.get(f"{d.name}-local") or workspace_mcps.get(d.name)
+                        },
+                        "workspace": {
+                            "configured": d.name in workspace_mcps,
+                            "config_path": str(workspace_mcp_file),
+                            "details": workspace_mcps.get(d.name)
                         }
                     }
                 }
@@ -1747,6 +1792,10 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         clean_name = name.replace("-local", "")
         if clean_name not in mcps:
             all_external.setdefault(clean_name, {})["claude_code"] = cfg
+    for name, cfg in workspace_mcps.items():
+        clean_name = name.replace("-local", "")
+        if clean_name not in mcps:
+            all_external.setdefault(clean_name, {})["workspace"] = cfg
 
     for name, sources in all_external.items():
         if name.lower() == "idea":
@@ -1763,10 +1812,13 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
             "description": desc,
             "local_path": None,
             "server_script": None,
+            "launcher_script": None,
             "python_executable": None,
+            "exec_target": None,
             "is_local": False,
             "has_venv": False,
             "has_env": False,
+            "env_status": "not_applicable",
             "tools": [],
             "tools_count": 0,
             "ecosystems": {
@@ -1781,9 +1833,14 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                     "details": sources.get("claude_desktop")
                 },
                 "claude_code": {
-                    "configured": "claude_code" in sources,
+                    "configured": ("claude_code" in sources) or ("workspace" in sources),
                     "config_path": str(claude_code_file),
-                    "details": sources.get("claude_code")
+                    "details": sources.get("claude_code") or sources.get("workspace")
+                },
+                "workspace": {
+                    "configured": "workspace" in sources,
+                    "config_path": str(workspace_mcp_file),
+                    "details": sources.get("workspace")
                 }
             }
         }
@@ -1796,10 +1853,22 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
     local_mcps_dir = WORKSPACE / "ai-first-fw/local-mcps"
     server_dir = local_mcps_dir / server_id
     server_py = server_dir / "server.py"
+    launch_sh = server_dir / "launch.sh"
     venv_python = server_dir / ".venv/bin/python3"
-    python_cmd = str(venv_python) if venv_python.is_file() else "/Users/nguyennguyen.anchanto/Projects/ai-framework/ai-first-fw/local-mcps/jira/.venv/bin/python3"
+    workspace_mcp_file = WORKSPACE / ".mcp.json"
 
     is_local = server_py.is_file()
+
+    # Determine optimal launcher: launch.sh self-heals virtualenv & requirements
+    if launch_sh.is_file():
+        cmd = "bash"
+        args = [str(launch_sh)]
+    elif venv_python.is_file():
+        cmd = str(venv_python)
+        args = [str(server_py)]
+    else:
+        cmd = "python3"
+        args = [str(server_py)]
 
     # Known external server templates
     known_external = {
@@ -1826,8 +1895,8 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
         if enable:
             if is_local:
                 servers[server_id] = {
-                    "command": python_cmd,
-                    "args": [str(server_py)]
+                    "command": cmd,
+                    "args": args
                 }
             else:
                 servers[server_id] = known_external.get(server_id, {}).get("antigravity", {"url": "http://127.0.0.1:64342/stream"})
@@ -1850,8 +1919,8 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
         if enable:
             if is_local:
                 servers[server_id] = {
-                    "command": python_cmd,
-                    "args": [str(server_py)]
+                    "command": cmd,
+                    "args": args
                 }
             else:
                 servers[server_id] = known_external.get(server_id, {}).get("claude_desktop", {"url": "http://127.0.0.1:64342/stream", "type": "http"})
@@ -1862,6 +1931,7 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
         cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
     elif target == "claude_code":
+        # 1. Update ~/.claude.json
         cfg_file = HOME / ".claude.json"
         cfg = {}
         if cfg_file.is_file():
@@ -1875,8 +1945,8 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
             if is_local:
                 servers[server_id] = {
                     "type": "stdio",
-                    "command": python_cmd,
-                    "args": [str(server_py)],
+                    "command": cmd,
+                    "args": args,
                     "env": {}
                 }
             else:
@@ -1886,6 +1956,48 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
             servers.pop(f"{server_id}-local", None)
         cfg_file.parent.mkdir(parents=True, exist_ok=True)
         cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+
+        # 2. Also keep workspace .mcp.json synchronized
+        if is_local:
+            ws_cfg = {}
+            if workspace_mcp_file.is_file():
+                try:
+                    with open(workspace_mcp_file) as f:
+                        ws_cfg = json.load(f)
+                except Exception:
+                    pass
+            ws_servers = ws_cfg.setdefault("mcpServers", {})
+            if enable:
+                ws_servers[server_id] = {
+                    "command": cmd,
+                    "args": args
+                }
+            else:
+                ws_servers.pop(server_id, None)
+                ws_servers.pop(f"{server_id}-local", None)
+            workspace_mcp_file.write_text(json.dumps(ws_cfg, indent=2) + "\n", encoding="utf-8")
+
+    elif target == "workspace":
+        if not is_local and enable:
+            raise ValueError(f"External MCP server '{server_id}' cannot be added to workspace .mcp.json directly.")
+        ws_cfg = {}
+        if workspace_mcp_file.is_file():
+            try:
+                with open(workspace_mcp_file) as f:
+                    ws_cfg = json.load(f)
+            except Exception:
+                pass
+        ws_servers = ws_cfg.setdefault("mcpServers", {})
+        if enable:
+            ws_servers[server_id] = {
+                "command": cmd,
+                "args": args
+            }
+        else:
+            ws_servers.pop(server_id, None)
+            ws_servers.pop(f"{server_id}-local", None)
+        workspace_mcp_file.write_text(json.dumps(ws_cfg, indent=2) + "\n", encoding="utf-8")
+
     else:
         raise ValueError(f"Unknown target ecosystem: {target}")
 

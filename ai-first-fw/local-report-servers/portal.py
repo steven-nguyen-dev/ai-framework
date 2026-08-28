@@ -228,7 +228,7 @@ class ManagedReportServer:
                 "description": self.description,
                 "port": self.port,
                 "host": self.host,
-                "url": f"http://localhost:{self.port}",
+                "url": f"http://127.0.0.1:{self.port}",
                 "running": running,
                 "pid": effective_pid,
                 "uptime": uptime_str,
@@ -321,39 +321,49 @@ PORTAL_HTML = """<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Central Reports Portal (Port 24000)</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme/theme.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
     :root {
-      --bg: #020617;
-      --panel: #0f172a;
-      --surface: #1e293b;
+      --canvas: #020617;
+      --panel: #0b0f19;
+      --surface: #0f172a;
+      --surface-2: #1e293b;
       --border: #1e293b;
       --border-hover: #334155;
-      --text: #f8fafc;
-      --text-sec: #cbd5e1;
+      --ink: #f8fafc;
+      --ink-2: #cbd5e1;
       --muted: #94a3b8;
+      --line: #1e293b;
+      --line-2: #334155;
       --accent: #60a5fa;
       --accent-bg: rgba(59, 130, 246, 0.15);
       --accent-border: rgba(96, 165, 250, 0.35);
-      --ok: #34d399;
-      --ok-bg: rgba(16, 185, 129, 0.15);
-      --ok-border: rgba(52, 211, 153, 0.35);
-      --bad: #f87171;
-      --bad-bg: rgba(239, 68, 68, 0.15);
-      --bad-border: rgba(248, 113, 113, 0.35);
-      --warn: #fbbf24;
+      --pass-bg: rgba(16, 185, 129, 0.15);
+      --pass-fg: #34d399;
+      --pass-border: rgba(52, 211, 153, 0.35);
+      --fail-bg: rgba(239, 68, 68, 0.15);
+      --fail-fg: #f87171;
+      --fail-border: rgba(248, 113, 113, 0.35);
       --warn-bg: rgba(245, 158, 11, 0.15);
+      --warn-fg: #fbbf24;
       --warn-border: rgba(251, 191, 36, 0.35);
-      --neutral-bg: rgba(51, 65, 85, 0.4);
-      --neutral-border: rgba(100, 116, 139, 0.35);
+      --mute-bg: rgba(51, 65, 85, 0.4);
+      --mute-fg: #cbd5e1;
+      --mute-border: rgba(100, 116, 139, 0.35);
+      --hover: #1e293b;
+      --selected: #334155;
+      --dot: #34d399;
+      --dim: #64748b;
       --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px -4px rgba(0, 0, 0, 0.6);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--canvas);
+      color: var(--ink);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       line-height: 1.6;
       font-size: 14px;
@@ -381,7 +391,7 @@ PORTAL_HTML = """<!doctype html>
     }
     .portal-badge {
       font-size: 11px;
-      background: var(--surface);
+      background: var(--surface-2);
       color: var(--accent);
       border: 1px solid var(--accent-border);
       padding: 2px 8px;
@@ -412,6 +422,7 @@ PORTAL_HTML = """<!doctype html>
       flex-direction: column;
       gap: 4px;
       transition: border-color 0.15s ease;
+      box-shadow: var(--shadow);
     }
     .metric-card:hover {
       border-color: var(--border-hover);
@@ -429,8 +440,8 @@ PORTAL_HTML = """<!doctype html>
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
     }
-    .metric-val.green { color: var(--ok); }
-    .metric-val.slate { color: var(--text); }
+    .metric-val.green { color: var(--pass-fg); }
+    .metric-val.slate { color: var(--ink); }
     
     .toolbar {
       display: flex;
@@ -442,6 +453,22 @@ PORTAL_HTML = """<!doctype html>
       padding: 12px 18px;
       margin-bottom: 20px;
       flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+    .toolbar input[type=search] {
+      flex: 1;
+      min-width: 200px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-hover);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: inherit;
+    }
+    .toolbar input[type=search]:focus {
+      outline: none;
+      border-color: var(--accent);
     }
     .btn-group {
       display: flex;
@@ -461,32 +488,34 @@ PORTAL_HTML = """<!doctype html>
       cursor: pointer;
       border: 1px solid var(--border-hover);
       background: var(--surface);
-      color: var(--text);
+      color: var(--ink);
       text-decoration: none;
       transition: all 0.15s ease;
+      user-select: none;
     }
     .btn:hover {
       border-color: var(--accent);
       color: #fff;
+      background: var(--surface-2);
     }
     .btn-primary {
-      background: var(--ok-bg);
-      border-color: var(--ok-border);
-      color: var(--ok);
+      background: var(--pass-bg);
+      border-color: var(--pass-border);
+      color: var(--pass-fg);
     }
     .btn-primary:hover {
       background: rgba(52, 211, 153, 0.25);
-      border-color: var(--ok);
+      border-color: var(--pass-fg);
       color: #fff;
     }
     .btn-danger {
-      background: var(--bad-bg);
-      border-color: var(--bad-border);
-      color: var(--bad);
+      background: var(--fail-bg);
+      border-color: var(--fail-border);
+      color: var(--fail-fg);
     }
     .btn-danger:hover {
       background: rgba(248, 113, 113, 0.25);
-      border-color: var(--bad);
+      border-color: var(--fail-fg);
       color: #fff;
     }
     .btn-action {
@@ -520,15 +549,16 @@ PORTAL_HTML = """<!doctype html>
       gap: 16px;
       flex-wrap: wrap;
       transition: border-color 0.15s ease;
+      box-shadow: var(--shadow);
     }
     .server-card:hover {
       border-color: var(--border-hover);
     }
     .server-card.running {
-      border-left: 4px solid var(--ok);
+      border-left: 4px solid var(--pass-fg);
     }
     .server-card.stopped {
-      border-left: 4px solid #475569;
+      border-left: 4px solid var(--dim);
     }
     
     .server-info {
@@ -544,12 +574,18 @@ PORTAL_HTML = """<!doctype html>
     .server-name {
       font-size: 15px;
       font-weight: 600;
-      color: var(--text);
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.15s ease;
+      cursor: pointer;
+    }
+    .server-name:hover {
+      color: var(--accent);
     }
     .server-port-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11.5px;
-      background: var(--surface);
+      background: var(--surface-2);
       border: 1px solid var(--border-hover);
       padding: 2px 8px;
       border-radius: 4px;
@@ -580,27 +616,33 @@ PORTAL_HTML = """<!doctype html>
       letter-spacing: 0.02em;
     }
     .status-badge.running {
-      background: var(--ok-bg);
-      color: var(--ok);
-      border: 1px solid var(--ok-border);
+      background: var(--pass-bg);
+      color: var(--pass-fg);
+      border: 1px solid var(--pass-border);
     }
     .status-badge.stopped {
-      background: var(--neutral-bg);
-      color: var(--text-sec);
-      border: 1px solid var(--neutral-border);
+      background: var(--mute-bg);
+      color: var(--mute-fg);
+      border: 1px solid var(--mute-border);
     }
     .status-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       display: inline-block;
+      background: var(--dim);
     }
     .status-badge.running .status-dot {
-      background: var(--ok);
-      box-shadow: 0 0 6px var(--ok);
+      background: var(--pass-fg);
+      box-shadow: 0 0 6px var(--pass-fg);
     }
-    .status-badge.stopped .status-dot {
-      background: #64748b;
+    .status-dot.pulse {
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
     }
     .server-meta {
       color: var(--muted);
@@ -637,13 +679,13 @@ PORTAL_HTML = """<!doctype html>
       animation: toastIn 0.2s ease;
       font-family: 'JetBrains Mono', monospace;
     }
-    .toast.success { border-left: 4px solid var(--ok); color: var(--text); }
-    .toast.error { border-left: 4px solid var(--bad); color: #fca5a5; }
+    .toast.success { border-left: 4px solid var(--pass-fg); color: var(--ink); }
+    .toast.error { border-left: 4px solid var(--fail-fg); color: #fca5a5; }
     @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Sleek Scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-track { background: var(--canvas); }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
@@ -676,6 +718,7 @@ PORTAL_HTML = """<!doctype html>
   </div>
 
   <div class="toolbar">
+    <input type="search" id="searchFilter" placeholder="Filter servers by name, port, or description…" oninput="filterServers()">
     <div class="btn-group">
       <button class="btn btn-primary" onclick="startAll()">▶ Start All</button>
       <button class="btn btn-danger" onclick="stopAll()">⏹ Stop All</button>
@@ -683,7 +726,7 @@ PORTAL_HTML = """<!doctype html>
     </div>
     <div class="spacer"></div>
     <label style="font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px">
-      <input type="checkbox" id="autoRefresh" checked> Auto-refresh (2s)
+      <input type="checkbox" id="autoRefresh" checked> Auto-refresh (5s)
     </label>
   </div>
 
@@ -695,9 +738,24 @@ PORTAL_HTML = """<!doctype html>
 <div id="toasts"></div>
 
 <script>
-let serversData = [];
+let state = {
+  servers: [],
+  renderedKeys: []
+};
 
-function showToast(msg, type = 'success', duration = 3000) {
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+}
+
+function getTargetUrl(port) {
+  const host = window.location.hostname || '127.0.0.1';
+  return 'http://' + host + ':' + port;
+}
+
+function showToast(msg, type = 'success', duration = 3500) {
   const container = document.getElementById('toasts');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -716,57 +774,169 @@ async function api(path, method = 'GET') {
   }
 }
 
-async function refresh() {
-  const data = await api('/api/status');
-  if (!data || !data.servers) return;
-  serversData = data.servers;
-  render();
+function handleOpenDashboard(key, port, event) {
+  const url = getTargetUrl(port);
+  const server = state.servers.find(s => s.key === key);
+  
+  if (server && server.running) {
+    if (!event || event.target.tagName !== 'A') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    return;
+  }
+
+  if (event) event.preventDefault();
+  const name = server ? server.name : key;
+  showToast(`Starting ${name}...`, 'success');
+  
+  api(`/api/server/${key}/start`, 'POST').then(res => {
+    if (res && res.ok) {
+      showToast(`${name} started — opening dashboard!`, 'success');
+      setTimeout(() => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        refresh();
+      }, 350);
+    } else {
+      showToast((res && res.message) || `Failed to start ${name}`, 'error');
+    }
+  });
 }
 
-function render() {
-  const total = serversData.length;
-  const running = serversData.filter(s => s.running).length;
+function renderCardControls(s) {
+  const targetUrl = getTargetUrl(s.port);
+  if (s.running) {
+    return `
+      <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-action btn-dashboard" onclick="handleOpenDashboard('${s.key}', ${s.port}, event)">➜ Open Dashboard</a>
+      <button class="btn btn-sm" onclick="actionServer('${s.key}', 'restart')">🔄 Restart</button>
+      <button class="btn btn-danger btn-sm" onclick="actionServer('${s.key}', 'stop')">⏹ Stop</button>
+    `;
+  } else {
+    return `
+      <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-action btn-dashboard" onclick="handleOpenDashboard('${s.key}', ${s.port}, event)" title="Start server and open dashboard in a new tab">➜ Open Dashboard</a>
+      <button class="btn btn-primary btn-sm" onclick="actionServer('${s.key}', 'start')">▶ Start Server</button>
+    `;
+  }
+}
+
+function renderCardHtml(s) {
+  const isRun = s.running;
+  const targetUrl = getTargetUrl(s.port);
+  const statusClass = isRun ? 'running' : 'stopped';
+  const statusLabel = isRun ? 'Running' : 'Stopped';
+  const metaInfo = isRun
+    ? (s.pid ? `PID ${s.pid}` : '') + (s.uptime ? ` · Up ${s.uptime}` : '')
+    : 'Offline';
+
+  return `
+    <div class="server-card ${statusClass}" id="server-${s.key}" data-key="${s.key}">
+      <div class="server-info">
+        <div class="server-title-row">
+          <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="server-name" onclick="handleOpenDashboard('${s.key}', ${s.port}, event)">${escapeHtml(s.name)}</a>
+          <span class="server-port-tag">:${s.port}</span>
+          ${s.version ? `<span class="server-port-tag" style="background:var(--surface-2);color:var(--muted)">v${escapeHtml(s.version)}</span>` : ''}
+        </div>
+        <div class="server-desc">${escapeHtml(s.description)}</div>
+        <div class="server-status-row">
+          <span class="status-badge ${statusClass}">
+            <span class="status-dot ${isRun ? 'pulse' : ''}"></span>
+            <span class="status-label-text">${statusLabel}</span>
+          </span>
+          <span class="server-meta">${metaInfo}</span>
+        </div>
+      </div>
+      <div class="server-controls">
+        ${renderCardControls(s)}
+      </div>
+    </div>
+  `;
+}
+
+function buildFullDom() {
+  const container = document.getElementById('serverContainer');
+  container.innerHTML = state.servers.map(renderCardHtml).join('');
+  state.renderedKeys = state.servers.map(s => s.key);
+  updateMetrics();
+  filterServers();
+}
+
+function updateMetrics() {
+  const total = state.servers.length;
+  const running = state.servers.filter(s => s.running).length;
   const stopped = total - running;
 
   document.getElementById('metricTotal').textContent = total;
   document.getElementById('metricRunning').textContent = running;
   document.getElementById('metricStopped').textContent = stopped;
+}
 
-  const container = document.getElementById('serverContainer');
-  container.innerHTML = serversData.map(s => {
-    const statusClass = s.running ? 'running' : 'stopped';
-    const statusLabel = s.running ? 'Running' : 'Stopped';
-    const metaInfo = s.running
-      ? (s.pid ? `PID ${s.pid}` : '') + (s.uptime ? ` · Up ${s.uptime}` : '')
-      : 'Offline';
+function updateDomInPlace() {
+  updateMetrics();
 
-    return `
-      <div class="server-card ${statusClass}">
-        <div class="server-info">
-          <div class="server-title-row">
-            <span class="server-name">${s.name}</span>
-            <span class="server-port-tag">:${s.port}</span>
-            ${s.version ? `<span class="server-port-tag" style="background:var(--surface);color:var(--muted)">v${s.version}</span>` : ''}
-          </div>
-          <div class="server-desc">${s.description}</div>
-          <div class="server-status-row">
-            <span class="status-badge ${statusClass}">
-              <span class="status-dot"></span> ${statusLabel}
-            </span>
-            <span class="server-meta">${metaInfo}</span>
-          </div>
-        </div>
-        <div class="server-controls">
-          ${s.running
-            ? `<a href="${s.url}" target="_blank" class="btn btn-action">➜ Open Dashboard</a>
-               <button class="btn" onclick="actionServer('${s.key}', 'restart')">🔄 Restart</button>
-               <button class="btn btn-danger" onclick="actionServer('${s.key}', 'stop')">⏹ Stop</button>`
-            : `<button class="btn btn-primary" onclick="actionServer('${s.key}', 'start')">▶ Start Server</button>`
-          }
-        </div>
-      </div>
-    `;
-  }).join('');
+  state.servers.forEach(s => {
+    const card = document.getElementById('server-' + s.key);
+    if (!card) return;
+
+    const isRun = s.running;
+    const targetUrl = getTargetUrl(s.port);
+    card.className = `server-card ${isRun ? 'running' : 'stopped'}`;
+
+    const titleEl = card.querySelector('.server-name');
+    if (titleEl) {
+      titleEl.href = targetUrl;
+    }
+
+    const badgeEl = card.querySelector('.status-badge');
+    if (badgeEl) {
+      badgeEl.className = `status-badge ${isRun ? 'running' : 'stopped'}`;
+      const dotEl = badgeEl.querySelector('.status-dot');
+      if (dotEl) dotEl.className = `status-dot ${isRun ? 'pulse' : ''}`;
+      const textEl = badgeEl.querySelector('.status-label-text');
+      if (textEl) textEl.textContent = isRun ? 'Running' : 'Stopped';
+    }
+
+    const metaEl = card.querySelector('.server-meta');
+    if (metaEl) {
+      metaEl.textContent = isRun
+        ? (s.pid ? `PID ${s.pid}` : '') + (s.uptime ? ` · Up ${s.uptime}` : '')
+        : 'Offline';
+    }
+
+    const controlsEl = card.querySelector('.server-controls');
+    if (controlsEl) {
+      controlsEl.innerHTML = renderCardControls(s);
+    }
+  });
+
+  filterServers();
+}
+
+function filterServers() {
+  const query = (document.getElementById('searchFilter').value || '').toLowerCase().trim();
+  state.servers.forEach(s => {
+    const card = document.getElementById('server-' + s.key);
+    if (!card) return;
+    const matches = !query ||
+      s.name.toLowerCase().includes(query) ||
+      s.key.toLowerCase().includes(query) ||
+      String(s.port).includes(query) ||
+      (s.description && s.description.toLowerCase().includes(query));
+    card.style.display = matches ? 'flex' : 'none';
+  });
+}
+
+async function refresh() {
+  const data = await api('/api/status');
+  if (!data || !data.servers) return;
+  state.servers = data.servers;
+
+  const currentKeys = state.servers.map(s => s.key).join(',');
+  const renderedKeys = state.renderedKeys.join(',');
+
+  if (currentKeys !== renderedKeys) {
+    buildFullDom();
+  } else {
+    updateDomInPlace();
+  }
 }
 
 async function actionServer(key, act) {
@@ -780,21 +950,21 @@ async function actionServer(key, act) {
 }
 
 async function startAll() {
-  const data = await api('/api/start-all', 'POST');
   showToast('Starting all servers...', 'success');
-  setTimeout(refresh, 800);
-}
-
-async function stopAll() {
-  const data = await api('/api/stop-all', 'POST');
-  showToast('Stopping all servers...', 'success');
+  const data = await api('/api/start-all', 'POST');
   setTimeout(refresh, 600);
 }
 
+async function stopAll() {
+  showToast('Stopping all servers...', 'success');
+  const data = await api('/api/stop-all', 'POST');
+  setTimeout(refresh, 500);
+}
+
 async function restartAll() {
-  const data = await api('/api/restart-all', 'POST');
   showToast('Restarting all servers...', 'success');
-  setTimeout(refresh, 800);
+  const data = await api('/api/restart-all', 'POST');
+  setTimeout(refresh, 600);
 }
 
 refresh();
@@ -802,7 +972,7 @@ setInterval(() => {
   if (document.getElementById('autoRefresh').checked) {
     refresh();
   }
-}, 2000);
+}, 5000);
 </script>
 </body>
 </html>

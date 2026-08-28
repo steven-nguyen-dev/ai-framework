@@ -49,8 +49,8 @@ A self-contained testing environment to validate integration flows end-to-end wi
 
 ### 5. [`local-mcps/`](local-mcps) — Local MCP Servers
 Model Context Protocol servers built to extend AI assistant capabilities in local developer environments:
-- **`local-mcps/jira`**: FastMCP server providing issue metadata extraction, description parsing, batch attachment downloads, and direct text/log streaming into context.
-- **`local-mcps/kibana`**: FastMCP server for Kibana Observability / Logs, searchable with KQL. Authenticates the way the browser does (session cookie) because only Kibana `:5601` is reachable — no Elasticsearch endpoint, no API key. Ships a local KQL parser, since Kibana never exposes KQL over HTTP.
+- **`local-mcps/jira-reader`**: Zero-dependency universal Python MCP server providing issue metadata extraction, ADF description parsing, JQL search, batch attachment downloads, and direct text/log streaming into context.
+- **`local-mcps/kibana-explorer`**: FastMCP server for Kibana Observability / Logs, searchable with KQL. Authenticates the way the browser does (session cookie) because only Kibana `:5601` is reachable — no Elasticsearch endpoint, no API key. Ships a local KQL parser, since Kibana never exposes KQL over HTTP.
 
 ### 6. [`local-report-servers/`](local-report-servers) — Local Live Reports & Analytics
 Live dashboard servers generating actionable engineering reports directly from live repositories and tools:
@@ -62,17 +62,17 @@ Live dashboard servers generating actionable engineering reports directly from l
 
 ---
 
-## 🔐 Security & Configuration Standard (`.env.sample`)
+## 🔐 Security & Configuration Standard (`.env.example`)
 
-To prevent accidental credential leaks and guarantee smooth onboarding for teammates, every component with secrets or environment configurations adheres to the **`.env.sample` Standard**:
+To prevent accidental credential leaks and guarantee smooth onboarding for teammates, every component with secrets or environment configurations adheres to the **`.env.example` Standard**:
 
 1. **Strict Git Ignore (`*.env`)**:
    - Real credentials, API keys, passwords, and session cookies reside in `.env` files and are **never committed**.
    - `*.env` is strictly enforced by `.gitignore` across the entire repository.
-2. **Standard Sample Templates (`.env.sample`)**:
-   - Every service needing secrets commits a `.env.sample` with dummy placeholders and parameter descriptions.
-3. **Automated Provisioning (`setup.sh`)**:
-   - Running `./setup.sh` in any tool directory (or launcher app) checks for `.env`. If absent, it automatically copies `.env.sample` $\rightarrow$ `.env` and instructs the developer to populate their personal credentials.
+2. **Standard Templates (`.env.example`)**:
+   - Every service needing secrets commits a `.env.example` with dummy placeholders and parameter descriptions.
+3. **Automated Provisioning (`setup.sh` / `--init-env`)**:
+   - Running `./setup.sh` or `python3 server.py --init-env` checks for `.env`. If absent, it automatically copies `.env.example` $\rightarrow$ `.env` and instructs the developer to populate their personal credentials.
 
 ---
 

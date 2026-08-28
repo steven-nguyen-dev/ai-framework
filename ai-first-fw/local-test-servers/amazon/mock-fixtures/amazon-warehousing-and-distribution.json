@@ -1,0 +1,1641 @@
+[
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "externalReferenceId": "string",
+            "originAddress": {
+              "addressLine1": "address_1",
+              "addressLine2": "address_2",
+              "addressLine3": "address_3",
+              "city": "City1",
+              "countryCode": "CC",
+              "district": "District1",
+              "name": "address_name",
+              "postalCode": "123456",
+              "stateOrRegion": "State1"
+            },
+            "packagesToInbound": [
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "testPen",
+                        "expiration": "2025-06-07T12:12:09.061Z",
+                        "prepDetails": {
+                          "prepCategory": "PERFORATED",
+                          "prepOwner": "AMAZON",
+                          "labelOwner": "SELF"
+                        }
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "CASE"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "orderId": "TestOrderId"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "externalReferenceId": "string",
+            "originAddress": {
+              "addressLine1": "address_1",
+              "addressLine2": "address_2",
+              "addressLine3": "address_3",
+              "city": "City1",
+              "countryCode": "CC",
+              "district": "District1",
+              "name": "address_name",
+              "postalCode": "123456",
+              "stateOrRegion": "State1"
+            },
+            "packagesToInbound": [
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "testPen",
+                        "expiration": "2025-06-07T12:12:09.061Z",
+                        "prepDetails": {
+                          "prepCategory": "PERFORATED",
+                          "prepOwner": "AMAZON",
+                          "labelOwner": "SELF"
+                        }
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "TEST"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid value (`TEST`) passed for `DistributionPackageType`. Valid values are: `CASE`, `PALLET`",
+          "details": "This exception is thrown when client inputs are invalid."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId"
+        }
+      }
+    },
+    "response": {
+      "destinationDetails": {
+        "destinationAddress": {
+          "addressLine1": "address_1",
+          "addressLine2": "address_2",
+          "addressLine3": "address_3",
+          "city": "Seattle",
+          "countryCode": "US",
+          "county": "Washington",
+          "district": "District1",
+          "name": "address_name",
+          "phoneNumber": "+14155552671",
+          "postalCode": "123456",
+          "stateOrRegion": "Washington"
+        },
+        "destinationRegion": "us-east"
+      },
+      "createdAt": "2023-06-07T12:12:09.061Z",
+      "externalReferenceId": "TestReferenceId",
+      "orderId": "TestOrderId",
+      "orderStatus": "DRAFT",
+      "originAddress": {
+        "addressLine1": "address_1",
+        "addressLine2": "address_2",
+        "addressLine3": "address_3",
+        "city": "Seattle",
+        "countryCode": "US",
+        "county": "Washington",
+        "district": "District1",
+        "name": "address_name",
+        "phoneNumber": "+14155552671",
+        "postalCode": "123456",
+        "stateOrRegion": "Washington"
+      },
+      "packagesToInbound": [
+        {
+          "count": 1,
+          "distributionPackage": {
+            "contents": {
+              "packages": [],
+              "products": [
+                {
+                  "quantity": 1,
+                  "sku": "testPen",
+                  "expiration": "2025-06-07T12:12:09.061Z",
+                  "prepDetails": {
+                    "prepCategory": "PERFORATED",
+                    "prepOwner": "AMAZON",
+                    "labelOwner": "SELF",
+                    "prepInstructions": [
+                      {
+                        "prepType": "ITEM_POLYBAGGING",
+                        "prepOwner": "AMAZON"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "measurements": {
+              "dimensions": {
+                "height": 2.54,
+                "length": 2.54,
+                "unitOfMeasurement": "CENTIMETERS",
+                "width": 2.54
+              },
+              "weight": {
+                "unitOfMeasurement": "KILOGRAMS",
+                "weight": 0.453592
+              }
+            },
+            "type": "CASE"
+          }
+        }
+      ],
+      "updatedAt": "2023-06-07T12:12:09.061Z"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'orderId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId1"
+        },
+        "body": {
+          "value": {
+            "createdAt": "2023-06-07T12:12:09.061Z",
+            "destinationDetails": {
+              "destinationAddress": {
+                "addressLine1": "address_1",
+                "addressLine2": "address_2",
+                "addressLine3": "address_3",
+                "city": "Seattle",
+                "countryCode": "US",
+                "county": "Washington",
+                "district": "District1",
+                "name": "address_name",
+                "phoneNumber": "+14155552671",
+                "postalCode": "123456",
+                "stateOrRegion": "Washington"
+              },
+              "destinationRegion": "us-east"
+            },
+            "orderId": "TestOrderId1",
+            "orderStatus": "DRAFT",
+            "originAddress": {
+              "addressLine1": "address_1",
+              "addressLine2": "address_2",
+              "addressLine3": "address_3",
+              "city": "City1",
+              "countryCode": "CC",
+              "district": "District1",
+              "name": "DestinationName",
+              "postalCode": "123456",
+              "stateOrRegion": "State1"
+            },
+            "packagesToInbound": [
+              {
+                "count": 2,
+                "distributionPackage": {
+                  "contents": {
+                    "packages": [],
+                    "products": [
+                      {
+                        "quantity": 10,
+                        "sku": "testPen",
+                        "expiration": "2025-06-07T12:12:09.061Z",
+                        "prepDetails": {
+                          "prepCategory": "PERFORATED",
+                          "prepOwner": "AMAZON",
+                          "labelOwner": "SELF",
+                          "prepInstructions": [
+                            {
+                              "prepType": "ITEM_POLYBAGGING",
+                              "prepOwner": "AMAZON"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "CENTIMETERS",
+                      "width": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "KILOGRAMS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "CASE"
+                }
+              }
+            ],
+            "updatedAt": "2023-06-07T12:12:09.061Z"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId1"
+        },
+        "body": {
+          "value": {
+            "destinationDetails": {
+              "destinationAddress": {
+                "addressLine1": "address_1",
+                "addressLine2": "address_2",
+                "addressLine3": "address_3",
+                "city": "Seattle",
+                "countryCode": "US",
+                "county": "Washington",
+                "district": "District1",
+                "name": "address_name",
+                "phoneNumber": "+14155552671",
+                "postalCode": "123456",
+                "stateOrRegion": "Washington"
+              },
+              "destinationRegion": "us-east"
+            },
+            "createdAt": "2023-06-07T12:12:09.061Z",
+            "orderId": "TestOrderId1",
+            "orderStatus": "DRAFT",
+            "originAddress": {
+              "addressLine1": "address_1",
+              "addressLine2": "address_2",
+              "addressLine3": "address_3",
+              "city": "City1",
+              "countryCode": "CC",
+              "district": "District1",
+              "name": "DestinationName",
+              "postalCode": "123456",
+              "stateOrRegion": "State1"
+            },
+            "packagesToInbound": [
+              {
+                "count": 2,
+                "distributionPackage": {
+                  "contents": {
+                    "packages": [],
+                    "products": [
+                      {
+                        "quantity": 10,
+                        "sku": "testPen",
+                        "expiration": "2025-06-07T12:12:09.061Z",
+                        "prepDetails": {
+                          "prepCategory": "PERFORATED",
+                          "prepOwner": "AMAZON",
+                          "labelOwner": "SELF",
+                          "prepInstructions": [
+                            {
+                              "prepType": "ITEM_POLYBAGGING",
+                              "prepOwner": "AMAZON"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "CENTIMETERS",
+                      "width": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "KILOGRAMS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "TEST"
+                }
+              }
+            ],
+            "updatedAt": "2023-06-07T12:12:09.061Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid value (`TEST`) passed for `DistributionPackageType`. Valid values are: `CASE`, `PALLET`",
+          "details": "This exception is thrown when client inputs are invalid."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}/cancellation",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}/cancellation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'orderId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}/confirmation",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundOrders/{orderId}/confirmation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'orderId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TestShipmentId"
+        }
+      }
+    },
+    "response": {
+      "createdAt": "2023-06-07T12:12:09.061Z",
+      "destinationAddress": {
+        "addressLine1": "address_line_1",
+        "addressLine2": "address_line_2",
+        "addressLine3": "address_line_3",
+        "city": "City1",
+        "countryCode": "CC",
+        "district": "District1",
+        "name": "DestinationName",
+        "postalCode": "123456",
+        "stateOrRegion": "State1"
+      },
+      "orderId": "TestOrderId",
+      "originAddress": {
+        "addressLine1": "address_1",
+        "addressLine2": "address_2",
+        "addressLine3": "address_3",
+        "city": "City1",
+        "countryCode": "CC",
+        "district": "District1",
+        "name": "address_name",
+        "postalCode": "123456",
+        "stateOrRegion": "State1"
+      },
+      "receivedQuantity": [
+        {
+          "quantity": 0,
+          "unitOfMeasurement": "CASES"
+        }
+      ],
+      "shipmentContainerQuantities": [
+        {
+          "count": 2,
+          "distributionPackage": {
+            "contents": {
+              "packages": [],
+              "products": [
+                {
+                  "quantity": 20,
+                  "sku": "testPen"
+                }
+              ]
+            },
+            "measurements": {
+              "dimensions": {
+                "height": 33.02,
+                "length": 45.72,
+                "unitOfMeasurement": "CENTIMETERS",
+                "width": 15.24
+              },
+              "weight": {
+                "unitOfMeasurement": "KILOGRAMS",
+                "weight": 5.443104
+              }
+            },
+            "type": "CASE"
+          }
+        }
+      ],
+      "shipmentId": "TestShipmentId",
+      "shipmentStatus": "CREATED",
+      "shipmentSkuQuantities": [
+        {
+          "sku": "testPen",
+          "expectedQuantity": {
+            "quantity": 2,
+            "unitOfMeasurement": "CASE"
+          },
+          "receivedQuantity": {
+            "quantity": 0,
+            "unitOfMeasurement": "CASE"
+          }
+        }
+      ],
+      "updatedAt": "2023-06-07T12:12:09.061Z"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'shipmentId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/labels",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TestShipmentId"
+        }
+      }
+    },
+    "response": {
+      "labelDownloadURL": "TEST_URL",
+      "labelStatus": "GENERATED"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/labels",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "ShipmentId should be present for this request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/labelPageTypes",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TestShipmentId"
+        }
+      }
+    },
+    "response": {
+      "labelStatus": "GENERATED",
+      "pageTypes": [
+        "PLAIN_PAPER"
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/labelPageTypes",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "ShipmentId should be present for this request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/transport",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TestShipmentId"
+        },
+        "body": {
+          "value": {
+            "trackingDetails": [
+              {
+                "carrierCode": {
+                  "carrierCodeType": "SCAC"
+                },
+                "bookingId": "TRACKING_ID"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments/{shipmentId}/transport",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "ShipmentId should be present for this request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundEligibility",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "packagesToInbound": [
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "TestDVDSku"
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "CASE"
+                }
+              },
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "testPen"
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "CASE"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "ineligibilityReasons": [],
+      "status": "INELIGIBLE",
+      "packagesToInbound": [
+        {
+          "ineligibilityReasons": [
+            {
+              "description": "You can't use the gating service to buy this item.",
+              "code": "GATING_BLOCK_ON_GL"
+            }
+          ],
+          "status": "INELIGIBLE",
+          "packageQuantity": {
+            "count": 1,
+            "distributionPackage": {
+              "contents": {
+                "packages": [],
+                "products": [
+                  {
+                    "quantity": 1,
+                    "sku": "TestDVDSku"
+                  }
+                ]
+              },
+              "measurements": {
+                "dimensions": {
+                  "height": 1.0,
+                  "length": 1.0,
+                  "unitOfMeasurement": "INCHES",
+                  "width": 1.0
+                },
+                "volume": {
+                  "unitOfMeasurement": "CUIN",
+                  "volume": 1.0
+                },
+                "weight": {
+                  "unitOfMeasurement": "POUNDS",
+                  "weight": 1.0
+                }
+              },
+              "type": "CASE"
+            }
+          }
+        },
+        {
+          "ineligibilityReasons": [],
+          "status": "ELIGIBLE",
+          "packageQuantity": {
+            "count": 1,
+            "distributionPackage": {
+              "contents": {
+                "packages": [],
+                "products": [
+                  {
+                    "quantity": 1,
+                    "sku": "testPen"
+                  }
+                ]
+              },
+              "measurements": {
+                "dimensions": {
+                  "height": 1.0,
+                  "length": 1.0,
+                  "unitOfMeasurement": "INCHES",
+                  "width": 1.0
+                },
+                "volume": {
+                  "unitOfMeasurement": "CUIN",
+                  "volume": 1.0
+                },
+                "weight": {
+                  "unitOfMeasurement": "POUNDS",
+                  "weight": 1.0
+                }
+              },
+              "type": "CASE"
+            }
+          }
+        }
+      ],
+      "previewedAt": "2025-06-20T19:30:58.466Z"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundEligibility",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "packagesToInbound": [
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "TestDVDSku"
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "CASE"
+                }
+              },
+              {
+                "count": 1,
+                "distributionPackage": {
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "testPen"
+                      }
+                    ]
+                  },
+                  "measurements": {
+                    "dimensions": {
+                      "height": 1,
+                      "length": 1,
+                      "unitOfMeasurement": "INCHES",
+                      "width": 1
+                    },
+                    "volume": {
+                      "unitOfMeasurement": "CUIN",
+                      "volume": 1
+                    },
+                    "weight": {
+                      "unitOfMeasurement": "POUNDS",
+                      "weight": 1
+                    }
+                  },
+                  "type": "TEST"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'orderId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "shipments": [
+        {
+          "createdAt": "2023-06-07T12:12:09.061Z",
+          "orderId": "TestOrderId",
+          "shipmentId": "TestShipmentId",
+          "shipmentStatus": "CREATED",
+          "updatedAt": "2023-06-07T12:12:09.061Z"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inboundShipments",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sortBy": {
+          "value": "TEST"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid shipment sortable field received: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inventory",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {},
+    "response": {
+      "inventory": [
+        {
+          "totalOnhandQuantity": 20,
+          "totalInboundQuantity": 10,
+          "sku": "100TestSKU1Pen",
+          "inventoryDetails": {
+            "availableDistributableQuantity": 10,
+            "reservedDistributableQuantity": 10,
+            "replenishmentQuantity": 10
+          },
+          "expirationDetails": [
+            {
+              "onhandQuantity": 10,
+              "expiration": "2027-01-12T10:00:00.000Z"
+            },
+            {
+              "onhandQuantity": 10,
+              "expiration": "2028-01-12T10:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "totalOnhandQuantity": 20,
+          "totalInboundQuantity": 5,
+          "sku": "2U-BKEX-VW4D",
+          "inventoryDetails": {
+            "availableDistributableQuantity": 10,
+            "reservedDistributableQuantity": 10,
+            "replenishmentQuantity": 10
+          },
+          "expirationDetails": [
+            {
+              "onhandQuantity": 20,
+              "expiration": "2027-01-12T10:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/inventory",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sortOrder": {
+          "value": "UNKNOWN"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid value: UNKNOWN passed for sort order. Possible values are: [ASCENDING, DESCENDING]"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "outboundOrders": [
+        {
+          "eligiblePackagesToOutbound": [],
+          "eligibleProductsToOutbound": [],
+          "executionErrors": [],
+          "orderId": "TEST_ORDER_ID",
+          "orderPreferences": [],
+          "orderStatus": "SUCCESS",
+          "outboundShipments": [],
+          "packagesToOutbound": [],
+          "productsToOutbound": [],
+          "shippedOutboundPackages": [],
+          "shippedOutboundProducts": []
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sortOrder": {
+          "value": "TEST"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid sort order field: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "productsToOutbound": [
+              {
+                "quantity": 20,
+                "sku": "TEST_SKU"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "orderId": "TEST_ORDER_ID"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "packagesToOutbound": [
+              {
+                "count": 20,
+                "distributionPackage": {
+                  "type": "TEST",
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "TEST_SKU"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid package type: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_ORDER_ID"
+        }
+      }
+    },
+    "response": {
+      "eligiblePackagesToOutbound": [],
+      "eligibleProductsToOutbound": [],
+      "executionErrors": [],
+      "orderId": "TEST_ORDER_ID",
+      "orderPreferences": [],
+      "orderStatus": "SUCCESS",
+      "outboundShipments": [],
+      "packagesToOutbound": [],
+      "productsToOutbound": [],
+      "shippedOutboundPackages": [],
+      "shippedOutboundProducts": []
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Required parameter 'orderId' is missing in the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_ORDER_ID"
+        },
+        "body": {
+          "value": {
+            "eligiblePackagesToOutbound": [],
+            "eligibleProductsToOutbound": [],
+            "executionErrors": [],
+            "orderId": "TEST_ORDER_ID",
+            "orderPreferences": [],
+            "orderStatus": "SUCCESS",
+            "outboundShipments": [],
+            "packagesToOutbound": [],
+            "productsToOutbound": [
+              {
+                "quantity": 10,
+                "sku": "testPen"
+              }
+            ],
+            "shippedOutboundPackages": [],
+            "shippedOutboundProducts": []
+          }
+        }
+      }
+    },
+    "response": {
+      "orderId": "TEST_ORDER_ID"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_ORDER_ID"
+        },
+        "body": {
+          "value": {
+            "eligiblePackagesToOutbound": [],
+            "eligibleProductsToOutbound": [],
+            "executionErrors": [],
+            "orderId": "TEST_ORDER_ID",
+            "orderPreferences": [],
+            "orderStatus": "SUCCESS",
+            "outboundShipments": [],
+            "packagesToOutbound": [
+              {
+                "count": 20,
+                "distributionPackage": {
+                  "type": "TEST",
+                  "contents": {
+                    "products": [
+                      {
+                        "quantity": 1,
+                        "sku": "TEST_SKU"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "productsToOutbound": [],
+            "shippedOutboundPackages": [],
+            "shippedOutboundProducts": []
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid package type: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}/confirmation",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TestOrderId1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/outboundOrders/{orderId}/confirmation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "OrderId should be present for this request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "orders": [
+        {
+          "confirmedOn": "2024-08-11T23:20:50.520Z",
+          "createdAt": "2024-08-10T23:20:50.520Z",
+          "eligibleProducts": [],
+          "distributionIneligibleReasons": [],
+          "orderId": "TEST_ORDER_ID",
+          "status": "SUCCESS",
+          "outboundShipments": [],
+          "products": [],
+          "shippedProducts": []
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sortOrder": {
+          "value": "TEST"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid sort order field: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders",
+    "method": "POST",
+    "status": 201,
+    "test_case": "CASE_201_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "products": [
+              {
+                "quantity": 20,
+                "sku": "TEST_SKU"
+              }
+            ],
+            "preferences": {
+              "confirmation": "AUTO"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "orderId": "TEST_ORDER_ID"
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "products": [
+              {
+                "quantity": 1,
+                "sku": "TEST_SKU"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "Invalid package type: TEST"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders/{orderId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "TEST_ORDER_ID"
+        }
+      }
+    },
+    "response": {
+      "confirmedOn": "2024-08-11T23:20:50.520Z",
+      "createdAt": "2024-08-10T23:20:50.520Z",
+      "eligibleProducts": [],
+      "distributionIneligibleReasons": [],
+      "orderId": "TEST_ORDER_ID",
+      "status": "SUCCESS",
+      "outboundShipments": [],
+      "products": [],
+      "shippedProducts": []
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders/{orderId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "OrderId should be present for this request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/amazon-warehousing-and-distribution-model/awd_2024-05-09.json",
+    "domain": "amazon-warehousing-and-distribution",
+    "path": "/awd/2024-05-09/replenishmentOrders/{orderId}/confirmation",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": " "
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "details": "This exception is thrown when client inputs are invalid",
+          "message": "OrderId should be present for this request"
+        }
+      ]
+    }
+  }
+]

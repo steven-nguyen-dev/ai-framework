@@ -9,7 +9,7 @@
 
 A suite file is also runnable through this module, which is what the mock's `/test` page uses:
 
-    python3 suite/run.py eton/suite-flow2.py --fast
+    python3 suite/run.py eton/suite-create-order.py --fast
 """
 
 import importlib.util

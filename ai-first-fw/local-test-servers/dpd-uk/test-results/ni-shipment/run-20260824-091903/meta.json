@@ -1,0 +1,10 @@
+{
+  "suite": "ni-shipment",
+  "mock": "dpd-uk",
+  "settings": {
+    "APP": "https://localhost:3002",
+    "DB_NAME": "carrier_integrations_test",
+    "MOCK": "http://127.0.0.1:23102",
+    "WKHTMLTOPDF": "present"
+  }
+}

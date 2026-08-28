@@ -1,0 +1,2486 @@
+{
+  "name": "Northern Ireland shipment (warehouse -> JPluger -> DPD UK)",
+  "at": "2026-08-23T17:26:58.892472+00:00",
+  "run": "run-20260824-002658",
+  "suite": "ni-shipment",
+  "summary": {
+    "blocked": 9,
+    "pass": 10
+  },
+  "evidence": {
+    "status": "complete",
+    "mock log": "captured, 34 call(s)",
+    "database": "captured",
+    "APP": "https://localhost:3001",
+    "DB_NAME": "carrier_integrations_test",
+    "MOCK": "http://127.0.0.1:23102",
+    "WKHTMLTOPDF": "absent"
+  },
+  "cases": [
+    {
+      "id": "N1",
+      "name": "B2B receiver, goods not at risk - the whole mapping",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-B2B-NAR-01 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: XIUKIM47700000000000000000001 \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: False \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-B2B-NAR-01",
+          "actual": "DPDUK-NI-B2B-NAR-01",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000001",
+          "actual": "XIUKIM47700000000000000000001",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "The reference case for IA-4752. It is the one case that states every mapped field, so a regression anywhere in DpdUKUtility.createOrderOnDPDUK lands here first.",
+      "given": "A Manchester warehouse shipping two apparel lines in one package to a Belfast business that holds a UKIMS number, with its own EORI number alongside it.",
+      "then": [
+        "generateCustomsData is Y even though the network code is the domestic 1^12.",
+        "The invoice carries both parties, their EORI numbers and the sender's VAT number.",
+        "The receiver is classified: isBusiness true, atRisk false, ukimsNumber sent.",
+        "county comes from state_name, not from country, on both invoice addresses.",
+        "The receiver's organisation is the business name, not the company name.",
+        "customsValue is the stated total and customsCurrency is GBP.",
+        "Both products are named in parcelDescription, pipe-separated.",
+        "Each customs line carries its own commodity code, ex-VAT unit value and weight.",
+        "The label is fetched twice - HTML for the PDF, Citizen CLP for the printer."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-B2B-NAR-01",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "N2",
+      "name": "B2B receiver, goods at risk",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-B2B-AR-02 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: XIUKIM47700000000000000000001 \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: True \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-B2B-AR-02",
+          "actual": "DPDUK-NI-B2B-AR-02",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000001",
+          "actual": "XIUKIM47700000000000000000001",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "At risk is the flag that decides whether EU duty is due, and it is the only difference from N1 - so a mapping that ignores risk_status shows up as N1 passing and this failing.",
+      "given": "The same shipment, with the goods declared at risk of moving into the EU.",
+      "then": [
+        "atRisk is true.",
+        "No scheme number is required for the at-risk flow, but the one sent still stands."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-B2B-AR-02",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "N3",
+      "name": "Individual receiver",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-B2C-03 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: absent \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: absent \u00b7 Classify the receiver as a business: False \u00b7 Declare whether the goods are at risk: absent \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-B2C-03",
+          "actual": "DPDUK-NI-B2C-03",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "A consumer has no risk status and no scheme number, and DPD rejects atRisk on a B2C invoice. Proves the two fields are omitted rather than sent false.",
+      "given": "The same shipment to a private individual in Belfast.",
+      "then": [
+        "isBusiness is false.",
+        "atRisk is absent from the wire, not false.",
+        "No scheme number and no organisation are sent."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-B2C-03",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "N4",
+      "name": "Delivered duty paid",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DT1 \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-DDP-04 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: XIUKIM47700000000000000000001 \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: False \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DT1",
+          "actual": "DT1",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-DDP-04",
+          "actual": "DPDUK-NI-DDP-04",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000001",
+          "actual": "XIUKIM47700000000000000000001",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "DPD names the duty-paid term DT1, not DDP. The translation is the whole of this case, and DAP - which every shipment carried before - is what a broken translation falls back to.",
+      "given": "The same shipment, sold on DDP terms with no carrier term resolved upstream.",
+      "then": [
+        "invoiceTermsOfDelivery is DT1."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-DDP-04",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "N5",
+      "name": "Two packages in two package groups",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-2PKG-05 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: XIUKIM47700000000000000000001 \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: False \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 2, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-2PKG-05",
+          "actual": "DPDUK-NI-2PKG-05",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000001",
+          "actual": "XIUKIM47700000000000000000001",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 2, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 2, 'parcel[]': 2, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "A shipment can arrive as more than one package group, and the loop that gathers them used to let each group replace the last - one parcel travelled and the rest of the shipment was undeclared. Two groups of one package each is the shape that catches it.",
+      "given": "The same two products, packed one per package, in two separate package groups.",
+      "then": [
+        "Two parcels are sent and numberOfParcels says two.",
+        "Each parcel carries its own package's customs line.",
+        "totalWeight is the sum of both packages and covers both lines."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-2PKG-05",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "N6",
+      "name": "Sender holds the scheme number",
+      "shape": "northern ireland",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-NI-SENDER-UKIMS-6 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: XIUKIM47700000000000000000009 \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: absent \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: False \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-NI-SENDER-UKIMS-6",
+          "actual": "DPDUK-NI-SENDER-UKIMS-6",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000009",
+          "actual": "XIUKIM47700000000000000000009",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "DPD accepts one party's scheme number and no more. With only the sender holding one it goes on the shipper, and the receiver's slot has to stay empty - the mirror of N1.",
+      "given": "The same shipment, where the sender holds the scheme number and the receiver has none.",
+      "then": [
+        "ukimsNumber is on invoiceShipperDetails.",
+        "invoiceDeliveryDetails carries no scheme number."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-SENDER-UKIMS-6",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "D1",
+      "name": "Great Britain domestic - no customs data at all",
+      "shape": "domestic",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: absent \u00b7 Build the invoice: absent \u00b7 Value the consignment: absent \u00b7 State the currency: absent \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Build the invoice",
+          "what": "the invoice object",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "The Windsor Framework data belongs to the Northern Ireland route only. A Manchester to Manchester shipment must be exactly what it was before IA-4752, and this is the case that says so - including that none of the new validation applies to it.",
+      "given": "The same order, delivered inside Great Britain on the same domestic network code.",
+      "then": [
+        "No invoice and no generateCustomsData are sent.",
+        "No customs value or currency is sent.",
+        "The shipment is accepted with no classification data at all."
+      ],
+      "detail": {
+        "order_number": "DPDUK-GB-DOMESTIC-07",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "D2",
+      "name": "International network code - the invoice as it always was",
+      "shape": "international",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 0.0 \u00b7 Send the sender's scheme number: absent \u00b7 Send the receiver's scheme number: absent \u00b7 Classify the receiver as a business: absent \u00b7 Declare whether the goods are at risk: absent \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "0.0",
+          "actual": "0.0",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "One of the eight international network codes that carried a customs invoice before Northern Ireland existed. It must still get one, still with shippingCost 0 - the real carriage charge is stated on the Northern Ireland route alone, so no duty base moves for anyone else - and none of the Windsor Framework fields.",
+      "given": "The same order to Dublin on network 1^19, with no Northern Ireland data.",
+      "then": [
+        "The invoice is built and generateCustomsData is Y.",
+        "shippingCost stays 0, not the 2.00 the order carries.",
+        "No isBusiness, atRisk or ukimsNumber is sent."
+      ],
+      "detail": {
+        "order_number": "DPDUK-INTL-IE-08",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "R1",
+      "name": "Consumer type unresolved",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: consumer_type: must be resolved to business or individual \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "consumer_type: must be resolved to business or individual",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"consumer_type: must be resolved to business or individual, received unknown\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "DPD has no value for 'unknown' - the classification decides the whole customs treatment. The shipment has to be refused naming the field, not sent as a guess.",
+      "given": "A Northern Ireland shipment whose receiver type the product could not resolve.",
+      "then": [
+        "No shipment call is made.",
+        "The app names consumer_type in what it returns to the product."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-UNKNOWN-09"
+      },
+      "calls": []
+    },
+    {
+      "id": "R2",
+      "name": "Not at risk, no scheme number anywhere",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: sender_ukims or shipping_address.receiver_ukims \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "sender_ukims or shipping_address.receiver_ukims",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"sender_ukims or shipping_address.receiver_ukims: one is required when the goods are not at risk\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "A not-at-risk movement is what the scheme number buys. Without one from either party DPD rejects the shipment, and the field the product has to fill is the one the message has to name.",
+      "given": "A business receiver, goods not at risk, and neither party holding a scheme number.",
+      "then": [
+        "No shipment call is made.",
+        "Both key names appear in the refusal."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-NOUKIMS-10"
+      },
+      "calls": []
+    },
+    {
+      "id": "R3",
+      "name": "Commodity code missing on one line",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: order_items.hs_code \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "order_items.hs_code",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"order_items.hs_code: is required for a Northern Ireland shipment, missing for SKU-002\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "IA-5213 makes the commodity code mandatory on every Northern Ireland line. One line of two missing it is what proves the check is per line rather than per shipment.",
+      "given": "The same shipment with no commodity code on the scarf, on the package line and the order line alike.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal names order_items.hs_code and the SKU that is missing it."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-NOHS-11"
+      },
+      "calls": []
+    },
+    {
+      "id": "R4",
+      "name": "Stated customs total disagrees with the lines",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: total_customs_value \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "total_customs_value",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"total_customs_value: 30.0 does not match the item lines, which come to 36.0\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The customs total is computed upstream and the item values are sent alongside it. Where the two disagree one of them is wrong, and DPD would clear the goods against a figure the invoice lines do not support.",
+      "given": "A stated total of 30.00 against lines that come to 36.00.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal states both figures."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-VALUEGAP-12"
+      },
+      "calls": []
+    },
+    {
+      "id": "R5",
+      "name": "Package lighter than what is in it",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: shipment_weight \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "shipment_weight",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipment_weight: is lighter than the items it carries, 0.2 against 0.65\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "DPD refuses a unit weight that outweighs the parcel holding it. 0.20 kg against 0.65 kg of goods is the arithmetic the reconciliation exists for.",
+      "given": "Both products packed in a package declared at 0.20 kg.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal names shipment_weight and states both weights."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-LIGHT-13"
+      },
+      "calls": []
+    },
+    {
+      "id": "R6",
+      "name": "Fulfilment code carries no network code",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: shipping_method.fulfilment_code \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "shipping_method.fulfilment_code",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"shipping_method.fulfilment_code: must carry the DPD network code after a /, received DPD_UK\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Without a network code DPD has no service to carry the shipment. The split on / used to throw into a catch-all that reported 'something went wrong' - the field is what the product needs to hear, and this refusal applies to every destination.",
+      "given": "A fulfilment code with no network code after the separator.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal names shipping_method.fulfilment_code and echoes what arrived."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-NOCODE-14"
+      },
+      "calls": []
+    },
+    {
+      "id": "R7",
+      "name": "Customs currency DPD does not settle in",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: customs_currency: must be GBP or EUR \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "customs_currency: must be GBP or EUR",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"customs_currency: must be GBP or EUR for a Northern Ireland shipment\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "DPD settles customs in Sterling or Euro only. Relabelling a dollar value as GBP would clear the goods at the wrong amount, so an unsupported currency is refused rather than converted or dropped.",
+      "given": "A shipment valued in US dollars, on the order and on its lines.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal names customs_currency."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-USD-15"
+      },
+      "calls": []
+    },
+    {
+      "id": "R8",
+      "name": "Both parties hold a scheme number, neither is named",
+      "shape": "refused",
+      "expected": "Send the shipment to DPD: 0 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: ukims_holder: must name sender or receiver \u00b7 Write the shipment to the database: 0",
+      "actual": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "no shipment call \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "ukims_holder: must name sender or receiver",
+          "actual": "{\"status\":\"BAD_REQUEST\",\"message\":\"ukims_holder: must name sender or receiver when both hold a scheme number\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "DPD accepts one scheme number. With two present and no holder named, picking either would be a guess about who is liable, so the product is asked which - and ukims_holder is the key it answers with.",
+      "given": "A shipment where the sender and the receiver both hold a scheme number and ukims_holder is not set to either party.",
+      "then": [
+        "No shipment call is made.",
+        "The refusal names ukims_holder."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-2UKIMS-16"
+      },
+      "calls": []
+    },
+    {
+      "id": "E1",
+      "name": "DPD rejects the postcode",
+      "shape": "dpd error",
+      "expected": "Send the shipment to DPD: 1 \u00b7 DPD answers the shipment: 200 \u00b7 Read the error DPD returned: Invalid postcode value \u00b7 Declare customs data: Y \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Fetch the label: 0 \u00b7 Report back to the product: Invalid postcode value \u00b7 Write the shipment to the database: 0",
+      "actual": "1 shipment \u2192 200 \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "1 shipment \u2192 200 \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the error DPD returned",
+          "what": "error[0] of the shipment response",
+          "expected": "Invalid postcode value",
+          "actual": "{'errorCode': '1009', 'obj': 'deliveryDetails.address.postcode', 'errorType': 'validation', 'errorMessage': 'Invalid postcode value', 'errorAction': None}",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "Invalid postcode value",
+          "actual": "{\"status\":\"INTERNAL_SERVER_ERROR\",\"message\":\"deliveryDetails.address.postcode\\\\|validation\\\\|Invalid postcode value\",\"summary\":\"Something Went Wrong.. Please Try again..!!!\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "DPD answers 200 with a populated error array, which is the only thing separating a created shipment from a refused one. Proves the integration reads the array rather than the status, and passes DPD's own words back to the product.",
+      "given": "A shipment DPD refuses on the delivery postcode.",
+      "then": [
+        "One shipment call, answered 200 with error 1009.",
+        "No label is fetched and no row is written.",
+        "The object, the error type and DPD's message reach the product."
+      ],
+      "detail": {
+        "order_number": "DPDUK-NI-BADPOSTCODE-17"
+      },
+      "calls": []
+    },
+    {
+      "id": "E2",
+      "name": "GeoSession dropped, renewed, shipment sent again",
+      "shape": "geosession",
+      "expected": "Send the shipment to DPD: 2 \u00b7 Declare customs data: Y \u00b7 Name the duty term: DAP \u00b7 State the carriage paid: 2.0 \u00b7 Reference the invoice: DPDUK-SESSIONEXPIRED-18 \u00b7 Name the sender's county: England \u00b7 Strip the sender's postcode: M12AB \u00b7 Send the sender's EORI number: GB123456789000 \u00b7 Send the sender's VAT number: GB999888777 \u00b7 Send the sender's scheme number: absent \u00b7 Name the receiver's county: Northern Ireland \u00b7 Strip the receiver's postcode: BT11DA \u00b7 Name the receiver's organisation: Byrne Retail Ltd \u00b7 Send the receiver's EORI number: GB987654321000 \u00b7 Send the receiver's scheme number: XIUKIM47700000000000000000001 \u00b7 Classify the receiver as a business: True \u00b7 Declare whether the goods are at risk: False \u00b7 Value the consignment: 36.0 \u00b7 State the currency: GBP \u00b7 Describe the goods: Cotton T-Shirt|Wool Scarf \u00b7 Reconcile the parcels and the weight: {'parcel[]': 1, 'totalWeight': 0.65} \u00b7 Classify each line: ['610910', '621410'] \u00b7 Value each line: [6.0, 24.0] \u00b7 Weigh each line: [0.25, 0.15] \u00b7 Count each line: [2, 1] \u00b7 Origin of each line: ['GB', 'GB'] \u00b7 Describe each line: ['Cotton T-Shirt', 'Wool Scarf'] \u00b7 Type each line: ['Apparel', 'absent'] \u00b7 State the fabric of each line: ['100% cotton', 'absent'] \u00b7 Fetch the label: 2 \u00b7 Report back to the product: Order Created Successfully \u00b7 Write the shipment to the database: 0 \u00b7 DPD answers the two attempts: 401 200",
+      "actual": "2 shipments \u2192 200/401 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "summary": "2 shipments \u2192 200/401 \u00b7 2 label fetches \u2192 200 \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Declare customs data",
+          "what": "generateCustomsData at the root of the request",
+          "expected": "Y",
+          "actual": "Y",
+          "ok": true
+        },
+        {
+          "label": "Name the duty term",
+          "what": "invoice.invoiceTermsOfDelivery",
+          "expected": "DAP",
+          "actual": "DAP",
+          "ok": true
+        },
+        {
+          "label": "State the carriage paid",
+          "what": "invoice.shippingCost",
+          "expected": "2.0",
+          "actual": "2.0",
+          "ok": true
+        },
+        {
+          "label": "Reference the invoice",
+          "what": "invoice.invoiceReference",
+          "expected": "DPDUK-SESSIONEXPIRED-18",
+          "actual": "DPDUK-SESSIONEXPIRED-18",
+          "ok": true
+        },
+        {
+          "label": "Name the sender's county",
+          "what": "invoice.invoiceShipperDetails.address.county",
+          "expected": "England",
+          "actual": "England",
+          "ok": true
+        },
+        {
+          "label": "Strip the sender's postcode",
+          "what": "invoice.invoiceShipperDetails.address.postcode",
+          "expected": "M12AB",
+          "actual": "M12AB",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's EORI number",
+          "what": "invoice.invoiceShipperDetails.eoriNumber",
+          "expected": "GB123456789000",
+          "actual": "GB123456789000",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's VAT number",
+          "what": "invoice.invoiceShipperDetails.valueAddedTaxNumber",
+          "expected": "GB999888777",
+          "actual": "GB999888777",
+          "ok": true
+        },
+        {
+          "label": "Send the sender's scheme number",
+          "what": "invoice.invoiceShipperDetails.ukimsNumber",
+          "expected": "absent",
+          "actual": "absent",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's county",
+          "what": "invoice.invoiceDeliveryDetails.address.county",
+          "expected": "Northern Ireland",
+          "actual": "Northern Ireland",
+          "ok": true
+        },
+        {
+          "label": "Strip the receiver's postcode",
+          "what": "invoice.invoiceDeliveryDetails.address.postcode",
+          "expected": "BT11DA",
+          "actual": "BT11DA",
+          "ok": true
+        },
+        {
+          "label": "Name the receiver's organisation",
+          "what": "invoice.invoiceDeliveryDetails.address.organisation",
+          "expected": "Byrne Retail Ltd",
+          "actual": "Byrne Retail Ltd",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's EORI number",
+          "what": "invoice.invoiceDeliveryDetails.eoriNumber",
+          "expected": "GB987654321000",
+          "actual": "GB987654321000",
+          "ok": true
+        },
+        {
+          "label": "Send the receiver's scheme number",
+          "what": "invoice.invoiceDeliveryDetails.ukimsNumber",
+          "expected": "XIUKIM47700000000000000000001",
+          "actual": "XIUKIM47700000000000000000001",
+          "ok": true
+        },
+        {
+          "label": "Classify the receiver as a business",
+          "what": "invoice.invoiceDeliveryDetails.isBusiness",
+          "expected": "True",
+          "actual": "True",
+          "ok": true
+        },
+        {
+          "label": "Declare whether the goods are at risk",
+          "what": "invoice.invoiceDeliveryDetails.atRisk",
+          "expected": "False",
+          "actual": "False",
+          "ok": true
+        },
+        {
+          "label": "Value the consignment",
+          "what": "consignment[0].customsValue",
+          "expected": "36.0",
+          "actual": "36.0",
+          "ok": true
+        },
+        {
+          "label": "State the currency",
+          "what": "consignment[0].customsCurrency",
+          "expected": "GBP",
+          "actual": "GBP",
+          "ok": true
+        },
+        {
+          "label": "Describe the goods",
+          "what": "consignment[0].parcelDescription",
+          "expected": "Cotton T-Shirt|Wool Scarf",
+          "actual": "Cotton T-Shirt|Wool Scarf",
+          "ok": true
+        },
+        {
+          "label": "Reconcile the parcels and the weight",
+          "what": "numberOfParcels, parcel[], totalWeight and the summed line weights",
+          "expected": "{'parcel[]': 1, 'totalWeight': 0.65}",
+          "actual": "{'numberOfParcels': 1, 'parcel[]': 1, 'totalWeight': 0.65, 'sum of unitWeight x numberOfItems': 0.65}",
+          "ok": true
+        },
+        {
+          "label": "Classify each line",
+          "what": "productHarmonisedCode of every customs line",
+          "expected": "['610910', '621410']",
+          "actual": "['610910', '621410']",
+          "ok": true
+        },
+        {
+          "label": "Value each line",
+          "what": "unitValue of every customs line",
+          "expected": "[6.0, 24.0]",
+          "actual": "[6.0, 24.0]",
+          "ok": true
+        },
+        {
+          "label": "Weigh each line",
+          "what": "unitWeight of every customs line",
+          "expected": "[0.25, 0.15]",
+          "actual": "[0.25, 0.15]",
+          "ok": true
+        },
+        {
+          "label": "Count each line",
+          "what": "numberOfItems of every customs line",
+          "expected": "[2, 1]",
+          "actual": "[2, 1]",
+          "ok": true
+        },
+        {
+          "label": "Origin of each line",
+          "what": "countryOfOrigin of every customs line",
+          "expected": "['GB', 'GB']",
+          "actual": "['GB', 'GB']",
+          "ok": true
+        },
+        {
+          "label": "Describe each line",
+          "what": "productItemsDescription of every customs line",
+          "expected": "['Cotton T-Shirt', 'Wool Scarf']",
+          "actual": "['Cotton T-Shirt', 'Wool Scarf']",
+          "ok": true
+        },
+        {
+          "label": "Type each line",
+          "what": "productTypeDescription of every customs line",
+          "expected": "['Apparel', 'absent']",
+          "actual": "['Apparel', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "State the fabric of each line",
+          "what": "productFabricContent of every customs line",
+          "expected": "['100% cotton', 'absent']",
+          "actual": "['100% cotton', 'absent']",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the two attempts",
+          "what": "the status of every POST /shipping/shipment, in order",
+          "expected": "401 200",
+          "actual": "401 200",
+          "ok": true
+        }
+      ],
+      "verdict": "blocked",
+      "note": "DPD can drop a GeoSession before its validity limit. The cached session is then renewed and the shipment sent once more; the second attempt must be the one that creates it, and the payload must be identical. Two calls is the ratio that distinguishes renewing the session from replaying the whole flow.",
+      "given": "A shipment the mock refuses once with 401 and accepts on the retry.",
+      "then": [
+        "Two shipment calls: 401 then 200.",
+        "The mapping on the accepted attempt is the same as N1's.",
+        "The label is still fetched twice and one row is written."
+      ],
+      "detail": {
+        "order_number": "DPDUK-SESSIONEXPIRED-18",
+        "known gap": "wkhtmltopdf is not on PATH, so the label HTML cannot be converted, the shipment is never reported to the product and no `corders` row is written. Everything DPD received is proven; the last leg is not."
+      },
+      "calls": []
+    },
+    {
+      "id": "E3",
+      "name": "GeoSession refused even after renewal",
+      "shape": "geosession",
+      "expected": "Send the shipment to DPD: 2 \u00b7 DPD answers the shipment: 401 \u00b7 Fetch the label: 0 \u00b7 Report back to the product: GEO SESSION is null \u00b7 Write the shipment to the database: 0",
+      "actual": "2 shipments \u2192 401 \u00b7 no label fetch call \u00b7 0 rows",
+      "summary": "2 shipments \u2192 401 \u00b7 no label fetch call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the shipment to DPD",
+          "what": "POST /shipping/shipment",
+          "expected": "2",
+          "actual": "2",
+          "ok": true
+        },
+        {
+          "label": "DPD answers the shipment",
+          "what": "HTTP status of every shipment response",
+          "expected": "401",
+          "actual": "401 401",
+          "ok": true
+        },
+        {
+          "label": "Fetch the label",
+          "what": "GET /shipping/shipment/{shipmentId}/label/ , once as HTML and once as Citizen CLP",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Report back to the product",
+          "what": "the message on the app's own response",
+          "expected": "GEO SESSION is null",
+          "actual": "{\"status\":\"UNAUTHORIZED\",\"message\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\",\"summary\":\"GEO SESSION is null. Please ReAuthenticate the Credentials.\"}",
+          "ok": true
+        },
+        {
+          "label": "Write the shipment to the database",
+          "what": "rows in `corders` for this order number",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "One renewal and no more: a session DPD keeps refusing is a credential problem, and hammering it would lock the account. Proves the integration stops at two attempts and says which of its own conditions it stopped on.",
+      "given": "A shipment the mock refuses with 401 every time.",
+      "then": [
+        "Exactly two shipment calls.",
+        "No label is fetched and no row is written.",
+        "The app reports the GeoSession as the reason."
+      ],
+      "detail": {
+        "order_number": "DPDUK-SESSIONDEAD-19"
+      },
+      "calls": []
+    }
+  ]
+}

@@ -6,22 +6,52 @@
   "log_file": "api-calls.har.json",
   "log_format": "har",
   "test_results_dir": "test-results",
-  "_comment_suites": "Commands the /test page may start. Only what is written here can be run, and only with the flags each suite declares -- the browser sends a suite id, never a command. Paths resolve relative to local-test-servers.",
+  "_comment_suites": "Commands the /test page may start. Only what is written here can be run, and only with the flags each suite declares -- the browser sends a suite id, never a command. Paths resolve relative to local-test-servers. createOrder is one suite per marketplace plus one for the transport; they share eton/create_order.py and they share the orders table reset, so do not run two of them against one database at once.",
   "test_suites": [
     {
-      "id": "flow2",
-      "name": "createOrder flow 2",
-      "description": "Anchanto OMS -> JPluger -> Eton WMS, 17 cases (normal + kit)",
-      "estimate": "~4 min, or ~90s fast",
+      "id": "create-order",
+      "name": "createOrder - transport",
+      "description": "Anchanto OMS -> JPluger -> Eton WMS, transport and failure: 10 cases (4 production intakes + 6 structural)",
+      "estimate": "~3 min, or ~60s fast",
       "command": [
         "python3",
-        "eton/suite-flow2.py"
+        "eton/suite-create-order.py"
       ],
       "options": [
         {
           "flag": "--fast",
           "label": "Fast — skip N10, the retry case"
         }
+      ]
+    },
+    {
+      "id": "create-order-shopee",
+      "name": "createOrder - Shopee pricing",
+      "description": "The adjustments{} hash matched onto order items by SKU: 7 cases (5 production intakes + 2 structural)",
+      "estimate": "~60s",
+      "command": [
+        "python3",
+        "eton/suite-create-order-shopee.py"
+      ]
+    },
+    {
+      "id": "create-order-lazada",
+      "name": "createOrder - Lazada pricing",
+      "description": "order_items[] with one detail row per unit: 2 production intakes",
+      "estimate": "~20s",
+      "command": [
+        "python3",
+        "eton/suite-create-order-lazada.py"
+      ]
+    },
+    {
+      "id": "create-order-tiktok",
+      "name": "createOrder - TikTok pricing",
+      "description": "order_items[] with an order-level discount to spread across the lines: 7 cases (5 production intakes + 2 structural)",
+      "estimate": "~60s",
+      "command": [
+        "python3",
+        "eton/suite-create-order-tiktok.py"
       ]
     }
   ],

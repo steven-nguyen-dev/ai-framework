@@ -1,0 +1,88 @@
+[
+  {
+    "source_file": "models/vehicles-api-model/vehicles_2024-11-01.json",
+    "domain": "vehicles",
+    "path": "/catalog/2024-11-01/automotive/vehicles",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "pageToken": {
+          "value": "urldwkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjq130"
+        },
+        "marketplaceId": {
+          "value": "A1PA6795UKMFR9"
+        },
+        "vehicleType": {
+          "value": "MOTORBIKE"
+        },
+        "updatedAfter": {
+          "value": "2024-01-05T18:00:03+00:00"
+        }
+      }
+    },
+    "response": {
+      "pagination": {
+        "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+        "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+      },
+      "vehicles": [
+        {
+          "make": "Chevrolet",
+          "model": "Avalanche",
+          "variantName": "5.3 Flex-fuel",
+          "bodyStyle": "Pick-up",
+          "driveType": "Heckantrieb",
+          "energy": "Benzin/Ethanol",
+          "engineOutput": [
+            {
+              "value": 235,
+              "unit": "KILOWATT"
+            },
+            {
+              "value": 320,
+              "unit": "HORSEPOWER"
+            }
+          ],
+          "manufacturingStartDate": {
+            "year": 2005,
+            "month": 6
+          },
+          "manufacturingStopDate": {
+            "year": 2007,
+            "month": 7
+          },
+          "lastProcessedDate": "2024-09-01T18:00:03+00:00",
+          "status": "ACTIVE",
+          "identifiers": [
+            {
+              "standard": "KTYPE",
+              "value": "27566"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/vehicles-api-model/vehicles_2024-11-01.json",
+    "domain": "vehicles",
+    "path": "/catalog/2024-11-01/automotive/vehicles",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "source_file": "models/delivery-by-amazon/deliveryShipmentInvoiceV2022-07-01.json",
+    "domain": "delivery-by-amazon",
+    "path": "/delivery/2022-07-01/invoice",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "000-0000000-0000000"
+        },
+        "body": {
+          "value": {
+            "invoiceContent": "SGF2ZSB0byBkZWFsIHdpdGggQmFzZTY0IGZvcm1hdD8=",
+            "contentMD5Value": "9906bd8f227f6a43f1e27db4b9258ad4",
+            "invoiceType": "Outbound",
+            "programType": "EasyShip",
+            "marketplaceId": "A2Q3Y263D00KWC"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/delivery-by-amazon/deliveryShipmentInvoiceV2022-07-01.json",
+    "domain": "delivery-by-amazon",
+    "path": "/delivery/2022-07-01/invoice",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "BadIDForShipment"
+        },
+        "body": {
+          "value": {
+            "invoiceContent": "NonBase64EncodedValue",
+            "contentMD5Value": "8f6df519a2125946820bc34a561164c2",
+            "invoiceType": "InvalidInvoiceType",
+            "programType": "InvalidProgramType",
+            "marketplaceId": "InvalidMarketplaceId"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "EntityNotFound",
+          "message": "Entity (ShipmentId, BadIDForShipment) was not found"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/delivery-by-amazon/deliveryShipmentInvoiceV2022-07-01.json",
+    "domain": "delivery-by-amazon",
+    "path": "/delivery/2022-07-01/invoice/status",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "orderId": {
+          "value": "000-0000000-0000000"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "invoiceType": {
+          "value": "Outbound"
+        },
+        "programType": {
+          "value": "EasyShip"
+        }
+      }
+    },
+    "response": {
+      "amazonShipmentId": "1111111111111",
+      "amazonOrderId": "000-0000000-0000000",
+      "invoiceStatus": "Accepted"
+    }
+  },
+  {
+    "source_file": "models/delivery-by-amazon/deliveryShipmentInvoiceV2022-07-01.json",
+    "domain": "delivery-by-amazon",
+    "path": "/delivery/2022-07-01/invoice/status",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "BadIDForShipment"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Shipment Id",
+          "details": "'BadIDForShipment' is an invalid shipment Id"
+        }
+      ]
+    }
+  }
+]

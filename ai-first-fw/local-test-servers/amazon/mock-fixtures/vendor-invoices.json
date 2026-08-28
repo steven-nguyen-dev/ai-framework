@@ -1,0 +1,75 @@
+[
+  {
+    "source_file": "models/vendor-invoices-api-model/vendorInvoices.json",
+    "domain": "vendor-invoices",
+    "path": "/vendor/payments/v1/invoices",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "invoices": [
+              {
+                "id": "TestInvoice202",
+                "date": "2020-06-08T12:00:00.000Z",
+                "billToParty": {
+                  "partyId": "TES1"
+                },
+                "invoiceType": "Invoice",
+                "remitToParty": {
+                  "partyId": "ABCDE"
+                },
+                "invoiceTotal": {
+                  "amount": "112.05",
+                  "currencyCode": "USD"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionId": "20190904171225-e1275c33-d75b-4bfe-b95c-15a9abfc09cc"
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-invoices-api-model/vendorInvoices.json",
+    "domain": "vendor-invoices",
+    "path": "/vendor/payments/v1/invoices",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "invoices": [
+              {
+                "invoiceType": "Invoic"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Value 'Invoic' is not valid with respect to enumeration '[CreditNote, Invoice]'. It must be a value from the enumeration.",
+          "details": ""
+        },
+        {
+          "code": "InvalidInput",
+          "message": "The value 'Invoic' of element 'invoiceType' is not valid.",
+          "details": ""
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "id": "P1",
+    "name": "P1. Shopee - an adjustments entry for 2 units is a line total",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:21.113883+00:00",
+    "returned_at": "2026-08-24T15:23:21.182448+00:00"
+  },
+  {
+    "id": "P2",
+    "name": "P2. Shopee - a shared entry is claimed by one line only",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:28.396899+00:00",
+    "returned_at": "2026-08-24T15:23:28.519197+00:00"
+  },
+  {
+    "id": "P3",
+    "name": "P3. Shopee - the order discount is not the seller voucher",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:35.716866+00:00",
+    "returned_at": "2026-08-24T15:23:35.759634+00:00"
+  },
+  {
+    "id": "P4",
+    "name": "P4. Lazada - seven lines, one detail row per unit",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:42.893421+00:00",
+    "returned_at": "2026-08-24T15:23:42.928846+00:00"
+  },
+  {
+    "id": "P5",
+    "name": "P5. Lazada - a kit line and the gift beside it",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:50.111094+00:00",
+    "returned_at": "2026-08-24T15:23:50.161226+00:00"
+  },
+  {
+    "id": "P6",
+    "name": "P6. TikTok - the promo lands on the line that can carry it",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:23:57.277101+00:00",
+    "returned_at": "2026-08-24T15:23:57.306981+00:00"
+  },
+  {
+    "id": "P7",
+    "name": "P7. TikTok - both discounts read from order_adjustment",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:04.423434+00:00",
+    "returned_at": "2026-08-24T15:24:04.447756+00:00"
+  },
+  {
+    "id": "N1",
+    "name": "N1. Plain item - happy path, no pricing carrier",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:11.557238+00:00",
+    "returned_at": "2026-08-24T15:24:11.579951+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:18.694472+00:00",
+    "returned_at": "2026-08-24T15:24:18.722847+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:25.880079+00:00",
+    "returned_at": "2026-08-24T15:24:25.915116+00:00"
+  },
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:33.016828+00:00",
+    "returned_at": "2026-08-24T15:24:33.040257+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:40.160177+00:00",
+    "returned_at": "2026-08-24T15:24:40.181632+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:47.306822+00:00",
+    "returned_at": "2026-08-24T15:24:47.334396+00:00"
+  },
+  {
+    "id": "N10",
+    "name": "N10. Eton 500 - retry then recover",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:24:54.551622+00:00",
+    "returned_at": "2026-08-24T15:24:54.598349+00:00"
+  },
+  {
+    "id": "N11",
+    "name": "N11. Eton 400 generic - reported unsynchronized",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:26:44.726401+00:00",
+    "returned_at": "2026-08-24T15:26:44.756746+00:00"
+  },
+  {
+    "id": "N12",
+    "name": "N12. Pricing rejected - retried alone, then the order stands",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:26:51.896606+00:00",
+    "returned_at": "2026-08-24T15:26:51.939809+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:27:22.061786+00:00",
+    "returned_at": "2026-08-24T15:27:22.110529+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:27:29.352930+00:00",
+    "returned_at": "2026-08-24T15:27:29.485191+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:27:36.772130+00:00",
+    "returned_at": "2026-08-24T15:27:36.865785+00:00"
+  },
+  {
+    "id": "N17",
+    "name": "N17. Blank marketplace SKU - no line inherits another's prices",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:27:44.062002+00:00",
+    "returned_at": "2026-08-24T15:27:44.221689+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-24T15:27:51.343174+00:00",
+    "returned_at": "2026-08-24T15:27:51.375458+00:00"
+  }
+]

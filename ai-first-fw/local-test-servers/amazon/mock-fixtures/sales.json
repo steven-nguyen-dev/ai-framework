@@ -1,0 +1,168 @@
+[
+  {
+    "source_file": "models/sales-api-model/sales.json",
+    "domain": "sales",
+    "path": "/sales/v1/orderMetrics",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "granularity": {
+          "value": "Total"
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "interval": "2019-08-01T00:00-07:00--2018-08-03T00:00-07:00",
+          "unitCount": 2,
+          "orderItemCount": 2,
+          "orderCount": 2,
+          "averageUnitPrice": {
+            "amount": "12.5",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "25",
+            "currencyCode": "USD"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/sales-api-model/sales.json",
+    "domain": "sales",
+    "path": "/sales/v1/orderMetrics",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "granularity": {
+          "value": "Day"
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "interval": "2019-08-01T00:00-07:00--2018-08-02T00:00-07:00",
+          "unitCount": 1,
+          "orderItemCount": 1,
+          "orderCount": 1,
+          "averageUnitPrice": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          }
+        },
+        {
+          "interval": "2019-08-02T00:00-07:00--2018-08-03T00:00-07:00",
+          "unitCount": 1,
+          "orderItemCount": 1,
+          "orderCount": 1,
+          "averageUnitPrice": {
+            "amount": "2.05",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "2.05",
+            "currencyCode": "USD"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/sales-api-model/sales.json",
+    "domain": "sales",
+    "path": "/sales/v1/orderMetrics",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "granularity": {
+          "value": "Total"
+        },
+        "asin": {
+          "value": "B008OLKVEW"
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "interval": "2018-05-01T00:00-07:00--2018-05-03T00:00-07:00",
+          "unitCount": 1,
+          "orderItemCount": 1,
+          "orderCount": 1,
+          "averageUnitPrice": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/sales-api-model/sales.json",
+    "domain": "sales",
+    "path": "/sales/v1/orderMetrics",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_4",
+    "request": {
+      "parameters": {
+        "granularity": {
+          "value": "Day"
+        },
+        "asin": {
+          "value": "B008OLKVEW"
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "interval": "2018-05-01T00:00-07:00--2018-05-02T00:00-07:00",
+          "unitCount": 1,
+          "orderItemCount": 1,
+          "orderCount": 1,
+          "averageUnitPrice": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "22.95",
+            "currencyCode": "USD"
+          }
+        },
+        {
+          "interval": "2018-05-02T00:00-07:00--2018-05-03T00:00-07:00",
+          "unitCount": 0,
+          "orderItemCount": 0,
+          "orderCount": 0,
+          "averageUnitPrice": {
+            "amount": "0",
+            "currencyCode": "USD"
+          },
+          "totalSales": {
+            "amount": "0",
+            "currencyCode": "USD"
+          }
+        }
+      ]
+    }
+  }
+]

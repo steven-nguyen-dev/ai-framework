@@ -1,0 +1,2064 @@
+[
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 21864,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "DYNAMOD_ERP_STOCK_UPDATE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 21544,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 27488,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "ERP_ORDER_STAUS_UPDATE_RESPONSE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1185040,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 35456,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "ERP_STOCK_UPDATE_RESPONSE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1188163,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 26752,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "LME_INVENTORY_PRODUCT_STOCK_UPDATE_QUEUE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 161993,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 1,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 26976,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "LME_INVENTORY_PRODUCT_STOCK_UPDATE_RESPONSE_QUEUE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 406680,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 26752,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "UPDATE_PRODUCT_PRICE_QUEUE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 161652,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 10,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 36032,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "UPDATE_PRODUCT_PRICE_RESPONSE_QUEUE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 2607160,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 35392,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_CANCEL_ORDERS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1169814,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 35392,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_COMPLETE_ORDERS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1174334,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 35392,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_CREATE_ORDERS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1168906,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 21864,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_ETON_STOCK_UPDATE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 21544,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 35456,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_PUSH_ORDER_STATUS_UPDATE",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1166329,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 27552,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_RETURN_ORDERS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1176606,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 1.0,
+    "consumer_utilisation": 1.0,
+    "consumers": 5,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 27552,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "WMS_SHIPPING_LABELS_PUSH",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 1184105,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "createShippingDetails",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35761,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "createShippingDetailsCarrier",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 34600,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "etonOrderStatusUpdate",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35692,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchCancelOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35762,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchCategoryAttributes",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35721,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchCompleteOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35705,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchHistoricalOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35834,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 24976,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchNewOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35845,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 24976,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "fetchNewProducts",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35852,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "inventoryProductCreationUpdationForWms",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35909,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 34752,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_acceptOrRejectOrdersAck",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 16148,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_createShippingDetails",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17545,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 24976,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchBrands",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17538,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchBulkCategoryAttributes",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17515,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchCancelOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17459,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchCompleteOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17521,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchHistoricalOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17619,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchNewOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17556,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchNewProducts",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17463,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_fetchReturnOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17477,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_updateCatalogueStatus",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17470,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_updateManifestDetails",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17530,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_updateOrderStatusOnSS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 17575,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 34752,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "new_updatePendingOrderStatusUpdate",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 16088,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "pendingOrderStatusUpdate",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 34447,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 109992,
+    "message_bytes": 942,
+    "message_bytes_paged_out": 770,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 172,
+    "message_bytes_ready": 942,
+    "message_bytes_unacknowledged": 0,
+    "message_stats": {
+      "ack": 58,
+      "ack_details": {
+        "rate": 0.0
+      },
+      "deliver": 58,
+      "deliver_details": {
+        "rate": 0.0
+      },
+      "deliver_get": 58,
+      "deliver_get_details": {
+        "rate": 0.0
+      },
+      "deliver_no_ack": 0,
+      "deliver_no_ack_details": {
+        "rate": 0.0
+      },
+      "get": 0,
+      "get_details": {
+        "rate": 0.0
+      },
+      "get_empty": 0,
+      "get_empty_details": {
+        "rate": 0.0
+      },
+      "get_no_ack": 0,
+      "get_no_ack_details": {
+        "rate": 0.0
+      },
+      "publish": 63,
+      "publish_details": {
+        "rate": 0.0
+      },
+      "redeliver": 0,
+      "redeliver_details": {
+        "rate": 0.0
+      }
+    },
+    "messages": 5,
+    "messages_details": {
+      "rate": 0.2
+    },
+    "messages_paged_out": 4,
+    "messages_persistent": 0,
+    "messages_ram": 1,
+    "messages_ready": 5,
+    "messages_ready_details": {
+      "rate": 0.2
+    },
+    "messages_ready_ram": 1,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "pushUnsynchronizedOrder",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 466466,
+    "reductions_details": {
+      "rate": 1242.4
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 24976,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "returnOrders",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35944,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 26848,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "updateCancelledOrderStock",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 176333,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "updateCatalogueStatus",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35760,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "updateOrderDetails",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35765,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "updateOrderStatusAndDetails",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 34558,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  },
+  {
+    "arguments": {},
+    "auto_delete": false,
+    "consumer_capacity": 0,
+    "consumer_utilisation": 0,
+    "consumers": 0,
+    "durable": false,
+    "effective_policy_definition": {},
+    "exclusive": false,
+    "memory": 42656,
+    "message_bytes": 0,
+    "message_bytes_paged_out": 0,
+    "message_bytes_persistent": 0,
+    "message_bytes_ram": 0,
+    "message_bytes_ready": 0,
+    "message_bytes_unacknowledged": 0,
+    "messages": 0,
+    "messages_details": {
+      "rate": 0.0
+    },
+    "messages_paged_out": 0,
+    "messages_persistent": 0,
+    "messages_ram": 0,
+    "messages_ready": 0,
+    "messages_ready_details": {
+      "rate": 0.0
+    },
+    "messages_ready_ram": 0,
+    "messages_unacknowledged": 0,
+    "messages_unacknowledged_details": {
+      "rate": 0.0
+    },
+    "messages_unacknowledged_ram": 0,
+    "name": "updateOrderStatusOnSS",
+    "node": "rabbit@df00ee3eda87",
+    "reductions": 35826,
+    "reductions_details": {
+      "rate": 0.0
+    },
+    "state": "running",
+    "storage_version": 1,
+    "type": "classic",
+    "vhost": "/"
+  }
+]

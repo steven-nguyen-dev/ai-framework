@@ -1,0 +1,1771 @@
+{
+  "name": "createOrder flow 2 (Anchanto OMS -> Eton WMS)",
+  "at": "2026-08-24T15:23:21.113883+00:00",
+  "run": "run-20260824-222321",
+  "suite": "flow2",
+  "summary": {
+    "pass": 21
+  },
+  "evidence": {
+    "status": "complete",
+    "mock log": "captured, 37 call(s)",
+    "database": "captured",
+    "pushUnsynchronizedOrder delta": 5,
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  },
+  "cases": [
+    {
+      "id": "P1",
+      "name": "Shopee - an adjustments entry for 2 units is a line total",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 457000, 'OrderSellerDiscount': 0, 'OrderSellerVoucher': 36560, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 67271, 'OrderCoinsOrCashback': 3600, 'ShippingFee': 0, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 0, 'ServiceFee': 26124, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 102000, 0, 8160, 0, 15015, 900), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=457000 OrderSellerDiscount=0 OrderSellerVoucher=36560 OrderPlatformDiscount=0 OrderPlatformVoucher=67271 OrderCoinsOrCashback=3600 ShippingFee=0 ShippingDiscountSeller=0 ShippingDiscountPlatform=0 ServiceFee=26124 Tax=0 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 102000, 0, 8160, 0, 15015, 900), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)]",
+          "actual": "[('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 102000, 0, 8160, 0, 15015, 900), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 457000, order 457000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The order the double-count was found on. Its second entry states quantity_purchased 2 and original_price 204000; the mapper scaled that amount by the quantity and pushed 408000, against an order level of 457000 that was already right. Eton accepted it -- its only per-line check is the promo against that line's own base, and inflating the base keeps that legal -- so the WMS held a figure 204000 too high and nothing failed. Also the one case where an entry is matched on item_sku rather than model_sku.",
+      "given": "A shopee_vn order of four lines, two of them kits, whose adjustments block states one entry per ordered line -- amounts already totalled per line, not per unit.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Items[1].BasePrice is 204000 -- the entry's own figure, unscaled.",
+        "Both kit lines are priced under their component SKU 1023253, with the kit quantity multiplied through: 4 units and 2.",
+        "The four line totals sum to OrderBasePrice 457000."
+      ],
+      "detail": {
+        "order_id": "92000301",
+        "order_number": "SO-ETON-CO-P1-SHOPEE-QTY2",
+        "intake": "shopee-qty2-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "P2",
+      "name": "Shopee - a shared entry is claimed by one line only",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 225000, 'OrderSellerDiscount': 0, 'OrderSellerVoucher': 18000, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 37260, 'OrderCoinsOrCashback': 0, 'ShippingFee': 0, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 0, 'ServiceFee': 14385, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1027575', 15, 225000, 0, 18000, 0, 37260, 0), ('1027575', 15, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=225000 OrderSellerDiscount=0 OrderSellerVoucher=18000 OrderPlatformDiscount=0 OrderPlatformVoucher=37260 OrderCoinsOrCashback=0 ShippingFee=0 ShippingDiscountSeller=0 ShippingDiscountPlatform=0 ServiceFee=14385 Tax=0 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1027575', 15, 225000, 0, 18000, 0, 37260, 0), ('1027575', 15, 0, 0, 0, 0, 0, 0)]",
+          "actual": "[('1027575', 15, 225000, 0, 18000, 0, 37260, 0), ('1027575', 15, 0, 0, 0, 0, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 225000, order 225000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The second way the same mapping over-reported. OMS emits a free gift as a second line carrying the same marketplace SKU at a zero price, and matching was stateless first-match, so both lines took the single adjustments entry in full -- 225000 pushed twice against an order level of 225000. Entries are now claimed by one line each, dearest first, so a contested entry lands on the line that carries the money.",
+      "given": "A shopee_vn order of two lines -- one priced, one a zero-priced gift -- both carrying model SKU 1027575_CB15, against an adjustments block holding a single entry.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Items[0] takes the entry in full: BasePrice 225000.",
+        "Items[1] is the gift and takes nothing: every amount 0.",
+        "The lines sum to OrderBasePrice 225000, not to twice it."
+      ],
+      "detail": {
+        "order_id": "92000311",
+        "order_number": "SO-ETON-CO-P2-SHOPEE-TWIN",
+        "intake": "shopee-shared-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "P3",
+      "name": "Shopee - the order discount is not the seller voucher",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 130000, 'OrderSellerDiscount': 3900, 'OrderSellerVoucher': 6000, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 14412, 'OrderCoinsOrCashback': 0, 'ShippingFee': 0, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 0, 'ServiceFee': 9606, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1024505', 2, 130000, 3900, 6000, 0, 14412, 0), ('1024505', 1, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=130000 OrderSellerDiscount=3900 OrderSellerVoucher=6000 OrderPlatformDiscount=0 OrderPlatformVoucher=14412 OrderCoinsOrCashback=0 ShippingFee=0 ShippingDiscountSeller=0 ShippingDiscountPlatform=0 ServiceFee=9606 Tax=0 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1024505', 2, 130000, 3900, 6000, 0, 14412, 0), ('1024505', 1, 0, 0, 0, 0, 0, 0)]",
+          "actual": "[('1024505', 2, 130000, 3900, 6000, 0, 14412, 0), ('1024505', 1, 0, 0, 0, 0, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 130000, order 130000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The only Shopee intake here whose OrderSellerDiscount is not zero, and the one that separates two figures carried under the same name at two different depths: adjustments.seller_discount is 3900 and belongs to OrderSellerDiscount, while order_adjustment.seller_discount is 6000 and is the seller voucher -- the field the TikTok reader takes its order discount from. Reading the outer one here would state 6000 twice and lose 3900.",
+      "given": "A shopee_vn order carrying both a seller discount and a seller voucher, of different amounts, plus the zero-priced gift beside its kit line.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "OrderSellerDiscount is 3900 and OrderSellerVoucher 6000 -- not the same number twice.",
+        "Items[0] carries both, against a base of 130000 that covers them.",
+        "The lines sum to OrderBasePrice 130000."
+      ],
+      "detail": {
+        "order_id": "92000321",
+        "order_number": "SO-ETON-CO-P3-SHOPEE-DISCOUNT",
+        "intake": "shopee-order-discount"
+      },
+      "calls": []
+    },
+    {
+      "id": "P4",
+      "name": "Lazada - seven lines, one detail row per unit",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 272400, 'OrderSellerDiscount': 0, 'OrderSellerVoucher': 13620, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 20702, 'OrderCoinsOrCashback': 0, 'ShippingFee': 31500, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 0, 'ServiceFee': 0, 'Tax': 23975, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1024081', 2, 94000, 0, 4700, 0, 7144, 0), ('1023222', 1, 26000, 0, 1300, 0, 1976, 0), ('1023221', 1, 26000, 0, 1300, 0, 1976, 0), ('1023786', 1, 26000, 0, 1300, 0, 1976, 0), ('1023926', 1, 46000, 0, 2300, 0, 3496, 0), ('1023025', 1, 23400, 0, 1170, 0, 1778, 0), ('1023220', 1, 31000, 0, 1550, 0, 2356, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=272400 OrderSellerDiscount=0 OrderSellerVoucher=13620 OrderPlatformDiscount=0 OrderPlatformVoucher=20702 OrderCoinsOrCashback=0 ShippingFee=31500 ShippingDiscountSeller=0 ShippingDiscountPlatform=0 ServiceFee=0 Tax=23975 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1024081', 2, 94000, 0, 4700, 0, 7144, 0), ('1023222', 1, 26000, 0, 1300, 0, 1976, 0), ('1023221', 1, 26000, 0, 1300, 0, 1976, 0), ('1023786', 1, 26000, 0, 1300, 0, 1976, 0), ('1023926', 1, 46000, 0, 2300, 0, 3496, 0), ('1023025', 1, 23400, 0, 1170, 0, 1778, 0), ('1023220', 1, 31000, 0, 1550, 0, 2356, 0)]",
+          "actual": "[('1024081', 2, 94000, 0, 4700, 0, 7144, 0), ('1023222', 1, 26000, 0, 1300, 0, 1976, 0), ('1023221', 1, 26000, 0, 1300, 0, 1976, 0), ('1023786', 1, 26000, 0, 1300, 0, 1976, 0), ('1023926', 1, 46000, 0, 2300, 0, 3496, 0), ('1023025', 1, 23400, 0, 1170, 0, 1778, 0), ('1023220', 1, 31000, 0, 1550, 0, 2356, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 272400, order 272400",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The widest real order in the set, and the one that pins the per-unit detail rows: its first line is 2 units and carries two rows of 2350 each, so the reader has to sum them to 4700 rather than take the first. Lazada reports no discount, coin or service fee at all, which is why five order-level components are zero here and have to stay zero rather than be filled from a neighbouring field.",
+      "given": "A lazada_vn order of seven plain lines, each carrying its pricing in order_items[].line_item_details, the first with one row per unit.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Items[0].SellerVoucher is 4700 -- both detail rows, summed.",
+        "Tax 23975 and ShippingFee 31500 are summed across the seven lines; shipping comes from each item's own shipping_amount, since shipping_fee_original is 0 on every Lazada detail row.",
+        "The seven line totals sum to OrderBasePrice 272400."
+      ],
+      "detail": {
+        "order_id": "92000331",
+        "order_number": "SO-ETON-CO-P4-LAZADA-SEVEN",
+        "intake": "lazada-seven-lines"
+      },
+      "calls": []
+    },
+    {
+      "id": "P5",
+      "name": "Lazada - a kit line and the gift beside it",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 175000, 'OrderSellerDiscount': 0, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 14000, 'OrderCoinsOrCashback': 0, 'ShippingFee': 0, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 0, 'ServiceFee': 0, 'Tax': 29272, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1025377', 5, 175000, 0, 0, 0, 14000, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=175000 OrderSellerDiscount=0 OrderSellerVoucher=0 OrderPlatformDiscount=0 OrderPlatformVoucher=14000 OrderCoinsOrCashback=0 ShippingFee=0 ShippingDiscountSeller=0 ShippingDiscountPlatform=0 ServiceFee=0 Tax=29272 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1025377', 5, 175000, 0, 0, 0, 14000, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)]",
+          "actual": "[('1025377', 5, 175000, 0, 0, 0, 14000, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 175000, order 175000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Lazada's own twin: the gift line carries no detail rows at all, so the per-line reader has nothing to read there and must produce zeros rather than fall back to the item's flat fields, which repeat the whole order's tax on every line. Tax is the figure that shows it -- 29272 is the two lines' flat copies summed, which is what the order level is built from, while the lines themselves carry no tax at all.",
+      "given": "A lazada_vn order of a five-component kit line with detail rows, and a zero-priced gift line whose line_item_details is empty.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Both lines are priced under the component SKU 1025377, 5 units and 1.",
+        "Items[1] carries nothing: base 0 and no voucher.",
+        "The lines sum to OrderBasePrice 175000."
+      ],
+      "detail": {
+        "order_id": "92000341",
+        "order_number": "SO-ETON-CO-P5-LAZADA-KIT",
+        "intake": "lazada-kit-and-gift"
+      },
+      "calls": []
+    },
+    {
+      "id": "P6",
+      "name": "TikTok - the promo lands on the line that can carry it",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 148000, 'OrderSellerDiscount': 13400, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 28300, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 28300, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1022281', 2, 148000, 13400, 0, 0, 0, 0), ('1024681', 2, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=148000 OrderSellerDiscount=13400 OrderSellerVoucher=0 OrderPlatformDiscount=0 OrderPlatformVoucher=0 OrderCoinsOrCashback=0 ShippingFee=28300 ShippingDiscountSeller=0 ShippingDiscountPlatform=28300 ServiceFee=0 Tax=0 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1022281', 2, 148000, 13400, 0, 0, 0, 0), ('1024681', 2, 0, 0, 0, 0, 0, 0)]",
+          "actual": "[('1022281', 2, 148000, 13400, 0, 0, 0, 0), ('1024681', 2, 0, 0, 0, 0, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 148000, order 148000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The one production order in this set Eton rejected outright, three attempts in a row: the 13400 seller discount was put on the zero-priced gift line, whose own base could not carry it, and Eton answered 400 'Promo amount is over total.'. The discount is now spread across the lines in proportion to their base, so a zero-priced line takes none of it. The mock cannot answer the way Eton did -- its conditions have no arithmetic -- so the rule is judged on the pushed body instead.",
+      "given": "A tiktok_vn order of a priced kit line and a zero-priced gift line, with the order's seller discount carried on order_adjustment.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Items[0] carries the whole 13400 against its base of 148000.",
+        "Items[1] carries none of it -- base 0, promo 0.",
+        "Every line's promo is inside its own base, which is the rule Eton enforces and the mock does not.",
+        "ShippingFee 28300 comes from shipping_fee_original and is cancelled by an equal ShippingDiscountPlatform."
+      ],
+      "detail": {
+        "order_id": "92000351",
+        "order_number": "SO-ETON-CO-P6-TIKTOK-GIFT",
+        "intake": "tiktok-gift-line"
+      },
+      "calls": []
+    },
+    {
+      "id": "P7",
+      "name": "TikTok - both discounts read from order_adjustment",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 175000, 'OrderSellerDiscount': 15001, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 16000, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 52200, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 52200, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1025377', 5, 175000, 15001, 0, 16000, 0, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Map every order-level component",
+          "what": "the 14 order-level values in the pushed body",
+          "expected": "OrderBasePrice=175000 OrderSellerDiscount=15001 OrderSellerVoucher=0 OrderPlatformDiscount=16000 OrderPlatformVoucher=0 OrderCoinsOrCashback=0 ShippingFee=52200 ShippingDiscountSeller=0 ShippingDiscountPlatform=52200 ServiceFee=0 Tax=0 UnclassifiedDiscount=0 UnclassifiedFee=0 CurrencyCode=VND",
+          "actual": "all 14 components as stated",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1025377', 5, 175000, 15001, 0, 16000, 0, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)]",
+          "actual": "[('1025377', 5, 175000, 15001, 0, 16000, 0, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 175000, order 175000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Proves the first step of the TikTok order-discount precedence, and proves the figures are read once rather than summed: OMS repeats both on every item, so summing the flat copies would double them. The odd 15001 is deliberate -- it is the real amount, and a rounded 15000 would not show a spread that lost a unit. Those two order-level discounts are also what UnclassifiedDiscount is derived from, and it reconciles to 0 against what the buyer paid.",
+      "given": "A tiktok_vn order carrying seller_discount 15001 and marketplace_discount 16000 on order_adjustment, with a kit line and its zero-priced twin.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "OrderSellerDiscount 15001 and OrderPlatformDiscount 16000, each read once.",
+        "Items[0] carries both in full; Items[1], priced at 0, carries neither.",
+        "UnclassifiedDiscount is 0: the base less both discounts is exactly the paid total.",
+        "The lines sum to OrderBasePrice 175000."
+      ],
+      "detail": {
+        "order_id": "92000361",
+        "order_number": "SO-ETON-CO-P7-TIKTOK-CARRIED",
+        "intake": "tiktok-carried-discounts"
+      },
+      "calls": []
+    },
+    {
+      "id": "N1",
+      "name": "Plain item - happy path, no pricing carrier",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "shopee_vn normally carries pricing. This is the case where it does not, so it proves buildShopeePayload returning empty skips the push rather than sending an empty or zeroed payload.",
+      "given": "A shopee_vn order with one plain item and no data.order_adjustment block.",
+      "then": [
+        "Eton accepts the create and answers Status 'New'.",
+        "One row is written to orders.",
+        "No price detail is pushed \u2014 price_details.json must not grow."
+      ],
+      "detail": {
+        "order_id": "92000001",
+        "order_number": "SO-ETON-CO-N1"
+      },
+      "calls": []
+    },
+    {
+      "id": "N5",
+      "name": "TikTok - flat fallback (empty line_item_details)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Send line totals, not unit prices: [('SKU-ETON-001', 2, 200000, 5000, 0, 10000, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('SKU-ETON-001', 2, 200000, 5000, 0, 10000, 0, 0)]",
+          "actual": "[('SKU-ETON-001', 2, 200000, 5000, 0, 10000, 0, 0)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 200000, order 200000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "hasLineItemPricing has to fall back to the flat fields rather than read an empty array as 'no pricing'. Hand-written on purpose: no production intake here has an empty line_item_details on its only line, so the last step of the discount precedence -- the flat per-item copies, read as a max because OMS repeats them on every line -- has nothing real to stand on.",
+      "given": "A tiktok_th order whose line_item_details is empty, but whose item_price and paid_price are non-zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted, mapped flat from the item's own fields: base 200000, seller discount 5000, platform discount 10000."
+      ],
+      "detail": {
+        "order_id": "92000005",
+        "order_number": "SO-ETON-CO-N5-TIKTOK-FLAT"
+      },
+      "calls": []
+    },
+    {
+      "id": "N6",
+      "name": "TikTok - zero prices, nothing to push (boundary)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The boundary between 'flat fallback' and 'no data'. Zeros pushed to Eton would assert the order had no discount, tax or shipping \u2014 silent corruption, not a visible failure. Proves pushPricingIfMapped skips instead.",
+      "given": "A tiktok_vn order whose line_item_details is empty AND whose item_price and paid_price are both zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "No price detail call is made at all."
+      ],
+      "detail": {
+        "order_id": "92000006",
+        "order_number": "SO-ETON-CO-N6-TIKTOK-ZERO"
+      },
+      "calls": []
+    },
+    {
+      "id": "N7",
+      "name": "Haravan - out of scope channel",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The important negative. An out-of-scope channel must skip pricing rather than send zeros, for the same reason as N6.",
+      "given": "A haravan_vn order. EtonUtils.getSalesChannel does a longest-prefix match over EtonConstants.SALES_CHANNEL_MAP and resolves this to 'Haravan', which is not one of the three channels build() maps pricing for, so it falls through to empty.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "No price detail call is made at all."
+      ],
+      "detail": {
+        "order_id": "92000007",
+        "order_number": "SO-ETON-CO-N7-HARAVAN"
+      },
+      "calls": []
+    },
+    {
+      "id": "N8",
+      "name": "Packed order",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: Packed \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 200 Packed \u00b7 no push call \u00b7 1 row",
+      "summary": "1 create \u2192 200 Packed \u00b7 no push call \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "Packed",
+          "actual": "Packed",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Cancellation behaviour later keys off packed state \u2014 cancelOrder reads any 400 as 'Eton packed it'. Proves creation records that state in the first place.",
+      "given": "An order whose number contains PACKED, which makes the mock answer as a warehouse that has already packed it.",
+      "then": [
+        "Create accepted with Status 'Packed' rather than 'New'.",
+        "One row in orders.",
+        "The code is appended to packed_orders.json.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000008",
+        "order_number": "SO-ETON-CO-N8-PACKED"
+      },
+      "calls": []
+    },
+    {
+      "id": "N9",
+      "name": "Replay - Eton answers BESO05 already exists",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: BESO05 \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 400 BESO05 \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 400 BESO05 \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "BESO05",
+          "actual": "BESO05",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 225000, order 225000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "A replay must not be read as an error and must not duplicate the row. Proves handleAlreadyExistsOnEton takes the replay branch, and that it still pushes pricing \u2014 an order Eton already holds is exactly the case where the breakdown may be the only thing missing.",
+      "given": "The P2 intake under an order number containing EXISTS, so Eton answers 400 with error code BESO05 \u2014 meaning it already holds this order.",
+      "then": [
+        "The create answers 400 carrying BESO05.",
+        "createOrder treats that as success, not failure.",
+        "The order is not re-saved \u2014 one row in orders, not two.",
+        "The price detail push still goes out, is accepted, and carries the same breakdown P2 states."
+      ],
+      "detail": {
+        "order_id": "92000009",
+        "order_number": "SO-ETON-CO-N9-EXISTS",
+        "intake": "shopee-shared-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "N10",
+      "name": "Eton 500 - retry then recover",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 3 \u00b7 Eton answers the create: 500 \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "3 creates \u2192 500 \u00b7 no push call \u00b7 0 rows",
+      "summary": "3 creates \u2192 500 \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "3",
+          "actual": "3",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "500",
+          "actual": "500",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Proves a 5xx is retried rather than swallowed, and that nothing is persisted for an order Eton never accepted. The unsynchronized report cannot be proven here unless event_name is order_creation \u2014 see the known gap.",
+      "given": "An order whose number contains SERVERERROR, so Eton answers 500 to every create attempt.",
+      "then": [
+        "Exactly 3 create calls, 30 seconds apart \u2014 @Retryable's contract.",
+        "No row is written to orders.",
+        "No price detail push.",
+        "After the third attempt @Recover runs."
+      ],
+      "detail": {
+        "order_id": "92000010",
+        "order_number": "SO-ETON-CO-N10-SERVERERROR"
+      },
+      "calls": []
+    },
+    {
+      "id": "N11",
+      "name": "Eton 400 generic - reported unsynchronized",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: Validation failed \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "summary": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "Validation failed",
+          "actual": "Validation failed",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "A 4xx means the payload is wrong; retrying it three times would only delay the report. Proves the integration tells 4xx and 5xx apart.",
+      "given": "An order whose number contains INVALID, so Eton answers a generic 400 rather than BESO05.",
+      "then": [
+        "Exactly 1 create call \u2014 a 400 is not retried.",
+        "No row in orders.",
+        "No price detail push.",
+        "The order is reported unsynchronized to Anchanto OMS on the pushUnsynchronizedOrder queue."
+      ],
+      "detail": {
+        "order_id": "92000011",
+        "order_number": "SO-ETON-CO-N11-INVALID",
+        "unsynchronized report": "5 message(s) across the run"
+      },
+      "calls": []
+    },
+    {
+      "id": "N12",
+      "name": "Pricing rejected - retried alone, then the order stands",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 3 \u00b7 Eton answers the price detail: 400 \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 3 pushes \u2192 400 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 3 pushes \u2192 400 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "3",
+          "actual": "3",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "400",
+          "actual": "400 400 400",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 225000, order 225000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The most valuable case in the suite \u2014 the only one exercising 'the order exists on Eton but its pricing does not'. It has stated three different contracts. Originally 3 creates and 3 pricing pushes: pushCreatedOrderPricing threw, so @Retryable replayed the whole run against a sale order Eton already held. Commit 465e7a647c3 removed the throw, leaving 1 create and 1 push. Commit 0b4508fc27d put the retry back where SRC-01 AC 3 asked for it \u2014 on the priceDetail call alone \u2014 so the count is 1 create and 3 pushes, and the ratio between those two numbers is the whole point of the case. Run 20260816-231529 is where the first expectation last failed.",
+      "given": "The P2 intake under an order id containing 9666, so Eton accepts the create but rejects the price detail with 400 on every attempt. The marker sits on the id, not the number, because the pricing push is addressed by the code Eton echoed back \u2014 and DataDTO.order_id is a Long, so it had to be numeric.",
+      "then": [
+        "1 create call and 3 pricing calls \u2014 only the rejected call is re-run, never the sale-order creation, which is what SRC-01 AC 3 asks for.",
+        "The create answers 200 'New'; every pricing push answers 400.",
+        "Exactly one row in orders \u2014 the retry re-sends, it does not re-create.",
+        "Nothing is reported unsynchronized once the attempts are spent: createOrder reports success, so the missing breakdown exists only as a logged error.",
+        "The three pushes are 3 to 6 seconds apart, which is why this case waits 30."
+      ],
+      "detail": {
+        "order_id": "92009666",
+        "order_number": "SO-ETON-CO-N12-PRICING-REJECT",
+        "intake": "shopee-shared-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "N13",
+      "name": "Empty order_items - mock validation 400",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: must not be empty \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "summary": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "must not be empty",
+          "actual": "'ListSODetail' must not be empty",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "The array is sent empty rather than omitted on purpose: omitting the key NPEs inside buildCreateSaleOrderItems before any Eton call is made, which would test nothing.",
+      "given": "An order with an empty order_items array, which produces an empty ListSODetail. Eton's schema forbids it.",
+      "then": [
+        "The create answers 400 naming 'ListSODetail' must not be empty.",
+        "1 create call \u2014 not retried.",
+        "No row in orders.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000013",
+        "order_number": "SO-ETON-CO-N13-NO-ITEMS",
+        "unsynchronized report": "5 message(s) across the run"
+      },
+      "calls": []
+    },
+    {
+      "id": "N14",
+      "name": "Pricing payload - every property named once",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Name every pricing property once: 15 \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Name every pricing property once",
+          "what": "top-level keys in the pushed body, and any lowercase-initial duplicate",
+          "expected": "15 keys, none doubled",
+          "actual": "15 keys, doubled: none",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines sum to the order total",
+          "actual": "lines 457000, order 457000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "P1 proves what the Shopee carrier maps to; this proves what the mapping serialises to. Both price DTOs first named their fields for the wire, so Jackson treated each field and its getter as two properties and sent all 15 values twice \u2014 30 keys, plus a doubled Items array with 8 doubled keys per line. Eton accepted it because ASP.NET binding is case-insensitive and last-wins, so nothing failed and nothing in the old suite could see it. Only the wire shows it.",
+      "given": "The same production intake as P1, judged on the property names of the pushed body rather than on the amounts in it.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "The pushed body carries exactly 15 top-level properties \u2014 the count PricingComponentModel declares in eton-swagger.json.",
+        "Not one lowercase-initial key: Items and never items, OrderBasePrice and never orderBasePrice."
+      ],
+      "detail": {
+        "order_id": "92000014",
+        "order_number": "SO-ETON-CO-N14-PAYLOAD-SHAPE",
+        "intake": "shopee-qty2-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "N16",
+      "name": "Unmappable payload - reported rather than escaping",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 0 \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "no create call \u00b7 no push call \u00b7 0 rows",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "buildCreateSalesOrderDTO dereferences the shipping address for a log line. It was built outside createOrder's try block, so a missing address escaped past all three catch blocks \u2014 no seller-tagged log, no Slack alert, three silent @Retryable attempts and a minute of backoff before @Recover. It was moved back inside, which is what this case pins. A retry cannot fix a malformed payload.",
+      "given": "An order with no shipping_address at all, which NPEs while the Eton payload is being mapped \u2014 before any Eton call is made.",
+      "then": [
+        "No create call reaches Eton, and no pricing call.",
+        "No row in orders.",
+        "The order is reported unsynchronized on the pushUnsynchronizedOrder queue, in this run rather than after three retries."
+      ],
+      "detail": {
+        "order_id": "92000016",
+        "order_number": "SO-ETON-CO-N16-NO-ADDRESS",
+        "unsynchronized report": "5 message(s) across the run"
+      },
+      "calls": []
+    },
+    {
+      "id": "N17",
+      "name": "Blank marketplace SKU - no line inherits another's prices",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Send line totals, not unit prices: [('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 0, 0, 0, 0, 0, 0), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)] \u00b7 Split the order total across the lines: False \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "summary": "1 create \u2192 200 New \u00b7 1 push \u2192 200 \u00b7 1 row",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "New",
+          "actual": "New",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the price detail",
+          "what": "HTTP status of every pricing response",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send line totals, not unit prices",
+          "what": "Items[] as pushed: SKU, quantity and all six amounts, line by line",
+          "expected": "[('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 0, 0, 0, 0, 0, 0), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)]",
+          "actual": "[('1023146', 1, 78000, 0, 6240, 0, 11482, 700), ('1023253', 4, 204000, 0, 16320, 0, 30030, 1700), ('1023253', 2, 0, 0, 0, 0, 0, 0), ('1023210', 1, 73000, 0, 5840, 0, 10744, 300)]",
+          "ok": true
+        },
+        {
+          "label": "Split the order total across the lines",
+          "what": "Sum(Items[].BasePrice) against OrderBasePrice",
+          "expected": "lines do not sum to the order total",
+          "actual": "lines 355000, order 457000",
+          "ok": true
+        },
+        {
+          "label": "Keep each line's promo inside its own base",
+          "what": "per line, its discounts and vouchers against its own BasePrice \u2014 the rule Eton answers 'Promo amount is over total.' to",
+          "expected": "every line's promo within its own base",
+          "actual": "every line within its base",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "Every adjustments entry in a real Shopee payload carries an empty item_sku \u2014 three of the four in this intake do. Matching guarded only against null, so an OMS line whose own SKU was blank matched the first such entry and inherited its prices. A blank SKU now matches nothing, which makes this the one case where the two levels of the payload are meant to disagree: the order level is read straight off the adjustments block and still states the whole order, while the unmatched line contributes nothing to the line total. The 102000 gap is the point, not a fault.",
+      "given": "The P1 intake with the third line's marketplace SKU emptied, against an adjustments block whose entries carry item_sku ''.",
+      "then": [
+        "Create accepted, one row in orders, one price detail push accepted.",
+        "Items[1] still takes its own entry: 204000.",
+        "Items[2] is 0 \u2014 the blank SKU matches nothing rather than inheriting the first entry that has a blank item_sku.",
+        "The lines sum to 355000 against an order level of 457000, and that disagreement is what an unmatchable line is supposed to look like."
+      ],
+      "detail": {
+        "order_id": "92000017",
+        "order_number": "SO-ETON-CO-N17-BLANK-SKU",
+        "intake": "shopee-qty2-entry"
+      },
+      "calls": []
+    },
+    {
+      "id": "K4",
+      "name": "Kit with a component missing its SKU - validation 400",
+      "shape": "kit",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 400 \u00b7 Read the marker in the reply: SKU' is required \u00b7 Write the order to the database: 0 \u00b7 Send the price detail to Eton: 0",
+      "actual": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "summary": "1 create \u2192 400 \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "1",
+          "ok": true
+        },
+        {
+          "label": "Eton answers the create",
+          "what": "HTTP status of the create response",
+          "expected": "400",
+          "actual": "400",
+          "ok": true
+        },
+        {
+          "label": "Read the marker in the reply",
+          "what": "Status / ErrorCode / ErrorMessages[0] in the body",
+          "expected": "SKU' is required",
+          "actual": "'ListSODetail[1].SKU' is required",
+          "ok": true
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "0",
+          "actual": "0",
+          "ok": true
+        }
+      ],
+      "verdict": "pass",
+      "note": "A shape-specific failure a plain item cannot produce, and the one kit case no production intake covers \u2014 OMS does not emit a component without a SKU. The index in Eton's error names the exploded line, which is what proves the component reached Eton as a line of its own.",
+      "given": "A kit whose second component has no SKU, on a shopee_vn order carrying no pricing block.",
+      "then": [
+        "The create answers 400 naming 'ListSODetail[1].SKU' is required.",
+        "1 create call \u2014 not retried.",
+        "No row in orders.",
+        "No price detail push."
+      ],
+      "detail": {
+        "order_id": "92000104",
+        "order_number": "SO-ETON-CO-K4-KIT-NO-SKU",
+        "unsynchronized report": "5 message(s) across the run"
+      },
+      "calls": []
+    }
+  ]
+}

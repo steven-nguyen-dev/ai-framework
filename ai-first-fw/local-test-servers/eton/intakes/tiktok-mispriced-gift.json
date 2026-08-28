@@ -1,0 +1,141 @@
+{
+ "source": "ETON sale order SOCJFE12AUSWA, masked",
+ "note": "The '4 MIX TANG 4 MIX' promotion: OMS copied the purchased line's item_price and paid_price onto the is_gwp_item line beside it, which doubled the order base price against OMS's own item_total.",
+ "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+ "data": {
+  "marketplace_code": "tiktok_vn",
+  "seller_currency": "VND",
+  "voucher_seller": 3602.0,
+  "order_adjustment": {
+   "marketplace_discount": 45396.0,
+   "seller_discount": 3602.0,
+   "adjustments": {
+    "items": []
+   }
+  },
+  "order_items": [
+   {
+    "order_item_id": 9200391,
+    "sku": "1027573_CB4MIX",
+    "inventory_sku": null,
+    "quantity": 2,
+    "item_price": "120000.0",
+    "paid_price": "71002.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "3602.0",
+    "channel_discount": "45396.0",
+    "is_gwp_item": false,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1027575",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027573",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027576",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027574",
+      "quantity": 1,
+      "price": "15000.0"
+     }
+    ],
+    "line_item_details": [
+     {
+      "line_item_id": 9200391,
+      "item_original_price": null,
+      "item_paid_price": null,
+      "seller_voucher_amount": 3602.0,
+      "voucher_platform": 45396.0,
+      "tax_amount": 0.0,
+      "shipping_fee_original": 82300.0,
+      "shipping_fee_seller_discount": 0.0,
+      "shipping_fee_platform_discount": "82300.0",
+      "seller_discount_on_retail_price": null,
+      "marketplace_discount_on_retail_price": null
+     }
+    ]
+   },
+   {
+    "order_item_id": 9200392,
+    "sku": "1027573_CB4MIX",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "3602.0",
+    "channel_discount": "45396.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1027575",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027573",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027576",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027574",
+      "quantity": 1,
+      "price": "15000.0"
+     }
+    ],
+    "line_item_details": []
+   },
+   {
+    "order_item_id": 9200393,
+    "sku": "1027573_CB4MIX",
+    "inventory_sku": null,
+    "quantity": 2,
+    "item_price": "120000.0",
+    "paid_price": "71002.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "3602.0",
+    "channel_discount": "45396.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1027575",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027573",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027576",
+      "quantity": 1,
+      "price": "15000.0"
+     },
+     {
+      "inventory_product_sku": "1027574",
+      "quantity": 1,
+      "price": "15000.0"
+     }
+    ],
+    "line_item_details": []
+   }
+  ]
+ }
+}

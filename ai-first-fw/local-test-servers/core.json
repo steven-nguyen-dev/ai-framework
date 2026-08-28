@@ -4,5 +4,7 @@
   "integration.db.password": "jpluger",
   "server.ssl.keyStore.password": "Anchanto@123$",
   "ETON_TOKEN_URL": "http://127.0.0.1:23101/connect/token",
-  "ETON_BASE_URL": "http://127.0.0.1:23101"
+  "ETON_BASE_URL": "http://127.0.0.1:23101",
+  "AMAZON_TOKEN_URL": "http://127.0.0.1:23103/auth/o2/token",
+  "AMAZON_BASE_URL": "http://127.0.0.1:23103"
 }

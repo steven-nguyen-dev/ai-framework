@@ -65,11 +65,22 @@ def canonical_error(status, family, why):
     return {"error": TITLES[status], "error_message": why, "status": status}
 
 
-# --------------------------------------------------------------------------------------- helpers
-
 def json_example(response):
+    if not response:
+        return None
+    # OpenAPI 3
     media = ((response or {}).get("content") or {}).get("application/json") or {}
-    return media.get("example")
+    if "example" in media:
+        return media.get("example")
+    # Swagger 2.0
+    examples = response.get("examples") or {}
+    for content_type, example in examples.items():
+        if "json" in content_type:
+            return example
+    schema = response.get("schema")
+    if isinstance(schema, dict) and "example" in schema:
+        return schema.get("example")
+    return None
 
 
 def success(op):

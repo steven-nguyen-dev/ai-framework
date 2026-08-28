@@ -1,0 +1,983 @@
+{
+  "name": "DPD UK Shipping API",
+  "host": "http://127.0.0.1:23102",
+  "entries": [
+    {
+      "seq": 1,
+      "at": "2026-08-24T02:12:48.722Z",
+      "durationMs": 3.37,
+      "rule": "login accepted, GeoSession issued",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23102/user/?action=login' -H 'Authorization: ***redacted***' -H 'Content-Type: application/json'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23102/user/?action=login",
+        "headers": {
+          "Accept": "application/json, application/cbor, application/xml, application/*+json, text/xml, application/*+xml",
+          "Authorization": "***redacted***",
+          "Content-Type": "application/json",
+          "Content-Length": "0",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": null,
+          "data": {
+            "geoSession": "GEOSESSION-LOCAL-0000000001"
+          }
+        },
+        "bodyText": "{\"error\": null, \"data\": {\"geoSession\": \"GEOSESSION-LOCAL-0000000001\"}}"
+      }
+    },
+    {
+      "seq": 2,
+      "at": "2026-08-24T02:12:48.800Z",
+      "durationMs": 2.715,
+      "rule": "no marker -- shipment created, 200, one parcel number",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23102/shipping/shipment' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO' --data-raw '{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2B-NAR-01\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2B-NAR-01\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2B-NAR-01\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23102/shipping/shipment",
+        "headers": {
+          "Accept": "application/json, application/cbor, application/xml, application/*+json, text/xml, application/*+xml",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Content-Length": "2477",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "collectionOnDelivery": false,
+          "collectionDate": "2026-08-24T09:00:00.000Z",
+          "generateCustomsData": "Y",
+          "consolidate": false,
+          "invoice": {
+            "invoiceExportReason": "01",
+            "invoiceTermsOfDelivery": "DAP",
+            "invoiceReference": "DPDUK-NI-B2B-NAR-01",
+            "invoiceType": 1,
+            "shippingCost": 2.0,
+            "invoiceShipperDetails": {
+              "contactDetails": {
+                "contactName": "Warehouse Admin",
+                "telephone": "441612345678"
+              },
+              "address": {
+                "organisation": "Rukphong Thailand Ltd",
+                "countryCode": "GB",
+                "postcode": "M12AB",
+                "street": "Unit 7, Trade Park",
+                "locality": "Industrial Estate",
+                "town": "Manchester",
+                "county": "England"
+              },
+              "eoriNumber": "GB123456789000",
+              "valueAddedTaxNumber": "GB999888777"
+            },
+            "invoiceDeliveryDetails": {
+              "contactDetails": {
+                "contactName": "Aoife Byrne",
+                "telephone": "442890123456"
+              },
+              "address": {
+                "organisation": "Byrne Retail Ltd",
+                "countryCode": "GB",
+                "postcode": "BT11DA",
+                "street": "14 Royal Avenue",
+                "locality": "Suite 3",
+                "town": "Belfast",
+                "county": "Northern Ireland"
+              },
+              "eoriNumber": "GB987654321000",
+              "ukimsNumber": "XIUKIM47700000000000000000001",
+              "isBusiness": true,
+              "atRisk": false
+            }
+          },
+          "consignment": [
+            {
+              "consignmentRef": "DPDUK-NI-B2B-NAR-01",
+              "parcel": [
+                {
+                  "packageNumber": 1,
+                  "parcelProduct": [
+                    {
+                      "productCode": "SKU-001",
+                      "productTypeDescription": "Apparel",
+                      "productItemsDescription": "Cotton T-Shirt",
+                      "productFabricContent": "100% cotton",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "610910",
+                      "unitWeight": 0.25,
+                      "numberOfItems": 2,
+                      "unitValue": 6.0
+                    },
+                    {
+                      "productCode": "SKU-002",
+                      "productItemsDescription": "Wool Scarf",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "621410",
+                      "unitWeight": 0.15,
+                      "numberOfItems": 1,
+                      "unitValue": 24.0
+                    }
+                  ]
+                }
+              ],
+              "collectionDetails": {
+                "contactDetails": {
+                  "contactName": "Warehouse Admin",
+                  "telephone": "441612345678"
+                },
+                "address": {
+                  "organisation": "Rukphong Thailand Ltd",
+                  "countryCode": "GB",
+                  "postcode": "M1 2AB",
+                  "street": "Unit 7, Trade Park",
+                  "locality": "Industrial Estate",
+                  "town": "Manchester",
+                  "county": "England"
+                }
+              },
+              "deliveryDetails": {
+                "contactDetails": {
+                  "contactName": "Aoife Byrne",
+                  "telephone": "442890123456"
+                },
+                "address": {
+                  "organisation": "Byrne Retail Ltd",
+                  "countryCode": "GB",
+                  "postcode": "BT1 1DA",
+                  "street": "14 Royal Avenue",
+                  "locality": "Suite 3",
+                  "town": "Belfast",
+                  "county": "Northern Ireland"
+                },
+                "notificationDetails": {
+                  "email": "buyer@customer.example.com",
+                  "mobile": "442890123456"
+                }
+              },
+              "networkCode": "1^12",
+              "numberOfParcels": 1,
+              "totalWeight": 0.65,
+              "shippingRef1": "DPDUK-NI-B2B-NAR-01",
+              "shippingRef2": "",
+              "shippingRef3": "",
+              "customsValue": 36.0,
+              "customsCurrency": "GBP",
+              "deliveryInstructions": "Leave at reception",
+              "parcelDescription": "Cotton T-Shirt|Wool Scarf",
+              "liability": false
+            }
+          ]
+        },
+        "bodyText": "{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2B-NAR-01\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2B-NAR-01\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2B-NAR-01\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": null,
+          "data": {
+            "shipmentId": "SHP-DPDUK-NI-B2B-NAR-01",
+            "consolidated": false,
+            "consignmentDetail": [
+              {
+                "consignmentNumber": "1999236263",
+                "parcelNumbers": [
+                  "15501999236263"
+                ]
+              }
+            ]
+          }
+        },
+        "bodyText": "{\"error\": null, \"data\": {\"shipmentId\": \"SHP-DPDUK-NI-B2B-NAR-01\", \"consolidated\": false, \"consignmentDetail\": [{\"consignmentNumber\": \"1999236263\", \"parcelNumbers\": [\"15501999236263\"]}]}}"
+      }
+    },
+    {
+      "seq": 3,
+      "at": "2026-08-24T02:12:48.805Z",
+      "durationMs": 0.03,
+      "rule": "HTML label -- what wkhtmltopdf is handed",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-NAR-01/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-NAR-01/label/",
+        "headers": {
+          "Accept": "text/html",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/html"
+        },
+        "body": null,
+        "bodyText": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}</style></head><body><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment SHP-DPDUK-NI-B2B-NAR-01</div><div>BELFAST BT1 1DA</div></body></html>"
+      }
+    },
+    {
+      "seq": 4,
+      "at": "2026-08-24T02:12:48.807Z",
+      "durationMs": 0.022,
+      "rule": "Citizen CLP label -- the thermal print string",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-NAR-01/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-NAR-01/label/",
+        "headers": {
+          "Accept": "text/vnd.citizen-clp",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/vnd.citizen-clp"
+        },
+        "body": null,
+        "bodyText": "! 0 200 200 406 1\r\nPW 799\r\nTONE 0\r\nSPEED 5\r\nCENTER\r\nT 4 0 0 30 DPD SHP-DPDUK-NI-B2B-NAR-01\r\nB QR 250 120 M 2 U 6\r\nMA,SHP-DPDUK-NI-B2B-NAR-01\r\nENDQR\r\nT 4 0 0 330 15501999236263\r\nFORM\r\nPRINT\r\n"
+      }
+    },
+    {
+      "seq": 5,
+      "at": "2026-08-24T02:13:18.808Z",
+      "durationMs": 2.199,
+      "rule": "no marker -- shipment created, 200, one parcel number",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23102/shipping/shipment' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO' --data-raw '{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2B-AR-02\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":true}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2B-AR-02\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2B-AR-02\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23102/shipping/shipment",
+        "headers": {
+          "Accept": "application/json, application/cbor, application/xml, application/*+json, text/xml, application/*+xml",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Content-Length": "2473",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "collectionOnDelivery": false,
+          "collectionDate": "2026-08-24T09:00:00.000Z",
+          "generateCustomsData": "Y",
+          "consolidate": false,
+          "invoice": {
+            "invoiceExportReason": "01",
+            "invoiceTermsOfDelivery": "DAP",
+            "invoiceReference": "DPDUK-NI-B2B-AR-02",
+            "invoiceType": 1,
+            "shippingCost": 2.0,
+            "invoiceShipperDetails": {
+              "contactDetails": {
+                "contactName": "Warehouse Admin",
+                "telephone": "441612345678"
+              },
+              "address": {
+                "organisation": "Rukphong Thailand Ltd",
+                "countryCode": "GB",
+                "postcode": "M12AB",
+                "street": "Unit 7, Trade Park",
+                "locality": "Industrial Estate",
+                "town": "Manchester",
+                "county": "England"
+              },
+              "eoriNumber": "GB123456789000",
+              "valueAddedTaxNumber": "GB999888777"
+            },
+            "invoiceDeliveryDetails": {
+              "contactDetails": {
+                "contactName": "Aoife Byrne",
+                "telephone": "442890123456"
+              },
+              "address": {
+                "organisation": "Byrne Retail Ltd",
+                "countryCode": "GB",
+                "postcode": "BT11DA",
+                "street": "14 Royal Avenue",
+                "locality": "Suite 3",
+                "town": "Belfast",
+                "county": "Northern Ireland"
+              },
+              "eoriNumber": "GB987654321000",
+              "ukimsNumber": "XIUKIM47700000000000000000001",
+              "isBusiness": true,
+              "atRisk": true
+            }
+          },
+          "consignment": [
+            {
+              "consignmentRef": "DPDUK-NI-B2B-AR-02",
+              "parcel": [
+                {
+                  "packageNumber": 1,
+                  "parcelProduct": [
+                    {
+                      "productCode": "SKU-001",
+                      "productTypeDescription": "Apparel",
+                      "productItemsDescription": "Cotton T-Shirt",
+                      "productFabricContent": "100% cotton",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "610910",
+                      "unitWeight": 0.25,
+                      "numberOfItems": 2,
+                      "unitValue": 6.0
+                    },
+                    {
+                      "productCode": "SKU-002",
+                      "productItemsDescription": "Wool Scarf",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "621410",
+                      "unitWeight": 0.15,
+                      "numberOfItems": 1,
+                      "unitValue": 24.0
+                    }
+                  ]
+                }
+              ],
+              "collectionDetails": {
+                "contactDetails": {
+                  "contactName": "Warehouse Admin",
+                  "telephone": "441612345678"
+                },
+                "address": {
+                  "organisation": "Rukphong Thailand Ltd",
+                  "countryCode": "GB",
+                  "postcode": "M1 2AB",
+                  "street": "Unit 7, Trade Park",
+                  "locality": "Industrial Estate",
+                  "town": "Manchester",
+                  "county": "England"
+                }
+              },
+              "deliveryDetails": {
+                "contactDetails": {
+                  "contactName": "Aoife Byrne",
+                  "telephone": "442890123456"
+                },
+                "address": {
+                  "organisation": "Byrne Retail Ltd",
+                  "countryCode": "GB",
+                  "postcode": "BT1 1DA",
+                  "street": "14 Royal Avenue",
+                  "locality": "Suite 3",
+                  "town": "Belfast",
+                  "county": "Northern Ireland"
+                },
+                "notificationDetails": {
+                  "email": "buyer@customer.example.com",
+                  "mobile": "442890123456"
+                }
+              },
+              "networkCode": "1^12",
+              "numberOfParcels": 1,
+              "totalWeight": 0.65,
+              "shippingRef1": "DPDUK-NI-B2B-AR-02",
+              "shippingRef2": "",
+              "shippingRef3": "",
+              "customsValue": 36.0,
+              "customsCurrency": "GBP",
+              "deliveryInstructions": "Leave at reception",
+              "parcelDescription": "Cotton T-Shirt|Wool Scarf",
+              "liability": false
+            }
+          ]
+        },
+        "bodyText": "{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2B-AR-02\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":true}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2B-AR-02\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2B-AR-02\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": null,
+          "data": {
+            "shipmentId": "SHP-DPDUK-NI-B2B-AR-02",
+            "consolidated": false,
+            "consignmentDetail": [
+              {
+                "consignmentNumber": "1999236263",
+                "parcelNumbers": [
+                  "15501999236263"
+                ]
+              }
+            ]
+          }
+        },
+        "bodyText": "{\"error\": null, \"data\": {\"shipmentId\": \"SHP-DPDUK-NI-B2B-AR-02\", \"consolidated\": false, \"consignmentDetail\": [{\"consignmentNumber\": \"1999236263\", \"parcelNumbers\": [\"15501999236263\"]}]}}"
+      }
+    },
+    {
+      "seq": 6,
+      "at": "2026-08-24T02:13:18.814Z",
+      "durationMs": 0.044,
+      "rule": "HTML label -- what wkhtmltopdf is handed",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-AR-02/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-AR-02/label/",
+        "headers": {
+          "Accept": "text/html",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/html"
+        },
+        "body": null,
+        "bodyText": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}</style></head><body><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment SHP-DPDUK-NI-B2B-AR-02</div><div>BELFAST BT1 1DA</div></body></html>"
+      }
+    },
+    {
+      "seq": 7,
+      "at": "2026-08-24T02:13:18.816Z",
+      "durationMs": 0.032,
+      "rule": "Citizen CLP label -- the thermal print string",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-AR-02/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2B-AR-02/label/",
+        "headers": {
+          "Accept": "text/vnd.citizen-clp",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/vnd.citizen-clp"
+        },
+        "body": null,
+        "bodyText": "! 0 200 200 406 1\r\nPW 799\r\nTONE 0\r\nSPEED 5\r\nCENTER\r\nT 4 0 0 30 DPD SHP-DPDUK-NI-B2B-AR-02\r\nB QR 250 120 M 2 U 6\r\nMA,SHP-DPDUK-NI-B2B-AR-02\r\nENDQR\r\nT 4 0 0 330 15501999236263\r\nFORM\r\nPRINT\r\n"
+      }
+    },
+    {
+      "seq": 8,
+      "at": "2026-08-24T02:13:48.983Z",
+      "durationMs": 2.15,
+      "rule": "no marker -- shipment created, 200, one parcel number",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23102/shipping/shipment' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO' --data-raw '{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2C-03\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"isBusiness\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2C-03\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2C-03\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23102/shipping/shipment",
+        "headers": {
+          "Accept": "application/json, application/cbor, application/xml, application/*+json, text/xml, application/*+xml",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Content-Length": "2337",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "collectionOnDelivery": false,
+          "collectionDate": "2026-08-24T09:00:00.000Z",
+          "generateCustomsData": "Y",
+          "consolidate": false,
+          "invoice": {
+            "invoiceExportReason": "01",
+            "invoiceTermsOfDelivery": "DAP",
+            "invoiceReference": "DPDUK-NI-B2C-03",
+            "invoiceType": 1,
+            "shippingCost": 2.0,
+            "invoiceShipperDetails": {
+              "contactDetails": {
+                "contactName": "Warehouse Admin",
+                "telephone": "441612345678"
+              },
+              "address": {
+                "organisation": "Rukphong Thailand Ltd",
+                "countryCode": "GB",
+                "postcode": "M12AB",
+                "street": "Unit 7, Trade Park",
+                "locality": "Industrial Estate",
+                "town": "Manchester",
+                "county": "England"
+              },
+              "eoriNumber": "GB123456789000",
+              "valueAddedTaxNumber": "GB999888777"
+            },
+            "invoiceDeliveryDetails": {
+              "contactDetails": {
+                "contactName": "Aoife Byrne",
+                "telephone": "442890123456"
+              },
+              "address": {
+                "countryCode": "GB",
+                "postcode": "BT11DA",
+                "street": "14 Royal Avenue",
+                "locality": "Suite 3",
+                "town": "Belfast",
+                "county": "Northern Ireland"
+              },
+              "eoriNumber": "GB987654321000",
+              "isBusiness": false
+            }
+          },
+          "consignment": [
+            {
+              "consignmentRef": "DPDUK-NI-B2C-03",
+              "parcel": [
+                {
+                  "packageNumber": 1,
+                  "parcelProduct": [
+                    {
+                      "productCode": "SKU-001",
+                      "productTypeDescription": "Apparel",
+                      "productItemsDescription": "Cotton T-Shirt",
+                      "productFabricContent": "100% cotton",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "610910",
+                      "unitWeight": 0.25,
+                      "numberOfItems": 2,
+                      "unitValue": 6.0
+                    },
+                    {
+                      "productCode": "SKU-002",
+                      "productItemsDescription": "Wool Scarf",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "621410",
+                      "unitWeight": 0.15,
+                      "numberOfItems": 1,
+                      "unitValue": 24.0
+                    }
+                  ]
+                }
+              ],
+              "collectionDetails": {
+                "contactDetails": {
+                  "contactName": "Warehouse Admin",
+                  "telephone": "441612345678"
+                },
+                "address": {
+                  "organisation": "Rukphong Thailand Ltd",
+                  "countryCode": "GB",
+                  "postcode": "M1 2AB",
+                  "street": "Unit 7, Trade Park",
+                  "locality": "Industrial Estate",
+                  "town": "Manchester",
+                  "county": "England"
+                }
+              },
+              "deliveryDetails": {
+                "contactDetails": {
+                  "contactName": "Aoife Byrne",
+                  "telephone": "442890123456"
+                },
+                "address": {
+                  "countryCode": "GB",
+                  "postcode": "BT1 1DA",
+                  "street": "14 Royal Avenue",
+                  "locality": "Suite 3",
+                  "town": "Belfast",
+                  "county": "Northern Ireland"
+                },
+                "notificationDetails": {
+                  "email": "buyer@customer.example.com",
+                  "mobile": "442890123456"
+                }
+              },
+              "networkCode": "1^12",
+              "numberOfParcels": 1,
+              "totalWeight": 0.65,
+              "shippingRef1": "DPDUK-NI-B2C-03",
+              "shippingRef2": "",
+              "shippingRef3": "",
+              "customsValue": 36.0,
+              "customsCurrency": "GBP",
+              "deliveryInstructions": "Leave at reception",
+              "parcelDescription": "Cotton T-Shirt|Wool Scarf",
+              "liability": false
+            }
+          ]
+        },
+        "bodyText": "{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DAP\",\"invoiceReference\":\"DPDUK-NI-B2C-03\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"isBusiness\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-B2C-03\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-B2C-03\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": null,
+          "data": {
+            "shipmentId": "SHP-DPDUK-NI-B2C-03",
+            "consolidated": false,
+            "consignmentDetail": [
+              {
+                "consignmentNumber": "1999236263",
+                "parcelNumbers": [
+                  "15501999236263"
+                ]
+              }
+            ]
+          }
+        },
+        "bodyText": "{\"error\": null, \"data\": {\"shipmentId\": \"SHP-DPDUK-NI-B2C-03\", \"consolidated\": false, \"consignmentDetail\": [{\"consignmentNumber\": \"1999236263\", \"parcelNumbers\": [\"15501999236263\"]}]}}"
+      }
+    },
+    {
+      "seq": 9,
+      "at": "2026-08-24T02:13:48.989Z",
+      "durationMs": 0.053,
+      "rule": "HTML label -- what wkhtmltopdf is handed",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2C-03/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2C-03/label/",
+        "headers": {
+          "Accept": "text/html",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/html"
+        },
+        "body": null,
+        "bodyText": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}</style></head><body><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment SHP-DPDUK-NI-B2C-03</div><div>BELFAST BT1 1DA</div></body></html>"
+      }
+    },
+    {
+      "seq": 10,
+      "at": "2026-08-24T02:13:48.992Z",
+      "durationMs": 0.038,
+      "rule": "Citizen CLP label -- the thermal print string",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2C-03/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-B2C-03/label/",
+        "headers": {
+          "Accept": "text/vnd.citizen-clp",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/vnd.citizen-clp"
+        },
+        "body": null,
+        "bodyText": "! 0 200 200 406 1\r\nPW 799\r\nTONE 0\r\nSPEED 5\r\nCENTER\r\nT 4 0 0 30 DPD SHP-DPDUK-NI-B2C-03\r\nB QR 250 120 M 2 U 6\r\nMA,SHP-DPDUK-NI-B2C-03\r\nENDQR\r\nT 4 0 0 330 15501999236263\r\nFORM\r\nPRINT\r\n"
+      }
+    },
+    {
+      "seq": 11,
+      "at": "2026-08-24T02:14:19.159Z",
+      "durationMs": 2.558,
+      "rule": "no marker -- shipment created, 200, one parcel number",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23102/shipping/shipment' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO' --data-raw '{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DT1\",\"invoiceReference\":\"DPDUK-NI-DDP-04\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-DDP-04\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-DDP-04\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23102/shipping/shipment",
+        "headers": {
+          "Accept": "application/json, application/cbor, application/xml, application/*+json, text/xml, application/*+xml",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Content-Length": "2465",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "collectionOnDelivery": false,
+          "collectionDate": "2026-08-24T09:00:00.000Z",
+          "generateCustomsData": "Y",
+          "consolidate": false,
+          "invoice": {
+            "invoiceExportReason": "01",
+            "invoiceTermsOfDelivery": "DT1",
+            "invoiceReference": "DPDUK-NI-DDP-04",
+            "invoiceType": 1,
+            "shippingCost": 2.0,
+            "invoiceShipperDetails": {
+              "contactDetails": {
+                "contactName": "Warehouse Admin",
+                "telephone": "441612345678"
+              },
+              "address": {
+                "organisation": "Rukphong Thailand Ltd",
+                "countryCode": "GB",
+                "postcode": "M12AB",
+                "street": "Unit 7, Trade Park",
+                "locality": "Industrial Estate",
+                "town": "Manchester",
+                "county": "England"
+              },
+              "eoriNumber": "GB123456789000",
+              "valueAddedTaxNumber": "GB999888777"
+            },
+            "invoiceDeliveryDetails": {
+              "contactDetails": {
+                "contactName": "Aoife Byrne",
+                "telephone": "442890123456"
+              },
+              "address": {
+                "organisation": "Byrne Retail Ltd",
+                "countryCode": "GB",
+                "postcode": "BT11DA",
+                "street": "14 Royal Avenue",
+                "locality": "Suite 3",
+                "town": "Belfast",
+                "county": "Northern Ireland"
+              },
+              "eoriNumber": "GB987654321000",
+              "ukimsNumber": "XIUKIM47700000000000000000001",
+              "isBusiness": true,
+              "atRisk": false
+            }
+          },
+          "consignment": [
+            {
+              "consignmentRef": "DPDUK-NI-DDP-04",
+              "parcel": [
+                {
+                  "packageNumber": 1,
+                  "parcelProduct": [
+                    {
+                      "productCode": "SKU-001",
+                      "productTypeDescription": "Apparel",
+                      "productItemsDescription": "Cotton T-Shirt",
+                      "productFabricContent": "100% cotton",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "610910",
+                      "unitWeight": 0.25,
+                      "numberOfItems": 2,
+                      "unitValue": 6.0
+                    },
+                    {
+                      "productCode": "SKU-002",
+                      "productItemsDescription": "Wool Scarf",
+                      "countryOfOrigin": "GB",
+                      "productHarmonisedCode": "621410",
+                      "unitWeight": 0.15,
+                      "numberOfItems": 1,
+                      "unitValue": 24.0
+                    }
+                  ]
+                }
+              ],
+              "collectionDetails": {
+                "contactDetails": {
+                  "contactName": "Warehouse Admin",
+                  "telephone": "441612345678"
+                },
+                "address": {
+                  "organisation": "Rukphong Thailand Ltd",
+                  "countryCode": "GB",
+                  "postcode": "M1 2AB",
+                  "street": "Unit 7, Trade Park",
+                  "locality": "Industrial Estate",
+                  "town": "Manchester",
+                  "county": "England"
+                }
+              },
+              "deliveryDetails": {
+                "contactDetails": {
+                  "contactName": "Aoife Byrne",
+                  "telephone": "442890123456"
+                },
+                "address": {
+                  "organisation": "Byrne Retail Ltd",
+                  "countryCode": "GB",
+                  "postcode": "BT1 1DA",
+                  "street": "14 Royal Avenue",
+                  "locality": "Suite 3",
+                  "town": "Belfast",
+                  "county": "Northern Ireland"
+                },
+                "notificationDetails": {
+                  "email": "buyer@customer.example.com",
+                  "mobile": "442890123456"
+                }
+              },
+              "networkCode": "1^12",
+              "numberOfParcels": 1,
+              "totalWeight": 0.65,
+              "shippingRef1": "DPDUK-NI-DDP-04",
+              "shippingRef2": "",
+              "shippingRef3": "",
+              "customsValue": 36.0,
+              "customsCurrency": "GBP",
+              "deliveryInstructions": "Leave at reception",
+              "parcelDescription": "Cotton T-Shirt|Wool Scarf",
+              "liability": false
+            }
+          ]
+        },
+        "bodyText": "{\"collectionOnDelivery\":false,\"collectionDate\":\"2026-08-24T09:00:00.000Z\",\"generateCustomsData\":\"Y\",\"consolidate\":false,\"invoice\":{\"invoiceExportReason\":\"01\",\"invoiceTermsOfDelivery\":\"DT1\",\"invoiceReference\":\"DPDUK-NI-DDP-04\",\"invoiceType\":1,\"shippingCost\":2.0,\"invoiceShipperDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M12AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"},\"eoriNumber\":\"GB123456789000\",\"valueAddedTaxNumber\":\"GB999888777\"},\"invoiceDeliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT11DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"eoriNumber\":\"GB987654321000\",\"ukimsNumber\":\"XIUKIM47700000000000000000001\",\"isBusiness\":true,\"atRisk\":false}},\"consignment\":[{\"consignmentRef\":\"DPDUK-NI-DDP-04\",\"parcel\":[{\"packageNumber\":1,\"parcelProduct\":[{\"productCode\":\"SKU-001\",\"productTypeDescription\":\"Apparel\",\"productItemsDescription\":\"Cotton T-Shirt\",\"productFabricContent\":\"100% cotton\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"610910\",\"unitWeight\":0.25,\"numberOfItems\":2,\"unitValue\":6.0},{\"productCode\":\"SKU-002\",\"productItemsDescription\":\"Wool Scarf\",\"countryOfOrigin\":\"GB\",\"productHarmonisedCode\":\"621410\",\"unitWeight\":0.15,\"numberOfItems\":1,\"unitValue\":24.0}]}],\"collectionDetails\":{\"contactDetails\":{\"contactName\":\"Warehouse Admin\",\"telephone\":\"441612345678\"},\"address\":{\"organisation\":\"Rukphong Thailand Ltd\",\"countryCode\":\"GB\",\"postcode\":\"M1 2AB\",\"street\":\"Unit 7, Trade Park\",\"locality\":\"Industrial Estate\",\"town\":\"Manchester\",\"county\":\"England\"}},\"deliveryDetails\":{\"contactDetails\":{\"contactName\":\"Aoife Byrne\",\"telephone\":\"442890123456\"},\"address\":{\"organisation\":\"Byrne Retail Ltd\",\"countryCode\":\"GB\",\"postcode\":\"BT1 1DA\",\"street\":\"14 Royal Avenue\",\"locality\":\"Suite 3\",\"town\":\"Belfast\",\"county\":\"Northern Ireland\"},\"notificationDetails\":{\"email\":\"buyer@customer.example.com\",\"mobile\":\"442890123456\"}},\"networkCode\":\"1^12\",\"numberOfParcels\":1,\"totalWeight\":0.65,\"shippingRef1\":\"DPDUK-NI-DDP-04\",\"shippingRef2\":\"\",\"shippingRef3\":\"\",\"customsValue\":36.0,\"customsCurrency\":\"GBP\",\"deliveryInstructions\":\"Leave at reception\",\"parcelDescription\":\"Cotton T-Shirt|Wool Scarf\",\"liability\":false}]}"
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": null,
+          "data": {
+            "shipmentId": "SHP-DPDUK-NI-DDP-04",
+            "consolidated": false,
+            "consignmentDetail": [
+              {
+                "consignmentNumber": "1999236263",
+                "parcelNumbers": [
+                  "15501999236263"
+                ]
+              }
+            ]
+          }
+        },
+        "bodyText": "{\"error\": null, \"data\": {\"shipmentId\": \"SHP-DPDUK-NI-DDP-04\", \"consolidated\": false, \"consignmentDetail\": [{\"consignmentNumber\": \"1999236263\", \"parcelNumbers\": [\"15501999236263\"]}]}}"
+      }
+    },
+    {
+      "seq": 12,
+      "at": "2026-08-24T02:14:19.165Z",
+      "durationMs": 0.075,
+      "rule": "HTML label -- what wkhtmltopdf is handed",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-DDP-04/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-DDP-04/label/",
+        "headers": {
+          "Accept": "text/html",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/html"
+        },
+        "body": null,
+        "bodyText": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}</style></head><body><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment SHP-DPDUK-NI-DDP-04</div><div>BELFAST BT1 1DA</div></body></html>"
+      }
+    },
+    {
+      "seq": 13,
+      "at": "2026-08-24T02:14:19.168Z",
+      "durationMs": 0.043,
+      "rule": "Citizen CLP label -- the thermal print string",
+      "curl": "curl -i -X GET 'http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-DDP-04/label/' -H 'GeoSession: ***redacted***' -H 'Content-Type: application/json' -H 'GeoClient: thirdparty/ANCHANTO'",
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23102/shipping/shipment/SHP-DPDUK-NI-DDP-04/label/",
+        "headers": {
+          "Accept": "text/vnd.citizen-clp",
+          "GeoSession": "***redacted***",
+          "Content-Type": "application/json",
+          "GeoClient": "thirdparty/ANCHANTO",
+          "Host": "127.0.0.1:23102",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": null,
+        "bodyText": null
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": {
+          "Content-Type": "text/vnd.citizen-clp"
+        },
+        "body": null,
+        "bodyText": "! 0 200 200 406 1\r\nPW 799\r\nTONE 0\r\nSPEED 5\r\nCENTER\r\nT 4 0 0 30 DPD SHP-DPDUK-NI-DDP-04\r\nB QR 250 120 M 2 U 6\r\nMA,SHP-DPDUK-NI-DDP-04\r\nENDQR\r\nT 4 0 0 330 15501999236263\r\nFORM\r\nPRINT\r\n"
+      }
+    }
+  ]
+}

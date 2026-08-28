@@ -1998,7 +1998,8 @@
                 </div>
                 <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px;">
                   ${m.is_local ? `<span class="badge badge-local">📁 Local Framework MCP</span>` : `<span class="badge badge-extension">💡 IDE / System Bridge</span>`}
-                  ${m.has_env ? `<span class="badge badge-workspace">🔑 .env Configured</span>` : ''}
+                  ${m.launcher_script ? `<span class="badge badge-marketplace" title="Auto-bootstrapping launcher">⚡ Self-Healing Launcher</span>` : ''}
+                  ${m.env_status === 'configured' ? `<span class="badge badge-workspace" style="color: var(--ok); border-color: var(--ok-border); background: var(--ok-bg);">🔑 .env Ready</span>` : (m.env_status === 'sample_unconfigured' ? `<span class="badge badge-workspace" style="color: var(--warn); border-color: var(--warn-border); background: var(--warn-bg);">⚠️ .env Incomplete</span>` : (m.has_env ? `<span class="badge badge-workspace">🔑 .env</span>` : ''))}
                   ${m.tools_count > 0 ? `<span class="badge badge-marketplace">🛠️ ${m.tools_count} Tools</span>` : ''}
                 </div>
               </div>

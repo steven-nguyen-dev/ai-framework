@@ -1,0 +1,412 @@
+[
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/sellingPartners/metrics/search",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "aggregationFrequency": "YEAR",
+            "timeInterval": {
+              "startDate": "2022-01-01T00:00:00Z",
+              "endDate": "2022-12-31T00:00:00Z"
+            },
+            "metrics": [
+              "TOTAL_SUBSCRIPTIONS_REVENUE",
+              "REVENUE_PENETRATION"
+            ],
+            "timePeriodType": "PERFORMANCE",
+            "marketplaceId": "ATVPDKIKX0DER",
+            "programTypes": [
+              "SUBSCRIBE_AND_SAVE"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "metrics": [
+        {
+          "subscriberAverageRevenue": 125.93,
+          "nonSubscriberAverageRevenue": 73.62,
+          "shippedSubscriptionUnits": 5290,
+          "notDeliveredDueToOOS": 5.54,
+          "totalSubscriptionsRevenue": 131340.24,
+          "activeSubscriptions": 0,
+          "lostRevenueDueToOOS": 38493.29,
+          "subscriberAverageReorders": 3.25,
+          "nonSubscriberAverageReorders": 1.11,
+          "couponsRevenuePenetration": 0.0,
+          "revenueFromSubscriptionsWithMultipleDeliveries": 98623.04,
+          "revenueFromActiveSubscriptionsWithSingleDelivery": 30345.2,
+          "revenueFromCancelledSubscriptionsAfterSingleDelivery": 2372.0,
+          "subscriberRetentionFor30Days": 94.43,
+          "subscriberRetentionFor90Days": 78.43,
+          "revenuePenetrationFor0PercentSellerFunding": 10.23,
+          "revenuePenetrationFor5PercentSellerFunding": 22.2,
+          "revenuePenetrationFor10PercentSellerFunding": 67.57,
+          "shareOfCouponSubscriptions": 17.32,
+          "signupConversionFor0PercentSellerFunding": 11.7,
+          "signupConversionFor5PercentSellerFunding": 7.3,
+          "signupConversionFor10PercentSellerFunding": 3.9,
+          "revenuePenetration": 21.67,
+          "currencyCode": "USD",
+          "timeInterval": {
+            "endDate": "2025-05-09T22:36:56Z",
+            "startDate": "2024-05-09T22:36:56Z"
+          }
+        },
+        {
+          "nonSubscriberLifeTimeValueFromOTP": 95.74,
+          "lostSubscriberLifeTimeValueFromOTP": 119.1,
+          "lostSubscriberLifeTimeValueFromSNS": 76.56,
+          "growingSubscriberLifeTimeValueFromOTP": 113.31,
+          "growingSubscriberLifeTimeValueFromSNS": 106.56,
+          "establishedSubscriberLifeTimeValueFromOTP": 138.02,
+          "establishedSubscriberLifeTimeValueFromSNS": 316.25,
+          "currencyCode": "USD",
+          "timeInterval": {
+            "endDate": "2025-05-09T22:36:56Z",
+            "startDate": "2023-05-09T22:36:56Z"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/sellingPartners/metrics/search",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "aggregationFrequency": "DAY",
+            "timeInterval": {
+              "startDate": "2022-01-01T00:00:00Z",
+              "endDate": "2023-01-01T00:00:00Z"
+            },
+            "metrics": [
+              "SHIPPED_SUBSCRIPTION_UNITS",
+              "TOTAL_SUBSCRIPTIONS_REVENUE",
+              "NOT_DELIVERED_DUE_TO_OOS",
+              "ACTIVE_SUBSCRIPTIONS",
+              "SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REVENUE",
+              "LOST_REVENUE_DUE_TO_OOS",
+              "SUBSCRIBER_NON_SUBSCRIBER_AVERAGE_REORDERS",
+              "COUPONS_REVENUE_PENETRATION"
+            ],
+            "timePeriodType": "PERFORMANCE",
+            "marketplaceId": "ATVPDKIKX0DER",
+            "programTypes": [
+              "SUBSCRIBE_AND_SAVE"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Unsupported aggregationFrequency is provided. Only WEEK, MONTH, QUARTER and YEAR are supported"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/offers/metrics/search",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "filters": {
+              "aggregationFrequency": "YEAR",
+              "timeInterval": {
+                "startDate": "2022-01-01T00:00:00Z",
+                "endDate": "2022-12-31T00:00:00Z"
+              },
+              "marketplaceId": "ATVPDKIKX0DER",
+              "programTypes": [
+                "SUBSCRIBE_AND_SAVE"
+              ],
+              "timePeriodType": "PERFORMANCE",
+              "asins": [
+                "B07CYBR5GZ",
+                "B07CYJJW8H"
+              ]
+            },
+            "pagination": {
+              "limit": 2,
+              "offset": 0
+            },
+            "sort": {
+              "order": "ASC",
+              "key": "TOTAL_SUBSCRIPTIONS_REVENUE"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "offers": [
+        {
+          "asin": "B07CYBR5GZ",
+          "sku": "SD-RES-101973",
+          "fulfillmentChannelType": "AMAZON",
+          "notDeliveredDueToOOS": 10.2,
+          "totalSubscriptionsRevenue": 100.45,
+          "revenuePenetration": 23.6,
+          "shippedSubscriptionUnits": 100,
+          "activeSubscriptions": 100,
+          "lostRevenueDueToOOS": 12.32,
+          "couponsRevenuePenetration": 10,
+          "shareOfCouponSubscriptions": 20.04,
+          "timeInterval": {
+            "startDate": "2022-01-01T00:00:00Z",
+            "endDate": "2022-12-31T00:00:00Z"
+          },
+          "currencyCode": "USD"
+        },
+        {
+          "asin": "B07CYJJW8H",
+          "sku": "SD-RES-121973",
+          "fulfillmentChannelType": "MERCHANT",
+          "notDeliveredDueToOOS": 12.78,
+          "totalSubscriptionsRevenue": 80.11,
+          "revenuePenetration": 35.9,
+          "shippedSubscriptionUnits": 100,
+          "activeSubscriptions": 100,
+          "lostRevenueDueToOOS": 17.82,
+          "couponsRevenuePenetration": 17,
+          "shareOfCouponSubscriptions": 19.2,
+          "timeInterval": {
+            "startDate": "2022-01-01T00:00:00Z",
+            "endDate": "2022-12-31T00:00:00Z"
+          },
+          "currencyCode": "USD"
+        }
+      ],
+      "pagination": {
+        "totalResults": 17
+      }
+    }
+  },
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/offers/metrics/search",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "filters": {
+              "aggregationFrequency": "DAY",
+              "timeInterval": {
+                "startDate": "2022-01-01T00:00:00Z",
+                "endDate": "2022-12-31T00:00:00Z"
+              },
+              "marketplaceId": "ATVPDKIKX0DER",
+              "programTypes": [
+                "SUBSCRIBE_AND_SAVE"
+              ],
+              "timePeriodType": "PERFORMANCE",
+              "asins": [
+                "B07CYBR5GZ"
+              ]
+            },
+            "pagination": {
+              "limit": 1,
+              "offset": 0
+            },
+            "sort": {
+              "order": "ASC",
+              "key": "TOTAL_SUBSCRIPTIONS_REVENUE"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Unsupported aggregationFrequency is provided. Only WEEK, MONTH, QUARTER and YEAR are supported"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/offers/search",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "filters": {
+              "eligibilities": [
+                "ELIGIBLE"
+              ],
+              "marketplaceId": "ATVPDKIKX0DER",
+              "programTypes": [
+                "SUBSCRIBE_AND_SAVE"
+              ],
+              "preferences": {
+                "autoEnrollment": [
+                  "OPTED_IN",
+                  "OPTED_OUT"
+                ]
+              },
+              "promotions": {
+                "sellingPartnerFundedTieredDiscount": {
+                  "percentage": [
+                    0,
+                    5,
+                    10
+                  ]
+                }
+              }
+            },
+            "pagination": {
+              "limit": 25,
+              "offset": 0
+            },
+            "sort": {
+              "order": "ASC",
+              "key": "ASIN"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "offers": [
+        {
+          "asin": "B07CYBR5GZ",
+          "marketplaceId": "ATVPDKIKX0DER",
+          "sku": "TEST_SKU_A",
+          "eligibility": "ELIGIBLE",
+          "vendorCodes": [
+            "ABCDE",
+            "PQRST"
+          ],
+          "offerProgramConfiguration": {
+            "preferences": {
+              "autoEnrollment": "OPTED_IN"
+            },
+            "promotions": {
+              "sellingPartnerFundedBaseDiscount": {
+                "percentage": 0
+              },
+              "sellingPartnerFundedTieredDiscount": {
+                "percentage": 5
+              },
+              "amazonFundedBaseDiscount": {
+                "percentage": 10
+              },
+              "amazonFundedTieredDiscount": {
+                "percentage": 15
+              }
+            },
+            "enrollmentMethod": "AUTOMATIC"
+          },
+          "programType": "SUBSCRIBE_AND_SAVE"
+        },
+        {
+          "asin": "B07CYCR5GZ",
+          "marketplaceId": "ATVPDKIKX0DER",
+          "sku": "TEST_SKU_A",
+          "eligibility": "ELIGIBLE",
+          "vendorCodes": [
+            "ABCDE",
+            "PQRST"
+          ],
+          "offerProgramConfiguration": {
+            "preferences": {
+              "autoEnrollment": "OPTED_IN"
+            },
+            "promotions": {
+              "sellingPartnerFundedBaseDiscount": {
+                "percentage": 5
+              },
+              "sellingPartnerFundedTieredDiscount": {
+                "percentage": 0
+              },
+              "amazonFundedBaseDiscount": {
+                "percentage": 5
+              },
+              "amazonFundedTieredDiscount": {
+                "percentage": 10
+              }
+            },
+            "enrollmentMethod": "AUTOMATIC"
+          },
+          "programType": "SUBSCRIBE_AND_SAVE"
+        }
+      ],
+      "pagination": {
+        "totalResults": 2
+      }
+    }
+  },
+  {
+    "source_file": "models/replenishment-api-model/replenishment-2022-11-07.json",
+    "domain": "replenishment",
+    "path": "/replenishment/2022-11-07/offers/search",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "filters": {
+              "eligibilities": [
+                "BAD_VALUE"
+              ],
+              "marketplaceId": "ATVPDKIKX0DER",
+              "programTypes": [
+                "SUBSCRIBE_AND_SAVE"
+              ]
+            },
+            "pagination": {
+              "limit": 25,
+              "offset": 0
+            },
+            "sort": {
+              "order": "ASC",
+              "key": "ASIN"
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Unsupported eligibility is provided. Only ELIGIBLE, INELIGIBLE, SUSPENDED and REPLENISHMENT_ONLY_ORDERING are supported"
+        }
+      ]
+    }
+  }
+]

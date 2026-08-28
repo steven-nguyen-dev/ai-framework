@@ -31,7 +31,7 @@ dropped with `not captured` against them rather than passing silently.
 
 How to write one, the check vocabulary and what each escape hatch costs: `README.md` beside this
 file. The runner contract, the results file and the traps this engine already handles:
-`TESTING.md`. A worked example carrying all of it: `eton/suite-flow2.py`.
+`TESTING.md`. A worked example carrying all of it: `eton/suite-create-order.py`.
 """
 
 import os

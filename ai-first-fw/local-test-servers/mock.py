@@ -140,6 +140,11 @@ def expand(path, ctx):
     "ListSODetail[*].SKU" becomes one path per element, so a rule written once reports
     "ListSODetail[2].SKU is required" against the element that actually broke it. An absent or
     non-list collection expands to nothing -- the collection's own requirement reports that.
+
+    A path may carry more than one [*]: DPD nests its customs lines as
+    "consignment[*].parcel[*].productHarmonisedCode", and each wildcard is expanded against the
+    list the wildcards before it selected. Expanding only the first left the rest of the path
+    literal, and a literal "[*]" step matches nothing -- so every element reported as missing.
     """
     path = _normalize(path)
     if "[*]" not in path:
@@ -148,7 +153,10 @@ def expand(path, ctx):
     items = select(head, ctx)
     if items is _MISSING or not isinstance(items, list):
         return []
-    return ["%s.%d%s" % (head, index, tail) for index in range(len(items))]
+    concrete = ["%s.%d%s" % (head, index, tail) for index in range(len(items))]
+    if "[*]" not in tail:
+        return concrete
+    return [nested for one in concrete for nested in expand(one, ctx)]
 
 
 def validate(spec_obj, ctx, state):
@@ -1147,9 +1155,9 @@ padding:4px 6px 4px 8px;font-size:12px;color:var(--ink-2);border-radius:6px;tran
 .run:hover .run-del-btn{opacity:0.75}
 .run-del-btn:hover{opacity:1;background:var(--fail-bg);color:var(--fail-fg)}
 
-main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden;padding:1.4vh 1.4vw 0;box-sizing:border-box}
-.pinned-header{flex:none;width:100%;box-sizing:border-box}
-.scroll-area{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;width:100%;padding-bottom:2.5vh;box-sizing:border-box}
+main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow-y:auto;overflow-x:hidden;padding:1.4vh 1.4vw 2.5vh;box-sizing:border-box}
+.pinned-header{width:100%;box-sizing:border-box}
+.scroll-area{width:100%;box-sizing:border-box}
 
 /* Mode Switcher & Top Header Bar */
 .top-header-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1.2vh;flex-wrap:wrap}

@@ -1,0 +1,346 @@
+[
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "pageSize": {
+          "value": 1
+        },
+        "processingStatuses": {
+          "value": [
+            "DONE",
+            "IN_PROGRESS"
+          ]
+        }
+      }
+    },
+    "response": {
+      "pagination": {
+        "nextToken": "NextToken1"
+      },
+      "queries": [
+        {
+          "queryId": "QueryId1",
+          "query": "query {sampleQuery(startDate:\"2023-03-01\" endDate:\"2023-03-31\" marketplaceIds:[\"ATVPDKIKX0DER\"]){sales{date averageSellingPrice{amount currencyCode}}}}",
+          "createdTime": "2023-12-11T13:47:20.677Z",
+          "processingStatus": "DONE",
+          "processingStartTime": "2023-12-11T13:47:20.677Z",
+          "processingEndTime": "2023-12-11T14:47:20.677Z",
+          "dataDocumentId": "DocumentId1"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "pageSize": {
+          "value": 1
+        },
+        "processingStatuses": {
+          "value": [
+            "DONE",
+            "IN_PROGRESS"
+          ]
+        },
+        "paginationToken": {
+          "value": "NextToken1"
+        }
+      }
+    },
+    "response": {
+      "queries": [
+        {
+          "queryId": "QueryId2",
+          "query": "query {sampleQuery(startDate:\"2023-04-01\" endDate:\"2023-04-30\" marketplaceIds:[\"ATVPDKIKX0DER\"]){sales{date averageSellingPrice{amount currencyCode}}}}",
+          "createdTime": "2023-12-12T13:47:20.677Z",
+          "processingStatus": "IN_PROGRESS",
+          "processingStartTime": "2023-12-12T13:47:20.677Z"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "processingStatuses": {
+          "value": [
+            "INVALID_STATUS"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "1 validation error detected: Value '[INVALID_STATUS]' at 'processingStatuses' failed to satisfy constraint: Member must satisfy constraint: [Member must satisfy enum value set: [DONE, FATAL, IN_PROGRESS, CANCELLED, IN_QUEUE]]",
+          "details": ""
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "query": "query {sampleQuery(startDate:\"2023-03-01\" endDate:\"2023-03-31\" marketplaceIds:[\"ATVPDKIKX0DER\"]){sales{date averageSellingPrice{amount currencyCode}}}}"
+          }
+        }
+      }
+    },
+    "response": {
+      "queryId": "QueryId1"
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "query": "query {invalidSampleQuery(startDate:\"2023-03-01\" endDate:\"2023-03-31\" marketplaceIds:[\"ATVPDKIKX0DER\"]){sales{date averageSellingPrice{amount currencyCode}}}}"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "The provided query is invalid.",
+          "details": "Query 'invalidSampleQuery' is not supported."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "DELETE",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "QueryId1"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "InvalidQueryId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "DELETE",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "NotFoundQueryId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The provided queryId was not found."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "QueryId1"
+        }
+      }
+    },
+    "response": {
+      "queryId": "QueryId1",
+      "query": "query {sampleQuery(startDate:\"2023-03-01\" endDate:\"2023-03-31\" marketplaceIds:[\"ATVPDKIKX0DER\"]){sales{date averageSellingPrice{amount currencyCode}}}}",
+      "createdTime": "2023-12-11T13:47:20.677Z",
+      "processingStatus": "DONE",
+      "processingStartTime": "2023-12-11T13:47:20.677Z",
+      "processingEndTime": "2023-12-11T14:47:20.677Z",
+      "dataDocumentId": "DocumentId1"
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "InvalidQueryId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/queries/{queryId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "queryId": {
+          "value": "NotFoundQueryId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The provided queryId was not found."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/documents/{documentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "documentId": {
+          "value": "DocumentId1"
+        }
+      }
+    },
+    "response": {
+      "documentId": "DocumentId1",
+      "documentUrl": "https://d34o8swod1owfl.cloudfront.net/QUERY_DATA_OUTPUT_DOC.txt"
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/documents/{documentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "documentId": {
+          "value": "InvalidDocumentId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/data-kiosk-api-model/dataKiosk_2023-11-15.json",
+    "domain": "data-kiosk",
+    "path": "/dataKiosk/2023-11-15/documents/{documentId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "documentId": {
+          "value": "NotFoundDocumentId1"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "The provided documentId was not found."
+        }
+      ]
+    }
+  }
+]

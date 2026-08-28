@@ -1,0 +1,1050 @@
+[
+  {
+    "source_file": "models/catalog-items-api-model/catalogItemsV0.json",
+    "domain": "catalog-items",
+    "path": "/catalog/v0/categories",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200",
+    "request": {
+      "parameters": {
+        "MarketplaceId": {
+          "value": "TEST_CASE_200"
+        },
+        "ASIN": {
+          "value": "asin_200"
+        }
+      }
+    },
+    "response": {
+      "payload": [
+        {
+          "ProductCategoryId": "26752675",
+          "ProductCategoryName": "Project Management",
+          "parent": {}
+        },
+        {
+          "ProductCategoryId": "468220445",
+          "ProductCategoryName": "Art",
+          "parent": {}
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItemsV0.json",
+    "domain": "catalog-items",
+    "path": "/catalog/v0/categories",
+    "method": "GET",
+    "status": 400,
+    "test_case": "TEST_CASE_400",
+    "request": {
+      "parameters": {
+        "MarketplaceId": {
+          "value": "TEST_CASE_400"
+        },
+        "ASIN": {
+          "value": "ASIN_TO_TEST"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2020-12-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2020-12-01/items",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "keywords": {
+          "value": [
+            "red",
+            "polo",
+            "shirt"
+          ]
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "summaries"
+          ]
+        }
+      }
+    },
+    "response": {
+      "numberOfResults": 12247,
+      "pagination": {
+        "nextToken": "9HkIVcuuPmX_bm51o3-igBfN45pxW4Ru7ElIM6GCECYCuXJKzT26f-AlJJZYjIPp8wkOEmQdma1wt_JvE7qiRmNsKy7hH"
+      },
+      "refinements": {
+        "brands": [
+          {
+            "numberOfResults": 91,
+            "brandName": "Polo Ralph Lauren"
+          },
+          {
+            "numberOfResults": 79,
+            "brandName": "Eddie Bauer"
+          },
+          {
+            "numberOfResults": 46,
+            "brandName": "Cutter & Buck"
+          },
+          {
+            "numberOfResults": 39,
+            "brandName": "FILA"
+          },
+          {
+            "numberOfResults": 37,
+            "brandName": "Orvis"
+          }
+        ],
+        "classifications": [
+          {
+            "numberOfResults": 1243,
+            "displayName": "Clothing, Shoes & Jewelry",
+            "classificationId": "7141124011"
+          },
+          {
+            "numberOfResults": 126,
+            "displayName": "Sports & Outdoors",
+            "classificationId": "3375301"
+          }
+        ]
+      },
+      "items": [
+        {
+          "asin": "B002N36Q3M",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandName": "Fred Perry",
+              "colorName": "Wht/Brt Red/Nvy",
+              "itemName": "Fred Perry Men's Twin Tipped Polo Shirt-M1200, WHT/BRT RED/NVY, X-Large",
+              "manufacturer": "Fred Perry Men's Apparel",
+              "modelNumber": "M1200",
+              "sizeName": "X-Large",
+              "styleName": "Twin Tipped Polo Shirt-m1200"
+            }
+          ]
+        },
+        {
+          "asin": "B002N3ABSI",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandName": "Fred Perry",
+              "colorName": "White/Bright Red/Navy",
+              "itemName": "Fred Perry Men's Twin Tipped Polo, White/Bright Red/Navy, SM",
+              "manufacturer": "Fred Perry Apparel Mens",
+              "modelNumber": "M1200-748",
+              "sizeName": "SM",
+              "styleName": "Twin Tipped Fred Perry Polo"
+            }
+          ]
+        },
+        {
+          "asin": "B01N5B3598",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandName": "NHL",
+              "colorName": "Red",
+              "itemName": "NHL New Jersey Devils Men's Polo, Small, Red",
+              "manufacturer": "Knight's Apparel",
+              "modelNumber": "H0MEE3ZAMZ",
+              "sizeName": "Small"
+            }
+          ]
+        },
+        {
+          "asin": "B00HIVDUXI",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandName": "adidas",
+              "colorName": "Bold Red/White",
+              "itemName": "Adidas Golf Men's Puremotion Textured Stripe Polo, Bold Red/White, Large",
+              "manufacturer": "TaylorMade - Adidas Golf Apparel",
+              "modelNumber": "TM3010S4",
+              "sizeName": "Large"
+            }
+          ]
+        },
+        {
+          "asin": "B005ZZ12YS",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandName": "RALPH LAUREN",
+              "colorName": "Black / Red Pony",
+              "itemName": "Polo Ralph Lauren Men's Long-sleeved T-shirt / Sleepwear / Thermal in Black, Red Pony (Large / L)",
+              "sizeName": "Large"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2020-12-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2020-12-01/items/{asin}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07N4M94X4"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "identifiers",
+            "images",
+            "productTypes",
+            "salesRanks",
+            "summaries",
+            "variations",
+            "vendorDetails"
+          ]
+        }
+      }
+    },
+    "response": {
+      "asin": "B07N4M94X4",
+      "identifiers": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "identifiers": [
+            {
+              "identifierType": "ean",
+              "identifier": "0887276302195"
+            },
+            {
+              "identifierType": "upc",
+              "identifier": "887276302195"
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "images": [
+            {
+              "variant": "MAIN",
+              "link": "https://m.media-amazon.com/images/I/51DZzp3w3vL.jpg",
+              "height": 333,
+              "width": 500
+            }
+          ]
+        }
+      ],
+      "productTypes": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "productType": "TELEVISION"
+        }
+      ],
+      "salesRanks": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "ranks": [
+            {
+              "title": "OLED TVs",
+              "link": "http://www.amazon.com/gp/bestsellers/electronics/6463520011",
+              "rank": 3
+            },
+            {
+              "title": "Electronics",
+              "link": "http://www.amazon.com/gp/bestsellers/electronics",
+              "rank": 1544
+            }
+          ]
+        }
+      ],
+      "summaries": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "brandName": "Samsung Electronics",
+          "browseNode": "6463520011",
+          "colorName": "Black",
+          "itemName": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+          "manufacturer": "Samsung",
+          "modelNumber": "QN82Q60RAFXZA",
+          "sizeName": "82-Inch",
+          "styleName": "TV only"
+        }
+      ],
+      "variations": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "asins": [
+            "B08J7TQ9FL"
+          ],
+          "variationType": "CHILD"
+        }
+      ],
+      "vendorDetails": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "brandCode": "SAMF9",
+          "categoryCode": "50400100",
+          "manufacturerCode": "SAMF9",
+          "manufacturerCodeParent": "SAMF9",
+          "productGroup": "Home Entertainment",
+          "replenishmentCategory": "NEW_PRODUCT",
+          "subcategoryCode": "50400150"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2022-04-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2022-04-01/items",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "keywords": {
+          "value": [
+            "samsung",
+            "tv"
+          ]
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "classifications",
+            "dimensions",
+            "identifiers",
+            "images",
+            "productTypes",
+            "relationships",
+            "salesRanks",
+            "summaries",
+            "vendorDetails"
+          ]
+        }
+      }
+    },
+    "response": {
+      "numberOfResults": 1,
+      "pagination": {
+        "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+        "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+      },
+      "refinements": {
+        "brands": [
+          {
+            "numberOfResults": 1,
+            "brandName": "SAMSUNG"
+          }
+        ],
+        "classifications": [
+          {
+            "numberOfResults": 1,
+            "displayName": "Electronics",
+            "classificationId": "493964"
+          }
+        ]
+      },
+      "items": [
+        {
+          "asin": "B07N4M94X4",
+          "classifications": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "classifications": [
+                {
+                  "displayName": "QLED TVs",
+                  "classificationId": "21489946011",
+                  "parent": {
+                    "displayName": "Televisions",
+                    "classificationId": "172659",
+                    "parent": {
+                      "displayName": "Television & Video",
+                      "classificationId": "1266092011",
+                      "parent": {
+                        "displayName": "Electronics",
+                        "classificationId": "172282"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "dimensions": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "item": {
+                "height": {
+                  "unit": "inches",
+                  "value": 41.4
+                },
+                "length": {
+                  "unit": "inches",
+                  "value": 2.4
+                },
+                "weight": {
+                  "unit": "pounds",
+                  "value": 107.6
+                },
+                "width": {
+                  "unit": "inches",
+                  "value": 72.4
+                }
+              },
+              "package": {
+                "height": {
+                  "unit": "inches",
+                  "value": 10.49999998929
+                },
+                "length": {
+                  "unit": "inches",
+                  "value": 79.9999999184
+                },
+                "weight": {
+                  "unit": "kilograms",
+                  "value": 62.142
+                },
+                "width": {
+                  "unit": "inches",
+                  "value": 47.99999995104
+                }
+              }
+            }
+          ],
+          "identifiers": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "identifiers": [
+                {
+                  "identifier": "0887276302195",
+                  "identifierType": "EAN"
+                },
+                {
+                  "identifier": "00887276302195",
+                  "identifierType": "GTIN"
+                },
+                {
+                  "identifier": "887276302195",
+                  "identifierType": "UPC"
+                }
+              ]
+            }
+          ],
+          "images": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "images": [
+                {
+                  "variant": "MAIN",
+                  "link": "https://m.media-amazon.com/images/I/91uohwV+k3L.jpg",
+                  "height": 1707,
+                  "width": 2560
+                },
+                {
+                  "variant": "MAIN",
+                  "link": "https://m.media-amazon.com/images/I/51DZzp3w3vL.jpg",
+                  "height": 333,
+                  "width": 500
+                },
+                {
+                  "variant": "PT01",
+                  "link": "https://m.media-amazon.com/images/I/81w2rTVShlL.jpg",
+                  "height": 2560,
+                  "width": 2560
+                },
+                {
+                  "variant": "PT01",
+                  "link": "https://m.media-amazon.com/images/I/41Px9eq9tkL.jpg",
+                  "height": 500,
+                  "width": 500
+                },
+                {
+                  "variant": "PT02",
+                  "link": "https://m.media-amazon.com/images/I/51NTNhdhPyL.jpg",
+                  "height": 375,
+                  "width": 500
+                },
+                {
+                  "variant": "PT03",
+                  "link": "https://m.media-amazon.com/images/I/51o4zpL+A3L.jpg",
+                  "height": 375,
+                  "width": 500
+                },
+                {
+                  "variant": "PT04",
+                  "link": "https://m.media-amazon.com/images/I/71ux2k9GAZL.jpg",
+                  "height": 1000,
+                  "width": 1000
+                },
+                {
+                  "variant": "PT04",
+                  "link": "https://m.media-amazon.com/images/I/61UUX63yw1L.jpg",
+                  "height": 500,
+                  "width": 500
+                },
+                {
+                  "variant": "PT05",
+                  "link": "https://m.media-amazon.com/images/I/61LwHkljX-L.jpg",
+                  "height": 1000,
+                  "width": 1000
+                },
+                {
+                  "variant": "PT05",
+                  "link": "https://m.media-amazon.com/images/I/51wJTQty3PL.jpg",
+                  "height": 500,
+                  "width": 500
+                },
+                {
+                  "variant": "PT06",
+                  "link": "https://m.media-amazon.com/images/I/61uvoB4VvoL.jpg",
+                  "height": 1000,
+                  "width": 1000
+                },
+                {
+                  "variant": "PT06",
+                  "link": "https://m.media-amazon.com/images/I/51ZexIO628L.jpg",
+                  "height": 500,
+                  "width": 500
+                },
+                {
+                  "variant": "PT07",
+                  "link": "https://m.media-amazon.com/images/I/7121MGd2ncL.jpg",
+                  "height": 1000,
+                  "width": 1000
+                },
+                {
+                  "variant": "PT07",
+                  "link": "https://m.media-amazon.com/images/I/61QK+JBMrGL.jpg",
+                  "height": 500,
+                  "width": 500
+                },
+                {
+                  "variant": "PT08",
+                  "link": "https://m.media-amazon.com/images/I/61ECcGlG4IL.jpg",
+                  "height": 1080,
+                  "width": 1920
+                },
+                {
+                  "variant": "PT08",
+                  "link": "https://m.media-amazon.com/images/I/31TxwfqvB5L.jpg",
+                  "height": 281,
+                  "width": 500
+                }
+              ]
+            }
+          ],
+          "productTypes": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "productType": "TELEVISION"
+            }
+          ],
+          "salesRanks": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "classificationRanks": [
+                {
+                  "classificationId": "21489946011",
+                  "title": "QLED TVs",
+                  "link": "http://www.amazon.com/gp/bestsellers/electronics/21489946011",
+                  "rank": 113
+                }
+              ],
+              "displayGroupRanks": [
+                {
+                  "websiteDisplayGroup": "ce_display_on_website",
+                  "title": "Electronics",
+                  "link": "http://www.amazon.com/gp/bestsellers/electronics",
+                  "rank": 72855
+                }
+              ]
+            }
+          ],
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brand": "SAMSUNG",
+              "browseClassification": {
+                "displayName": "QLED TVs",
+                "classificationId": "21489946011"
+              },
+              "color": "Black",
+              "itemClassification": "BASE_PRODUCT",
+              "itemName": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+              "manufacturer": "Samsung",
+              "modelNumber": "QN82Q60RAFXZA",
+              "packageQuantity": 1,
+              "partNumber": "QN82Q60RAFXZA",
+              "size": "82-Inch",
+              "style": "TV only",
+              "websiteDisplayGroup": "home_theater_display_on_website",
+              "websiteDisplayGroupName": "Home Theater"
+            }
+          ],
+          "relationships": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "relationships": [
+                {
+                  "type": "VARIATION",
+                  "parentAsins": [
+                    "B08J7TQ9FL"
+                  ],
+                  "variationTheme": {
+                    "attributes": [
+                      "color",
+                      "size"
+                    ],
+                    "theme": "SIZE_NAME/COLOR_NAME"
+                  }
+                }
+              ]
+            }
+          ],
+          "vendorDetails": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "brandCode": "SAMF9",
+              "manufacturerCode": "SAMF9",
+              "manufacturerCodeParent": "SAMF9",
+              "productCategory": {
+                "displayName": "Televisions",
+                "value": "50400100"
+              },
+              "productGroup": "Home Entertainment",
+              "productSubcategory": {
+                "displayName": "Plasma TVs",
+                "value": "50400120"
+              },
+              "replenishmentCategory": "OBSOLETE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2022-04-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2022-04-01/items",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "keywords": {
+          "value": [
+            "samsung",
+            "tv"
+          ]
+        },
+        "marketplaceIds": {
+          "value": [
+            ""
+          ]
+        },
+        "includedData": {
+          "value": [
+            "classifications",
+            "dimensions",
+            "identifiers",
+            "images",
+            "productTypes",
+            "relationships",
+            "salesRanks",
+            "summaries",
+            "vendorDetails"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2022-04-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2022-04-01/items/{asin}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": "B07N4M94X4"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "classifications",
+            "dimensions",
+            "identifiers",
+            "images",
+            "productTypes",
+            "relationships",
+            "salesRanks",
+            "summaries",
+            "vendorDetails"
+          ]
+        }
+      }
+    },
+    "response": {
+      "asin": "B07N4M94X4",
+      "classifications": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "classifications": [
+            {
+              "displayName": "QLED TVs",
+              "classificationId": "21489946011",
+              "parent": {
+                "displayName": "Televisions",
+                "classificationId": "172659",
+                "parent": {
+                  "displayName": "Television & Video",
+                  "classificationId": "1266092011",
+                  "parent": {
+                    "displayName": "Electronics",
+                    "classificationId": "172282"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "dimensions": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "item": {
+            "height": {
+              "unit": "inches",
+              "value": 41.4
+            },
+            "length": {
+              "unit": "inches",
+              "value": 2.4
+            },
+            "weight": {
+              "unit": "pounds",
+              "value": 107.6
+            },
+            "width": {
+              "unit": "inches",
+              "value": 72.4
+            }
+          },
+          "package": {
+            "height": {
+              "unit": "inches",
+              "value": 10.49999998929
+            },
+            "length": {
+              "unit": "inches",
+              "value": 79.9999999184
+            },
+            "weight": {
+              "unit": "kilograms",
+              "value": 62.142
+            },
+            "width": {
+              "unit": "inches",
+              "value": 47.99999995104
+            }
+          }
+        }
+      ],
+      "identifiers": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "identifiers": [
+            {
+              "identifier": "0887276302195",
+              "identifierType": "EAN"
+            },
+            {
+              "identifier": "00887276302195",
+              "identifierType": "GTIN"
+            },
+            {
+              "identifier": "887276302195",
+              "identifierType": "UPC"
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "images": [
+            {
+              "variant": "MAIN",
+              "link": "https://m.media-amazon.com/images/I/91uohwV+k3L.jpg",
+              "height": 1707,
+              "width": 2560
+            },
+            {
+              "variant": "MAIN",
+              "link": "https://m.media-amazon.com/images/I/51DZzp3w3vL.jpg",
+              "height": 333,
+              "width": 500
+            },
+            {
+              "variant": "PT01",
+              "link": "https://m.media-amazon.com/images/I/81w2rTVShlL.jpg",
+              "height": 2560,
+              "width": 2560
+            },
+            {
+              "variant": "PT01",
+              "link": "https://m.media-amazon.com/images/I/41Px9eq9tkL.jpg",
+              "height": 500,
+              "width": 500
+            },
+            {
+              "variant": "PT02",
+              "link": "https://m.media-amazon.com/images/I/51NTNhdhPyL.jpg",
+              "height": 375,
+              "width": 500
+            },
+            {
+              "variant": "PT03",
+              "link": "https://m.media-amazon.com/images/I/51o4zpL+A3L.jpg",
+              "height": 375,
+              "width": 500
+            },
+            {
+              "variant": "PT04",
+              "link": "https://m.media-amazon.com/images/I/71ux2k9GAZL.jpg",
+              "height": 1000,
+              "width": 1000
+            },
+            {
+              "variant": "PT04",
+              "link": "https://m.media-amazon.com/images/I/61UUX63yw1L.jpg",
+              "height": 500,
+              "width": 500
+            },
+            {
+              "variant": "PT05",
+              "link": "https://m.media-amazon.com/images/I/61LwHkljX-L.jpg",
+              "height": 1000,
+              "width": 1000
+            },
+            {
+              "variant": "PT05",
+              "link": "https://m.media-amazon.com/images/I/51wJTQty3PL.jpg",
+              "height": 500,
+              "width": 500
+            },
+            {
+              "variant": "PT06",
+              "link": "https://m.media-amazon.com/images/I/61uvoB4VvoL.jpg",
+              "height": 1000,
+              "width": 1000
+            },
+            {
+              "variant": "PT06",
+              "link": "https://m.media-amazon.com/images/I/51ZexIO628L.jpg",
+              "height": 500,
+              "width": 500
+            },
+            {
+              "variant": "PT07",
+              "link": "https://m.media-amazon.com/images/I/7121MGd2ncL.jpg",
+              "height": 1000,
+              "width": 1000
+            },
+            {
+              "variant": "PT07",
+              "link": "https://m.media-amazon.com/images/I/61QK+JBMrGL.jpg",
+              "height": 500,
+              "width": 500
+            },
+            {
+              "variant": "PT08",
+              "link": "https://m.media-amazon.com/images/I/61ECcGlG4IL.jpg",
+              "height": 1080,
+              "width": 1920
+            },
+            {
+              "variant": "PT08",
+              "link": "https://m.media-amazon.com/images/I/31TxwfqvB5L.jpg",
+              "height": 281,
+              "width": 500
+            }
+          ]
+        }
+      ],
+      "productTypes": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "productType": "TELEVISION"
+        }
+      ],
+      "salesRanks": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "classificationRanks": [
+            {
+              "classificationId": "21489946011",
+              "title": "QLED TVs",
+              "link": "http://www.amazon.com/gp/bestsellers/electronics/21489946011",
+              "rank": 113
+            }
+          ],
+          "displayGroupRanks": [
+            {
+              "websiteDisplayGroup": "ce_display_on_website",
+              "title": "Electronics",
+              "link": "http://www.amazon.com/gp/bestsellers/electronics",
+              "rank": 72855
+            }
+          ]
+        }
+      ],
+      "summaries": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "brand": "SAMSUNG",
+          "browseClassification": {
+            "displayName": "QLED TVs",
+            "classificationId": "21489946011"
+          },
+          "color": "Black",
+          "itemClassification": "BASE_PRODUCT",
+          "itemName": "Samsung QN82Q60RAFXZA Flat 82-Inch QLED 4K Q60 Series (2019) Ultra HD Smart TV with HDR and Alexa Compatibility",
+          "manufacturer": "Samsung",
+          "modelNumber": "QN82Q60RAFXZA",
+          "packageQuantity": 1,
+          "partNumber": "QN82Q60RAFXZA",
+          "size": "82-Inch",
+          "style": "TV only",
+          "websiteDisplayGroup": "home_theater_display_on_website",
+          "websiteDisplayGroupName": "Home Theater"
+        }
+      ],
+      "relationships": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "relationships": [
+            {
+              "type": "VARIATION",
+              "parentAsins": [
+                "B08J7TQ9FL"
+              ],
+              "variationTheme": {
+                "attributes": [
+                  "color",
+                  "size"
+                ],
+                "theme": "SIZE_NAME/COLOR_NAME"
+              }
+            }
+          ]
+        }
+      ],
+      "vendorDetails": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "brandCode": "SAMF9",
+          "manufacturerCode": "SAMF9",
+          "manufacturerCodeParent": "SAMF9",
+          "productCategory": {
+            "displayName": "Televisions",
+            "value": "50400100"
+          },
+          "productGroup": "Home Entertainment",
+          "productSubcategory": {
+            "displayName": "Plasma TVs",
+            "value": "50400120"
+          },
+          "replenishmentCategory": "OBSOLETE"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/catalog-items-api-model/catalogItems_2022-04-01.json",
+    "domain": "catalog-items",
+    "path": "/catalog/2022-04-01/items/{asin}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "asin": {
+          "value": ""
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "classifications",
+            "dimensions",
+            "identifiers",
+            "images",
+            "productTypes",
+            "relationships",
+            "salesRanks",
+            "summaries",
+            "vendorDetails"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  }
+]

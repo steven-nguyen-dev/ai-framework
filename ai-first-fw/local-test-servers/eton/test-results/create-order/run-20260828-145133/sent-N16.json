@@ -1,0 +1,48 @@
+{
+  "event_parameters": {
+    "seller_code": "SSIN10000007004",
+    "seller_id": "7004",
+    "store_id": "16643",
+    "warehouse_code": "eton",
+    "store_code": "SS0000016643",
+    "store_name": "Shopee Store",
+    "zone_id": 1,
+    "event_name": "order_creation",
+    "marketplace_code": "shopee_vn"
+  },
+  "data": {
+    "order_id": "92000016",
+    "order_number": "SO-ETON-CO-N16-NO-ADDRESS",
+    "marketplace_code": "shopee_vn",
+    "seller_currency": "VND",
+    "order_date": "2026-08-14T10:00:00Z",
+    "payment_method": "COD",
+    "is_cod": true,
+    "shipping_method": "Standard",
+    "customer_first_name": "Nguyen",
+    "customer_last_name": "Van A",
+    "customer_email": "customer@example.com",
+    "customer_phone_number": "0900000000",
+    "billing_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "12 Nguyen Hue",
+      "city": "Ho Chi Minh",
+      "state": "HCM",
+      "postcode": "700000",
+      "country": "VN",
+      "phone": "0900000000"
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200116,
+        "name": "Combo Tra Oolong Cau Tre",
+        "sku": "1025377_CB3",
+        "inventory_sku": "SKU-ETON-001",
+        "item_price": "105000.0",
+        "paid_price": "92850.0",
+        "quantity": 1
+      }
+    ]
+  }
+}

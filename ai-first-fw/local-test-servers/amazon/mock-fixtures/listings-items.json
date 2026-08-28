@@ -1,0 +1,923 @@
+[
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2020-09-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2020-09-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "summaries": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "asin": "B071VG5N9D",
+          "productType": "LUGGAGE",
+          "conditionType": "new_new",
+          "status": [
+            "BUYABLE"
+          ],
+          "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+          "createdDate": "2021-02-01T00:00:00Z",
+          "lastUpdatedDate": "2021-03-01T00:00:00Z",
+          "mainImage": {
+            "link": "https://www.example.com/luggage.png",
+            "height": 500,
+            "width": 500
+          }
+        },
+        {
+          "marketplaceId": "A2EUQ1WTGCTBG2",
+          "asin": "B071VG5N9D",
+          "productType": "LUGGAGE",
+          "conditionType": "new_new",
+          "status": [],
+          "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+          "createdDate": "2021-02-02T01:00:00Z",
+          "lastUpdatedDate": "2021-03-05T00:00:00Z",
+          "mainImage": {
+            "link": "https://www.example.com/luggage.png",
+            "height": 500,
+            "width": 500
+          }
+        }
+      ],
+      "offers": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "offerType": "B2C",
+          "price": {
+            "currencyCode": "USD",
+            "amount": "100.00"
+          },
+          "audience": {
+            "value": "ALL",
+            "displayName": "Sell on Amazon"
+          }
+        },
+        {
+          "marketplaceId": "A2EUQ1WTGCTBG2",
+          "offerType": "B2C",
+          "price": {
+            "currencyCode": "CAD",
+            "amount": "130.00"
+          },
+          "audience": {
+            "value": "ALL",
+            "displayName": "Sell on Amazon"
+          }
+        }
+      ],
+      "fulfillmentAvailability": [
+        {
+          "fulfillmentChannelCode": "DEFAULT",
+          "quantity": 100
+        }
+      ],
+      "issues": [
+        {
+          "code": "90220",
+          "message": "'size' is required but not supplied.",
+          "severity": "ERROR",
+          "attributeNames": [
+            "size"
+          ],
+          "categories": [
+            "MISSING_ATTRIBUTE",
+            "LISTING"
+          ],
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        {
+          "code": "18027",
+          "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+          "severity": "ERROR",
+          "categories": [
+            "INVALID_IMAGE",
+            "LISTING"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "SEARCH_SUPPRESSED"
+              }
+            ],
+            "exemption": {
+              "status": "EXEMPT_UNTIL_EXPIRY_DATE",
+              "expiryDate": "2025-05-28T00:36:48.914Z"
+            }
+          },
+          "marketplaceIds": [
+            "ATVPDKIKX0DER",
+            "A2EUQ1WTGCTBG2"
+          ]
+        },
+        {
+          "code": "99300",
+          "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
+          "severity": "ERROR",
+          "categories": [
+            "PRODUCT"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "ATTRIBUTE_SUPPRESSED"
+              }
+            ],
+            "exemption": {
+              "status": "EXEMPT"
+            }
+          },
+          "marketplaceIds": [
+            "ATVPDKIKX0DER",
+            "A2EUQ1WTGCTBG2"
+          ]
+        },
+        {
+          "code": "18155",
+          "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
+          "severity": "ERROR",
+          "categories": [
+            "INVALID_PRICE",
+            "LISTING"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "LISTING_SUPPRESSED"
+              }
+            ],
+            "exemption": {
+              "status": "NOT_EXEMPT"
+            }
+          },
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        {
+          "code": "18742",
+          "message": "Restricted Products Policy Violation",
+          "severity": "ERROR",
+          "categories": [
+            "PRODUCT"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "CATALOG_ITEM_REMOVED"
+              }
+            ],
+            "exemption": {
+              "status": "NOT_EXEMPT"
+            }
+          },
+          "marketplaceIds": [
+            "ATVPDKIKX0DER"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "VALIDATION_VALID"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "identifiers",
+            "issues"
+          ]
+        },
+        "mode": {
+          "value": "VALIDATION_PREVIEW"
+        }
+      }
+    },
+    "response": {
+      "sku": "VALIDATION_VALID",
+      "status": "VALID",
+      "submissionId": "1edc94ea-a3d7-210b-42bc-0ec72c1384762",
+      "identifiers": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "asin": "B07N4M94X4"
+        }
+      ],
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "VALIDATION_INVALID"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "identifiers",
+            "issues"
+          ]
+        },
+        "mode": {
+          "value": "VALIDATION_PREVIEW"
+        }
+      }
+    },
+    "response": {
+      "sku": "VALIDATION_INVALID",
+      "status": "INVALID",
+      "submissionId": "a1c562c2-1695-11ee-be56-0242ac120002",
+      "identifiers": [],
+      "issues": [
+        {
+          "code": "90000900",
+          "message": "The attributes are invalid.",
+          "severity": "ERROR",
+          "attributeNames": [
+            "fake_attribute"
+          ],
+          "categories": [
+            "INVALID_ATTRIBUTE",
+            "LISTING"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "ATTRIBUTE_SUPPRESSED"
+              }
+            ],
+            "exemption": {
+              "status": "NOT_EXEMPT"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "sku": "GM-ZDPI-9B4E",
+      "status": "ACCEPTED",
+      "submissionId": "f1dc2914-75dd-11ea-bc55-0242ac130003",
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "VALIDATION_VALID"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "identifiers",
+            "issues"
+          ]
+        },
+        "mode": {
+          "value": "VALIDATION_PREVIEW"
+        }
+      }
+    },
+    "response": {
+      "sku": "VALIDATION_VALID",
+      "status": "VALID",
+      "submissionId": "1edc94ea-a3d7-210b-42bc-0ec72c1384762",
+      "identifiers": [
+        {
+          "marketplaceId": "ATVPDKIKX0DER",
+          "asin": "B07N4M94X4"
+        }
+      ],
+      "issues": []
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "VALIDATION_INVALID"
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "identifiers",
+            "issues"
+          ]
+        },
+        "mode": {
+          "value": "VALIDATION_PREVIEW"
+        }
+      }
+    },
+    "response": {
+      "sku": "VALIDATION_INVALID",
+      "status": "INVALID",
+      "submissionId": "a1c562c2-1695-11ee-be56-0242ac120002",
+      "identifiers": [],
+      "issues": [
+        {
+          "code": "90220",
+          "message": "'condition_type' is required but not supplied.",
+          "severity": "ERROR",
+          "attributeNames": [
+            "condition_type"
+          ],
+          "categories": [
+            "MISSING_ATTRIBUTE",
+            "LISTING"
+          ],
+          "enforcements": {
+            "actions": [
+              {
+                "action": "LISTING_SUPPRESSED"
+              }
+            ],
+            "exemption": {
+              "status": "NOT_EXEMPT"
+            }
+          }
+        },
+        {
+          "code": "90000900",
+          "message": "The attributes are invalid.",
+          "severity": "ERROR",
+          "attributeNames": [
+            "fake_attribute"
+          ],
+          "categories": [
+            "LISTING"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}/{sku}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sku": {
+          "value": "BadSKU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "identifiersType": {
+          "value": "SKU"
+        },
+        "identifiers": {
+          "value": [
+            "GM-ZDPI-9B4E",
+            "HW-ZDPI-9B4E",
+            "TC-ZDPI-9B4E"
+          ]
+        },
+        "marketplaceIds": {
+          "value": [
+            "ATVPDKIKX0DER",
+            "A2EUQ1WTGCTBG2"
+          ]
+        },
+        "includedData": {
+          "value": [
+            "summaries",
+            "offers",
+            "fulfillmentAvailability",
+            "issues"
+          ]
+        },
+        "pageSize": {
+          "value": 1
+        }
+      }
+    },
+    "response": {
+      "numberOfResults": 3,
+      "pagination": {
+        "nextToken": "xsdflkj324lkjsdlkj3423klkjsdfkljlk2j34klj2l3k4jlksdjl234",
+        "previousToken": "ilkjsdflkj234lkjds234234lkjl234lksjdflkj234234lkjsfsdflkj333d"
+      },
+      "items": [
+        {
+          "sku": "GM-ZDPI-9B4E",
+          "summaries": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "asin": "B071VG5N9D",
+              "productType": "LUGGAGE",
+              "conditionType": "new_new",
+              "status": [
+                "BUYABLE"
+              ],
+              "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+              "createdDate": "2021-02-01T00:00:00Z",
+              "lastUpdatedDate": "2021-03-01T00:00:00Z",
+              "mainImage": {
+                "link": "https://www.example.com/luggage.png",
+                "height": 500,
+                "width": 500
+              }
+            },
+            {
+              "marketplaceId": "A2EUQ1WTGCTBG2",
+              "asin": "B071VG5N9D",
+              "productType": "LUGGAGE",
+              "conditionType": "new_new",
+              "status": [],
+              "itemName": "Hardside Carry-On Spinner Suitcase Luggage",
+              "createdDate": "2021-02-02T01:00:00Z",
+              "lastUpdatedDate": "2021-03-05T00:00:00Z",
+              "mainImage": {
+                "link": "https://www.example.com/luggage.png",
+                "height": 500,
+                "width": 500
+              }
+            }
+          ],
+          "offers": [
+            {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "offerType": "B2C",
+              "price": {
+                "currencyCode": "USD",
+                "amount": "100.00"
+              }
+            },
+            {
+              "marketplaceId": "A2EUQ1WTGCTBG2",
+              "offerType": "B2C",
+              "price": {
+                "currencyCode": "CAD",
+                "amount": "130.00"
+              }
+            }
+          ],
+          "fulfillmentAvailability": [
+            {
+              "fulfillmentChannelCode": "DEFAULT",
+              "quantity": 100
+            }
+          ],
+          "issues": [
+            {
+              "code": "90220",
+              "message": "'size' is required but not supplied.",
+              "severity": "ERROR",
+              "attributeNames": [
+                "size"
+              ],
+              "categories": [
+                "MISSING_ATTRIBUTE",
+                "LISTING"
+              ],
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ]
+            },
+            {
+              "code": "18027",
+              "message": "We believe the main image has text, logo, graphic, or watermark that is not permitted for this product type. Submit a compliant image to lift the suppression. Also refer to Product image requirements.",
+              "severity": "ERROR",
+              "categories": [
+                "INVALID_IMAGE",
+                "LISTING"
+              ],
+              "enforcements": {
+                "actions": [
+                  {
+                    "action": "SEARCH_SUPPRESSED"
+                  }
+                ],
+                "exemption": {
+                  "status": "EXEMPT_UNTIL_EXPIRY_DATE",
+                  "expiryDate": "2025-05-28T00:36:48.914Z"
+                }
+              },
+              "marketplaceIds": [
+                "ATVPDKIKX0DER",
+                "A2EUQ1WTGCTBG2"
+              ]
+            },
+            {
+              "code": "99300",
+              "message": "Product Detail Page Rules Violation (Inaccurate information on product detail page).",
+              "severity": "ERROR",
+              "categories": [
+                "PRODUCT"
+              ],
+              "enforcements": {
+                "actions": [
+                  {
+                    "action": "ATTRIBUTE_SUPPRESSED"
+                  }
+                ],
+                "exemption": {
+                  "status": "EXEMPT"
+                }
+              },
+              "marketplaceIds": [
+                "ATVPDKIKX0DER",
+                "A2EUQ1WTGCTBG2"
+              ]
+            },
+            {
+              "code": "18155",
+              "message": "The 'minimum price' is greater than the selling price (excluding shipping) for the listing. Review and update your price and/or minimum price.",
+              "severity": "ERROR",
+              "categories": [
+                "INVALID_PRICE",
+                "LISTING"
+              ],
+              "enforcements": {
+                "actions": [
+                  {
+                    "action": "LISTING_SUPPRESSED"
+                  }
+                ],
+                "exemption": {
+                  "status": "NOT_EXEMPT"
+                }
+              },
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ]
+            },
+            {
+              "code": "18742",
+              "message": "Restricted Products Policy Violation",
+              "severity": "ERROR",
+              "categories": [
+                "PRODUCT"
+              ],
+              "enforcements": {
+                "actions": [
+                  {
+                    "action": "CATALOG_ITEM_REMOVED"
+                  }
+                ],
+                "exemption": {
+                  "status": "NOT_EXEMPT"
+                }
+              },
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/listings-items-api-model/listingsItems_2021-08-01.json",
+    "domain": "listings-items",
+    "path": "/listings/2021-08-01/items/{sellerId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sellerId": {
+          "value": "SellerId"
+        },
+        "marketplaceIds": {
+          "value": [
+            "invalid"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input",
+          "details": "Invalid input"
+        }
+      ]
+    }
+  }
+]

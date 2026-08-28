@@ -45,8 +45,8 @@ output live, and reloads the results when it finishes.
 
 ```jsonc
 "test_suites": [
-  { "id":          "flow2",
-    "name":        "createOrder flow 2",
+  { "id":          "create-order",
+    "name":        "createOrder",
     "description": "OMS -> partner, 17 cases",
     "estimate":    "~6 min, or ~90s fast",
     "command":     ["python3", "./suite-<name>.py"],
@@ -73,7 +73,7 @@ the browser at all.
 
 ```jsonc
 {
-  "name":     "createOrder flow 2 (OMS -> partner)",
+  "name":     "createOrder (OMS -> partner)",
   "at":       "2026-08-14T03:47:19Z",
   "summary":  { "pass": 15, "fail": 1, "blocked": 1 },
   "evidence": { "status": "complete", "mock log": "captured",
@@ -146,11 +146,11 @@ How to write one, the check vocabulary, and what each escape hatch costs:
 [`suite/README.md`](suite/README.md). Start from [`TEMPLATE.py`](suite/TEMPLATE.py) beside it.
 
 ```bash
-python3 eton/suite-flow2.py                  # every case
-python3 eton/suite-flow2.py --fast           # skip the cases that only wait out a backoff
-python3 eton/suite-flow2.py N1 K1 K4         # only the cases named
-python3 eton/suite-flow2.py --list           # the cases and what each expects
-python3 eton/suite-flow2.py --judge <run>    # re-score a folder, fire nothing
+python3 eton/suite-create-order.py                  # every case
+python3 eton/suite-create-order.py --fast           # skip the cases that only wait out a backoff
+python3 eton/suite-create-order.py N1 K1 K4         # only the cases named
+python3 eton/suite-create-order.py --list           # the cases and what each expects
+python3 eton/suite-create-order.py --judge <run>    # re-score a folder, fire nothing
 python3 suite/selftest.py                    # the engine itself, no app or mock needed
 ```
 
@@ -214,13 +214,13 @@ A runner is any executable. To behave well on the page it should:
 
 ## Reference implementation
 
-[`eton/suite-flow2.py`](eton/suite-flow2.py) is the worked example, and the
+[`eton/suite-create-order.py`](eton/suite-create-order.py) is the worked example, and the
 only file its suite has: 17 cases fired at the JPluger controller and judged against the Eton
 mock's call log, the `orders` table and the `pushUnsynchronizedOrder` queue. It carries every part
 of the engine — two call groups, a checklist of seven, mock stores, a database dump and reset, a
 queue watched before and after, a seed preflight that names the schema actually holding the fixture,
 and a case marked `blocked` under a documented gap. Runs land in
-`eton/test-results/flow2/run-<timestamp>/`. See [eton/README.md](eton/README.md).
+`eton/test-results/create-order/run-<timestamp>/`. See [eton/README.md](eton/README.md).
 
 The engine behind it is `suite/`, and what each of its files decides is listed in
 [its README](suite/README.md).

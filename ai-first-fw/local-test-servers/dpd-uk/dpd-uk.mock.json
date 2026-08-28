@@ -1,0 +1,359 @@
+{
+  "name": "DPD UK Shipping API",
+  "port": 23102,
+  "spec": "dpd-uk-openapi.json",
+  "state_dir": "mock-data",
+  "log_file": "api-calls.har.json",
+  "log_format": "har",
+  "log_redact_headers": ["authorization", "cookie", "geosession"],
+  "test_results_dir": "test-results",
+
+  "_comment": "Stands in for api.dpd.co.uk so carrier-integrations/dpdUK-integration can be driven end to end. Behaviour is keyed off consignment[0].consignmentRef, which DpdUKUtility sets from data.order_number, so one marker in the order number steers the whole shipment. Matching is case-insensitive. Every operation not configured here is answered from dpd-uk-openapi.json's own example.",
+
+  "test_suites": [
+    {
+      "id": "ni-shipment",
+      "name": "Northern Ireland shipment",
+      "description": "warehouse -> JPluger -> DPD UK, 37 cases (IA-4752 3.1-3.9, refusals, GeoSession)",
+      "estimate": "~2 min",
+      "command": ["python3", "dpd-uk/suite-ni-shipment.py"]
+    }
+  ],
+
+  "stores": {
+    "logins": {
+      "file": "logins.json",
+      "type": "list",
+      "_comment": "One entry per GeoSession issued. DpdUKGeoSessionCache keeps a session for 23 hours per seller and carrier, so a run that fires many orders should appear here once -- more entries than that means the cache is not holding."
+    },
+    "shipments": {
+      "file": "shipments.json",
+      "type": "list",
+      "_comment": "Every shipment request received, accepted or refused, so the mapping can be read back by hand without opening the HAR."
+    },
+    "session_refused": {
+      "file": "session_refused.json",
+      "type": "set",
+      "_comment": "Order numbers this mock has already answered 401 once. DPD can drop a GeoSession before its validity limit; the integration is meant to renew it and send the shipment again, and that second attempt must succeed. Without this store the replay is answered 401 forever and the retry looks broken."
+    }
+  },
+
+  "routes": [
+    {
+      "_comment": "Authentication is not simulated -- the Authorization header is never checked. This route exists only so DpdUKCarrierService.authenticateWithDpd can obtain a GeoSession.",
+      "path": "/user/",
+      "method": "POST",
+      "name": "login accepted, GeoSession issued",
+      "then": [
+        { "append": { "store": "logins", "entry": { "issued": "GEOSESSION-LOCAL-0000000001" } } }
+      ],
+      "respond": {
+        "status": 200,
+        "body": { "error": null, "data": { "geoSession": "GEOSESSION-LOCAL-0000000001" } }
+      }
+    },
+
+    {
+      "path": "/shipping/shipment",
+      "method": "POST",
+      "name": "no marker -- shipment created, 200, one parcel number",
+      "before": [
+        {
+          "_comment": "Recorded before any rule answers, so a refused shipment is still inspectable.",
+          "append": {
+            "store": "shipments",
+            "entry": {
+              "consignmentRef": "${body.consignment.0.consignmentRef}",
+              "networkCode": "${body.consignment.0.networkCode}",
+              "generateCustomsData": "${body.generateCustomsData}",
+              "body": "${body}"
+            }
+          }
+        }
+      ],
+      "rules": [
+        {
+          "_comment": "The first attempt for this order is refused; the retry after DpdUKGeoSessionCache.refresh is not. isUnauthorized() compares against 401, so that is what is answered here.",
+          "name": "GeoSession refused once -- the retry with a renewed session succeeds",
+          "when": {
+            "all": [
+              { "body.consignment.0.consignmentRef": { "contains": "SESSIONEXPIRED" } },
+              { "body.consignment.0.consignmentRef": { "not_in_store": "session_refused" } }
+            ]
+          },
+          "then": [
+            { "record": { "store": "session_refused", "values": ["${body.consignment.0.consignmentRef}"] } }
+          ],
+          "respond": {
+            "status": 401,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "403",
+                  "obj": "GeoSession",
+                  "errorType": "authentication",
+                  "errorMessage": "A GeoSession header was not found or is invalid",
+                  "errorAction": "reauthenticate"
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "name": "GeoSession refused every time -- the integration gives up after one renewal",
+          "when": { "body.consignment.0.consignmentRef": { "contains": "SESSIONDEAD" } },
+          "respond": {
+            "status": 401,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "403",
+                  "obj": "GeoSession",
+                  "errorType": "authentication",
+                  "errorMessage": "A GeoSession header was not found or is invalid",
+                  "errorAction": "reauthenticate"
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "_comment": "OFF BY DEFAULT. The specification documents 403 -- not 401 -- for a GeoSession that was not found or is invalid (page 14). DpdUKCarrierService.isUnauthorized compares against 401 alone, so under a 403 the session is never renewed and the shipment fails on the first attempt. Turn this on to prove that gap; leave it off to exercise the renewal.",
+          "name": "GeoSession refused with the documented 403 -- no renewal happens",
+          "enabled": false,
+          "when": { "body.consignment.0.consignmentRef": { "contains": "SESSIONEXPIRED" } },
+          "respond": {
+            "status": 403,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "403",
+                  "obj": "GeoSession",
+                  "errorType": "authentication",
+                  "errorMessage": "A GeoSession header was not found or is invalid",
+                  "errorAction": "reauthenticate"
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "_comment": "DPD answers 200 with a populated error array for a rejected shipment, which is the branch DpdUKCarrierService reads as failure (2xx and error == null is its only success).",
+          "name": "account on stop -- 1014, application error",
+          "when": { "body.consignment.0.consignmentRef": { "contains": "ONSTOP" } },
+          "respond": {
+            "status": 200,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "1014",
+                  "obj": "account",
+                  "errorType": "application",
+                  "errorMessage": "Account on stop",
+                  "errorAction": "contact your account manager"
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "name": "invalid postcode -- 1009, validation error",
+          "when": { "body.consignment.0.consignmentRef": { "contains": "BADPOSTCODE" } },
+          "respond": {
+            "status": 200,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "1009",
+                  "obj": "deliveryDetails.address.postcode",
+                  "errorType": "validation",
+                  "errorMessage": "Invalid postcode value",
+                  "errorAction": null
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "_comment": "What the specification's field tables oblige once customs data is declared, i.e. the whole Northern Ireland route. Written down here so the mock refuses what DPD would refuse: the tables are prose no generator reads. A shipment that carries no customs data -- a UK domestic one -- is not held to any of it. The integration satisfies this rule today; a hand-written payload or a regression in DpdUKUtility.createOrderOnDPDUK is what trips it.",
+          "name": "validation failed (documented customs obligations)",
+          "enabled": true,
+          "validate": {
+            "required_when": [
+              {
+                "when": { "body.generateCustomsData": { "equals": "Y" } },
+                "fields": [
+                  "invoice",
+                  "invoice.invoiceType",
+                  "invoice.invoiceTermsOfDelivery",
+                  "invoice.invoiceExportReason",
+                  "invoice.invoiceShipperDetails.eoriNumber",
+                  "invoice.invoiceShipperDetails.address.countryCode",
+                  "invoice.invoiceShipperDetails.address.postcode",
+                  "invoice.invoiceShipperDetails.address.street",
+                  "invoice.invoiceShipperDetails.address.town",
+                  "invoice.invoiceDeliveryDetails.address.countryCode",
+                  "invoice.invoiceDeliveryDetails.address.postcode",
+                  "invoice.invoiceDeliveryDetails.address.street",
+                  "invoice.invoiceDeliveryDetails.address.town",
+                  "consignment[*].customsValue",
+                  "consignment[*].customsCurrency",
+                  "consignment[*].parcel[*].parcelProduct[*].productHarmonisedCode",
+                  "consignment[*].parcel[*].parcelProduct[*].countryOfOrigin",
+                  "consignment[*].parcel[*].parcelProduct[*].unitValue",
+                  "consignment[*].parcel[*].parcelProduct[*].unitWeight",
+                  "consignment[*].parcel[*].parcelProduct[*].numberOfItems"
+                ],
+                "because": "required once generateCustomsData is Y"
+              },
+              {
+                "_comment": "The receiver's classification is a Windsor Framework field, so it is obliged on the Northern Ireland route and nowhere else -- an international shipment declares customs data and carries no classification at all. A BT destination postcode is what DPD itself separates the two on.",
+                "when": {
+                  "all": [
+                    { "body.generateCustomsData": { "equals": "Y" } },
+                    { "body.consignment.0.deliveryDetails.address.postcode": { "starts_with": "BT" } }
+                  ]
+                },
+                "fields": ["invoice.invoiceDeliveryDetails.isBusiness"],
+                "because": "required on a Northern Ireland shipment"
+              }
+            ],
+            "required": [
+              "collectionDate",
+              "consignment[*].networkCode",
+              "consignment[*].numberOfParcels",
+              "consignment[*].totalWeight",
+              "consignment[*].collectionDetails.address.postcode",
+              "consignment[*].deliveryDetails.address.postcode"
+            ],
+            "non_empty": ["consignment"],
+            "max_length": {
+              "consignment[*].parcelDescription": 41,
+              "consignment[*].shippingRef1": 25,
+              "consignment[*].deliveryInstructions": 50,
+              "invoice.invoiceReference": 30
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "1007",
+                  "obj": "shipment",
+                  "errorType": "validation",
+                  "errorMessage": "${validation.summary}",
+                  "errorAction": null
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "_comment": "OFF BY DEFAULT. Error 1002 for collectionDate reads 'Incorrect date format YYYY-MM-DD', and every collectionDate in the specification is a second-precision local datetime -- 2024-05-15T09:00:00. DpdUKUtility.collectionDateMapping formats with SELLUSELLER_DATE_FORMAT, yyyy-MM-dd'T'HH:mm:ss.SSS'Z', so it sends milliseconds and a zone marker the documentation never shows. Whether DPD accepts that is a question for DPD; the rule is written down so it can be switched on the moment it is settled.",
+          "name": "validation failed (collectionDate carries milliseconds and a zone)",
+          "enabled": false,
+          "when": {
+            "not": { "body.collectionDate": { "matches": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$" } }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "error": [
+                {
+                  "errorCode": "1002",
+                  "obj": "collectionDate",
+                  "errorType": "validation",
+                  "errorMessage": "Incorrect date format YYYY-MM-DD, received ${body.collectionDate}",
+                  "errorAction": null
+                }
+              ],
+              "data": null
+            }
+          }
+        },
+        {
+          "_comment": "DPD issues one parcel number per parcel, and DpdUKCarrierService reads parcelNumbers by index while it splits the label PDF. The mock cannot count, so the two-package shape is answered by its own rule.",
+          "name": "shipment created, two parcels",
+          "when": { "body.consignment.0.numberOfParcels": { "equals": 2 } },
+          "respond": {
+            "status": 200,
+            "body": {
+              "error": null,
+              "data": {
+                "shipmentId": "SHP-${body.consignment.0.consignmentRef}",
+                "consolidated": false,
+                "consignmentDetail": [
+                  {
+                    "consignmentNumber": "1999236263",
+                    "parcelNumbers": ["15501999236263", "15501999236264"]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "body": {
+          "error": null,
+          "data": {
+            "shipmentId": "SHP-${body.consignment.0.consignmentRef}",
+            "consolidated": false,
+            "consignmentDetail": [
+              {
+                "consignmentNumber": "1999236263",
+                "parcelNumbers": ["15501999236263"]
+              }
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "_comment": "The label is the print string itself, not JSON, so the Accept header alone chooses the format. shipmentId echoes the order number back -- see README, 'What the mock does that DPD does not'.",
+      "path": "/shipping/shipment/{shipmentId}/label/",
+      "method": "GET",
+      "name": "HTML label -- what wkhtmltopdf is handed",
+      "rules": [
+        {
+          "_comment": "DPD returns one label page per parcel and DpdUKCarrierService splits the converted PDF on that count. The mock cannot see the shipment it is labelling, so the two-parcel shape is recognised by the order number the shipmentId carries.",
+          "name": "HTML label, two pages -- one per parcel",
+          "when": {
+            "all": [
+              { "path.shipmentId": { "contains": "2PKG" } },
+              { "header.accept": { "not_contains": "citizen-clp" } }
+            ]
+          },
+          "respond": {
+            "status": 200,
+            "headers": { "Content-Type": "text/html" },
+            "body": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}.p{page-break-after:always}</style></head><body><div class=\"p\"><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment ${path.shipmentId} parcel 1 of 2</div><div>BELFAST BT1 1DA</div></div><div><div>DPD UK</div><div class=\"n\">15501999236264</div><div>Shipment ${path.shipmentId} parcel 2 of 2</div><div>BELFAST BT1 1DA</div></div></body></html>"
+          }
+        },
+        {
+          "name": "Citizen CLP label -- the thermal print string",
+          "when": { "header.accept": { "contains": "citizen-clp" } },
+          "respond": {
+            "status": 200,
+            "headers": { "Content-Type": "text/vnd.citizen-clp" },
+            "body": "! 0 200 200 406 1\r\nPW 799\r\nTONE 0\r\nSPEED 5\r\nCENTER\r\nT 4 0 0 30 DPD ${path.shipmentId}\r\nB QR 250 120 M 2 U 6\r\nMA,${path.shipmentId}\r\nENDQR\r\nT 4 0 0 330 15501999236263\r\nFORM\r\nPRINT\r\n"
+          }
+        }
+      ],
+      "respond": {
+        "status": 200,
+        "headers": { "Content-Type": "text/html" },
+        "body": "<html><head><style>@page{size:A6}body{font-family:sans-serif;margin:6mm}.n{font-size:22pt;letter-spacing:2px}</style></head><body><div>DPD UK</div><div class=\"n\">15501999236263</div><div>Shipment ${path.shipmentId}</div><div>BELFAST BT1 1DA</div></body></html>"
+      }
+    }
+  ]
+}

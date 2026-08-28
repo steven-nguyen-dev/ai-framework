@@ -1,0 +1,4148 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "Amazon SP-API",
+      "version": "1.0"
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-08-26T14:09:07.808Z",
+        "time": 0.865,
+        "_seq": 1,
+        "_rule": "token issued -- 200 LWA bearer token",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/auth/o2/token' -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'grant_type=refresh_token&refresh_token=rws_valid_seller_refresh_token_12345&client_id=amzn1.application-oa2-client.test12345&client_secret=amzn_secret_key_67890'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/auth/o2/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "160"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/x-www-form-urlencoded",
+            "text": "grant_type=refresh_token&refresh_token=rws_valid_seller_refresh_token_12345&client_id=amzn1.application-oa2-client.test12345&client_secret=amzn_secret_key_67890",
+            "_json": null
+          },
+          "headersSize": -1,
+          "bodySize": 160
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 164,
+            "mimeType": "application/json",
+            "text": "{\"access_token\": \"Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"rws_mock_refresh_token_12345\"}",
+            "_json": {
+              "access_token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890",
+              "token_type": "bearer",
+              "expires_in": 3600,
+              "refresh_token": "rws_mock_refresh_token_12345"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 164
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.865,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.811Z",
+        "time": 0.061,
+        "_seq": 2,
+        "_rule": "400 -- invalid credentials or refresh token",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/auth/o2/token' -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'grant_type=refresh_token&refresh_token=INVALID_REFRESH_TOKEN&client_id=amzn1.application-oa2-client.test12345&client_secret=INVALID_SECRET'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/auth/o2/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "138"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/x-www-form-urlencoded",
+            "text": "grant_type=refresh_token&refresh_token=INVALID_REFRESH_TOKEN&client_id=amzn1.application-oa2-client.test12345&client_secret=INVALID_SECRET",
+            "_json": null
+          },
+          "headersSize": -1,
+          "bodySize": 138
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 102,
+            "mimeType": "application/json",
+            "text": "{\"error\": \"invalid_grant\", \"error_description\": \"The client credentials or refresh token is invalid.\"}",
+            "_json": {
+              "error": "invalid_grant",
+              "error_description": "The client credentials or refresh token is invalid."
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 102
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.061,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.813Z",
+        "time": 0.047,
+        "_seq": 3,
+        "_rule": "500 -- server error marker",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/auth/o2/token' -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'grant_type=refresh_token&refresh_token=SERVERERROR_TRIGGER&client_id=amzn1.application-oa2-client.SERVERERROR&client_secret=secret'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/auth/o2/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "130"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/x-www-form-urlencoded",
+            "text": "grant_type=refresh_token&refresh_token=SERVERERROR_TRIGGER&client_id=amzn1.application-oa2-client.SERVERERROR&client_secret=secret",
+            "_json": null
+          },
+          "headersSize": -1,
+          "bodySize": 130
+        },
+        "response": {
+          "status": 500,
+          "statusText": "Internal Server Error",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 112,
+            "mimeType": "application/json",
+            "text": "{\"error\": \"server_error\", \"error_description\": \"Internal server error occurred while processing token request.\"}",
+            "_json": {
+              "error": "server_error",
+              "error_description": "Internal server error occurred while processing token request."
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 112
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.814Z",
+        "time": 0.051,
+        "_seq": 4,
+        "_rule": "RDT issued -- 200 Restricted Data Token",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/tokens/2021-03-01/restrictedDataToken' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"targetApplication\": \"amzn1.sp.solution.123456\", \"restrictedResources\": [{\"method\": \"GET\", \"path\": \"/orders/v0/orders/{orderId}/address\", \"dataElements\": [\"buyerInfo\", \"shippingAddress\"]}]}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/tokens/2021-03-01/restrictedDataToken",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "190"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"targetApplication\": \"amzn1.sp.solution.123456\", \"restrictedResources\": [{\"method\": \"GET\", \"path\": \"/orders/v0/orders/{orderId}/address\", \"dataElements\": [\"buyerInfo\", \"shippingAddress\"]}]}",
+            "_json": {
+              "targetApplication": "amzn1.sp.solution.123456",
+              "restrictedResources": [
+                {
+                  "method": "GET",
+                  "path": "/orders/v0/orders/{orderId}/address",
+                  "dataElements": [
+                    "buyerInfo",
+                    "shippingAddress"
+                  ]
+                }
+              ]
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 190
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 96,
+            "mimeType": "application/json",
+            "text": "{\"restrictedDataToken\": \"Atz.sprdt|mock_rdt_token_restricted_data_987654321\", \"expiresIn\": 3600}",
+            "_json": {
+              "restrictedDataToken": "Atz.sprdt|mock_rdt_token_restricted_data_987654321",
+              "expiresIn": 3600
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 96
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.051,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.816Z",
+        "time": 0.116,
+        "_seq": 5,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 list of active orders with NextToken",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?MarketplaceIds=ATVPDKIKX0DER&CreatedAfter=2026-08-20T00:00:00Z' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?MarketplaceIds=ATVPDKIKX0DER&CreatedAfter=2026-08-20T00:00:00Z",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "MarketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            },
+            {
+              "name": "CreatedAfter",
+              "value": "2026-08-20T00:00:00Z"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2541,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"NextToken\": \"2YgYW55IGNhcm5hbCBwbGVhc3VyZS4\", \"CreatedBefore\": \"1.569521782042E9\", \"Orders\": [{\"AmazonOrderId\": \"902-1845936-5435065\", \"PurchaseDate\": \"1970-01-19T03:58:30Z\", \"LastUpdateDate\": \"1970-01-19T03:58:32Z\", \"OrderStatus\": \"Unshipped\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"11.01\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"Standard\"], \"IsReplacementOrder\": false, \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EarliestShipDate\": \"1970-01-19T03:59:27Z\", \"LatestShipDate\": \"1970-01-19T04:05:13Z\", \"EarliestDeliveryDate\": \"1970-01-19T04:06:39Z\", \"LatestDeliveryDate\": \"1970-01-19T04:15:17Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false, \"DefaultShipFromLocationAddress\": {\"Name\": \"MFNIntegrationTestMerchant\", \"AddressLine1\": \"2201 WESTLAKE AVE\", \"City\": \"SEATTLE\", \"StateOrRegion\": \"WA\", \"PostalCode\": \"98121-2778\", \"CountryCode\": \"US\", \"Phone\": \"+1 480-386-0930 ext. 73824\", \"AddressType\": \"Commercial\"}, \"FulfillmentInstruction\": {\"FulfillmentSupplySourceId\": \"sampleSupplySourceId\"}, \"IsISPU\": false, \"IsAccessPointOrder\": false, \"AutomatedShippingSettings\": {\"HasAutomatedShippingSettings\": false}, \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\"}, {\"AmazonOrderId\": \"902-8745147-1934268\", \"PurchaseDate\": \"1970-01-19T03:58:30Z\", \"LastUpdateDate\": \"1970-01-19T03:58:32Z\", \"OrderStatus\": \"Unshipped\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"11.01\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"Standard\"], \"IsReplacementOrder\": false, \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EarliestShipDate\": \"1970-01-19T03:59:27Z\", \"LatestShipDate\": \"1970-01-19T04:05:13Z\", \"EarliestDeliveryDate\": \"1970-01-19T04:06:39Z\", \"LatestDeliveryDate\": \"1970-01-19T04:15:17Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsAccessPointOrder\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false, \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\"}]}}",
+            "_json": {
+              "payload": {
+                "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+                "CreatedBefore": "1.569521782042E9",
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "PurchaseDate": "1970-01-19T03:58:30Z",
+                    "LastUpdateDate": "1970-01-19T03:58:32Z",
+                    "OrderStatus": "Unshipped",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "11.01"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Standard"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "1970-01-19T04:05:13Z",
+                    "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                    "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false,
+                    "DefaultShipFromLocationAddress": {
+                      "Name": "MFNIntegrationTestMerchant",
+                      "AddressLine1": "2201 WESTLAKE AVE",
+                      "City": "SEATTLE",
+                      "StateOrRegion": "WA",
+                      "PostalCode": "98121-2778",
+                      "CountryCode": "US",
+                      "Phone": "+1 480-386-0930 ext. 73824",
+                      "AddressType": "Commercial"
+                    },
+                    "FulfillmentInstruction": {
+                      "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                    },
+                    "IsISPU": false,
+                    "IsAccessPointOrder": false,
+                    "AutomatedShippingSettings": {
+                      "HasAutomatedShippingSettings": false
+                    },
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired"
+                  },
+                  {
+                    "AmazonOrderId": "902-8745147-1934268",
+                    "PurchaseDate": "1970-01-19T03:58:30Z",
+                    "LastUpdateDate": "1970-01-19T03:58:32Z",
+                    "OrderStatus": "Unshipped",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "11.01"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Standard"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "1970-01-19T04:05:13Z",
+                    "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                    "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false,
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2541
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.116,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.818Z",
+        "time": 0.045,
+        "_seq": 6,
+        "_rule": "empty orders list -- 200 with empty array",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?MarketplaceIds=ATVPDKIKX0DER&CreatedAfter=EMPTY_DATE_FILTER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?MarketplaceIds=ATVPDKIKX0DER&CreatedAfter=EMPTY_DATE_FILTER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "MarketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            },
+            {
+              "name": "CreatedAfter",
+              "value": "EMPTY_DATE_FILTER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 27,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"Orders\": []}}",
+            "_json": {
+              "payload": {
+                "Orders": []
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 27
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.045,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.821Z",
+        "time": 0.072,
+        "_seq": 7,
+        "_rule": "paginated orders -- 200 page 2 with NextToken (official sandbox & cursor)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?NextToken=mock_next_token_page_2_98765' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?NextToken=mock_next_token_page_2_98765",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "NextToken",
+              "value": "mock_next_token_page_2_98765"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 918,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"Orders\": [{\"AmazonOrderId\": \"902-3159896-1390916\", \"PurchaseDate\": \"2017-01-20T19:49:35Z\", \"LastUpdateDate\": \"2017-01-20T19:49:35Z\", \"OrderStatus\": \"Pending\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"24.99\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"CreditCard\", \"GiftCertificate\"], \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\", \"EarliestShipDate\": \"2017-01-20T19:51:16Z\", \"LatestShipDate\": \"2017-01-25T19:49:35Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsAccessPointOrder\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false}]}}",
+            "_json": {
+              "payload": {
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-3159896-1390916",
+                    "PurchaseDate": "2017-01-20T19:49:35Z",
+                    "LastUpdateDate": "2017-01-20T19:49:35Z",
+                    "OrderStatus": "Pending",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "24.99"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "CreditCard",
+                      "GiftCertificate"
+                    ],
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired",
+                    "EarliestShipDate": "2017-01-20T19:51:16Z",
+                    "LatestShipDate": "2017-01-25T19:49:35Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 918
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.072,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.823Z",
+        "time": 0.047,
+        "_seq": 8,
+        "_rule": "429 -- rate limit exceeded",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=RATELIMIT_TRIGGER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=RATELIMIT_TRIGGER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "CreatedAfter",
+              "value": "RATELIMIT_TRIGGER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 429,
+          "statusText": "Too Many Requests",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 105,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"QuotaExceeded\", \"message\": \"You exceeded your quota for the requested resource.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "QuotaExceeded",
+                  "message": "You exceeded your quota for the requested resource."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 105
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.826Z",
+        "time": 0.052,
+        "_seq": 9,
+        "_rule": "500 -- server error marker",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=SERVERERROR_TRIGGER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=SERVERERROR_TRIGGER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "CreatedAfter",
+              "value": "SERVERERROR_TRIGGER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 500,
+          "statusText": "Internal Server Error",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 121,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"InternalServerError\", \"message\": \"Encountered an internal error processing orders list request.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Encountered an internal error processing orders list request."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 121
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.052,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.828Z",
+        "time": 0.065,
+        "_seq": 10,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 single order details",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 1446,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"PurchaseDate\": \"1970-01-19T03:58:30Z\", \"LastUpdateDate\": \"1970-01-19T03:58:32Z\", \"OrderStatus\": \"Unshipped\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"42.50\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"Standard\"], \"IsReplacementOrder\": false, \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EarliestShipDate\": \"1970-01-19T03:59:27Z\", \"LatestShipDate\": \"1970-01-19T04:05:13Z\", \"EarliestDeliveryDate\": \"1970-01-19T04:06:39Z\", \"LatestDeliveryDate\": \"1970-01-19T04:15:17Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false, \"DefaultShipFromLocationAddress\": {\"Name\": \"MFNIntegrationTestMerchant\", \"AddressLine1\": \"2201 WESTLAKE AVE\", \"City\": \"SEATTLE\", \"StateOrRegion\": \"WA\", \"PostalCode\": \"98121-2778\", \"CountryCode\": \"US\", \"Phone\": \"+1 480-386-0930 ext. 73824\", \"AddressType\": \"Commercial\"}, \"FulfillmentInstruction\": {\"FulfillmentSupplySourceId\": \"sampleSupplySourceId\"}, \"IsISPU\": false, \"IsAccessPointOrder\": false, \"AutomatedShippingSettings\": {\"HasAutomatedShippingSettings\": false}, \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\"}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "902-1845936-5435065",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Unshipped",
+                "FulfillmentChannel": "MFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "42.50"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 1,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "DefaultShipFromLocationAddress": {
+                  "Name": "MFNIntegrationTestMerchant",
+                  "AddressLine1": "2201 WESTLAKE AVE",
+                  "City": "SEATTLE",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98121-2778",
+                  "CountryCode": "US",
+                  "Phone": "+1 480-386-0930 ext. 73824",
+                  "AddressType": "Commercial"
+                },
+                "FulfillmentInstruction": {
+                  "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                },
+                "IsISPU": false,
+                "IsAccessPointOrder": false,
+                "AutomatedShippingSettings": {
+                  "HasAutomatedShippingSettings": false
+                },
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired"
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 1446
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.065,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.830Z",
+        "time": 0.049,
+        "_seq": 11,
+        "_rule": "404 -- order not found",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/NOTFOUND-902-0000000-0000000' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/NOTFOUND-902-0000000-0000000",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 99,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"NotFound\", \"message\": \"Order NOTFOUND-902-0000000-0000000 does not exist.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Order NOTFOUND-902-0000000-0000000 does not exist."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 99
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.049,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.832Z",
+        "time": 0.056,
+        "_seq": 12,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 order items",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/orderItems' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/orderItems",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 487,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"OrderItems\": [{\"ASIN\": \"B00005N5PF\", \"SellerSKU\": \"SKU-AMZN-PROD-001\", \"OrderItemId\": \"65432109876543\", \"Title\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"QuantityOrdered\": 1, \"QuantityShipped\": 0, \"ItemPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": \"35.00\"}, \"ShippingPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": \"7.50\"}, \"ItemTax\": {\"CurrencyCode\": \"USD\", \"Amount\": \"2.80\"}, \"ConditionId\": \"New\", \"ConditionSubtypeId\": \"New\"}]}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "902-1845936-5435065",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-AMZN-PROD-001",
+                    "OrderItemId": "65432109876543",
+                    "Title": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                    "QuantityOrdered": 1,
+                    "QuantityShipped": 0,
+                    "ItemPrice": {
+                      "CurrencyCode": "USD",
+                      "Amount": "35.00"
+                    },
+                    "ShippingPrice": {
+                      "CurrencyCode": "USD",
+                      "Amount": "7.50"
+                    },
+                    "ItemTax": {
+                      "CurrencyCode": "USD",
+                      "Amount": "2.80"
+                    },
+                    "ConditionId": "New",
+                    "ConditionSubtypeId": "New"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 487
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.056,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.834Z",
+        "time": 0.042,
+        "_seq": 13,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 shipping address",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/address' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/address",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 275,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"ShippingAddress\": {\"Name\": \"John Buyer\", \"AddressLine1\": \"410 Terry Ave N\", \"City\": \"Seattle\", \"StateOrRegion\": \"WA\", \"PostalCode\": \"98109\", \"CountryCode\": \"US\", \"Phone\": \"+1 206-555-0100\", \"AddressType\": \"Residential\"}}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "902-1845936-5435065",
+                "ShippingAddress": {
+                  "Name": "John Buyer",
+                  "AddressLine1": "410 Terry Ave N",
+                  "City": "Seattle",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98109",
+                  "CountryCode": "US",
+                  "Phone": "+1 206-555-0100",
+                  "AddressType": "Residential"
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 275
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.042,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.837Z",
+        "time": 0.037,
+        "_seq": 14,
+        "_rule": "403 -- Restricted Data Token required",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/RDT_REQUIRED-902-1111111-2222222/address' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/RDT_REQUIRED-902-1111111-2222222/address",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 403,
+          "statusText": "Forbidden",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 113,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"Unauthorized\", \"message\": \"Restricted data token required to access PII address fields.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "Unauthorized",
+                  "message": "Restricted data token required to access PII address fields."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 113
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.037,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.839Z",
+        "time": 0.061,
+        "_seq": 15,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 buyer info",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/buyerInfo' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/buyerInfo",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 154,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"BuyerEmail\": \"buyer-mock@marketplace.amazon.com\", \"BuyerName\": \"John Buyer\", \"BuyerCounty\": \"King\"}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "902-1845936-5435065",
+                "BuyerEmail": "buyer-mock@marketplace.amazon.com",
+                "BuyerName": "John Buyer",
+                "BuyerCounty": "King"
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 154
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.061,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.842Z",
+        "time": 0.586,
+        "_seq": 16,
+        "_rule": "shipment confirmed -- 204 No Content",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/shipmentConfirmation' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"marketplaceId\": \"ATVPDKIKX0DER\", \"packageDetail\": {\"packageReferenceId\": \"PKG-001\", \"carrierCode\": \"UPS\", \"carrierName\": \"United Parcel Service\", \"shippingMethod\": \"Ground\", \"trackingNumber\": \"1Z9999999999999999\", \"shipDate\": \"2026-08-26T12:00:00Z\", \"orderItems\": [{\"orderItemId\": \"65432109876543\", \"quantity\": 1}]}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/shipmentConfirmation",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "318"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"marketplaceId\": \"ATVPDKIKX0DER\", \"packageDetail\": {\"packageReferenceId\": \"PKG-001\", \"carrierCode\": \"UPS\", \"carrierName\": \"United Parcel Service\", \"shippingMethod\": \"Ground\", \"trackingNumber\": \"1Z9999999999999999\", \"shipDate\": \"2026-08-26T12:00:00Z\", \"orderItems\": [{\"orderItemId\": \"65432109876543\", \"quantity\": 1}]}}",
+            "_json": {
+              "marketplaceId": "ATVPDKIKX0DER",
+              "packageDetail": {
+                "packageReferenceId": "PKG-001",
+                "carrierCode": "UPS",
+                "carrierName": "United Parcel Service",
+                "shippingMethod": "Ground",
+                "trackingNumber": "1Z9999999999999999",
+                "shipDate": "2026-08-26T12:00:00Z",
+                "orderItems": [
+                  {
+                    "orderItemId": "65432109876543",
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 318
+        },
+        "response": {
+          "status": 204,
+          "statusText": "No Content",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2,
+            "mimeType": "application/json",
+            "text": "{}",
+            "_json": {}
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.586,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.845Z",
+        "time": 0.047,
+        "_seq": 17,
+        "_rule": "400 -- invalid tracking or carrier code",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/shipmentConfirmation' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"packageDetail\": {\"carrierCode\": \"INVALID_CARRIER\", \"trackingNumber\": \"TRK123\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/902-1845936-5435065/shipmentConfirmation",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "81"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"packageDetail\": {\"carrierCode\": \"INVALID_CARRIER\", \"trackingNumber\": \"TRK123\"}}",
+            "_json": {
+              "packageDetail": {
+                "carrierCode": "INVALID_CARRIER",
+                "trackingNumber": "TRK123"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 81
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 93,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"InvalidInput\", \"message\": \"Carrier code INVALID_CARRIER is invalid.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Carrier code INVALID_CARRIER is invalid."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 93
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.848Z",
+        "time": 0.844,
+        "_seq": 18,
+        "_rule": "acknowledgements accepted -- 202 Accepted",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/vendor/orders/v1/acknowledgements' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"orderAcknowledgements\": [{\"purchaseOrderNumber\": \"PO-AMZN-2026-001\", \"acknowledgementDate\": \"2026-08-26T12:00:00Z\", \"acknowledgementStatus\": {\"code\": \"Acknowledged\", \"description\": \"Order accepted\"}}]}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/vendor/orders/v1/acknowledgements",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "203"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"orderAcknowledgements\": [{\"purchaseOrderNumber\": \"PO-AMZN-2026-001\", \"acknowledgementDate\": \"2026-08-26T12:00:00Z\", \"acknowledgementStatus\": {\"code\": \"Acknowledged\", \"description\": \"Order accepted\"}}]}",
+            "_json": {
+              "orderAcknowledgements": [
+                {
+                  "purchaseOrderNumber": "PO-AMZN-2026-001",
+                  "acknowledgementDate": "2026-08-26T12:00:00Z",
+                  "acknowledgementStatus": {
+                    "code": "Acknowledged",
+                    "description": "Order accepted"
+                  }
+                }
+              ]
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 203
+        },
+        "response": {
+          "status": 202,
+          "statusText": "Accepted",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 48,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"transactionId\": \"txn-ack-100001\"}}",
+            "_json": {
+              "payload": {
+                "transactionId": "txn-ack-100001"
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 48
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.844,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.851Z",
+        "time": 0.709,
+        "_seq": 19,
+        "_rule": "feed document created -- 201 Created",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/feeds/2021-06-30/documents' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"contentType\": \"text/xml; charset=UTF-8\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/feeds/2021-06-30/documents",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "42"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"contentType\": \"text/xml; charset=UTF-8\"}",
+            "_json": {
+              "contentType": "text/xml; charset=UTF-8"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 42
+        },
+        "response": {
+          "status": 201,
+          "statusText": "Created",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 101,
+            "mimeType": "application/json",
+            "text": "{\"feedDocumentId\": \"feed-doc-100001\", \"url\": \"http://127.0.0.1:23103/s3/feed-upload/feed-doc-100001\"}",
+            "_json": {
+              "feedDocumentId": "feed-doc-100001",
+              "url": "http://127.0.0.1:23103/s3/feed-upload/feed-doc-100001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 101
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.709,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.854Z",
+        "time": 0.965,
+        "_seq": 20,
+        "_rule": "feed submitted -- 202 Accepted",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/feeds/2021-06-30/feeds' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"feedType\": \"POST_ORDER_ACKNOWLEDGEMENT_DATA\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"inputFeedDocumentId\": \"feed-doc-100001\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/feeds/2021-06-30/feeds",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "126"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"feedType\": \"POST_ORDER_ACKNOWLEDGEMENT_DATA\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"inputFeedDocumentId\": \"feed-doc-100001\"}",
+            "_json": {
+              "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ],
+              "inputFeedDocumentId": "feed-doc-100001"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 126
+        },
+        "response": {
+          "status": 202,
+          "statusText": "Accepted",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 25,
+            "mimeType": "application/json",
+            "text": "{\"feedId\": \"feed-100001\"}",
+            "_json": {
+              "feedId": "feed-100001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 25
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.965,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.857Z",
+        "time": 0.047,
+        "_seq": 21,
+        "_rule": "no marker -- 200 feed DONE",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/feeds/2021-06-30/feeds/feed-100001' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/feeds/2021-06-30/feeds/feed-100001",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 276,
+            "mimeType": "application/json",
+            "text": "{\"feedId\": \"feed-100001\", \"feedType\": \"POST_FLAT_FILE_INVLOADER_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStartTime\": \"2026-08-26T00:01:00Z\", \"processingEndTime\": \"2026-08-26T00:02:00Z\", \"processingStatus\": \"DONE\", \"resultFeedDocumentId\": \"feed-doc-res-100001\"}",
+            "_json": {
+              "feedId": "feed-100001",
+              "feedType": "POST_FLAT_FILE_INVLOADER_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStartTime": "2026-08-26T00:01:00Z",
+              "processingEndTime": "2026-08-26T00:02:00Z",
+              "processingStatus": "DONE",
+              "resultFeedDocumentId": "feed-doc-res-100001"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 276
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.861Z",
+        "time": 0.042,
+        "_seq": 22,
+        "_rule": "IN_PROGRESS feed status",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/feeds/2021-06-30/feeds/INPROGRESS-FEED-99' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/feeds/2021-06-30/feeds/INPROGRESS-FEED-99",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 153,
+            "mimeType": "application/json",
+            "text": "{\"feedId\": \"INPROGRESS-FEED-99\", \"feedType\": \"POST_ORDER_ACKNOWLEDGEMENT_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStatus\": \"IN_PROGRESS\"}",
+            "_json": {
+              "feedId": "INPROGRESS-FEED-99",
+              "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "IN_PROGRESS"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 153
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.042,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.863Z",
+        "time": 0.044,
+        "_seq": 23,
+        "_rule": "FATAL feed status",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/feeds/2021-06-30/feeds/FATAL-FEED-99' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/feeds/2021-06-30/feeds/FATAL-FEED-99",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 188,
+            "mimeType": "application/json",
+            "text": "{\"feedId\": \"FATAL-FEED-99\", \"feedType\": \"POST_ORDER_ACKNOWLEDGEMENT_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStatus\": \"FATAL\", \"resultFeedDocumentId\": \"feed-doc-fatal-res\"}",
+            "_json": {
+              "feedId": "FATAL-FEED-99",
+              "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStatus": "FATAL",
+              "resultFeedDocumentId": "feed-doc-fatal-res"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 188
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.044,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.867Z",
+        "time": 0.891,
+        "_seq": 24,
+        "_rule": "merchant listings requested -- reportId carries the marketplace",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/reports/2021-06-30/reports' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"reportType\": \"GET_MERCHANT_LISTINGS_ALL_DATA\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "85"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"reportType\": \"GET_MERCHANT_LISTINGS_ALL_DATA\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}",
+            "_json": {
+              "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ]
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 85
+        },
+        "response": {
+          "status": 202,
+          "statusText": "Accepted",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 42,
+            "mimeType": "application/json",
+            "text": "{\"reportId\": \"rep-listings-ATVPDKIKX0DER\"}",
+            "_json": {
+              "reportId": "rep-listings-ATVPDKIKX0DER"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 42
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.891,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.870Z",
+        "time": 0.047,
+        "_seq": 25,
+        "_rule": "no marker -- 200 report DONE",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/reports/rep-listings-ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports/rep-listings-ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 307,
+            "mimeType": "application/json",
+            "text": "{\"reportId\": \"rep-listings-ATVPDKIKX0DER\", \"reportType\": \"GET_MERCHANT_LISTINGS_ALL_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStartTime\": \"2026-08-26T00:01:00Z\", \"processingEndTime\": \"2026-08-26T00:02:00Z\", \"processingStatus\": \"DONE\", \"reportDocumentId\": \"rep-doc-rep-listings-ATVPDKIKX0DER\"}",
+            "_json": {
+              "reportId": "rep-listings-ATVPDKIKX0DER",
+              "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStartTime": "2026-08-26T00:01:00Z",
+              "processingEndTime": "2026-08-26T00:02:00Z",
+              "processingStatus": "DONE",
+              "reportDocumentId": "rep-doc-rep-listings-ATVPDKIKX0DER"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 307
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.872Z",
+        "time": 0.052,
+        "_seq": 26,
+        "_rule": "no marker -- 200 report document download URL",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-listings-ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-listings-ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 145,
+            "mimeType": "application/json",
+            "text": "{\"reportDocumentId\": \"rep-doc-rep-listings-ATVPDKIKX0DER\", \"url\": \"http://127.0.0.1:23103/s3/report-download/rep-doc-rep-listings-ATVPDKIKX0DER\"}",
+            "_json": {
+              "reportDocumentId": "rep-doc-rep-listings-ATVPDKIKX0DER",
+              "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-listings-ATVPDKIKX0DER"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 145
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.052,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.875Z",
+        "time": 0.053,
+        "_seq": 27,
+        "_rule": "no marker -- 200 catalog item details",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/catalog/2022-04-01/items/B00005N5PF?marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/catalog/2022-04-01/items/B00005N5PF?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 404,
+            "mimeType": "application/json",
+            "text": "{\"asin\": \"B00005N5PF\", \"attributes\": {\"item_name\": [{\"value\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"marketplace_id\": \"ATVPDKIKX0DER\"}], \"brand\": [{\"value\": \"Amazon Basics\", \"marketplace_id\": \"ATVPDKIKX0DER\"}]}, \"summaries\": [{\"marketplaceId\": \"ATVPDKIKX0DER\", \"brand\": \"Amazon Basics\", \"itemName\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"itemClassification\": \"BASE_PRODUCT\"}]}",
+            "_json": {
+              "asin": "B00005N5PF",
+              "attributes": {
+                "item_name": [
+                  {
+                    "value": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "brand": [
+                  {
+                    "value": "Amazon Basics",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ]
+              },
+              "summaries": [
+                {
+                  "marketplaceId": "ATVPDKIKX0DER",
+                  "brand": "Amazon Basics",
+                  "itemName": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                  "itemClassification": "BASE_PRODUCT"
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 404
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.053,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.878Z",
+        "time": 0.816,
+        "_seq": 28,
+        "_rule": "listing updated -- 200 ACCEPTED",
+        "_curl": "curl -i -X PUT 'http://127.0.0.1:23103/listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001?marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"productType\": \"SPEAKER\", \"attributes\": {\"item_name\": [{\"value\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"marketplace_id\": \"ATVPDKIKX0DER\"}], \"condition_type\": [{\"value\": \"new_new\", \"marketplace_id\": \"ATVPDKIKX0DER\"}]}}'",
+        "request": {
+          "method": "PUT",
+          "url": "http://127.0.0.1:23103/listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "232"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"productType\": \"SPEAKER\", \"attributes\": {\"item_name\": [{\"value\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"marketplace_id\": \"ATVPDKIKX0DER\"}], \"condition_type\": [{\"value\": \"new_new\", \"marketplace_id\": \"ATVPDKIKX0DER\"}]}}",
+            "_json": {
+              "productType": "SPEAKER",
+              "attributes": {
+                "item_name": [
+                  {
+                    "value": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ],
+                "condition_type": [
+                  {
+                    "value": "new_new",
+                    "marketplace_id": "ATVPDKIKX0DER"
+                  }
+                ]
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 232
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 94,
+            "mimeType": "application/json",
+            "text": "{\"sku\": \"SKU-AMZN-PROD-001\", \"status\": \"ACCEPTED\", \"submissionId\": \"sub-100001\", \"issues\": []}",
+            "_json": {
+              "sku": "SKU-AMZN-PROD-001",
+              "status": "ACCEPTED",
+              "submissionId": "sub-100001",
+              "issues": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 94
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.816,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.882Z",
+        "time": 0.045,
+        "_seq": 29,
+        "_rule": "no marker -- 200 listing item details",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001?marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/listings/2021-08-01/items/A2EUQ1WTGCTBG2/SKU-AMZN-PROD-001?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 214,
+            "mimeType": "application/json",
+            "text": "{\"sku\": \"SKU-AMZN-PROD-001\", \"summaries\": [{\"marketplaceId\": \"ATVPDKIKX0DER\", \"asin\": \"B00005N5PF\", \"productType\": \"SPEAKER\", \"status\": [\"BUYABLE\"], \"itemName\": \"Amazon Basics Wireless Bluetooth Speaker - Black\"}]}",
+            "_json": {
+              "sku": "SKU-AMZN-PROD-001",
+              "summaries": [
+                {
+                  "marketplaceId": "ATVPDKIKX0DER",
+                  "asin": "B00005N5PF",
+                  "productType": "SPEAKER",
+                  "status": [
+                    "BUYABLE"
+                  ],
+                  "itemName": "Amazon Basics Wireless Bluetooth Speaker - Black"
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 214
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.045,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.886Z",
+        "time": 0.053,
+        "_seq": 30,
+        "_rule": "no marker -- 200 product pricing",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/products/pricing/v0/price?MarketplaceId=ATVPDKIKX0DER&ItemType=Asin&Asins=B00005N5PF' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/products/pricing/v0/price?MarketplaceId=ATVPDKIKX0DER&ItemType=Asin&Asins=B00005N5PF",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "MarketplaceId",
+              "value": "ATVPDKIKX0DER"
+            },
+            {
+              "name": "ItemType",
+              "value": "Asin"
+            },
+            {
+              "name": "Asins",
+              "value": "B00005N5PF"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 577,
+            "mimeType": "application/json",
+            "text": "{\"payload\": [{\"status\": \"Success\", \"SellerSKU\": \"SKU-AMZN-PROD-001\", \"Product\": {\"Identifiers\": {\"MarketplaceASIN\": {\"MarketplaceId\": \"ATVPDKIKX0DER\", \"ASIN\": \"B00005N5PF\"}, \"SKUIdentifier\": {\"MarketplaceId\": \"ATVPDKIKX0DER\", \"SellerId\": \"A2EUQ1WTGCTBG2\", \"SellerSKU\": \"SKU-AMZN-PROD-001\"}}, \"Offers\": [{\"BuyingPrice\": {\"ListingPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": 35.0}, \"Shipping\": {\"CurrencyCode\": \"USD\", \"Amount\": 0.0}}, \"RegularPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": 39.99}, \"ItemCondition\": \"New\", \"ItemSubCondition\": \"New\", \"SellerSKU\": \"SKU-AMZN-PROD-001\"}]}}]}",
+            "_json": {
+              "payload": [
+                {
+                  "status": "Success",
+                  "SellerSKU": "SKU-AMZN-PROD-001",
+                  "Product": {
+                    "Identifiers": {
+                      "MarketplaceASIN": {
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "ASIN": "B00005N5PF"
+                      },
+                      "SKUIdentifier": {
+                        "MarketplaceId": "ATVPDKIKX0DER",
+                        "SellerId": "A2EUQ1WTGCTBG2",
+                        "SellerSKU": "SKU-AMZN-PROD-001"
+                      }
+                    },
+                    "Offers": [
+                      {
+                        "BuyingPrice": {
+                          "ListingPrice": {
+                            "CurrencyCode": "USD",
+                            "Amount": 35.0
+                          },
+                          "Shipping": {
+                            "CurrencyCode": "USD",
+                            "Amount": 0.0
+                          }
+                        },
+                        "RegularPrice": {
+                          "CurrencyCode": "USD",
+                          "Amount": 39.99
+                        },
+                        "ItemCondition": "New",
+                        "ItemSubCondition": "New",
+                        "SellerSKU": "SKU-AMZN-PROD-001"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 577
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.053,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.889Z",
+        "time": 0.05,
+        "_seq": 31,
+        "_rule": "no marker -- 200 FBA inventory summaries",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/fba/inventory/v1/summaries?details=true&granularityType=Marketplace&granularityId=ATVPDKIKX0DER&marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/fba/inventory/v1/summaries?details=true&granularityType=Marketplace&granularityId=ATVPDKIKX0DER&marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "details",
+              "value": "true"
+            },
+            {
+              "name": "granularityType",
+              "value": "Marketplace"
+            },
+            {
+              "name": "granularityId",
+              "value": "ATVPDKIKX0DER"
+            },
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 456,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"inventorySummaries\": [{\"asin\": \"B00005N5PF\", \"fnSku\": \"X000123456\", \"sellerSku\": \"SKU-AMZN-PROD-001\", \"condition\": \"NewItem\", \"inventoryDetails\": {\"fulfillableQuantity\": 150, \"inboundWorkingQuantity\": 20, \"inboundShippedQuantity\": 50, \"inboundReceivingQuantity\": 10, \"reservedQuantity\": {\"totalReservedQuantity\": 5, \"pendingCustomerOrderQuantity\": 3, \"fcProcessingQuantity\": 2}, \"unfulfillableQuantity\": {\"totalUnfulfillableQuantity\": 0}}}]}}",
+            "_json": {
+              "payload": {
+                "inventorySummaries": [
+                  {
+                    "asin": "B00005N5PF",
+                    "fnSku": "X000123456",
+                    "sellerSku": "SKU-AMZN-PROD-001",
+                    "condition": "NewItem",
+                    "inventoryDetails": {
+                      "fulfillableQuantity": 150,
+                      "inboundWorkingQuantity": 20,
+                      "inboundShippedQuantity": 50,
+                      "inboundReceivingQuantity": 10,
+                      "reservedQuantity": {
+                        "totalReservedQuantity": 5,
+                        "pendingCustomerOrderQuantity": 3,
+                        "fcProcessingQuantity": 2
+                      },
+                      "unfulfillableQuantity": {
+                        "totalUnfulfillableQuantity": 0
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 456
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.05,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.893Z",
+        "time": 0.043,
+        "_seq": 32,
+        "_rule": "no marker -- 200 eligible shipping services",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/mfn/v0/eligibleShippingServices' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"ShipmentRequestDetails\": {\"AmazonOrderId\": \"902-1845936-5435065\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/mfn/v0/eligibleShippingServices",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "68"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ShipmentRequestDetails\": {\"AmazonOrderId\": \"902-1845936-5435065\"}}",
+            "_json": {
+              "ShipmentRequestDetails": {
+                "AmazonOrderId": "902-1845936-5435065"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 68
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 249,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"ShippingServiceList\": [{\"ShippingServiceName\": \"UPS Ground\", \"CarrierName\": \"UPS\", \"ShippingServiceId\": \"UPS_GROUND_PKG\", \"Rate\": {\"CurrencyCode\": \"USD\", \"Amount\": 8.45}, \"DeliveryExperience\": \"DeliveryConfirmationWithoutSignature\"}]}}",
+            "_json": {
+              "payload": {
+                "ShippingServiceList": [
+                  {
+                    "ShippingServiceName": "UPS Ground",
+                    "CarrierName": "UPS",
+                    "ShippingServiceId": "UPS_GROUND_PKG",
+                    "Rate": {
+                      "CurrencyCode": "USD",
+                      "Amount": 8.45
+                    },
+                    "DeliveryExperience": "DeliveryConfirmationWithoutSignature"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 249
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.043,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.895Z",
+        "time": 0.624,
+        "_seq": 33,
+        "_rule": "MFN shipment created -- 200 Purchased",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/mfn/v0/shipments' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"ShipmentRequestDetails\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"PackageDimensions\": {\"Length\": 10, \"Width\": 8, \"Height\": 4, \"Unit\": \"inches\"}, \"Weight\": {\"Value\": 2.5, \"Unit\": \"ounces\"}}, \"ShippingServiceId\": \"UPS_GROUND_PKG\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/mfn/v0/shipments",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "231"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"ShipmentRequestDetails\": {\"AmazonOrderId\": \"902-1845936-5435065\", \"PackageDimensions\": {\"Length\": 10, \"Width\": 8, \"Height\": 4, \"Unit\": \"inches\"}, \"Weight\": {\"Value\": 2.5, \"Unit\": \"ounces\"}}, \"ShippingServiceId\": \"UPS_GROUND_PKG\"}",
+            "_json": {
+              "ShipmentRequestDetails": {
+                "AmazonOrderId": "902-1845936-5435065",
+                "PackageDimensions": {
+                  "Length": 10,
+                  "Width": 8,
+                  "Height": 4,
+                  "Unit": "inches"
+                },
+                "Weight": {
+                  "Value": 2.5,
+                  "Unit": "ounces"
+                }
+              },
+              "ShippingServiceId": "UPS_GROUND_PKG"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 231
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 253,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"ShipmentId\": \"mfn-ship-100001\", \"AmazonOrderId\": \"902-1845936-5435065\", \"Status\": \"Purchased\", \"TrackingId\": \"1Z9999999999999999\", \"Label\": {\"FileContents\": {\"Contents\": \"JVBERi0xLjQKJcOkw7zDtsOfCDCkCg==\", \"FileType\": \"application/pdf\"}}}}",
+            "_json": {
+              "payload": {
+                "ShipmentId": "mfn-ship-100001",
+                "AmazonOrderId": "902-1845936-5435065",
+                "Status": "Purchased",
+                "TrackingId": "1Z9999999999999999",
+                "Label": {
+                  "FileContents": {
+                    "Contents": "JVBERi0xLjQKJcOkw7zDtsOfCDCkCg==",
+                    "FileType": "application/pdf"
+                  }
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 253
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.624,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.899Z",
+        "time": 0.071,
+        "_seq": 34,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 list of active orders with NextToken",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_200&MarketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_200&MarketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "CreatedAfter",
+              "value": "TEST_CASE_200"
+            },
+            {
+              "name": "MarketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2541,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"NextToken\": \"2YgYW55IGNhcm5hbCBwbGVhc3VyZS4\", \"CreatedBefore\": \"1.569521782042E9\", \"Orders\": [{\"AmazonOrderId\": \"902-1845936-5435065\", \"PurchaseDate\": \"1970-01-19T03:58:30Z\", \"LastUpdateDate\": \"1970-01-19T03:58:32Z\", \"OrderStatus\": \"Unshipped\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"11.01\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"Standard\"], \"IsReplacementOrder\": false, \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EarliestShipDate\": \"1970-01-19T03:59:27Z\", \"LatestShipDate\": \"1970-01-19T04:05:13Z\", \"EarliestDeliveryDate\": \"1970-01-19T04:06:39Z\", \"LatestDeliveryDate\": \"1970-01-19T04:15:17Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false, \"DefaultShipFromLocationAddress\": {\"Name\": \"MFNIntegrationTestMerchant\", \"AddressLine1\": \"2201 WESTLAKE AVE\", \"City\": \"SEATTLE\", \"StateOrRegion\": \"WA\", \"PostalCode\": \"98121-2778\", \"CountryCode\": \"US\", \"Phone\": \"+1 480-386-0930 ext. 73824\", \"AddressType\": \"Commercial\"}, \"FulfillmentInstruction\": {\"FulfillmentSupplySourceId\": \"sampleSupplySourceId\"}, \"IsISPU\": false, \"IsAccessPointOrder\": false, \"AutomatedShippingSettings\": {\"HasAutomatedShippingSettings\": false}, \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\"}, {\"AmazonOrderId\": \"902-8745147-1934268\", \"PurchaseDate\": \"1970-01-19T03:58:30Z\", \"LastUpdateDate\": \"1970-01-19T03:58:32Z\", \"OrderStatus\": \"Unshipped\", \"FulfillmentChannel\": \"MFN\", \"SalesChannel\": \"Amazon.com\", \"ShipServiceLevel\": \"Std US D2D Dom\", \"OrderTotal\": {\"CurrencyCode\": \"USD\", \"Amount\": \"11.01\"}, \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 1, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"Standard\"], \"IsReplacementOrder\": false, \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EarliestShipDate\": \"1970-01-19T03:59:27Z\", \"LatestShipDate\": \"1970-01-19T04:05:13Z\", \"EarliestDeliveryDate\": \"1970-01-19T04:06:39Z\", \"LatestDeliveryDate\": \"1970-01-19T04:15:17Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsAccessPointOrder\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false, \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\"}]}}",
+            "_json": {
+              "payload": {
+                "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+                "CreatedBefore": "1.569521782042E9",
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-1845936-5435065",
+                    "PurchaseDate": "1970-01-19T03:58:30Z",
+                    "LastUpdateDate": "1970-01-19T03:58:32Z",
+                    "OrderStatus": "Unshipped",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "11.01"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Standard"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "1970-01-19T04:05:13Z",
+                    "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                    "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false,
+                    "DefaultShipFromLocationAddress": {
+                      "Name": "MFNIntegrationTestMerchant",
+                      "AddressLine1": "2201 WESTLAKE AVE",
+                      "City": "SEATTLE",
+                      "StateOrRegion": "WA",
+                      "PostalCode": "98121-2778",
+                      "CountryCode": "US",
+                      "Phone": "+1 480-386-0930 ext. 73824",
+                      "AddressType": "Commercial"
+                    },
+                    "FulfillmentInstruction": {
+                      "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                    },
+                    "IsISPU": false,
+                    "IsAccessPointOrder": false,
+                    "AutomatedShippingSettings": {
+                      "HasAutomatedShippingSettings": false
+                    },
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired"
+                  },
+                  {
+                    "AmazonOrderId": "902-8745147-1934268",
+                    "PurchaseDate": "1970-01-19T03:58:30Z",
+                    "LastUpdateDate": "1970-01-19T03:58:32Z",
+                    "OrderStatus": "Unshipped",
+                    "FulfillmentChannel": "MFN",
+                    "SalesChannel": "Amazon.com",
+                    "ShipServiceLevel": "Std US D2D Dom",
+                    "OrderTotal": {
+                      "CurrencyCode": "USD",
+                      "Amount": "11.01"
+                    },
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 1,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "Standard"
+                    ],
+                    "IsReplacementOrder": false,
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EarliestShipDate": "1970-01-19T03:59:27Z",
+                    "LatestShipDate": "1970-01-19T04:05:13Z",
+                    "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                    "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false,
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2541
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.071,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.902Z",
+        "time": 0.059,
+        "_seq": 35,
+        "_rule": "official sandbox TEST_CASE_200_NEXT_TOKEN -- first page returning NextToken",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_200_NEXT_TOKEN&MarketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_200_NEXT_TOKEN&MarketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "CreatedAfter",
+              "value": "TEST_CASE_200_NEXT_TOKEN"
+            },
+            {
+              "name": "MarketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 839,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"NextToken\": \"2YgYW55IGNhcm5hbCBwbGVhc3VyZS4\", \"Orders\": [{\"AmazonOrderId\": \"902-3159896-1390916\", \"PurchaseDate\": \"2017-01-20T19:49:35Z\", \"LastUpdateDate\": \"2017-01-20T19:49:35Z\", \"OrderStatus\": \"Pending\", \"FulfillmentChannel\": \"MFN\", \"NumberOfItemsShipped\": 0, \"NumberOfItemsUnshipped\": 0, \"PaymentMethod\": \"Other\", \"PaymentMethodDetails\": [\"CreditCard\", \"GiftCertificate\"], \"MarketplaceId\": \"ATVPDKIKX0DER\", \"ShipmentServiceLevelCategory\": \"Standard\", \"OrderType\": \"StandardOrder\", \"EasyShipShipmentStatus\": \"PendingPickUp\", \"ElectronicInvoiceStatus\": \"NotRequired\", \"EarliestShipDate\": \"2017-01-20T19:51:16Z\", \"LatestShipDate\": \"2017-01-25T19:49:35Z\", \"IsBusinessOrder\": false, \"IsPrime\": false, \"IsAccessPointOrder\": false, \"IsGlobalExpressEnabled\": false, \"IsPremiumOrder\": false, \"IsSoldByAB\": false, \"IsIBA\": false}]}}",
+            "_json": {
+              "payload": {
+                "NextToken": "2YgYW55IGNhcm5hbCBwbGVhc3VyZS4",
+                "Orders": [
+                  {
+                    "AmazonOrderId": "902-3159896-1390916",
+                    "PurchaseDate": "2017-01-20T19:49:35Z",
+                    "LastUpdateDate": "2017-01-20T19:49:35Z",
+                    "OrderStatus": "Pending",
+                    "FulfillmentChannel": "MFN",
+                    "NumberOfItemsShipped": 0,
+                    "NumberOfItemsUnshipped": 0,
+                    "PaymentMethod": "Other",
+                    "PaymentMethodDetails": [
+                      "CreditCard",
+                      "GiftCertificate"
+                    ],
+                    "MarketplaceId": "ATVPDKIKX0DER",
+                    "ShipmentServiceLevelCategory": "Standard",
+                    "OrderType": "StandardOrder",
+                    "EasyShipShipmentStatus": "PendingPickUp",
+                    "ElectronicInvoiceStatus": "NotRequired",
+                    "EarliestShipDate": "2017-01-20T19:51:16Z",
+                    "LatestShipDate": "2017-01-25T19:49:35Z",
+                    "IsBusinessOrder": false,
+                    "IsPrime": false,
+                    "IsAccessPointOrder": false,
+                    "IsGlobalExpressEnabled": false,
+                    "IsPremiumOrder": false,
+                    "IsSoldByAB": false,
+                    "IsIBA": false
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 839
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.059,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.906Z",
+        "time": 0.038,
+        "_seq": 36,
+        "_rule": "400 -- official sandbox TEST_CASE_400 or invalid input",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_400' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders?CreatedAfter=TEST_CASE_400",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "CreatedAfter",
+              "value": "TEST_CASE_400"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 400,
+          "statusText": "Bad Request",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 87,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"InvalidInput\", \"message\": \"Invalid query parameters provided.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "InvalidInput",
+                  "message": "Invalid query parameters provided."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 87
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.038,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.910Z",
+        "time": 0.043,
+        "_seq": 37,
+        "_rule": "official sandbox TEST_CASE_IBA_200",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/orders/v0/orders/TEST_CASE_IBA_200' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/orders/v0/orders/TEST_CASE_IBA_200",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 445,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"921-3175655-0452641\", \"PurchaseDate\": \"2019-05-07T15:42:57.058Z\", \"LastUpdateDate\": \"2019-05-08T21:59:59Z\", \"OrderStatus\": \"Shipped\", \"FulfillmentChannel\": \"AFN\", \"SalesChannel\": \"Amazon.de\", \"ShipServiceLevel\": \"Standard\", \"OrderTotal\": {\"CurrencyCode\": \"EUR\", \"Amount\": \"25.00\"}, \"NumberOfItemsShipped\": 1, \"NumberOfItemsUnshipped\": 0, \"PaymentMethod\": \"Other\", \"MarketplaceId\": \"A1PA6795UKMFR9\", \"IsIBA\": true}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "921-3175655-0452641",
+                "PurchaseDate": "2019-05-07T15:42:57.058Z",
+                "LastUpdateDate": "2019-05-08T21:59:59Z",
+                "OrderStatus": "Shipped",
+                "FulfillmentChannel": "AFN",
+                "SalesChannel": "Amazon.de",
+                "ShipServiceLevel": "Standard",
+                "OrderTotal": {
+                  "CurrencyCode": "EUR",
+                  "Amount": "25.00"
+                },
+                "NumberOfItemsShipped": 1,
+                "NumberOfItemsUnshipped": 0,
+                "PaymentMethod": "Other",
+                "MarketplaceId": "A1PA6795UKMFR9",
+                "IsIBA": true
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 445
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.043,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.914Z",
+        "time": 0.04,
+        "_seq": 38,
+        "_rule": "404 -- catalog ASIN not found or official sandbox TEST_CASE_404",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_404?marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_404?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 96,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"NotFound\", \"message\": \"Catalog item with ASIN TEST_CASE_404 not found.\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Catalog item with ASIN TEST_CASE_404 not found."
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 96
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.04,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.918Z",
+        "time": 0.064,
+        "_seq": 39,
+        "_rule": "429 -- official sandbox TEST_CASE_429",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_429?marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_429?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 429,
+          "statusText": "Too Many Requests",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 81,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"QuotaExceeded\", \"message\": \"Request rate limit exceeded\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "QuotaExceeded",
+                  "message": "Request rate limit exceeded"
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 81
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.064,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.922Z",
+        "time": 0.047,
+        "_seq": 40,
+        "_rule": "500 -- official sandbox TEST_CASE_500",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_500?marketplaceIds=ATVPDKIKX0DER' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/catalog/2022-04-01/items/TEST_CASE_500?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 500,
+          "statusText": "Internal Server Error",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 74,
+            "mimeType": "application/json",
+            "text": "{\"errors\": [{\"code\": \"InternalServerError\", \"message\": \"Internal error\"}]}",
+            "_json": {
+              "errors": [
+                {
+                  "code": "InternalServerError",
+                  "message": "Internal error"
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 74
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.047,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.935Z",
+        "time": 0.078,
+        "_seq": 41,
+        "_rule": null,
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/sellers/v1/marketplaceParticipations' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/sellers/v1/marketplaceParticipations",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 299,
+            "mimeType": "application/json",
+            "text": "{\"payload\": [{\"marketplace\": {\"id\": \"ATVPDKIKX0DER\", \"countryCode\": \"US\", \"name\": \"Amazon.com\", \"defaultCurrencyCode\": \"USD\", \"defaultLanguageCode\": \"en_US\", \"domainName\": \"www.amazon.com\"}, \"storeName\": \"BestSellerStore\", \"participation\": {\"isParticipating\": true, \"hasSuspendedListings\": false}}]}",
+            "_json": {
+              "payload": [
+                {
+                  "marketplace": {
+                    "id": "ATVPDKIKX0DER",
+                    "countryCode": "US",
+                    "name": "Amazon.com",
+                    "defaultCurrencyCode": "USD",
+                    "defaultLanguageCode": "en_US",
+                    "domainName": "www.amazon.com"
+                  },
+                  "storeName": "BestSellerStore",
+                  "participation": {
+                    "isParticipating": true,
+                    "hasSuspendedListings": false
+                  }
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 299
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.078,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.939Z",
+        "time": 0.103,
+        "_seq": 42,
+        "_rule": null,
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/finances/v0/financialEvents' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/finances/v0/financialEvents",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2007,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"NextToken\": \"Next token value\", \"FinancialEvents\": {\"PayWithAmazonEventList\": [{\"SellerOrderId\": \"454645645656456\", \"TransactionPostedDate\": \"2020-02-05T13:56:00.363Z\", \"BusinessObjectType\": \"Free\", \"SalesChannel\": \"None\", \"Charge\": {\"ChargeType\": \"Tax\", \"ChargeAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}, \"FeeList\": [{\"FeeType\": \"FixedClosingFee\", \"FeeAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}], \"PaymentAmountType\": \"Tax\", \"AmountDescription\": \"Tax\", \"FulfillmentChannel\": \"FulfillmentChannel\", \"StoreName\": \"Etsy\"}], \"ServiceProviderCreditEventList\": [{\"ProviderTransactionType\": \"Free\", \"SellerOrderId\": \"454645645656456\", \"MarketplaceId\": \"1\", \"MarketplaceCountryCode\": \"US\", \"SellerId\": \"4564565546\", \"SellerStoreName\": \"Etsy\", \"ProviderId\": \"1\", \"ProviderStoreName\": \"Etsy\", \"TransactionAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}, \"TransactionCreationDate\": \"2020-02-05T13:56:00.363Z\"}], \"RentalTransactionEventList\": [{\"AmazonOrderId\": \"444-555-3343433\", \"RentalEventType\": \"string\", \"ExtensionLength\": 0, \"PostedDate\": \"2020-02-05T13:56:00.363Z\", \"RentalChargeList\": [{\"ChargeType\": \"Tax\", \"ChargeAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}], \"RentalFeeList\": [{\"FeeType\": \"FixedClosingFee\", \"FeeAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}], \"MarketplaceName\": \"1\", \"RentalInitialValue\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}, \"RentalReimbursement\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}, \"RentalTaxWithheldList\": [{\"TaxCollectionModel\": \"Free\", \"TaxesWithheld\": [{\"ChargeType\": \"Tax\", \"ChargeAmount\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}]}]}], \"ProductAdsPaymentEventList\": [{\"postedDate\": \"2020-02-05T13:56:00.363Z\", \"transactionType\": \"Free\", \"invoiceId\": \"3454535453\", \"baseValue\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}, \"taxValue\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}, \"transactionValue\": {\"CurrencyCode\": \"USD\", \"CurrencyAmount\": 25.37}}]}}}",
+            "_json": {
+              "payload": {
+                "NextToken": "Next token value",
+                "FinancialEvents": {
+                  "PayWithAmazonEventList": [
+                    {
+                      "SellerOrderId": "454645645656456",
+                      "TransactionPostedDate": "2020-02-05T13:56:00.363Z",
+                      "BusinessObjectType": "Free",
+                      "SalesChannel": "None",
+                      "Charge": {
+                        "ChargeType": "Tax",
+                        "ChargeAmount": {
+                          "CurrencyCode": "USD",
+                          "CurrencyAmount": 25.37
+                        }
+                      },
+                      "FeeList": [
+                        {
+                          "FeeType": "FixedClosingFee",
+                          "FeeAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          }
+                        }
+                      ],
+                      "PaymentAmountType": "Tax",
+                      "AmountDescription": "Tax",
+                      "FulfillmentChannel": "FulfillmentChannel",
+                      "StoreName": "Etsy"
+                    }
+                  ],
+                  "ServiceProviderCreditEventList": [
+                    {
+                      "ProviderTransactionType": "Free",
+                      "SellerOrderId": "454645645656456",
+                      "MarketplaceId": "1",
+                      "MarketplaceCountryCode": "US",
+                      "SellerId": "4564565546",
+                      "SellerStoreName": "Etsy",
+                      "ProviderId": "1",
+                      "ProviderStoreName": "Etsy",
+                      "TransactionAmount": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      },
+                      "TransactionCreationDate": "2020-02-05T13:56:00.363Z"
+                    }
+                  ],
+                  "RentalTransactionEventList": [
+                    {
+                      "AmazonOrderId": "444-555-3343433",
+                      "RentalEventType": "string",
+                      "ExtensionLength": 0,
+                      "PostedDate": "2020-02-05T13:56:00.363Z",
+                      "RentalChargeList": [
+                        {
+                          "ChargeType": "Tax",
+                          "ChargeAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          }
+                        }
+                      ],
+                      "RentalFeeList": [
+                        {
+                          "FeeType": "FixedClosingFee",
+                          "FeeAmount": {
+                            "CurrencyCode": "USD",
+                            "CurrencyAmount": 25.37
+                          }
+                        }
+                      ],
+                      "MarketplaceName": "1",
+                      "RentalInitialValue": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      },
+                      "RentalReimbursement": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      },
+                      "RentalTaxWithheldList": [
+                        {
+                          "TaxCollectionModel": "Free",
+                          "TaxesWithheld": [
+                            {
+                              "ChargeType": "Tax",
+                              "ChargeAmount": {
+                                "CurrencyCode": "USD",
+                                "CurrencyAmount": 25.37
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "ProductAdsPaymentEventList": [
+                    {
+                      "postedDate": "2020-02-05T13:56:00.363Z",
+                      "transactionType": "Free",
+                      "invoiceId": "3454535453",
+                      "baseValue": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      },
+                      "taxValue": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      },
+                      "transactionValue": {
+                        "CurrencyCode": "USD",
+                        "CurrencyAmount": 25.37
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2007
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.103,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-08-26T14:09:07.943Z",
+        "time": 0.038,
+        "_seq": 43,
+        "_rule": null,
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/some/completely/unknown/endpoint/path' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/some/completely/unknown/endpoint/path",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 404,
+          "statusText": "Not Found",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 109,
+            "mimeType": "application/json",
+            "text": "{\"HasError\": true, \"ErrorMessages\": [\"mock_server: no route for GET /some/completely/unknown/endpoint/path\"]}",
+            "_json": {
+              "HasError": true,
+              "ErrorMessages": [
+                "mock_server: no route for GET /some/completely/unknown/endpoint/path"
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 109
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.038,
+          "receive": 0
+        }
+      }
+    ]
+  }
+}

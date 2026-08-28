@@ -1,0 +1,100 @@
+[
+  {
+    "source_file": "models/vendor-direct-fulfillment-inventory-api-model/vendorDirectFulfillmentInventoryV1.json",
+    "domain": "vendor-direct-fulfillment-inventory",
+    "path": "/vendor/directFulfillment/inventory/v1/warehouses/{warehouseId}/items",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "inventory": {
+              "sellingParty": {
+                "partyId": "VENDORID"
+              },
+              "isFullUpdate": false,
+              "items": [
+                {
+                  "buyerProductIdentifier": "ABCD4562",
+                  "vendorProductIdentifier": "7Q89K11",
+                  "availableQuantity": {
+                    "amount": 10,
+                    "unitOfMeasure": "Each"
+                  },
+                  "isObsolete": false
+                },
+                {
+                  "buyerProductIdentifier": "ABCD4563",
+                  "vendorProductIdentifier": "7Q89K12",
+                  "availableQuantity": {
+                    "amount": 15,
+                    "unitOfMeasure": "Each"
+                  },
+                  "isObsolete": false
+                },
+                {
+                  "buyerProductIdentifier": "ABCD4564",
+                  "vendorProductIdentifier": "7Q89K13",
+                  "availableQuantity": {
+                    "amount": 20,
+                    "unitOfMeasure": "Each"
+                  },
+                  "isObsolete": false
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionId": "20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-direct-fulfillment-inventory-api-model/vendorDirectFulfillmentInventoryV1.json",
+    "domain": "vendor-direct-fulfillment-inventory",
+    "path": "/vendor/directFulfillment/inventory/v1/warehouses/{warehouseId}/items",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_2",
+    "request": {
+      "parameters": {
+        "body": {}
+      }
+    },
+    "response": {
+      "payload": {
+        "transactionId": "mock-TransactionId-20190905010908-8a3b6901-ef20-412f-9270-21c021796605"
+      }
+    }
+  },
+  {
+    "source_file": "models/vendor-direct-fulfillment-inventory-api-model/vendorDirectFulfillmentInventoryV1.json",
+    "domain": "vendor-direct-fulfillment-inventory",
+    "path": "/vendor/directFulfillment/inventory/v1/warehouses/{warehouseId}/items",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "warehouseId": {
+          "value": "DUMMYCODE"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid transmission ID.",
+          "details": ""
+        }
+      ]
+    }
+  }
+]

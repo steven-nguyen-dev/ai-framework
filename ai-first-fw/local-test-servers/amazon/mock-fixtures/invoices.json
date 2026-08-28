@@ -1,0 +1,692 @@
+[
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/attributes",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        }
+      }
+    },
+    "response": {
+      "invoicesAttributes": {
+        "invoiceStatusOptions": [
+          {
+            "description": "The government authorized the invoice.",
+            "value": "AUTHORIZED"
+          },
+          {
+            "description": "The government rejected the invoice.",
+            "value": "REJECTED"
+          },
+          {
+            "description": "The invoice is canceled.",
+            "value": "CANCELED"
+          }
+        ],
+        "invoiceTypeOptions": [],
+        "transactionIdentifierNameOptions": [],
+        "transactionTypeOptions": []
+      }
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/attributes",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required parameter: 'marketplaceId'",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/documents/{invoicesDocumentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "invoicesDocumentId": {
+          "value": "18c598f5-75db-4c1a-bd3e-4c64b36781c5"
+        }
+      }
+    },
+    "response": {
+      "invoicesDocument": {
+        "invoicesDocumentId": "18c598f5-75db-4c1a-bd3e-4c64b36781c5",
+        "invoicesDocumentUrl": "https://invoicesdocumentbucket.s3.eu-east-1.amazonaws.com/18c598f5-75db-4c1a-bd3e-4c64b36781c5.xml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<CREDENTIAL>&X-Amz-Date=20240710T171315Z&X-Amz-Expires=300&X-Amz-Signature=<SIGNATURE>&X-Amz-SignedHeaders=host"
+      }
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/documents/{invoicesDocumentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required parameter 'invoiceId'",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports",
+    "method": "POST",
+    "status": 202,
+    "test_case": "CASE_202_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "dateEnd": "2024-07-30T23:59:59",
+            "dateStart": "2024-07-01T00:00:00",
+            "externalInvoiceId": "1283743",
+            "fileFormat": "XML",
+            "invoiceType": "SYMBOLIC_RETURN",
+            "marketplaceId": "A2Q3Y263D00KWC",
+            "series": "32",
+            "statuses": [
+              "AUTHORIZED"
+            ],
+            "transactionIdentifier": {
+              "name": "BUSINESS_TRANSACTION_ID",
+              "id": "94cd4e1a-5cc5-486d-b592-045a95a168e1"
+            },
+            "transactionType": "CUSTOMER_SALES"
+          }
+        }
+      }
+    },
+    "response": {
+      "exportId": "4bdd8293-0cd7-4208-bed5-78b2c6ecefef"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required attribute(s): 'marketplaceId'.",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "dateEnd": {
+          "value": "2024-07-10T23:59:59.000Z"
+        },
+        "dateStart": {
+          "value": "2024-07-10T00:00:00.000Z"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "pageSize": {
+          "value": 1
+        },
+        "status": {
+          "value": "DONE"
+        }
+      }
+    },
+    "response": {
+      "exports": [
+        {
+          "errorMessage": "",
+          "exportId": "4bdd8293-0cd7-4208-bed5-78b2c6ecefef",
+          "generateExportFinishedAt": "2024-07-10T16:00:00.000Z",
+          "generateExportStartedAt": "2024-07-10T15:00:00.000Z",
+          "invoicesDocumentIds": [
+            "18c598f5-75db-4c1a-bd3e-4c64b36781c5"
+          ],
+          "status": "DONE"
+        }
+      ],
+      "nextToken": "WTtGLzlBkat22iOI5C1yrpSPqMpz9UHYxdvm5U4DqEVJL5hqxv9xMuXe3eg35i17"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "nextToken": {
+          "value": "WTtGLzlBkat22iOI5C1yrpSPqMpz9UHYxdvm5U4DqEVJL5hqxv9xMuXe3eg35i17"
+        },
+        "status": {
+          "value": "DONE"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Specifying nextToken with any other parameters will cause the request to fail.",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports/{exportId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "exportId": {
+          "value": "4bdd8293-0cd7-4208-bed5-78b2c6ecefef"
+        }
+      }
+    },
+    "response": {
+      "export": {
+        "errorMessage": "",
+        "exportId": "4bdd8293-0cd7-4208-bed5-78b2c6ecefef",
+        "generateExportFinishedAt": "2024-07-10T16:00:00.000Z",
+        "generateExportStartedAt": "2024-07-10T15:00:00.000Z",
+        "invoicesDocumentIds": [
+          "18c598f5-75db-4c1a-bd3e-4c64b36781c5"
+        ],
+        "status": "DONE"
+      }
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/exports/{exportId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required parameter 'exportId'",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests",
+    "method": "POST",
+    "status": 204,
+    "test_case": "CASE_204_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "contexts": [
+              {
+                "name": "testCarrier",
+                "address": "An address",
+                "contextType": "CarrierDetailsContext",
+                "federalTaxId": "46204217000177",
+                "regionCode": "SP",
+                "regionTaxId": "503348865972",
+                "vehicleLicensePlate": "AAA0A00",
+                "vehicleRegistrationRegionCode": "SP"
+              }
+            ],
+            "inboundPlanId": "wf44e473-3f4d-4c6d-a80b-230e644b0c39",
+            "invoiceType": "REMITTANCE",
+            "marketplaceId": "A2Q3Y263D00KWC",
+            "shipmentId": "sh109b72-7b27-4e97-9fd1-3b56915fbc95",
+            "transactionType": "INBOUND_SHIPMENT"
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required attribute(s): 'marketplaceId'.",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "inboundPlanId": {
+          "value": "wf44e473-3f4d-4c6d-a80b-230e644b0c39"
+        },
+        "invoiceType": {
+          "value": "REMITTANCE"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "shipmentId": {
+          "value": "sh109b72-7b27-4e97-9fd1-3b56915fbc95"
+        },
+        "transactionType": {
+          "value": "INBOUND_SHIPMENT"
+        }
+      }
+    },
+    "response": {
+      "invoiceExternalDocumentId": "35230948404147000173550010000001961",
+      "status": "SUCCESS"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "inboundPlanId": {
+          "value": "wfa8d9de-67a7-4e59-bb5f-a47de029e7bd"
+        },
+        "invoiceType": {
+          "value": "REMITTANCE"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "shipmentId": {
+          "value": "sh762cac-15f1-4d74-a03f-02f3197e4238"
+        },
+        "transactionType": {
+          "value": "INBOUND_SHIPMENT"
+        }
+      }
+    },
+    "response": {
+      "invoiceErrors": [
+        {
+          "description": "Rejei\u00e7\u00e3o: C\u00f3digo Regime Tribut\u00e1rio do emitente diverge do cadastro na SEFAZ",
+          "errorCode": "481"
+        }
+      ],
+      "status": "ERROR"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required attribute(s): 'marketplaceId'.",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests/{shipmentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "fileFormat": {
+          "value": "PDF"
+        },
+        "inboundPlanId": {
+          "value": "wfa8d9de-67a7-4e59-bb5f-a47de029e7bd"
+        },
+        "invoiceType": {
+          "value": "REMITTANCE"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "shipmentId": {
+          "value": "sh762cac-15f1-4d74-a03f-02f3197e4238"
+        },
+        "transactionType": {
+          "value": "INBOUND_SHIPMENT"
+        }
+      }
+    },
+    "response": {
+      "invoiceDocument": {
+        "invoiceDocumentUrl": "https://invoicesdocumentbucket.s3.eu-east-1.amazonaws.com/18c598f5-75db-4c1a-bd3e-4c64b36781c5.xml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<CREDENTIAL>&X-Amz-Date=20240710T171315Z&X-Amz-Expires=300&X-Amz-Signature=<SIGNATURE>&X-Amz-SignedHeaders=host"
+      }
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/governmentInvoiceRequests/{shipmentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required attribute(s): 'marketplaceId'.",
+          "message": "Request has missing or invalid parameters and cannot be parsed."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "dateEnd": {
+          "value": "2024-07-20T23:59:59"
+        },
+        "dateStart": {
+          "value": "2024-07-01T00:00:00"
+        },
+        "invoiceType": {
+          "value": "SYMBOLIC_RETURN"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "pageSize": {
+          "value": 1
+        },
+        "sortBy": {
+          "value": "START_DATE_TIME"
+        },
+        "sortOrder": {
+          "value": "DESC"
+        },
+        "transactionIdentifierId": {
+          "value": "94cd4e1a-5cc5-486d-b592-045a95a168e1"
+        },
+        "transactionIdentifierName": {
+          "value": "BUSINESS_TRANSACTION_ID"
+        },
+        "transactionType": {
+          "value": "CUSTOMER_SALES"
+        }
+      }
+    },
+    "response": {
+      "invoices": [
+        {
+          "date": "2024-07-10T15:00:00.000Z",
+          "errorCode": "",
+          "externalInvoiceId": "1283743",
+          "govResponse": "",
+          "id": "ad5b9dcd-6981-4dc4-a3d7-dd2568298a94",
+          "invoiceType": "SYMBOLIC_RETURN",
+          "series": "32",
+          "status": "AUTHORIZED",
+          "transactionIds": [
+            {
+              "name": "BUSINESS_TRANSACTION_ID",
+              "id": "94cd4e1a-5cc5-486d-b592-045a95a168e1"
+            }
+          ],
+          "transactionType": "CUSTOMER_SALES"
+        }
+      ],
+      "nextToken": "WTtGLzlBkat22iOI5C1yrpSPqMpz9UHYxdvm5U4DqEVJL5hqxv9xMuXe3eg35i17"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "externalInvoiceId": {
+          "value": "1283743"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "series": {
+          "value": "32"
+        }
+      }
+    },
+    "response": {
+      "invoices": [
+        {
+          "date": "2024-07-10T15:00:00.000Z",
+          "errorCode": "",
+          "externalInvoiceId": "1283743",
+          "govResponse": "",
+          "id": "ad5b9dcd-6981-4dc4-a3d7-dd2568298a94",
+          "invoiceType": "SYMBOLIC_RETURN",
+          "series": "32",
+          "status": "AUTHORIZED",
+          "transactionIds": [
+            {
+              "name": "BUSINESS_TRANSACTION_ID",
+              "id": "94cd4e1a-5cc5-486d-b592-045a95a168e1"
+            }
+          ],
+          "transactionType": "CUSTOMER_SALES"
+        }
+      ],
+      "nextToken": "WTtGLzlBkat22iOI5C1yrpSPqMpz9UHYxdvm5U4DqEVJL5hqxv9xMuXe3eg35i17"
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        },
+        "nextToken": {
+          "value": "WTtGLzlBkat22iOI5C1yrpSPqMpz9UHYxdvm5U4DqEVJL5hqxv9xMuXe3eg35i17"
+        },
+        "statuses": {
+          "value": [
+            "REJECTED"
+          ]
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Specifying nextToken with any other parameters will cause the request to fail.",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices/{invoiceId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "invoiceId": {
+          "value": "ad5b9dcd-6981-4dc4-a3d7-dd2568298a94"
+        },
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        }
+      }
+    },
+    "response": {
+      "invoice": {
+        "date": "2024-07-10T15:00:00.000Z",
+        "errorCode": "",
+        "externalInvoiceId": "1283743",
+        "govResponse": "",
+        "id": "ad5b9dcd-6981-4dc4-a3d7-dd2568298a94",
+        "invoiceType": "CUSTOMER_SALES",
+        "series": "32",
+        "status": "AUTHORIZED",
+        "transactionIds": [
+          {
+            "name": "BUSINESS_TRANSACTION_ID",
+            "id": "94cd4e1a-5cc5-486d-b592-045a95a168e1"
+          }
+        ],
+        "transactionType": "CUSTOMER_SALES_SYMBOLIC"
+      }
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices/{invoiceId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A2Q3Y263D00KWC"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required parameter 'invoiceId'",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/invoices-api-model/InvoicesApiModel_2024-06-19.json",
+    "domain": "invoices",
+    "path": "/tax/invoices/2024-06-19/invoices/{invoiceId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_2",
+    "request": {
+      "parameters": {
+        "invoiceId": {
+          "value": "ad5b9dcd-6981-4dc4-a3d7-dd2568298a94"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "400",
+          "details": "Missing required parameter 'marketplaceId'",
+          "message": "Invalid Request."
+        }
+      ]
+    }
+  }
+]

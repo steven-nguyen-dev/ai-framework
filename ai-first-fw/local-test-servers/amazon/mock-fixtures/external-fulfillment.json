@@ -1,0 +1,4286 @@
+[
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentInventory_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/inventory/2024-09-11/inventories",
+    "method": "POST",
+    "status": 207,
+    "test_case": "CASE_207_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "requests": [
+              {
+                "method": "POST",
+                "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku1",
+                "body": {
+                  "quantity": 15,
+                  "clientSequenceNumber": 12345678,
+                  "marketplaceAttributes": {
+                    "marketplaceId": "AXJDDKDFDKDF",
+                    "channelName": "FBA"
+                  }
+                }
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku2",
+                "body": {
+                  "marketplaceAttributes": {
+                    "marketplaceId": "AXJDDKDFDKDF",
+                    "channelName": "FBA"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "responses": [
+        {
+          "status": {
+            "statusCode": 200,
+            "reasonPhrase": "Success"
+          },
+          "body": {
+            "locationId": "EXSB",
+            "sellableQuantity": 20,
+            "reservedQuantity": 5,
+            "clientSequenceNumber": 12345678,
+            "marketplaceAttributes": {
+              "marketplaceId": "AXJDDKDFDKDF",
+              "channelName": "FBA"
+            },
+            "skuId": "efptestsku1",
+            "actionableErrors": []
+          }
+        },
+        {
+          "status": {
+            "statusCode": 400,
+            "reasonPhrase": "Invalid Input"
+          },
+          "body": {
+            "skuId": "efptestsku2",
+            "locationId": "EXSB",
+            "actionableErrors": [
+              {
+                "errorType": "INVALID_SKU",
+                "errorSubType": "The requested Sku does not exist for the seller in requested marketplace."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentInventory_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/inventory/2024-09-11/inventories",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "requests": [
+              {
+                "method": "POST",
+                "uri": "/inventory/update?locationId=EXSB&skuId=efptestsku3",
+                "body": {
+                  "quantity": 15,
+                  "clientSequenceNumber": 12345678,
+                  "marketplaceAttributes": {
+                    "marketplaceId": "AXJDDKDFDKDF",
+                    "channelName": "FBA"
+                  }
+                }
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku4",
+                "body": {
+                  "marketplaceAttributes": {
+                    "marketplaceId": "AXJDDKDFDKDF",
+                    "channelName": "FBA"
+                  }
+                }
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku4",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku5",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku6",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku7",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku8",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku9",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku10",
+                "body": {}
+              },
+              {
+                "method": "POST",
+                "uri": "/inventory/fetch?locationId=EXSB&skuId=efptestsku11",
+                "body": {}
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "BATCH_SIZE_EXCEED",
+          "message": "Maximum number for requests supported in batch is 10."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdOneShipmentOneItemOneQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "1002400773021",
+            "customerOrderId": "407-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "TEST_CASE_200_FBA_SHIPMENT_ID",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2020-06-09T18:13:18Z",
+          "fulfillmentLocationId": "TEST_CASE_200_LOCATION_ID",
+          "id": "ee39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2020-06-09T23:10:55Z",
+          "merchantSku": "1002400773021",
+          "numberOfUnits": 1,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "IN-ABCD-124"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentOneItemOneQty200",
+            "fulfillmentOrderId": "11d2dc2e-b678-5e64-a1db-688d5bf9423e"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "267232370774"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "10024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_2",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdOneShipmentMultItemOneQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "207-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51EzWkeh",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "ff40dee3-3bbc-47b6-a5b1-7b6a1c6d45e3",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 1,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-102"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentMultItemOneQty200",
+            "fulfillmentOrderId": "21d2dc2e-b678-5e64-a1db-688d5bf9423f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370885"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "20024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT2",
+            "customerOrderId": "217-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51EzWkeh",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "fg40dee3-3cbc-47b6-a5b1-7b6a1c6d45e3",
+          "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+          "merchantSku": "SerialYT2",
+          "numberOfUnits": 1,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-103"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentMultItemOneQty200",
+            "fulfillmentOrderId": "32d3dc4e-b678-5e64-a1db-688d5bf9423f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370832"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "20024773658"
+            },
+            "deliveryDateTime": "2021-03-19T18:15:09Z",
+            "pickupDateTime": "2021-03-20T21:15:09Z"
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_3",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdOneShipmentOneItemMultQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT3",
+            "customerOrderId": "307-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "B40ExWpdh",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "replanningDetails": {
+            "previousTrackingInfo": [
+              {
+                "carrierName": "ATS",
+                "trackingId": "377232370329"
+              },
+              {
+                "carrierName": "ATS",
+                "trackingId": "377232370330"
+              }
+            ]
+          },
+          "creationDateTime": "2021-03-16T15:23:59Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "ga54cdd9-9caa-47b6-a5b1-7b6a1c6d43d2",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT3",
+          "numberOfUnits": 10,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-191"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentOneItemMultQty200",
+            "fulfillmentOrderId": "22f2dc2e-c671-5e64-a1db-688d5bf9423r"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "377232370331"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "30024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_4",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdOneShipmentMultItemMultQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "407-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "R51EzWVee",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "fz40dee4-3bbc-47b6-a5b1-7b6a1c6d45e3",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 10,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-106"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentMultItemMultQty200",
+            "fulfillmentOrderId": "21d2dc2e-b678-5e64-a1db-688d5bf9423f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370885"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "40024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT2",
+            "customerOrderId": "417-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "R51EzWVee",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-19T11:13:28Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "gf40dee3-33bc-47b6-a5b1-7b6a1c6d45e4",
+          "lastUpdatedDateTime": "2021-03-19T21:13:01Z",
+          "merchantSku": "SerialYT2",
+          "numberOfUnits": 8,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-107"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdOneShipmentMultItemMultQty200",
+            "fulfillmentOrderId": "892d3dc4e-b678-5e64-a1db-688d5bf9422g"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "7672323708009"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "40024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_5",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdMultShipmentMultItemOneQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "507-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51EzWkeh",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:34:21Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "bd12dee3-3bbc-47b6-a5b1-7b6a1c6d45a4",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 1,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-192"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdMultShipmentMultItemOneQty200",
+            "fulfillmentOrderId": "32e1cd2e-b678-5e64-a1db-688d5bf9432k"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "2672323708116"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "50024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT2",
+            "customerOrderId": "517-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "E11DrWkjs",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "wr41dee3-3bbc-47b6-a5b1-7b6a1c6d45e1",
+          "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+          "merchantSku": "SerialYT2",
+          "numberOfUnits": 1,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-111"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdMultShipmentMultItemOneQty200",
+            "fulfillmentOrderId": "56a3dc4e-b678-5f64-w1db-688d5bf9423f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232310831"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "50024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_6",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdMultShipmentMultItemMultQty200"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "607-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "E51FzWkek",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:34:21Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "jk12dee3-3bbc-37b6-a5b1-7b6a1c6d45a6",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 19,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-199"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdMultShipmentMultItemMultQty200",
+            "fulfillmentOrderId": "32e1cd2e-b678-5e64-a1db-688d5bf9432k"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "2672323708116"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "60024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT2",
+            "customerOrderId": "617-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "R21RrWkjz",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:28Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "fb21dee4-3bbc-47b6-a5b1-7b2a1c6d45e2",
+          "lastUpdatedDateTime": "2021-03-19T21:14:09Z",
+          "merchantSku": "SerialYT2",
+          "numberOfUnits": 12,
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-115"
+            },
+            "returnReason": "Missed",
+            "rmaId": "rmaIdMultShipmentMultItemMultQty200",
+            "fulfillmentOrderId": "67b2dc4e-b678-5f64-w1db-688d5bf91fv"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "631232310132"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "60024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_7",
+    "request": {
+      "parameters": {
+        "returnLocationId": {
+          "value": "testReturnLocationId"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "807-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51ExWpdg",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "aa39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-140"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "22e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "357232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT2",
+            "customerOrderId": "817-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "J51ExWpea",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:25Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "bb39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-18T20:13:22Z",
+          "merchantSku": "SerialYT2",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-141"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "23e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "357232370196"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "DELIVERED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT3",
+            "customerOrderId": "827-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+          "merchantSku": "SerialYT3",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-143"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "337232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT4",
+            "customerOrderId": "837-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "E51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:24:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+          "merchantSku": "SerialYT4",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-142"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "347232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT5",
+            "customerOrderId": "847-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "F51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:25:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+          "merchantSku": "SerialYT5",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-148"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_8",
+    "request": {
+      "parameters": {
+        "returnLocationId": {
+          "value": "testReturnLocationId"
+        },
+        "status": {
+          "value": "CREATED"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT1",
+            "customerOrderId": "807-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51ExWpdg",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-18T15:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "aa39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-18T20:13:08Z",
+          "merchantSku": "SerialYT1",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-140"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "22e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "357232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT3",
+            "customerOrderId": "827-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+          "merchantSku": "SerialYT3",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-143"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "337232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT4",
+            "customerOrderId": "837-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "E51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:24:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+          "merchantSku": "SerialYT4",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-142"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "347232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT5",
+            "customerOrderId": "847-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "F51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:25:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+          "merchantSku": "SerialYT5",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-148"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_9",
+    "request": {
+      "parameters": {
+        "returnLocationId": {
+          "value": "testReturnLocationId"
+        },
+        "status": {
+          "value": "CREATED"
+        },
+        "lastUpdatedAfter": {
+          "value": "2021-03-20T00:00:00Z"
+        }
+      }
+    },
+    "response": {
+      "returns": [
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT3",
+            "customerOrderId": "827-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "D51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:23:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "cc39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:13:08Z",
+          "merchantSku": "SerialYT3",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-143"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "24e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "337232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT4",
+            "customerOrderId": "837-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "E51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:24:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "dd39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:14:08Z",
+          "merchantSku": "SerialYT4",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-142"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "25e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "347232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        },
+        {
+          "marketplaceChannelDetails": {
+            "channelSku": "SerialYT5",
+            "customerOrderId": "847-7727827-8514700",
+            "merchantId": "YOUR_MERCHANT_ID",
+            "returnLocationId": "EDD9",
+            "shipmentId": "F51ExWpdp",
+            "marketplaceChannel": {
+              "marketplaceName": "AMAZON_US",
+              "channelName": "FBA"
+            }
+          },
+          "otpDetails": {
+            "otp": "703669",
+            "validTill": 1612933142
+          },
+          "packageDeliveryMode": "WITH_OTP",
+          "creationDateTime": "2021-03-22T22:25:58Z",
+          "fulfillmentLocationId": "43cd8cd4-a944-4fa8-a584-5e3b3efdb045",
+          "id": "gg39cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+          "lastUpdatedDateTime": "2021-03-22T23:15:08Z",
+          "merchantSku": "SerialYT5",
+          "numberOfUnits": 1,
+          "returnLocationId": "testReturnLocationId",
+          "returnMetadata": {
+            "invoiceInformation": {
+              "id": "EDD9-148"
+            },
+            "returnReason": "Missed",
+            "rmaId": "Es1ZkjzkRRMA",
+            "fulfillmentOrderId": "26e2dc2e-b678-5e64-a1db-688d5bf9434f"
+          },
+          "returnShippingInfo": {
+            "forwardTrackingInfo": {
+              "carrierName": "ATS",
+              "trackingId": "367232370195"
+            },
+            "reverseTrackingInfo": {
+              "carrierName": "UPSN",
+              "trackingId": "70024773658"
+            }
+          },
+          "returnType": "CUSTOMER",
+          "returnSubType": "NORMAL",
+          "status": "CREATED"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "lastUpdatedAfter": {
+          "value": "1110-13-89T43:99:99Z"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "LastUpdatedAfter value is an not a valid ISO date/time object."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdTest403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Forbidden",
+          "message": "Request is forbidden"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 409,
+    "test_case": "CASE_409_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdTest409"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "DuplicateRequest",
+          "message": "Duplicate request found for 'rmaId' 'rmaIdTest409'"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdTest429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RateLimited",
+          "message": "Temporary failure occurred, retry operation after some time."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdTest500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalFailure",
+          "message": "Internal failure occurred, contact Amazon support"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "rmaId": {
+          "value": "rmaIdTest503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Temporary failure occurred, retry operation"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns/{returnId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "returnId": {
+          "value": "rmaIdOneShipmentOneItemOneQty200"
+        }
+      }
+    },
+    "response": {
+      "id": "rmaIdOneShipmentOneItemOneQty200",
+      "returnLocationId": "bdd9cdd9-9caa-47b6-a5b1-7b6a1c6d43d1",
+      "merchantSku": "mSku1",
+      "returnType": "CUSTOMER",
+      "status": "CARRIER_NOTIFIED_TO_PICK_UP_FROM_CUSTOMER",
+      "numberOfUnits": 1,
+      "fulfillmentLocationId": "450a6661-1a97-4abd-99e4-45714bcf4439",
+      "creationDateTime": "2021-03-18T15:23:58Z",
+      "lastUpdatedDateTime": "2021-03-18T15:26:59Z",
+      "returnMetadata": {
+        "invoiceInformation": {
+          "id": "EDD5-101"
+        },
+        "returnReason": "Missed",
+        "rmaId": "Test"
+      },
+      "returnShippingInfo": {
+        "forwardTrackingInfo": {
+          "carrierName": "ATS",
+          "trackingId": "156121269663"
+        },
+        "reverseTrackingInfo": {
+          "carrierName": "ATS",
+          "trackingId": "19124773658"
+        }
+      },
+      "marketplaceChannelDetails": {
+        "channelSku": "SerialYT1",
+        "customerOrderId": "107-7727827-8514700",
+        "returnLocationId": "EDD5",
+        "shipmentId": "D39CwZpdj",
+        "marketplaceChannel": {
+          "marketplaceName": "AMAZON_IN",
+          "channelName": "FBA"
+        }
+      },
+      "otpDetails": {
+        "otp": "703669",
+        "validTill": 1612933142
+      },
+      "packageDeliveryMode": "WITH_OTP"
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentReturns_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/returns/{returnId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "returnId": {
+          "value": "rmaIdInvalid"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input 'rmaIdInvalid' for parameter 'returnId'"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_LOCATION_ID",
+    "request": {
+      "parameters": {
+        "locationId": {
+          "value": "TEST_CASE_200_LOCATION_ID"
+        },
+        "status": {
+          "value": "CONFIRMED"
+        },
+        "maxResults": {
+          "value": 2
+        }
+      }
+    },
+    "response": {
+      "pagination": {
+        "nextToken": "eyJsYXN0VXBkYXRlZFRpbWVzdGFtcCI6eyJzIjpLL"
+      },
+      "shipments": [
+        {
+          "locationId": "ABCD",
+          "marketplaceAttributes": {
+            "channelName": "FBA",
+            "marketplaceId": "A21TJRUUN4KGV",
+            "merchantId": "ABCDEFGH",
+            "customAttributes": [
+              "PRIME"
+            ]
+          },
+          "charges": [
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "160",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "40",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "120",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.18",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "33",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "11",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "22",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "193",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "41",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "152",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.18",
+                "charge": {
+                  "baseAmount": {
+                    "value": "33",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "11",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "22",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "TOTAL"
+            },
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "40",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "10",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "30",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.25",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "10",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "50",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "15",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "35",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.25",
+                "charge": {
+                  "baseAmount": {
+                    "value": "10",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "SHIPPING"
+            }
+          ],
+          "creationDateTime": "2020-06-08T17:23:58Z",
+          "id": "TEST_CASE_200_FBA_SHIPMENT_ID",
+          "lastUpdatedDateTime": "2020-06-08T22:10:15Z",
+          "earliestPackDateTime": "2020-06-09 14:00:00Z",
+          "lineItems": [
+            {
+              "shipmentLineItemId": "1",
+              "merchantSku": "1002400773021",
+              "numberOfUnits": 2,
+              "complianceAttributes": {
+                "serialNumberRequirement": "DISALLOWED",
+                "hazmatLabelsRequirement": "DISALLOWED",
+                "countryOfOriginRequirement": "DISALLOWED",
+                "itemValueRequirement": "DISALLOWED"
+              },
+              "giftAttributes": {
+                "giftWrapRequirement": "DISALLOWED",
+                "giftMessagePresence": "ABSENT"
+              },
+              "charges": [
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "100",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "80",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.18",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "18",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "6",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "12",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "118",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "26",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "92",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "TOTAL",
+                    "rate": "0.18",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "18",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "6",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "12",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "PRODUCT"
+                },
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.25",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "0",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "IGST",
+                    "rate": "0.25",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "0",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "GIFT"
+                }
+              ],
+              "hsnCode": "HSN0001",
+              "customAttributes": [
+                {
+                  "key": "warehouseBinIdentifier",
+                  "value": "P124",
+                  "type": "STRING"
+                },
+                {
+                  "key": "customSkuUnitIdentifiers",
+                  "value": "[\"id1\", \"id2\", \"id3\"]",
+                  "type": "JSON_STRING"
+                }
+              ]
+            },
+            {
+              "shipmentLineItemId": "2",
+              "merchantSku": "1002400773022",
+              "numberOfUnits": 2,
+              "complianceAttributes": {
+                "serialNumberRequirement": "DISALLOWED",
+                "hazmatLabelsRequirement": "DISALLOWED",
+                "countryOfOriginRequirement": "DISALLOWED",
+                "itemValueRequirement": "DISALLOWED"
+              },
+              "giftAttributes": {
+                "giftWrapRequirement": "DISALLOWED",
+                "giftMessagePresence": "ABSENT"
+              },
+              "charges": [
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "100",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "80",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.18",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "18",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "6",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "12",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "118",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "26",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "92",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "TOTAL",
+                    "rate": "0.18",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "18",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "6",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "12",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "PRODUCT"
+                },
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.25",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "0",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "IGST",
+                    "rate": "0.25",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "0",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "GIFT"
+                }
+              ],
+              "hsnCode": "HSN0002",
+              "customAttributes": [
+                {
+                  "key": "warehouseBinIdentifier",
+                  "value": "P124",
+                  "type": "STRING"
+                },
+                {
+                  "key": "customSkuUnitIdentifiers",
+                  "value": "[\"id1\", \"id2\", \"id3\"]",
+                  "type": "JSON_STRING"
+                }
+              ]
+            }
+          ],
+          "shipmentInfo": {
+            "numberOfUnits": 4,
+            "priority": "LOW",
+            "shipmentType": "NEW",
+            "buyerOrderId": "407-7727827-8514700",
+            "orderStatesEligibleForRejection": [
+              "ACCEPTED",
+              "CONFIRMED",
+              "PACKAGE_CREATED",
+              "PICKUP_SLOT_RETRIEVED"
+            ],
+            "orderPlacedTimestamp": "1604923992000",
+            "processingSource": "INTERNAL_PLATFORM"
+          },
+          "shipmentRequirements": {
+            "pSlip": {
+              "requirement": "NOT_REQUIRED",
+              "status": "NOT_GENERATED"
+            },
+            "invoice": {
+              "requirement": "REQUIRED",
+              "status": "PENDING"
+            }
+          },
+          "invoiceInfo": {
+            "invoiceId": "IN-ABCD-124",
+            "creationDateTime": "2020-06-08T17:23:58Z"
+          },
+          "shippingInfo": {
+            "recommendedShipMethod": "ATS_STANDARD",
+            "expectedShippingDateTimeInUTC": "2020-06-09T14:00:00Z",
+            "shipToAddress": {
+              "postalCode": "560055"
+            }
+          },
+          "status": "CONFIRMED",
+          "subStatus": "OUT_FOR_DELIVERY",
+          "reason": "OutForDelivery"
+        },
+        {
+          "locationId": "ABCD",
+          "marketplaceAttributes": {
+            "channelName": "FBA",
+            "marketplaceId": "A21TJRUUN4KGV",
+            "merchantId": "ABCDEFGH",
+            "customAttributes": [
+              "PRIME"
+            ]
+          },
+          "charges": [
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "160",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "140",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.18",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "33",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "11",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "22",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "193",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "41",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "152",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.18",
+                "charge": {
+                  "baseAmount": {
+                    "value": "33",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "11",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "22",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "TOTAL"
+            },
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "40",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "10",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "30",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.25",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "10",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "50",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "15",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "35",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.25",
+                "charge": {
+                  "baseAmount": {
+                    "value": "10",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "SHIPPING"
+            }
+          ],
+          "creationDateTime": "2020-06-08T11:13:58Z",
+          "id": "TEST_CASE_200_MFN_SHIPMENT_ID",
+          "lastUpdatedDateTime": "2020-06-08T12:00:15Z",
+          "earliestPackDateTime": "2020-06-09 14:00:00Z",
+          "lineItems": [
+            {
+              "shipmentLineItemId": "1",
+              "merchantSku": "1002400773021",
+              "numberOfUnits": 2,
+              "complianceAttributes": {
+                "serialNumberRequirement": "DISALLOWED",
+                "hazmatLabelsRequirement": "DISALLOWED",
+                "countryOfOriginRequirement": "DISALLOWED",
+                "itemValueRequirement": "DISALLOWED"
+              },
+              "giftAttributes": {
+                "giftWrapRequirement": "DISALLOWED",
+                "giftMessagePresence": "ABSENT"
+              },
+              "charges": [
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "100",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "80",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.18",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "18",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "6",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "12",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "118",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "26",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "92",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "TOTAL",
+                    "rate": "0.18",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "18",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "6",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "12",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "PRODUCT"
+                },
+                {
+                  "baseCharge": {
+                    "baseAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "20",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "taxBreakup": [
+                    {
+                      "type": "IGST",
+                      "rate": "0.25",
+                      "charge": {
+                        "baseAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        },
+                        "discountAmount": {
+                          "value": "0",
+                          "currencyCode": "INR"
+                        },
+                        "netAmount": {
+                          "value": "5",
+                          "currencyCode": "INR"
+                        }
+                      }
+                    }
+                  ],
+                  "totalCharge": {
+                    "baseAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "25",
+                      "currencyCode": "INR"
+                    }
+                  },
+                  "totalTax": {
+                    "type": "IGST",
+                    "rate": "0.25",
+                    "charge": {
+                      "baseAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      },
+                      "discountAmount": {
+                        "value": "0",
+                        "currencyCode": "INR"
+                      },
+                      "netAmount": {
+                        "value": "5",
+                        "currencyCode": "INR"
+                      }
+                    }
+                  },
+                  "chargeType": "GIFT"
+                }
+              ],
+              "hsnCode": "HSN0001"
+            }
+          ],
+          "shipmentInfo": {
+            "numberOfUnits": 2,
+            "priority": "LOW",
+            "shipmentType": "NEW",
+            "buyerOrderId": "407-7727827-8514700",
+            "orderStatesEligibleForRejection": [
+              "ACCEPTED",
+              "CONFIRMED",
+              "PACKAGE_CREATED",
+              "PICKUP_SLOT_RETRIEVED"
+            ],
+            "orderPlacedTimestamp": "1604923992000",
+            "processingSource": "INTERNAL_PLATFORM"
+          },
+          "shipmentRequirements": {
+            "pSlip": {
+              "requirement": "NOT_REQUIRED",
+              "status": "NOT_GENERATED"
+            },
+            "invoice": {
+              "requirement": "NOT_REQUIRED",
+              "status": "NOT_AVAILABLE"
+            }
+          },
+          "invoiceInfo": {
+            "invoiceId": "IN-ABCD-124",
+            "creationDateTime": "2020-06-08T17:23:58Z"
+          },
+          "packages": [
+            {
+              "id": "001",
+              "dimensions": {
+                "length": {
+                  "value": "10.0",
+                  "dimensionUnit": "CM"
+                },
+                "width": {
+                  "value": "10.0",
+                  "dimensionUnit": "CM"
+                },
+                "height": {
+                  "value": "10.0",
+                  "dimensionUnit": "CM"
+                }
+              },
+              "weight": {
+                "value": "200.0",
+                "weightUnit": "G"
+              },
+              "hazmatLabels": [],
+              "packageLineItems": [
+                {
+                  "packageLineItemId": "1",
+                  "quantity": 1,
+                  "serialNumbers": []
+                }
+              ]
+            }
+          ],
+          "shippingInfo": {
+            "recommendedShipMethod": "ATS_STANDARD",
+            "expectedShippingDateTimeInUTC": "2020-06-09T14:00:00Z",
+            "shipToAddress": {
+              "name": "ABC",
+              "addressLine1": "1st Main Rd",
+              "addressLine2": "Milk Colony",
+              "addressLine3": "Subramanyanagar,2 State, Rajajinagar",
+              "city": "Bengaluru",
+              "state": "Karnataka",
+              "district": "Bengaluru",
+              "municipality": "BBMP",
+              "postalCode": "560055",
+              "countryCode": "IN",
+              "phoneNumber": "080 49019010"
+            }
+          },
+          "status": "CONFIRMED",
+          "subStatus": "OUT_FOR_DELIVERY",
+          "reason": "OutForDelivery"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "locationId": "ABCD",
+      "marketplaceAttributes": {
+        "channelName": "FBA",
+        "marketplaceId": "A21TJRUUN4KGV",
+        "merchantId": "ABCDEFGH",
+        "customAttributes": [
+          "PRIME"
+        ]
+      },
+      "charges": [
+        {
+          "baseCharge": {
+            "baseAmount": {
+              "value": "160",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "30",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "130",
+              "currencyCode": "INR"
+            }
+          },
+          "taxBreakup": [
+            {
+              "type": "IGST",
+              "rate": "0.18",
+              "charge": {
+                "baseAmount": {
+                  "value": "33",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "11",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "22",
+                  "currencyCode": "INR"
+                }
+              }
+            }
+          ],
+          "totalCharge": {
+            "baseAmount": {
+              "value": "193",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "41",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "152",
+              "currencyCode": "INR"
+            }
+          },
+          "totalTax": {
+            "type": "TOTAL",
+            "rate": "0.18",
+            "charge": {
+              "baseAmount": {
+                "value": "33",
+                "currencyCode": "INR"
+              },
+              "discountAmount": {
+                "value": "11",
+                "currencyCode": "INR"
+              },
+              "netAmount": {
+                "value": "22",
+                "currencyCode": "INR"
+              }
+            }
+          },
+          "chargeType": "TOTAL"
+        },
+        {
+          "baseCharge": {
+            "baseAmount": {
+              "value": "40",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "10",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "30",
+              "currencyCode": "INR"
+            }
+          },
+          "taxBreakup": [
+            {
+              "type": "IGST",
+              "rate": "0.25",
+              "charge": {
+                "baseAmount": {
+                  "value": "10",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "5",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "5",
+                  "currencyCode": "INR"
+                }
+              }
+            }
+          ],
+          "totalCharge": {
+            "baseAmount": {
+              "value": "50",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "15",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "35",
+              "currencyCode": "INR"
+            }
+          },
+          "totalTax": {
+            "type": "TOTAL",
+            "rate": "0.25",
+            "charge": {
+              "baseAmount": {
+                "value": "10",
+                "currencyCode": "INR"
+              },
+              "discountAmount": {
+                "value": "5",
+                "currencyCode": "INR"
+              },
+              "netAmount": {
+                "value": "5",
+                "currencyCode": "INR"
+              }
+            }
+          },
+          "chargeType": "SHIPPING"
+        }
+      ],
+      "creationDateTime": "2020-06-08T17:23:58Z",
+      "id": "TEST_CASE_200_FBA_SHIPMENT_ID",
+      "lastUpdatedDateTime": "2020-06-08T22:10:15Z",
+      "earliestPackDateTime": "2020-06-09 14:00:00Z",
+      "lineItems": [
+        {
+          "shipmentLineItemId": "1",
+          "merchantSku": "1002400773021",
+          "numberOfUnits": 2,
+          "complianceAttributes": {
+            "serialNumberRequirement": "DISALLOWED",
+            "hazmatLabelsRequirement": "DISALLOWED",
+            "countryOfOriginRequirement": "DISALLOWED",
+            "itemValueRequirement": "DISALLOWED"
+          },
+          "giftAttributes": {
+            "giftWrapRequirement": "DISALLOWED",
+            "giftMessagePresence": "ABSENT"
+          },
+          "charges": [
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "100",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "80",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.18",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "18",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "6",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "12",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "118",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "26",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "92",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.18",
+                "charge": {
+                  "baseAmount": {
+                    "value": "18",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "6",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "12",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "PRODUCT"
+            },
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.25",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "IGST",
+                "rate": "0.25",
+                "charge": {
+                  "baseAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "0",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "GIFT"
+            }
+          ],
+          "hsnCode": "HSN0001"
+        },
+        {
+          "shipmentLineItemId": "2",
+          "merchantSku": "1002400773022",
+          "numberOfUnits": 2,
+          "complianceAttributes": {
+            "serialNumberRequirement": "DISALLOWED",
+            "hazmatLabelsRequirement": "DISALLOWED",
+            "countryOfOriginRequirement": "DISALLOWED",
+            "itemValueRequirement": "DISALLOWED"
+          },
+          "giftAttributes": {
+            "giftWrapRequirement": "DISALLOWED",
+            "giftMessagePresence": "ABSENT"
+          },
+          "charges": [
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "100",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "80",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.18",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "18",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "6",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "12",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "118",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "26",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "92",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.18",
+                "charge": {
+                  "baseAmount": {
+                    "value": "18",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "6",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "12",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "PRODUCT"
+            },
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.25",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "IGST",
+                "rate": "0.25",
+                "charge": {
+                  "baseAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "0",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "GIFT"
+            }
+          ],
+          "hsnCode": "HSN0002"
+        }
+      ],
+      "shipmentInfo": {
+        "numberOfUnits": 4,
+        "priority": "LOW",
+        "shipmentType": "NEW",
+        "buyerOrderId": "407-7727827-8514700",
+        "orderStatesEligibleForRejection": [
+          "ACCEPTED",
+          "CONFIRMED",
+          "PACKAGE_CREATED",
+          "PICKUP_SLOT_RETRIEVED"
+        ],
+        "orderPlacedTimestamp": "1604923992000",
+        "processingSource": "INTERNAL_PLATFORM"
+      },
+      "invoiceInfo": {
+        "invoiceId": "IN-ABCD-124",
+        "creationDateTime": "2021-05-12T17:32:28Z"
+      },
+      "shipmentRequirements": {
+        "pSlip": {
+          "requirement": "NOT_REQUIRED",
+          "status": "NOT_GENERATED"
+        },
+        "invoice": {
+          "requirement": "REQUIRED",
+          "status": "AVAILABLE"
+        }
+      },
+      "shippingInfo": {
+        "recommendedShipMethod": "ATS_STANDARD",
+        "expectedShippingDateTimeInUTC": "2020-06-09T14:00:00Z",
+        "shipToAddress": {
+          "postalCode": "560055"
+        }
+      },
+      "status": "CONFIRMED",
+      "subStatus": "OUT_FOR_DELIVERY",
+      "reason": "OutForDelivery"
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "locationId": "ABCD",
+      "marketplaceAttributes": {
+        "channelName": "FBA",
+        "marketplaceId": "A21TJRUUN4KGV",
+        "merchantId": "ABCDEFGH",
+        "customAttributes": [
+          "PRIME"
+        ]
+      },
+      "charges": [
+        {
+          "baseCharge": {
+            "baseAmount": {
+              "value": "160",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "30",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "130",
+              "currencyCode": "INR"
+            }
+          },
+          "taxBreakup": [
+            {
+              "type": "IGST",
+              "rate": "0.18",
+              "charge": {
+                "baseAmount": {
+                  "value": "33",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "11",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "22",
+                  "currencyCode": "INR"
+                }
+              }
+            }
+          ],
+          "totalCharge": {
+            "baseAmount": {
+              "value": "193",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "41",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "152",
+              "currencyCode": "INR"
+            }
+          },
+          "totalTax": {
+            "type": "TOTAL",
+            "rate": "0.18",
+            "charge": {
+              "baseAmount": {
+                "value": "33",
+                "currencyCode": "INR"
+              },
+              "discountAmount": {
+                "value": "11",
+                "currencyCode": "INR"
+              },
+              "netAmount": {
+                "value": "22",
+                "currencyCode": "INR"
+              }
+            }
+          },
+          "chargeType": "TOTAL"
+        },
+        {
+          "baseCharge": {
+            "baseAmount": {
+              "value": "40",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "10",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "30",
+              "currencyCode": "INR"
+            }
+          },
+          "taxBreakup": [
+            {
+              "type": "IGST",
+              "rate": "0.25",
+              "charge": {
+                "baseAmount": {
+                  "value": "10",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "5",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "5",
+                  "currencyCode": "INR"
+                }
+              }
+            }
+          ],
+          "totalCharge": {
+            "baseAmount": {
+              "value": "50",
+              "currencyCode": "INR"
+            },
+            "discountAmount": {
+              "value": "15",
+              "currencyCode": "INR"
+            },
+            "netAmount": {
+              "value": "35",
+              "currencyCode": "INR"
+            }
+          },
+          "totalTax": {
+            "type": "TOTAL",
+            "rate": "0.25",
+            "charge": {
+              "baseAmount": {
+                "value": "10",
+                "currencyCode": "INR"
+              },
+              "discountAmount": {
+                "value": "5",
+                "currencyCode": "INR"
+              },
+              "netAmount": {
+                "value": "5",
+                "currencyCode": "INR"
+              }
+            }
+          },
+          "chargeType": "SHIPPING"
+        }
+      ],
+      "creationDateTime": "2020-06-08T11:13:58Z",
+      "id": "TEST_CASE_200_MFN_SHIPMENT_ID",
+      "lastUpdatedDateTime": "2020-06-08T12:00:15Z",
+      "earliestPackDateTime": "2020-06-09 14:00:00Z",
+      "lineItems": [
+        {
+          "shipmentLineItemId": "1",
+          "merchantSku": "1002400773021",
+          "numberOfUnits": 2,
+          "complianceAttributes": {
+            "serialNumberRequirement": "DISALLOWED",
+            "hazmatLabelsRequirement": "DISALLOWED",
+            "countryOfOriginRequirement": "DISALLOWED",
+            "itemValueRequirement": "DISALLOWED"
+          },
+          "giftAttributes": {
+            "giftWrapRequirement": "DISALLOWED",
+            "giftMessagePresence": "ABSENT"
+          },
+          "charges": [
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "100",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "80",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.18",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "18",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "6",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "12",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "118",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "26",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "92",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "TOTAL",
+                "rate": "0.18",
+                "charge": {
+                  "baseAmount": {
+                    "value": "18",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "6",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "12",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "PRODUCT"
+            },
+            {
+              "baseCharge": {
+                "baseAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "20",
+                  "currencyCode": "INR"
+                }
+              },
+              "taxBreakup": [
+                {
+                  "type": "IGST",
+                  "rate": "0.25",
+                  "charge": {
+                    "baseAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    },
+                    "discountAmount": {
+                      "value": "0",
+                      "currencyCode": "INR"
+                    },
+                    "netAmount": {
+                      "value": "5",
+                      "currencyCode": "INR"
+                    }
+                  }
+                }
+              ],
+              "totalCharge": {
+                "baseAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                },
+                "discountAmount": {
+                  "value": "0",
+                  "currencyCode": "INR"
+                },
+                "netAmount": {
+                  "value": "25",
+                  "currencyCode": "INR"
+                }
+              },
+              "totalTax": {
+                "type": "IGST",
+                "rate": "0.25",
+                "charge": {
+                  "baseAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  },
+                  "discountAmount": {
+                    "value": "0",
+                    "currencyCode": "INR"
+                  },
+                  "netAmount": {
+                    "value": "5",
+                    "currencyCode": "INR"
+                  }
+                }
+              },
+              "chargeType": "GIFT"
+            }
+          ],
+          "hsnCode": "HSN0001"
+        }
+      ],
+      "shipmentInfo": {
+        "numberOfUnits": 2,
+        "priority": "LOW",
+        "shipmentType": "NEW",
+        "buyerOrderId": "407-7727827-8514700",
+        "orderStatesEligibleForRejection": [
+          "ACCEPTED",
+          "CONFIRMED",
+          "PACKAGE_CREATED",
+          "PICKUP_SLOT_RETRIEVED"
+        ],
+        "orderPlacedTimestamp": "1604923992000",
+        "processingSource": "INTERNAL_PLATFORM"
+      },
+      "shipmentRequirements": {
+        "pSlip": {
+          "requirement": "NOT_REQUIRED",
+          "status": "NOT_GENERATED"
+        },
+        "invoice": {
+          "requirement": "NOT_REQUIRED",
+          "status": "NOT_AVAILABLE"
+        }
+      },
+      "invoiceInfo": {
+        "invoiceId": "IN-ABCD-124",
+        "creationDateTime": "2021-05-12T17:32:28Z"
+      },
+      "packages": [
+        {
+          "id": "001",
+          "dimensions": {
+            "length": {
+              "value": "10.0",
+              "dimensionUnit": "CM"
+            },
+            "width": {
+              "value": "10.0",
+              "dimensionUnit": "CM"
+            },
+            "height": {
+              "value": "10.0",
+              "dimensionUnit": "CM"
+            }
+          },
+          "weight": {
+            "value": "200.0",
+            "weightUnit": "G"
+          },
+          "hazmatLabels": [],
+          "packageLineItems": [
+            {
+              "packageLineItemId": "1",
+              "quantity": 1,
+              "serialNumbers": []
+            }
+          ]
+        }
+      ],
+      "shippingInfo": {
+        "recommendedShipMethod": "ATS_STANDARD",
+        "expectedShippingDateTimeInUTC": "2020-06-09T14:00:00Z",
+        "shipToAddress": {
+          "name": "ABC",
+          "addressLine1": "1st Main Rd",
+          "addressLine2": "Milk Colony",
+          "addressLine3": "Subramanyanagar,2 State, Rajajinagar",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "district": "Bengaluru",
+          "municipality": "BBMP",
+          "postalCode": "560055",
+          "countryCode": "IN",
+          "phoneNumber": "080 49019010"
+        }
+      },
+      "status": "CONFIRMED",
+      "subStatus": "OUT_FOR_DELIVERY",
+      "reason": "OutForDelivery"
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input 'asdf' for parameter 'shipmentId'",
+          "details": "Please pass the correct shipmentId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "TEST_CASE_404_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_404_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Requested Entity with 'shipmentId' 'TEST_CASE_404_SHIPMENT_ID' is not found"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "operation": {
+          "value": "CONFIRM"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "operation": {
+          "value": "REJECT"
+        },
+        "body": {
+          "value": {
+            "referenceId": "cancellation-reference-identifier1",
+            "lineItems": [
+              {
+                "lineItem": {
+                  "id": "1",
+                  "quantity": 0
+                },
+                "reason": "OUT_OF_STOCK"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "operation": {
+          "value": "CONFIRM"
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "operation": {
+          "value": "REJECT"
+        },
+        "body": {
+          "value": {
+            "referenceId": "cancellation-reference-identifier1",
+            "lineItems": [
+              {
+                "lineItem": {
+                  "id": "1",
+                  "quantity": 0
+                },
+                "reason": "OUT_OF_STOCK"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages",
+    "method": "POST",
+    "status": 204,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PUT",
+    "status": 204,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PATCH",
+    "status": 204,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        },
+        "status": {
+          "value": "SHIPPED"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PATCH",
+    "status": 204,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        },
+        "status": {
+          "value": "SHIPPED"
+        },
+        "body": {
+          "value": {}
+        }
+      }
+    },
+    "response": {}
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/packages/{packageId}",
+    "method": "PATCH",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Invalid Input",
+          "message": "Invalid Input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shippingOptions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        }
+      }
+    },
+    "response": {
+      "shippingOptions": [
+        {
+          "shippingOptionId": "TEST_CASE_200_SHIPPING_OPTION_ID",
+          "carrierName": "ATSPL",
+          "shipBy": "MARKETPLACE",
+          "pickupWindow": {
+            "startTime": 1612933142,
+            "endTime": 1612494142
+          },
+          "timeSlot": {
+            "startTime": 1612933142,
+            "endTime": 1612494142,
+            "handoverMethod": "PICKUP"
+          }
+        }
+      ],
+      "recommendedShippingOption": {
+        "shippingOptionId": "TEST_CASE_200_SHIPPING_OPTION_ID",
+        "carrierName": "ATSPL",
+        "shipBy": "MARKETPLACE",
+        "pickupWindow": {
+          "startTime": 1612933142,
+          "endTime": 1612494142
+        },
+        "timeSlot": {
+          "startTime": 1612933142,
+          "endTime": 1612494142,
+          "handoverMethod": "PICKUP"
+        }
+      }
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shippingOptions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "packageId": {
+          "value": "TEST_CASE_200_PACKAGE_ID"
+        }
+      }
+    },
+    "response": {
+      "shippingOptions": []
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shippingOptions",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Invalid Input",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "POST",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "document": {
+        "format": "PDF",
+        "content": "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"
+      }
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "POST",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "document": {
+        "format": "PDF",
+        "content": "iVBORw0KGgoBBAANSUhEUgAAAywAAATCCAMAAABouZLTAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAB84AAAfOAGTPyf1AAAfLklEQVR42u3dCXajShZAQb2u2v+WX3+XNTBkMgkQoIhz+ndZlsCWucpEA0TcgCn+5y4AsYBYQCwgFhALiAUQC4gFxAJiAbGAWEAsgFhALCAWEAuIBcQCiAXEAmIBsYBYQCwgFkAsIBYQC4gFxAJiAbEAYgGxgFhALCAWEAsgFhALiAXEAmIBsYBYALGAWEAsIBYQC1zaX3fBeaW7YCVhZAHTMDANY4vpw6cninGGH9LIAqZhIBYQC4gFxAKIBcQCYgGxgFhALCAWQCwgFhALiAXEAmIB9vkM/s9nnGPuDTq3KFw0/4doLODt5SGWFft4bI358/85Z8OM/jEEnhflwm28s8xw0C0OEku8Nur0CL6rvDUeqCrXiCmjf94aS8qxha71w0f1Qbd2te4kofOgeLJpmBnPrqnct+0s3uc5XFhh8P1dSmz/mJe1X+aWnd8le9fJ3GMLO90OfoTuxh+Worj1ZdZaiQmL3fR+L/1ozz6j/th7v07scixbB9m7aDJZaCBuy7epjM0Tz0orE0ejjLPHku1f+zGwZ2ucb06YC89aFean2Xr+4HlXx6256NcfIIbm5r3Lvm4va8pmtvs9ku+Vd8ZYor3pxXPrbXSSjT9YtobU3yfSGvPR1u0fs+loXbOxzMfFr60h+3uRvXWcfxJ2rEFjhVaisnufrX2qzX+PA0zD8reO1zZ/n0Q8voqcdNe2rpnN0SeetWR/tJ++DrqbcuMpgE2eLTtaxAfYwY9bc5YWE4fkZw1ZeqIkynd1DAzxeb3nEKb9GvMfkH92xuP3OajmBRG3zP2TXWXmdvod/On7DtVrRm3f9+r7J9O3m/FWMor7eJHd3cYVB+gs78L2Z9F7+nvav/l9cpUxfM1ccbs6VyprbVKjNeXWf/6j7FAePJZ485o54Sn4uGAo03+tCSlk1NvYdKc6F75+stVZYU78ruMo/CEXT+SuI+J3n2va7sOkjT2nb6Dr7+HH3MHr/vtvsP90uFiysA8/eu3lL+DGNU9jOnsLW6uWDeYVnd9l0pxsm1z+95keKr9GzLrjY9lYOzrcZOa31JKxQi1xxLttixnF/z7xSwy+BPjfff74E76eHp48QOTguJH9Vqav44K15L97O++beXlrj8KA3/ni9U6to92J6/48f2LLHzIKL1ZFv/t4Xiua343nFDj6Edyv0B53e2uM5/caT222X0R73fKEO/2x7Psx4/pR/Fb70ojBRcfC3yiKk46Yc4NY53789XfjP2IMzkQL14ry7WPyPRu1lUXt54odRvAzj1FZuCDb7+irvUa83kqnXOkL3u7CAQamoY9+R3Yq+FdLdX5wXWK5liy+p/rNx9xuLb3PYsXmtUT1B8voxL7dS5iO7nLZalacl7R38ncZQSqfvZlZQoiFvTeVmFxJrP7DD84Q62veIOk/9mavlkMUtrDobEIxY6rT/F71A74xtFVPfPdz58qNjwvXm3hdqfB6wPT3E0y7ok+0X2oH5dZ/b1hWRoYYuE372q1Xq6K0nOr70Sa/Syurg0rnk7IxYcI5871hKZZvjWWX3aGYuFGu/ZbGTX7jybHYZ2HJUwcb7D4f398v+ePG+GXj3+L22bcFffiDLX8/cF/v/AuXjtQ6cPRWB3Z962HoykzDmPvYc7u/Y3L/Vj68h32YaVhudXQFNhmpv3G2+nf/u/qNibAJ0nEGly9kGgYfHVnah2VtHFC1fNjWzjFeO0dg7V3t8ejWW1gUDgdbGJkq77Wdfc4lxLLutDZ/9sryVjq88fO9rJ1jvJaOwPo8MGs0N/rszaG7h4PttlI9mOu1juLKyfZZ2sdKzd6hIZqHba3cPCcfXrWx+KHlVg/m6iiufHKfJXpzn+J74IZuHpN37hvXnnwci+LhMeTCp3bw353VrPoaZlQ/5Oxcfnx0GrbqswXbL8uQwvljWfM9qwMH1TOy8OFp2MGGKEVw3Vh2OrxqmIbx8Vg2ezTPlY5/aLjhALHkjE1xcFfidXjVaLyBb/4LiEMHc73qUVxZ0YYHrIj2qYULB7eJxkFUm/vY7SOwNo+VEKWr9xYfrQV0V1I4mGtzNZucHXHD6aOfcrefcKtPCJjd7PKMRRz+JzxBLD6DD2fbwYfL2PAt+t7Bi1iust8JpmEgFhALiAXEAmIBxAJiAbGAWOB0nIAVvEUfTMPgM+OPaRgYWUAsIBYQC4gFxAKIBcQCYgGxgFhALCAWQCwgFhALiAXEAmIBxAJiAbGAWEAsIBYQCyAWEAuIBcQCYgGxgFgAsYBYQCwgFhALiAUQC4gFxAJiAbGAWEAsgFhALCAWEAuIBcQCiAXEAmIBsYBYQCwgFkAsIBYQC4gFxAJiAbEAYgGxgFhALCAWEAsgFhALiAXEAmIBsYBYALHA0WJJdyrX9HfrFfy2E+5pTi9i/Tii9WX0LwTTsFKN7mPEUp11ZakYuzKIZXgkMbAglsrAEkYRxAJi2YFnwxBLfxZW2pvXClew+YuSv+FohfNb9UXJjMpIYmjBNGxqkp4hw8jSm3C98jC2YJ9laAB5pJHSwDQMxLLW7r19FMTy7n4MiKU7sPSHFvv3iGXa0KIVLmCtp47br9Pnc3xp/hPEAqZhgFhALCAWEAuIBcQCYgHEAmIBsYBY4Iy2O27Y8/MsUbw8Zi2jyVs/uUIszRDi31evLfvx4bC49Y9mUT+8Re9IZKt99NIhNfhgLPn4BEvec/GZYuyzDLVSmSblwJiQG31UPwe/94mUPXyIpT1nipGtY6cJUB5uy0ytiKWWRbx161vxc5wrfrTTpsvnRpaFG+cndrXt3vPRHfyhEWXvR/F8/Te2Xku0/53l+2Cfn4izxVJ6CH89NdZ9UP85D+WCgyN3t8ns7jcNHX+pss7edl654LWWbDxCZPfCVhnhiFBiGZrbbPfk8eNp6uy8EvO6YMkyW898Fy+4b/TPS5q/4fPfkY2uUiD2WUpzrxx6JB+ai809OHLjaersXjDjB26u85FZVC/4t5K4P8mQU37EcKQpscyvZfVd7fbT1DMnOOV19p757lyQ3TnVyDAVSx4G+IpYHtOgkRFjjeehsrAbscq++npPSRhTxDL+aF965S3rG+C9ndUegKdspOV1RncRYcNns1juW1Xl5cmNX0187+XxCQNLdmZoZlffZu2njv89b7pkpjXz2ePs3XrB807hdH58MJbf7fa1Cfa2x87WuXRjLT9JPS0XgXCQWDq1NPcRSg/kudJWHLfpuaRyOEYsc16KzBWf1XrkEjuuEzv468rbTltn9fkFOEMs3efB6jsw059gql9zwpO85XX2FtlfR+sSb/MSyzvjR04KZ6PBy3DCWUeWWHijXPuak5c0YWgZmWYKViwblrP8mah4bZuZnZ2hGFxtdZ3NRdYv6M3CGiedjU0eQjiMP7F+FdnZSYnivytbT0zb0gq7QVHYlSgcd6m6zuobKFsXPN4uGr3lRfOnaK0nhn8iTmK9tz09t6DuQ2zrqdru07a9D29VP2PY+052Cq1cJXq3qa+z9znG8gW1hQ48IxC1n4hvjMUp7xELsNcOPogFxAKIBcQCYgGxgFhALCAWQCwgFtjXuqec+PnP5Hdmbv6xDp8b4bCxPE5nEiMf+xjtrckGz1Gsez7TeD2gNz6zmFF6qC8fHyWj/c03RgcHYOGo+yyf2zY/d6AIh6gQy9pbVBamVLnWtlY7qEpuvjE7nItY3p7ZPf6bg4/DMXDjVXZZzMFY1xZHd+l/3Ttcyv0kk0Mb9MChJxrnEK4e5qKwgtLRKspftg9B0fzH6+dIUX6bzU/t/TsdireXEf/NeponkLwfkT8m7yvl40hgMf5l/zTdcf89niuesWZMw/ojQQ4OERlvtfLccB9fLRr4ovxlPr8c2g/JCddBLBNryQnxLNnsorTXc5uzXefQ/pO9IHbewS+e2/t332Hd8z3+ri1mLiMaN6t+adhgl1j+bXmTnk999xTFufUKYONY2oNLrHg+uvzRXIcG2N3qZyvO0r5Ddt/pkgsibK9j8KD1aUDh+LFMO1124xWTRacBH30++s0VwPbTsPrOxboP9RE3uyNcKJbXCxntVziydeKTXL7wkd17u/gcNJbcMrrWMwX5/jJqX3pRnn1HlpHNbeEpimdku+IKDEtsF0v5rcXxbn2tE0fmbf7riM+XgLL25a1zqsjRN7WZ4n2ZVU+TF915zGtby+Z54rrvH+62VLg0m5cMvn24voK8Fb5Vud3z/cX3i/tvrCzdBrHMGlRsO4gF7LMAYgGxgFhALCAWEAsgFhALiAXEAifhzF/wgVic+YtLc+Yv2H2fxZm/EMv7W5QzfyGW8szu8V9n/uJSnPmr9KUzf1HgzF/O/MXu0zBn/kIsc2px5i/EMnVbcuYvxDKpFmf+QixLBhdn/uJanPkLPhSLM39hGvbuvrkzfyGW4Yd3Z/5CLAODyAbROfMX1xxZnPkLsczfupz5i+tw5q/y7Zz5iw1jceYvxAJstYMPYgGxAGIBsYBYQCwgFhALIBYQC4gFPmu1A1a0Ptnh3Zlc0AZn/mof8R5Mw4YD3OwjhD6byLX2WTarxZEoudwOvo+nYwd/8cyp8/H59n7N+KfoXx+iz/bCWh+GdyQjTraD39vdbx3I4udf2bukcWbw9lbf/jLbFcXrkMd5PwayWDjZNKwXTWte1jvTUPuIldE76l1UFxytxSqFM8dS2aPpztLeWIwzoXKNfZbXsfBqx7NvHi2vuslHeUdowvXg1CPLgucH4PIjy7t1/Oy0185bpCK+PJbs7PvXT/NlzsVVpmGxzg0jjCJcOpZc8YZO84Ud/O0HKTh8LP2zp1TfiTL8NrLqOye9+4xrxOI9Wohl0g5HNlvpnVOrOEa8TsIVrfN73eqn+eqeDgy23huIVTsp7mP03nVcPoNW732Vjbcax8DC4lY7gxgcMhYwDQPEAmIBsYBYQCwgFhALIBYQC4gFxAJn8/cUP2XrXcnwGRu/RX/4+N9RXVZ0Fh231kdi2h9hERHniqV25q/O4cKbn18pbeWF7xSOCp5xKy8fzrXP0j3zVxauUYu0/51sHtg1q4XCOXfwVzyaROEjylrhQrEUPyu/7uLhIrFsNMyYhHHBWDqnKsp1cnCwMK49smy3jRtYuFwsJmGI5QC7LXCxkWWLWgwsXHMaZmxBLPZYEMsag8mGQ4tWuEosudJErH0rhfAd07BVxxbZcJVYittybLYuOG0sKz7uN8ej7JzDBc4bS+HMX28PLa1TgWmFz9nhY8X1T0oWAsryQnysmAvFsilnwUMsM5NRC2LZ/XkDuHYsDiCGWIwuiAWuw7GOQSwgFhALiAXEAt/jwCcz6r4J8/gLxsjyIZu9BOS1JT47srTeGDzw2P3GK/CNVTTe9uIlfc4WSzS32miem+u2wSq2WQEcdRr2zofntcL1d/BjjVSaragGO/jGFb5oZHns52d/zz8fX70OQVE9B/hQK+0FRnlBOfTMQ/Oi3kLS0MVrErPBqb0b2/PPZRnFA7Nk95AU2TweRdQ27OiOK60Fttf1u8j2gS6il0fvx3supLM0TMP2mDINH43yd4OMziGPah1nTF3Xb37R7Sr6lzR/vOdCJvzkiGWTPfoJV8qp8U1aV94WPZkQnjrgsDv4s85tn2udzLV1ifGDc8Qyd6CyWfMRB3kj5YztP9Izx3xzLHO2frVgGrb2TMyr/Hx9LDNqyZujvvLVscypJbXChWLpbPpTSphWS2b8qN/oeYnX6dk1ltY5utbY9PLNWnLJguF4I0tjc28+wL++HA5u6tjy61ZZ8OMSAwsTNtk1N5J8vle3dYKvKPzj+e3WG12aZ/bqv5WyeePHvwdX0T+NWGHB/Z+i+gMjlnVzOc6mleX3/8MyK78oeaRN8jWuhJ0UTr3PAmI55nTTn5qD7bMcSjqyGGKZudsiFcQC9llALCAWEAsgFhALiAXEAmIBsYBYALGAWEAsIBYQC4gFxAKIBcQCYgGxgFhALIBYQCwgFhALiAXEAmIBxAJiAbGAWEAsIBZALCAWEAuIBcQCYgGxAGIBsYBYQCwgFgAAgJVEuA/ADj6IBcQCYgGxgFgAsYBYQCwgFhALiAXEAogFxAJiAbGAWEAsgFhALCAWEAuIBcQCYgHEAmKBzf11F7CpvP9/dC6Y+/X0GxhZuFg83a9z5HqzFyAWsM8CYgGxgFgAsYBYOIuofB0j15u9gA1+dGcrZlO5dl1ZiyO3rsbIAmIBsYBYQCwgFhALbCsq/7/agjf4kb3Owqa6r37k2Eaeu238RhYQC4gFxAJiAbEAYuGYTvTahYPs8Vk5tx6fZwHTMBALiAUQC4gFxMLVeZ0FJkbSe51l7PMs1Rtunp2RBcQCYgGxgFhALCAWoMNxw9jW2PlZJn8spfb6y36vtxhZQCwgFhALiAXEAmIBOnyehX2Mnp+lKyd+P7K9AiMLjESTYgH7LGCf5UNjcYzNeCvvNYr6yD727qT2NbK6qrGfZeAgvcsW+sYK21fyzsGrxZJv3Sbrm2FO31qy+9WSG3ZvtnihS1f47r0qlsuF8rhZPP6R/QEiSt8aE42faOINs3O7/s0WLPS9FWrlkvssme+2cn9gze634vGfORtNtKY2uex2udJCF69QK5cdWWLJnzUb20rkyEYy+dH8cb3IJZvu83bt9S1d6OIVbtbK6H7SY0cxpi4gR74WS++vXt+Mxu71QhHtb0V/JjbjL7H0duss9N0VxqfGlly2m7hgAd81Dds0wv1vPjgviu1+z8Jo6mmwK07DNq5m8k5+HDDaN2ZMWhHL0pH9sIPYJivUyvdNw2JGGLHxtr37wPPGCj0RZp9l943ivDMzA4tYuttCPv8Tq2aVW2yquVcbJmH2Wfr77a/t4iBjQG6x0Lkr3KyVqS+PRO2nG13A5pH/uczDSMz4RgxfYcEFvU0wlm7ssepC566w00qs//fJytej6xxdwOab8heMLKV3C0b53bwx/H6p4WWOb9WL3wy5fKEzV2jn/itjab3pqz+3aNQykEbOWWb93fQjP8tQEcsWunSFaef+i3fwI8qvUrfegZmjpzWctMzBJY7fLsemErMXumSFWvneWG7l93RkZ38wi/PizDnL/Nk2n5tn5bYxtGNd3Ed9b6EzV+iJsG+PpbDB3D8DGDFQy7+3/8esWtrPyczesIdWt3ihc1aoFbEM7IlE3AaeUln4XOSiz57kyOrW/UBLcYV27sd8wVPH3WfwW3P16N38sQk1N6UYW+a73xvfs958hTn/jl3095n6/4sXsJ1vfSPlq43+J3bj3c1l8jPQ01tZsNB3V7jZeD78dc5dUPUFGNOw1f9ocYgfKa69Qvssl5+/7TSNzw/EiWnY3jWttenG3q3E6G+Zt5vxx8hy7GmhccXI8vndgHj3djO/N+1nGXoAX7rQxSvk60eWLGw2k97rmgsfnnPRIqf9FnMXahwxsqy455HD2+AWH97tvnUg11hq7L3CN/8eOfz/B9zFvHAsGeVtvnPIlpx6u6nfK40BQ7eb9EvMXejiFe73oFV/uXThGOnDX9MnWeUneAobWeuvVHoDYwxsZjEwI2od7zWm3C7H/+jzF/rmCkdnfQd54N9/yz11LDn5Huxsf5Pfl754Dhax/I8cKy90/gpzw43yxLFcdRrWPAZyDH679zheHaqGlhmDH9PKZX/hpQtdvEJuCx8BYYPhf7UTwuy/5XpREsQCYoGP8EZKdto7HtuHGb3C1H0dn2cB0zAQC4gFxAKIBcQCe/E6C/sYPapX7bwrtcvfPrybkQXEAmIBsYBYQCyAWOBdf3wGn4+K1Y+Z6fMsXNSJji8rFhALiAXEAmIBscD3cKxjMLKAWEAsIBYQC4gFEAuIBcQCYgGxgFhALIBYQCwgFhALiAXEAogFxAJiAbGAWEAsIBZALCAWEAuIBcQCYgGxAGKBFf1dYyHpfuQ4Njvzo5EF9hxZOP6j4tfYcJpjZAGxgFhALCAWuIBTPRtWeKooZ10hhm/k9SIGt781nqvMnXvJ1maes64QpR84Sr9EfCIeTx2/vzFudh/+OdtfJ3pfxrwrRGmT7IYREXGEX48j3Ydnf1Hy53FkcAgoXyHS9sr37eDn2PadMwPIf2waXC+W8T2LNHwglunbfnTjUQvfGMvsocUci2/cwZ+yx96/QsaEW3ydbI/D2bvjWhfXri6WK1JLb6ramqD++zKqF1cvNw274oOo3ZbRXb8Yurh6uVgOvunPfPbYqDJlDy/GL65eLpaLP5AaWpqbf8bIxdXLxWIi9r2PH+Hh5qtHFrWMTMR6I0Xl4urlYrnk3JzyzGr04urlYrHb8kX3SMaUi6uXi8VE7GvumuLGX7m4erlYTMRMxL5zIuYz+IaW4j0SUy+uXi6W844SaSK2wv2Z3zxIXyKWWHwFtajFNMxuyxv3Sfn4A5WLq5eL5VKzMLst5Y2/eI9VLq5eLpaLDi1qKT18eEbsgrHEW1cwESuNFDHx4urlYjlsK/nWFejPqjp3WuXi6uViueYei47m3jXf+ozY+WOJsT/S6BXU0h8ppn20pXr5Nf09fyrvz8HSDr6hZIKzHeu4vTsZ/VFj7ApRfSfHwGIO9GTFxq1E70eJ6sXVy4+wjWyy4DMdRX+tU07cColldSH5LbG0DmaU5Z+scTdVrv7pWlIs38KE8MCxeNcxiAXEAmIBsYBYQCyAWEAsIBYQC4gFxAJiAcQCYgGxgFhALHB5f90Fh+JwBkYWEAuIBRALiAW2tMqzYQ6juALPgxlZQCwgFkAsIBYQC4gFxAJiAbEAYgGxgFhALCAWEAsgFhALiAXEAmIBsYBYALGAWEAsIBYQC4gFEAuIBcQCYgGxgFhALIBYQCwgFhALiAXEAmIBxAJiAbGAWEAsIBZALCAWEAuIBcQCYgEAANhFhPvgGNJdsNY2bQcfjCxwDkYWEAuIBcQCYgGxgFgAsYBYYFN/V1nK7/ua4t8/4nFJVK5w6135ef3n1W69hRRv2Lx+58KBKw//DMM//MRV3Hq/1+gNo3c/3Hq/flQW2F9j/x4buKOmXGHuzzDl1yzet7fSMvt/sv5KjSxgGgZiAbGAWACxgFhALCAWEAuIBRALiAXEAmIBsYBYQCyAWEAsIBYQC4gFxAKIBcQCYgGxgFhALCAWQCwgFhALiAXEAmIBsQBiAbGAWEAsIBYQCyAWEAuIBcQCYgGxgFgAsYBYQCwgFhALiAXE4i4AsYBYQCwgFhALiAUQC4gFxAJiAbGAWEAsgFhALCAWEAuIBcQCiAXEAmIBsYBYQCwgFkAsIBYQC4gFxAJiAbEAYgGxgFhALCAWEAsgFhALiAXEAmIBsYBYALGAWEAsIBYQC4gFEAuIBcQCYgGxgFhALIBYQCwgFhALiAXEAmIBxAJiAbGAWEAsIBZALCAWEAuIBcQCYgGxAGIBsYBYQCwgFhALiMVdAGIBsYBYQCwgFhALIBYQC4gFxAJiAbGAWACxgFhALCAWEAuIBRALiAXEAmIBsYBYQCxASYT7AIwsIBYQC4gFxAJiAcQCYgGxgFhALCAWEAsgFhALiAXEAmf1112wjfz5j4+hiuV7tvafzT1fl8VYDc8b/fe/XLLKGI4tWxdm90cS56Z8Bn9ow71vva//e26bzW+Xb9T/7qS1xtCmn/8WH5WvjGT2WT7XSmfji9cw8/x2NkeU0o26o860AW0gpXits/FVpr+ZWI41Dpc35ilb6uStOce/k/2vwhRBLGecpb653eZgrI2RKzyHsK8/7uzhTbP972hcHJ2xJno3uk+SmtfJ1sWNJwTuF0VnZZXd/+h8dSveorQCjCxbhDLyEJ/37TXiMQ3q3yjvM7DndSJa86iIRmXPL1bc/+ivALFsUksOjzq956u6N8oo7kvk76W5JFPEctBJWM7cvejcKMrX60zm7s9nRXUutc6TEl6FEcu2O/dZzaQcU+FGsXjzRiwX2HHJekxzp1H3NDKGx6y3hxYDi1i2n4qVW6nvjMeGkSKW08jiE8orPPJnjNYSrX/G9J+isALEsmIVudeNirOuGLha5YX8mU9FIJZtZ2LZf4Ir5tyovoqYUEvlpfuY9DsYWMSy6Yyr+3ic3Zfps7UL3b9RtvZvcnGkz8uy8cbk9lfs8MDpvh6auHR2HqI7r+m+P775KZR8vbvldZ1HXtla4H2Hov0ZltJeRvXzLDk8zthjEcuXJDv7yYRlt8I0DIwsYGQBsYBYQCyAWEAsIBYQC4gFxAJiAcQCYgGxgFhALCAWEAsgFhALiAXEAmIBsQBiAbGAWEAsIBYQC4gFEAuIBcQCYgGxgFgAsYBYQCwgFhALiAXEAogFxAJiAbGAWEAsIBZALCAWEAuIBcQCYgHEAmIBsYBYQCwgFhALIBYQC4gFxAJiAbEAYgGxgFhALCAWEAuIBRALiAXEAmIBsYBYQCyAWEAsIBYQC4gFxAKIBcQCYgGxgFhALCAWQCwgFhALiAXEAmIBsQBiAbGAWEAsIBYQCyAWEAuIBcQCYgGxgFgAsYBYQCwgFhALiAUQC4gFxAJiAbGAWEAsgFhALCAWEAuIBcQCYgHEAmIBsYBYQCwgFkAsIBYQC4gFxAJiAbEAYgGxgFhALCAWEAsgFhALiAXEAmIBsYBYALGAWEAsIBYQC4gFxAKIBcQCYgGxgFhALIBYQCwgFhALiAXEAmIByv4PwWms3AV97VoAAAAASUVORK5CYII="
+      }
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "document": {
+        "format": "PDF",
+        "content": "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"
+      }
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "GET",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        }
+      }
+    },
+    "response": {
+      "document": {
+        "format": "PDF",
+        "content": "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"
+      }
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/invoice",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "Invalid Input",
+          "message": "Invalid Input"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shipLabels",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {
+            "packageIds": [
+              "TEST_CASE_200_PACKAGE_ID"
+            ],
+            "courierSupportedAttributes": {
+              "carrierName": "ATS",
+              "trackingId": "151958276037"
+            }
+          }
+        },
+        "operation": {
+          "value": "GENERATE"
+        }
+      }
+    },
+    "response": {
+      "packageShipLabelList": [
+        {
+          "packageId": "TEST_CASE_200_PACKAGE_ID",
+          "shipLabelMetadata": {
+            "carrierName": "ATS",
+            "trackingId": "151958276037",
+            "pickupWindow": {
+              "startTime": 162132660,
+              "endTime": 162132660
+            },
+            "timeSlot": {
+              "startTime": 1612933142,
+              "endTime": 1612494142,
+              "handoverMethod": "PICKUP"
+            }
+          },
+          "fileData": {
+            "url": "url"
+          },
+          "status": "SUCCESS"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shipLabels",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "TEST_CASE_200_FBA_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_FBA_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {
+            "packageIds": [
+              "TEST_CASE_200_PACKAGE_ID"
+            ],
+            "courierSupportedAttributes": {
+              "carrierName": "ATS",
+              "trackingId": "151958276037"
+            }
+          }
+        },
+        "operation": {
+          "value": "REGENERATE"
+        }
+      }
+    },
+    "response": {
+      "packageShipLabelList": [
+        {
+          "packageId": "TEST_CASE_200_PACKAGE_ID",
+          "shipLabelMetadata": {
+            "carrierName": "ATS",
+            "trackingId": "151958276037",
+            "pickupWindow": {
+              "startTime": 162132660,
+              "endTime": 162132660
+            },
+            "timeSlot": {
+              "startTime": 1612933142,
+              "endTime": 1612494142,
+              "handoverMethod": "PICKUP"
+            }
+          },
+          "fileData": {
+            "url": "url"
+          },
+          "status": "SUCCESS"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shipLabels",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {
+            "packageIds": [
+              "TEST_CASE_200_PACKAGE_ID"
+            ],
+            "courierSupportedAttributes": {
+              "carrierName": "ATSPL",
+              "trackingId": "343284200328"
+            }
+          }
+        },
+        "shippingOptionId": {
+          "value": "TEST_CASE_200_SHIPPING_OPTION_ID"
+        },
+        "operation": {
+          "value": "GENERATE"
+        }
+      }
+    },
+    "response": {
+      "packageShipLabelList": [
+        {
+          "packageId": "TEST_CASE_200_PACKAGE_ID",
+          "shipLabelMetadata": {
+            "carrierName": "ATSPL",
+            "trackingId": "343284200328",
+            "pickupWindow": {
+              "startTime": 163132120,
+              "endTime": 162132660
+            },
+            "timeSlot": {
+              "startTime": 1612933142,
+              "endTime": 1612494142,
+              "handoverMethod": "PICKUP"
+            }
+          },
+          "fileData": {
+            "url": "url"
+          },
+          "status": "SUCCESS"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shipLabels",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "TEST_CASE_200_MFN_SHIPMENT_ID",
+    "request": {
+      "parameters": {
+        "shipmentId": {
+          "value": "TEST_CASE_200_MFN_SHIPMENT_ID"
+        },
+        "body": {
+          "value": {
+            "packageIds": [
+              "TEST_CASE_200_PACKAGE_ID"
+            ],
+            "courierSupportedAttributes": {
+              "carrierName": "ATSPL",
+              "trackingId": "343284200328"
+            }
+          }
+        },
+        "shippingOptionId": {
+          "value": "TEST_CASE_200_SHIPPING_OPTION_ID"
+        },
+        "operation": {
+          "value": "REGENERATE"
+        }
+      }
+    },
+    "response": {
+      "packageShipLabelList": [
+        {
+          "packageId": "TEST_CASE_200_PACKAGE_ID",
+          "shipLabelMetadata": {
+            "carrierName": "ATSPL",
+            "trackingId": "343284200328",
+            "pickupWindow": {
+              "startTime": 163132120,
+              "endTime": 162132660
+            },
+            "timeSlot": {
+              "startTime": 1612933142,
+              "endTime": 1612494142,
+              "handoverMethod": "PICKUP"
+            }
+          },
+          "fileData": {
+            "url": "url"
+          },
+          "status": "SUCCESS"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/external-fulfillment/externalFulfillmentShipments_2024-09-11.json",
+    "domain": "external-fulfillment",
+    "path": "/externalFulfillment/2024-09-11/shipments/{shipmentId}/shipLabels",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {}
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid Input."
+        }
+      ]
+    }
+  }
+]

@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 APP_NAME="ELK AI Log Explorer"
-for dir in "/Applications" "$HOME/Applications"; do
-    if [ -d "${dir}/${APP_NAME}.app" ]; then
-        rm -rf "${dir}/${APP_NAME}.app"
-        echo "✔ Uninstalled ${APP_NAME}.app from ${dir}"
-    fi
+BUNDLE_NAME="${APP_NAME}.app"
+
+for TARGET in "/Applications/${BUNDLE_NAME}" "$HOME/Applications/${BUNDLE_NAME}"; do
+    [ -d "$TARGET" ] && rm -rf "$TARGET" && echo "✓ Removed $TARGET"
 done
+
+kill -9 $(lsof -ti :24004) 2>/dev/null || true
+echo "✓ ${APP_NAME} uninstalled successfully."

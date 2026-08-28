@@ -1,0 +1,138 @@
+{
+ "source": "ETON sale order SOCJFJVT9A8KZ, masked",
+ "note": "Buy four get four: one priced line and four identical zero-priced gift lines under the same SKU, which is the shape a per-SKU match would collapse.",
+ "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+ "data": {
+  "marketplace_code": "tiktok_vn",
+  "seller_currency": "VND",
+  "voucher_seller": 276000.0,
+  "order_adjustment": {
+   "marketplace_discount": 99000.0,
+   "seller_discount": 276000.0,
+   "adjustments": {
+    "items": []
+   }
+  },
+  "order_items": [
+   {
+    "order_item_id": 9200401,
+    "sku": "1024506_CB6",
+    "inventory_sku": null,
+    "quantity": 4,
+    "item_price": "936000.0",
+    "paid_price": "561000.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "276000.0",
+    "channel_discount": "99000.0",
+    "is_gwp_item": false,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1024506",
+      "quantity": 6,
+      "price": "234000.0"
+     }
+    ],
+    "line_item_details": [
+     {
+      "line_item_id": 9200401,
+      "item_original_price": "",
+      "item_paid_price": "",
+      "seller_voucher_amount": "276000.0",
+      "voucher_platform": "99000.0",
+      "tax_amount": "0.0",
+      "shipping_fee_original": "356800.0",
+      "shipping_fee_seller_discount": "0.0",
+      "shipping_fee_platform_discount": "356800.0",
+      "seller_discount_on_retail_price": "0.0",
+      "marketplace_discount_on_retail_price": "0.0"
+     }
+    ]
+   },
+   {
+    "order_item_id": 9200402,
+    "sku": "1024506_CB3",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "276000.0",
+    "channel_discount": "99000.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1024506",
+      "quantity": 3,
+      "price": "117000.0"
+     }
+    ],
+    "line_item_details": []
+   },
+   {
+    "order_item_id": 9200403,
+    "sku": "1024506_CB3",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "276000.0",
+    "channel_discount": "99000.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1024506",
+      "quantity": 3,
+      "price": "117000.0"
+     }
+    ],
+    "line_item_details": []
+   },
+   {
+    "order_item_id": 9200404,
+    "sku": "1024506_CB3",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "276000.0",
+    "channel_discount": "99000.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1024506",
+      "quantity": 3,
+      "price": "117000.0"
+     }
+    ],
+    "line_item_details": []
+   },
+   {
+    "order_item_id": 9200405,
+    "sku": "1024506_CB3",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "276000.0",
+    "channel_discount": "99000.0",
+    "is_gwp_item": true,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1024506",
+      "quantity": 3,
+      "price": "117000.0"
+     }
+    ],
+    "line_item_details": []
+   }
+  ]
+ }
+}

@@ -1,0 +1,594 @@
+[
+  {
+    "soCode": "92000301",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1023146",
+          "Quantity": 1,
+          "BasePrice": 78000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 6240.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 11482.0,
+          "CoinsOrCashback": 700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 4,
+          "BasePrice": 204000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 16320.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 30030.0,
+          "CoinsOrCashback": 1700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 2,
+          "BasePrice": 102000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 8160.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 15015.0,
+          "CoinsOrCashback": 900.0
+        },
+        {
+          "SKU": "1023210",
+          "Quantity": 1,
+          "BasePrice": 73000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 5840.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 10744.0,
+          "CoinsOrCashback": 300.0
+        }
+      ],
+      "OrderBasePrice": 457000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 36560.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 67271.0,
+      "OrderCoinsOrCashback": 3600.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 26124.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000311",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 225000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 18000.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 37260.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 225000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 18000.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 37260.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 14385.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000321",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1024505",
+          "Quantity": 2,
+          "BasePrice": 130000.0,
+          "SellerDiscount": 3900.0,
+          "SellerVoucher": 6000.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 14412.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1024505",
+          "Quantity": 1,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 130000.0,
+      "OrderSellerDiscount": 3900.0,
+      "OrderSellerVoucher": 6000.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 14412.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 9606.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000331",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1024081",
+          "Quantity": 2,
+          "BasePrice": 94000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 4700.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 7144.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023222",
+          "Quantity": 1,
+          "BasePrice": 26000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 1300.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 1976.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023221",
+          "Quantity": 1,
+          "BasePrice": 26000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 1300.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 1976.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023786",
+          "Quantity": 1,
+          "BasePrice": 26000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 1300.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 1976.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023926",
+          "Quantity": 1,
+          "BasePrice": 46000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 2300.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 3496.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023025",
+          "Quantity": 1,
+          "BasePrice": 23400.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 1170.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 1778.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023220",
+          "Quantity": 1,
+          "BasePrice": 31000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 1550.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 2356.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 272400.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 13620.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 20702.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 31500.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 0.0,
+      "Tax": 23975.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000341",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1025377",
+          "Quantity": 5,
+          "BasePrice": 175000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 14000.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1025377",
+          "Quantity": 1,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 175000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 0.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 14000.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 0.0,
+      "Tax": 29272.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000351",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1022281",
+          "Quantity": 2,
+          "BasePrice": 148000.0,
+          "SellerDiscount": 13400.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1024681",
+          "Quantity": 2,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 148000.0,
+      "OrderSellerDiscount": 13400.0,
+      "OrderSellerVoucher": 0.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 0.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 28300.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 28300.0,
+      "ServiceFee": 0.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000361",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1025377",
+          "Quantity": 5,
+          "BasePrice": 175000.0,
+          "SellerDiscount": 15001.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 16000.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1025377",
+          "Quantity": 1,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 175000.0,
+      "OrderSellerDiscount": 15001.0,
+      "OrderSellerVoucher": 0.0,
+      "OrderPlatformDiscount": 16000.0,
+      "OrderPlatformVoucher": 0.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 52200.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 52200.0,
+      "ServiceFee": 0.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000005",
+    "body": {
+      "Items": [
+        {
+          "SKU": "SKU-ETON-001",
+          "Quantity": 2,
+          "BasePrice": 200000.0,
+          "SellerDiscount": 5000.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 10000.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 200000.0,
+      "OrderSellerDiscount": 5000.0,
+      "OrderSellerVoucher": 0.0,
+      "OrderPlatformDiscount": 10000.0,
+      "OrderPlatformVoucher": 0.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 15000.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 0.0,
+      "Tax": 2000.0,
+      "UnclassifiedDiscount": 15000.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000009",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 225000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 18000.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 37260.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 225000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 18000.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 37260.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 14385.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92009666",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 225000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 18000.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 37260.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1027575",
+          "Quantity": 15,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        }
+      ],
+      "OrderBasePrice": 225000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 18000.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 37260.0,
+      "OrderCoinsOrCashback": 0.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 14385.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000014",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1023146",
+          "Quantity": 1,
+          "BasePrice": 78000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 6240.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 11482.0,
+          "CoinsOrCashback": 700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 4,
+          "BasePrice": 204000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 16320.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 30030.0,
+          "CoinsOrCashback": 1700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 2,
+          "BasePrice": 102000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 8160.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 15015.0,
+          "CoinsOrCashback": 900.0
+        },
+        {
+          "SKU": "1023210",
+          "Quantity": 1,
+          "BasePrice": 73000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 5840.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 10744.0,
+          "CoinsOrCashback": 300.0
+        }
+      ],
+      "OrderBasePrice": 457000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 36560.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 67271.0,
+      "OrderCoinsOrCashback": 3600.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 26124.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  },
+  {
+    "soCode": "92000017",
+    "body": {
+      "Items": [
+        {
+          "SKU": "1023146",
+          "Quantity": 1,
+          "BasePrice": 78000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 6240.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 11482.0,
+          "CoinsOrCashback": 700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 4,
+          "BasePrice": 204000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 16320.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 30030.0,
+          "CoinsOrCashback": 1700.0
+        },
+        {
+          "SKU": "1023253",
+          "Quantity": 2,
+          "BasePrice": 0.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 0.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 0.0,
+          "CoinsOrCashback": 0.0
+        },
+        {
+          "SKU": "1023210",
+          "Quantity": 1,
+          "BasePrice": 73000.0,
+          "SellerDiscount": 0.0,
+          "SellerVoucher": 5840.0,
+          "PlatformDiscount": 0.0,
+          "PlatformVoucher": 10744.0,
+          "CoinsOrCashback": 300.0
+        }
+      ],
+      "OrderBasePrice": 457000.0,
+      "OrderSellerDiscount": 0.0,
+      "OrderSellerVoucher": 36560.0,
+      "OrderPlatformDiscount": 0.0,
+      "OrderPlatformVoucher": 67271.0,
+      "OrderCoinsOrCashback": 3600.0,
+      "ShippingFee": 0.0,
+      "ShippingDiscountSeller": 0.0,
+      "ShippingDiscountPlatform": 0.0,
+      "ServiceFee": 26124.0,
+      "Tax": 0.0,
+      "UnclassifiedDiscount": 0.0,
+      "UnclassifiedFee": 0.0,
+      "CurrencyCode": "VND"
+    }
+  }
+]

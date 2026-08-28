@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Local Theme (local-theme.css)
+   Unified enterprise developer dashboard & engineering report theme.
+   Single source of truth for both Local Test Servers & Local Report Servers.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+:root {
+  /* Surface Tokens */
+  --canvas: #020617;
+  --panel: #0b0f19;
+  --surface: #0f172a;
+  --surface-2: #1e293b;
+
+  /* Text Tokens */
+  --ink: #f8fafc;
+  --ink-2: #cbd5e1;
+  --muted: #94a3b8;
+
+  /* Line Tokens */
+  --line: #1e293b;
+  --line-2: #334155;
+
+  /* Semantic Soft Pill Tokens */
+  --pass-bg: rgba(16, 185, 129, 0.15);
+  --pass-fg: #34d399;
+  --fail-bg: rgba(239, 68, 68, 0.15);
+  --fail-fg: #f87171;
+  --run-bg: rgba(59, 130, 246, 0.15);
+  --run-fg: #60a5fa;
+  --warn-bg: rgba(245, 158, 11, 0.15);
+  --warn-fg: #fbbf24;
+  --mute-bg: rgba(51, 65, 85, 0.4);
+  --mute-fg: #cbd5e1;
+
+  /* Categorical Tokens */
+  --teal-bg: rgba(20, 184, 166, 0.15);
+  --teal-fg: #2dd4bf;
+  --violet-bg: rgba(168, 85, 247, 0.15);
+  --violet-fg: #c084fc;
+  --slate-bg: rgba(51, 65, 85, 0.4);
+  --slate-fg: #cbd5e1;
+
+  /* State Tokens */
+  --hover: #1e293b;
+  --selected: #334155;
+  --pass-bg-2: rgba(16, 185, 129, 0.25);
+  --fail-bg-2: rgba(239, 68, 68, 0.25);
+
+  /* Accents */
+  --header-mute: #94a3b8;
+  --dot: #34d399;
+  --dim: #64748b;
+  --code-bg: #020617;
+
+  /* Shapes & Shadows */
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px -4px rgba(0, 0, 0, 0.6);
+}
+
+/* Base Body Styles */
+body.theme-dark, body {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Sleek Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--canvas); }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Sticky Translucent Header */
+header.theme-header {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+/* Semantic Badges */
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: var(--mute-bg);
+  color: var(--mute-fg);
+  border: 1px solid var(--line-2);
+}
+
+.badge-soft.pass {
+  background: var(--pass-bg);
+  color: var(--pass-fg);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+
+.badge-soft.fail {
+  background: var(--fail-bg);
+  color: var(--fail-fg);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.badge-soft.run {
+  background: var(--run-bg);
+  color: var(--run-fg);
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+.badge-soft.warn {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  border-color: rgba(251, 191, 36, 0.35);
+}

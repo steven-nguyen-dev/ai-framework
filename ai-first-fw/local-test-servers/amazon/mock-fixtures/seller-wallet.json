@@ -1,0 +1,3619 @@
+[
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase200"
+        }
+      }
+    },
+    "response": {
+      "accounts": [
+        {
+          "accountId": "amzn1.account.AGUGL2EM3ZHYSRJWH2UCRPIM5JFQ",
+          "bankAccountNumberFormat": "BBAN",
+          "bankName": "Amazon Seller Wallet",
+          "bankAccountOwnershipType": "SELF",
+          "routingNumber": "000000000",
+          "bankNumberFormat": "BASIC",
+          "accountCountryCode": "US",
+          "accountCurrency": "USD",
+          "bankAccountNumberTail": "000",
+          "bankAccountHolderStatus": "ACTIVE"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing digitalSignature.",
+          "details": "Digital Signature is missing for the request"
+        },
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC Certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for USMarketplace"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond within given SLA"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server Throttled Request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "marketplaceIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "accountId": "amzn1.account.AGUGL2EM3ZHYSRJWH2UCRPIM5JFQ",
+      "bankAccountNumberFormat": "BBAN",
+      "bankName": "Amazon Seller Wallet",
+      "bankAccountOwnershipType": "SELF",
+      "routingNumber": "000000000",
+      "bankNumberFormat": "BASIC",
+      "accountCountryCode": "US",
+      "accountCurrency": "USD",
+      "bankAccountNumberTail": "000",
+      "bankAccountHolderStatus": "ACTIVE"
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing digitalSignature.",
+          "details": "Digital Signature is missing for the request"
+        },
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond within given SLA"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server Throttled Request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "balances": [
+        {
+          "accountId": "amzn1.account.AGUGL2EM3ZHYSRJWH2UCRPIM5JFQ",
+          "balanceType": "AVAILABLE",
+          "balanceAmount": 123.45,
+          "balanceCurrency": "USD",
+          "lastUpdateDate": "2024-03-01T10:30:00Z"
+        },
+        {
+          "accountId": "amzn1.account.AGUGL2EM3ZHYSRJWH2UCRPIM5JFQ",
+          "balanceType": "LOCKED_IN",
+          "balanceAmount": 500.0,
+          "balanceCurrency": "USD",
+          "lastUpdateDate": "2024-03-01T10:30:00Z"
+        },
+        {
+          "accountId": "amzn1.account.AGUGL2EM3ZHYSRJWH2UCRPIM5JFQ",
+          "balanceType": "TOTAL",
+          "balanceAmount": 623.45,
+          "balanceCurrency": "USD",
+          "lastUpdateDate": "2024-03-01T10:30:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond within given SLA"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server Throttled Request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/accounts/{accountId}/balance",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "accountIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "EU"
+        },
+        "sourceCurrencyCode": {
+          "value": "EUR"
+        },
+        "destinationCountryCode": {
+          "value": "CN"
+        },
+        "destinationCurrencyCode": {
+          "value": "CNY"
+        },
+        "baseAmount": {
+          "value": 500.0
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "baseAmount": {
+        "currencyCode": "EUR",
+        "currencyAmount": 500.0
+      },
+      "fxRateDetails": {
+        "fxRateId": "UNIQUE_FX_RATE_ID_1",
+        "baseRate": 7.6915,
+        "effectiveFxRate": 7.6084,
+        "rateDirection": "BUY"
+      },
+      "transferAmount": {
+        "currencyCode": "CNY",
+        "currencyAmount": 3804.2
+      },
+      "fees": [
+        {
+          "feeId": "Unique_FeeId_001",
+          "feeType": "TRANSACTION_FEE",
+          "feeRateValue": "0.9",
+          "feeAmount": {
+            "currencyCode": "EUR",
+            "currencyAmount": 4.5
+          }
+        },
+        {
+          "feeId": "Unique_FeeId_002",
+          "feeType": "TAX",
+          "feeRateValue": "20.0",
+          "feeAmount": {
+            "currencyCode": "EUR",
+            "currencyAmount": 0.9
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "AP"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing Input Parameter.",
+          "details": "Invalid sourceCountryCode"
+        },
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing Input Parameter.",
+          "details": "Missing destinationCurrencyCode"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "US"
+        },
+        "destinationCountryCode": {
+          "value": "US"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "US"
+        },
+        "sourceCurrencyCode": {
+          "value": "USD"
+        },
+        "destinationCountryCode": {
+          "value": "US"
+        },
+        "destinationCurrencyCode": {
+          "value": "USD"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "US"
+        },
+        "destinationCountryCode": {
+          "value": "HK"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "HK"
+        },
+        "destinationCountryCode": {
+          "value": "HK"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "EU"
+        },
+        "destinationCountryCode": {
+          "value": "EU"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferPreview",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "sourceCountryCode": {
+          "value": "CN"
+        },
+        "destinationCountryCode": {
+          "value": "CN"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "nextPageToken": "3493805734095308457308475",
+      "transactions": [
+        {
+          "accountId": "amzn1.account.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+          "transactionId": "amzn.transaction.AKJBNEFNL23R84V",
+          "transactionType": "DEBIT",
+          "transactionStatus": "IN_PROGRESS",
+          "transactionRequestDate": "2023-09-26T02:32:59.787Z",
+          "expectedCompletionDate": "2023-09-26T02:32:59.787Z",
+          "transactionActualCompletionDate": "2023-09-26T02:32:59.787Z",
+          "lastUpdateDate": "2023-09-26T02:32:59.787Z",
+          "requesterName": "TppOrgId",
+          "transactionRequesterSource": "TPP",
+          "transactionDescription": "Test transaction request",
+          "transactionSourceAccount": {
+            "accountId": "sourceAccountIdCase200",
+            "bankAccountHolderName": "John Doe",
+            "bankName": "Amazon Seller Wallet",
+            "bankAccountNumberFormat": "IBAN",
+            "bankAccountNumberTail": "123",
+            "bankAccountCurrency": "GBP"
+          },
+          "transactionDestinationAccount": {
+            "bankAccountHolderName": "Dane Shipping",
+            "bankName": "Royal Bank of Scotland",
+            "bankAccountNumberFormat": "IBAN",
+            "bankAccountNumberTail": "819",
+            "bankAccountCurrency": "GBP",
+            "bankAccountCountryCode": "UK"
+          },
+          "transactionRequestAmount": {
+            "currencyCode": "EUR",
+            "currencyAmount": 500.0
+          },
+          "transferRateDetails": {
+            "baseAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 500.0
+            },
+            "fxRateDetails": {
+              "fxRateId": "UNIQUE_FX_RATE_ID_1",
+              "baseRate": 7.6915,
+              "effectiveFxRate": 7.6084,
+              "rateDirection": "BUY"
+            },
+            "transferAmount": {
+              "currencyCode": "CNY",
+              "currencyAmount": 3804.2
+            },
+            "fees": [
+              {
+                "feeId": "Unique_FeeId_001",
+                "feeType": "TRANSACTION_FEE",
+                "feeRateValue": "0.9",
+                "feeAmount": {
+                  "currencyCode": "EUR",
+                  "currencyAmount": 4.5
+                }
+              },
+              {
+                "feeId": "Unique_FeeId_002",
+                "feeType": "TAX",
+                "feeRateValue": "20.0",
+                "feeAmount": {
+                  "currencyCode": "EUR",
+                  "currencyAmount": 0.9
+                }
+              }
+            ]
+          },
+          "transactionFinalAmount": {
+            "currencyCode": "CNY",
+            "currencyAmount": 3804.2
+          }
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        },
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase200",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "accountHolderName": "John Doe",
+              "bankAccountNumber": "GB29RBOS60161331926819"
+            },
+            "transactionDescription": "BG999999999",
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "transaction": {
+        "accountId": "amzn1.account.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+        "transactionId": "amzn.transaction.ALNR19JCVWLN3E",
+        "transactionType": "DEBIT",
+        "transactionStatus": "IN_PROGRESS",
+        "transactionRequestDate": "2023-09-26T02:32:59.787Z",
+        "expectedCompletionDate": "2023-09-26T02:32:59.787Z",
+        "transactionActualCompletionDate": "2023-09-30T02:32:59.787Z",
+        "lastUpdateDate": "2023-09-26T02:32:59.787Z",
+        "requesterName": "TppOrgId",
+        "transactionRequesterSource": "TPP",
+        "transactionDescription": "Test transaction request",
+        "transactionSourceAccount": {
+          "accountId": "sourceAccountIdCase200",
+          "bankAccountHolderName": "John Doe",
+          "bankName": "Amazon Seller Wallet",
+          "bankAccountNumberFormat": "IBAN",
+          "bankAccountCurrency": "GBP"
+        },
+        "transactionDestinationAccount": {
+          "bankName": "Royal Bank of Scotland",
+          "bankAccountNumberFormat": "IBAN",
+          "bankAccountNumberTail": "819",
+          "bankAccountCurrency": "GBP",
+          "bankAccountCountryCode": "EU"
+        },
+        "transactionRequestAmount": {
+          "currencyCode": "EUR",
+          "currencyAmount": 500.0
+        },
+        "transferRateDetails": {
+          "baseAmount": {
+            "currencyCode": "EUR",
+            "currencyAmount": 500.0
+          },
+          "fxRateDetails": {
+            "fxRateId": "UNIQUE_FX_RATE_ID_1",
+            "baseRate": 7.6915,
+            "effectiveFxRate": 7.6084,
+            "rateDirection": "BUY"
+          },
+          "transferAmount": {
+            "currencyCode": "CNY",
+            "currencyAmount": 3804.2
+          },
+          "fees": [
+            {
+              "feeId": "Unique_FeeId_001",
+              "feeType": "TRANSACTION_FEE",
+              "feeRateValue": "0.9",
+              "feeAmount": {
+                "currencyCode": "EUR",
+                "currencyAmount": 4.5
+              }
+            },
+            {
+              "feeId": "Unique_FeeId_002",
+              "feeType": "TAX",
+              "feeRateValue": "20.0",
+              "feeAmount": {
+                "currencyCode": "EUR",
+                "currencyAmount": 0.9
+              }
+            }
+          ]
+        },
+        "transactionFinalAmount": {
+          "currencyCode": "CNY",
+          "currencyAmount": 3804.2
+        }
+      },
+      "callBackURL": "https://www.example.com/callback/transaction_id"
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase400",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing signature.",
+          "details": "Missing addressDigitalSignature"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase403",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase404",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for invalid SourceAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase408",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 422,
+    "test_case": "CASE_422_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase422",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InsufficientBalance",
+          "message": "Insufficient Balance",
+          "details": "Insufficient Balance"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase429",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase500",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions",
+    "method": "POST",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase503",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankAccountNumberFormat": "IBAN",
+                "bankName": "Royal Bank of Scotland",
+                "bankAccountOwnershipType": "THIRD_PARTY",
+                "routingNumber": "RBOSGB2L",
+                "bankNumberFormat": "BASIC",
+                "accountCountryCode": "GB",
+                "accountCurrency": "GBP",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "payeeContactInformation": {
+              "payeeFirstName": "John",
+              "payeeLastName": "Doe",
+              "payeeEntityType": "PERSON",
+              "addressLine1": "Avenue John F. Kennedy 38",
+              "city": "Luxembourg",
+              "state": "LUXEMBOURG",
+              "postalCode": "1855",
+              "countryCode": "LU",
+              "emailAddress": "johndoe@gmail.com",
+              "phoneNumber": "3450987121"
+            },
+            "sourceAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 1000.0
+            },
+            "requestTime": "2023-09-26T01:21:53.002Z"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "accountId": "amzn1.account.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+      "transactionId": "amzn.transaction.AKJBNEFNL23R84V",
+      "transactionType": "DEBIT",
+      "transactionStatus": "IN_PROGRESS",
+      "transactionRequestDate": "2023-09-26T02:32:59.787Z",
+      "expectedCompletionDate": "2023-09-26T02:32:59.787Z",
+      "transactionActualCompletionDate": "2023-09-26T02:32:59.787Z",
+      "lastUpdateDate": "2023-09-26T02:32:59.787Z",
+      "requesterName": "TppOrgId",
+      "transactionRequesterSource": "TPP",
+      "transactionDescription": "Test transaction request",
+      "transactionSourceAccount": {
+        "accountId": "sourceAccountIdCase200",
+        "bankAccountHolderName": "John Doe",
+        "bankName": "Amazon Seller Wallet",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "123",
+        "bankAccountCurrency": "GBP"
+      },
+      "transactionDestinationAccount": {
+        "bankAccountHolderName": "Dane Shipping",
+        "bankName": "Royal Bank of Scotland",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "819",
+        "bankAccountCurrency": "GBP",
+        "bankAccountCountryCode": "EU"
+      },
+      "transactionRequestAmount": {
+        "currencyCode": "EUR",
+        "currencyAmount": 500.0
+      },
+      "transferRateDetails": {
+        "baseAmount": {
+          "currencyCode": "EUR",
+          "currencyAmount": 500.0
+        },
+        "fxRateDetails": {
+          "fxRateId": "UNIQUE_FX_RATE_ID_1",
+          "baseRate": 7.6915,
+          "effectiveFxRate": 7.6084,
+          "rateDirection": "BUY"
+        },
+        "transferAmount": {
+          "currencyCode": "CNY",
+          "currencyAmount": 3804.2
+        },
+        "fees": [
+          {
+            "feeId": "Unique_FeeId_001",
+            "feeType": "TRANSACTION_FEE",
+            "feeRateValue": "0.9",
+            "feeAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 4.5
+            }
+          },
+          {
+            "feeId": "Unique_FeeId_002",
+            "feeType": "TAX",
+            "feeRateValue": "20.0",
+            "feeAmount": {
+              "currencyCode": "EUR",
+              "currencyAmount": 0.9
+            }
+          }
+        ]
+      },
+      "transactionFinalAmount": {
+        "currencyCode": "CNY",
+        "currencyAmount": 3804.2
+      }
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "BankAccount not found.",
+          "details": "BankAccount doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transactions/{transactionId}",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "transactionId": {
+          "value": "transactionIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "nextPageToken": "3493805734095308457308475",
+      "transferSchedules": [
+        {
+          "transferScheduleId": "amzn1.transferschedule.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+          "transactionType": "DEBIT",
+          "transactionSourceAccount": {
+            "accountId": "sourceAccountIdCase200",
+            "bankAccountHolderName": "John Doe",
+            "bankName": "Amazon Seller Wallet",
+            "bankAccountNumberFormat": "IBAN",
+            "bankAccountNumberTail": "123",
+            "bankAccountCurrency": "GBP"
+          },
+          "transactionDestinationAccount": {
+            "bankAccountHolderName": "Dane Shipping",
+            "bankName": "Royal Bank of Scotland",
+            "bankAccountNumberFormat": "IBAN",
+            "bankAccountNumberTail": "819",
+            "bankAccountCurrency": "GBP",
+            "bankAccountCountryCode": "EU"
+          },
+          "transferScheduleStatus": "ENABLED",
+          "transferScheduleInformation": {
+            "scheduleStartDate": "2024-03-01T00:00:00Z",
+            "scheduleEndDate": "2027-03-01T00:00:00Z",
+            "scheduleExpression": {
+              "scheduleExpressionType": "RECURRING",
+              "recurringFrequency": "WEEKLY"
+            },
+            "scheduleType": "TIME_BASED"
+          },
+          "paymentPreference": {
+            "paymentPreferencePaymentType": "PERCENTAGE",
+            "value": 25.5
+          },
+          "transferScheduleFailures": [
+            {
+              "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+              "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Account not found.",
+          "details": "Account doesn't exists for InvalidAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "accountId": {
+          "value": "sourceAccountIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        },
+        "body": {
+          "value": {
+            "sourceAccountId": "amzn1.account.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "transferScheduleId": "amzn1.transferschedule.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+      "transactionType": "DEBIT",
+      "transactionSourceAccount": {
+        "accountId": "amzn.account.AAJKBWEF193EUBKWDVCS",
+        "bankAccountHolderName": "John Doe",
+        "bankName": "Amazon Seller Wallet",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "123",
+        "bankAccountCurrency": "GBP"
+      },
+      "transactionDestinationAccount": {
+        "bankAccountHolderName": "Dane Shipping",
+        "bankName": "Royal Bank of Scotland",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "819",
+        "bankAccountCurrency": "GBP",
+        "bankAccountCountryCode": "EU"
+      },
+      "transferScheduleStatus": "ENABLED",
+      "transferScheduleInformation": {
+        "scheduleStartDate": "2024-03-01T00:00:00Z",
+        "scheduleEndDate": "2027-03-01T00:00:00Z",
+        "scheduleExpression": {
+          "scheduleExpressionType": "RECURRING",
+          "recurringFrequency": "WEEKLY"
+        },
+        "scheduleType": "TIME_BASED"
+      },
+      "paymentPreference": {
+        "paymentPreferencePaymentType": "PERCENTAGE",
+        "value": 25.5
+      },
+      "transferScheduleFailures": [
+        {
+          "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+          "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase400",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing signature.",
+          "details": "Missing addressDigitalSignature"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase403",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase404",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Account not found.",
+          "details": "Account doesn't exists for invalid SourceAccountId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase408",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 409,
+    "test_case": "CASE_409_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase409",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "919"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926919",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2025-03-01T00:00:00Z",
+              "scheduleEndDate": "2026-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestConflict",
+          "message": "Request Conflict",
+          "details": "Transfer schedule already exists for same source and destination account combination."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase429",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase500",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "POST",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "sourceAccountId": "sourceAccountIdCase503",
+            "destinationAccountId": "amzn1.account.AJKBFWEJFBNH2KCJPII5FBN",
+            "sourceCurrencyCode": "USD",
+            "destinationTransactionInstrument": {
+              "bankAccount": {
+                "bankNumberFormat": "IBAN",
+                "bankAccountOwnershipType": "SELF_ACCOUNT",
+                "routingNumber": "HBUKGB4B",
+                "accountCountryCode": "EU",
+                "accountCurrency": "EUR",
+                "bankAccountNumberTail": "819"
+              },
+              "bankAccountNumber": "GB29RBOS60161331926819",
+              "accountHolderName": "John Doe"
+            },
+            "transactionType": "DEBIT",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleStatus": "ENABLED"
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        },
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase200",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "transferScheduleId": "amzn1.transferschedule.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+      "transactionType": "DEBIT",
+      "transactionDestinationAccount": {
+        "bankAccountHolderName": "Dane Shipping",
+        "bankName": "Royal Bank of Scotland",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "819",
+        "bankAccountCurrency": "GBP",
+        "bankAccountCountryCode": "EU"
+      },
+      "transferScheduleStatus": "ENABLED",
+      "transferScheduleInformation": {
+        "scheduleStartDate": "2024-03-01T00:00:00Z",
+        "scheduleEndDate": "2027-03-01T00:00:00Z",
+        "scheduleExpression": {
+          "scheduleExpressionType": "RECURRING",
+          "recurringFrequency": "WEEKLY"
+        },
+        "scheduleType": "TIME_BASED"
+      },
+      "paymentPreference": {
+        "paymentPreferencePaymentType": "PERCENTAGE",
+        "value": 25.5
+      },
+      "transferScheduleFailures": [
+        {
+          "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+          "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase400",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing signature.",
+          "details": "Missing addressDigitalSignature"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase403",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid request.",
+          "details": "Request body provided is invalid."
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase404",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Transfer Schedule not found.",
+          "details": "Transfer schedule id doesn't exists for invalid TransferScheduleId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase408",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase429",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase500",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules",
+    "method": "PUT",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "body": {
+          "value": {
+            "transferScheduleId": "transferScheduleIdCase503",
+            "transactionType": "DEBIT",
+            "transactionDestinationAccount": {
+              "bankAccountHolderName": "Dane Shipping",
+              "bankName": "Royal Bank of Scotland",
+              "bankAccountNumberFormat": "IBAN",
+              "bankAccountNumberTail": "819",
+              "bankAccountCurrency": "GBP",
+              "bankAccountCountryCode": "EU"
+            },
+            "transferScheduleStatus": "ENABLED",
+            "transferScheduleInformation": {
+              "scheduleStartDate": "2024-03-01T00:00:00Z",
+              "scheduleEndDate": "2027-03-01T00:00:00Z",
+              "scheduleExpression": {
+                "scheduleExpressionType": "RECURRING",
+                "recurringFrequency": "WEEKLY"
+              },
+              "scheduleType": "TIME_BASED"
+            },
+            "paymentPreference": {
+              "paymentPreferencePaymentType": "PERCENTAGE",
+              "value": 25.5
+            },
+            "transferScheduleFailures": [
+              {
+                "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+                "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdcase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "transferScheduleId": "amzn1.transferschedule.SMUGN2EN3ZHWSRJKH2KCJPII5JEI",
+      "transactionType": "DEBIT",
+      "transactionSourceAccount": {
+        "accountId": "sourceAccountIdCase200",
+        "bankAccountHolderName": "John Doe",
+        "bankName": "Amazon Seller Wallet",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "123",
+        "bankAccountCurrency": "GBP"
+      },
+      "transactionDestinationAccount": {
+        "bankAccountHolderName": "Dane Shipping",
+        "bankName": "Royal Bank of Scotland",
+        "bankAccountNumberFormat": "IBAN",
+        "bankAccountNumberTail": "819",
+        "bankAccountCurrency": "GBP",
+        "bankAccountCountryCode": "EU"
+      },
+      "transferScheduleStatus": "ENABLED",
+      "transferScheduleInformation": {
+        "scheduleStartDate": "2024-03-01T00:00:00Z",
+        "scheduleEndDate": "2027-03-01T00:00:00Z",
+        "scheduleExpression": {
+          "scheduleExpressionType": "RECURRING",
+          "recurringFrequency": "WEEKLY"
+        },
+        "scheduleType": "TIME_BASED"
+      },
+      "paymentPreference": {
+        "paymentPreferencePaymentType": "PERCENTAGE",
+        "value": 25.5
+      },
+      "transferScheduleFailures": [
+        {
+          "transferScheduleFailureDate": "2024-03-01T10:30:00Z",
+          "transferScheduleFailureReason": "INSUFFICIENT_BALANCE"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing wacCertificate.",
+          "details": "WAC certificate is missing for the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Transfer Schedule not found.",
+          "details": "Transfer schedule id doesn't exists for invalid TransferScheduleId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "GET",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 200,
+    "test_case": "CASE_200_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase200"
+        },
+        "marketplaceId": {
+          "value": "A1RKKUPIHCS9HS"
+        }
+      }
+    },
+    "response": {
+      "code": "Successful",
+      "message": "Deleted transfer schedule",
+      "details": "Deleted transfer schedule for ID transferScheduleIdCase200"
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 400,
+    "test_case": "CASE_400_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase400"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InvalidInput",
+          "message": "Invalid or Missing signature.",
+          "details": "Missing addressDigitalSignature"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 403,
+    "test_case": "CASE_403_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase403"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "UnauthorizedRequest",
+          "message": "Invalid WAC certificate.",
+          "details": "NCA Status for the certificate is invalid"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 404,
+    "test_case": "CASE_404_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase404"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "NotFound",
+          "message": "Transfer Schedule not found.",
+          "details": "Transfer schedule id doesn't exists for invalid TransferScheduleId"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 408,
+    "test_case": "CASE_408_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase408"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestTimedOut",
+          "message": "Request Timed Out",
+          "details": "Server did not respond in time"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 429,
+    "test_case": "CASE_429_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase429"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "RequestThrottled",
+          "message": "Request Throttled",
+          "details": "Server throttled the request"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 500,
+    "test_case": "CASE_500_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase500"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "InternalServerError",
+          "message": "Internal Server Error",
+          "details": "Internal Server Error Occurred"
+        }
+      ]
+    }
+  },
+  {
+    "source_file": "models/seller-wallet-api-model/sellerWallet_2024-03-01.json",
+    "domain": "seller-wallet",
+    "path": "/finances/transfers/wallet/2024-03-01/transferSchedules/{transferScheduleId}",
+    "method": "DELETE",
+    "status": 503,
+    "test_case": "CASE_503_1",
+    "request": {
+      "parameters": {
+        "transferScheduleId": {
+          "value": "transferScheduleIdCase503"
+        }
+      }
+    },
+    "response": {
+      "errors": [
+        {
+          "code": "ServiceUnavailable",
+          "message": "Server Unavailable",
+          "details": "Server is not accepting request"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,257 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "DPD UK Shipping API (Northern Ireland subset)",
+    "version": "1.2",
+    "description": "Hand-written from 'DPD API Northern Ireland Specification V1.2' pages 11-52. DPD publishes no OpenAPI document, so this one is transcribed and covers only the four operations carrier-integrations/dpdUK-integration calls: login, insert shipment, get labels, and the network list. Field obligations in the descriptions are quoted from the specification's own tables; the B2C / B2B-Not-At-Risk / B2B-At-Risk columns are named where they differ."
+  },
+  "servers": [
+    { "url": "https://api.dpd.co.uk/", "description": "DPD UK (DPD_UK_BASE_URL)" },
+    { "url": "https://api.dpdlocal.co.uk/", "description": "DPD Local (DPD_UK_LOCAL_BASE_URL)" }
+  ],
+  "paths": {
+    "/user/": {
+      "post": {
+        "summary": "Login - returns a GeoSession",
+        "description": "Credentials are sent base64 in the Authorization header. 401 means the username or password is wrong. A GeoSession stays valid for a day; DPD recommends fetching one at the start of each day.",
+        "parameters": [
+          { "name": "action", "in": "query", "required": true, "schema": { "type": "string", "enum": ["login"] } },
+          { "name": "Authorization", "in": "header", "required": true, "schema": { "type": "string" }, "example": "Basic RFNtaXRoOk1ZUGFzc1dkNjY=" }
+        ],
+        "responses": {
+          "200": {
+            "description": "GeoSession issued",
+            "content": {
+              "application/json": {
+                "example": { "error": null, "data": { "geoSession": "1234567890ABCDEFGHIJK" } }
+              }
+            }
+          },
+          "401": {
+            "description": "username or password incorrect",
+            "content": { "application/json": { "example": { "error": "Invalid credentials", "data": null } } }
+          }
+        }
+      }
+    },
+    "/shipping/shipment": {
+      "post": {
+        "summary": "Insert shipment",
+        "description": "Creates a shipment. The invoice object and the parcel array are required for Northern Ireland, EU and non-EU destinations, the Republic of Ireland and the Channel Islands. Unit values and customs values must exclude VAT. ?test=true validates without creating.",
+        "parameters": [
+          { "name": "GeoSession", "in": "header", "required": true, "schema": { "type": "string" } },
+          { "name": "GeoClient", "in": "header", "required": true, "schema": { "type": "string" }, "example": "thirdparty/ANCHANTO" },
+          { "name": "test", "in": "query", "required": false, "schema": { "type": "boolean" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InsertShipmentRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Shipment created, or rejected with an error array. DPD answers 200 in both cases; `error` being non-null is the rejection.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": null,
+                  "data": {
+                    "shipmentId": "1055223",
+                    "consolidated": false,
+                    "consignmentDetail": [
+                      { "consignmentNumber": "1999236263", "parcelNumbers": ["15501999236263"] }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The GeoSession sent was refused. The specification documents 403 for a missing or invalid GeoSession; the integration refreshes its session on 401 only.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": [ { "errorCode": "403", "obj": "GeoSession", "errorType": "authentication", "errorMessage": "A GeoSession header was not found or is invalid", "errorAction": null } ],
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shipping/shipment/{shipmentId}/label/": {
+      "get": {
+        "summary": "Get labels",
+        "description": "Label output for a shipment already created. The format follows the Accept header: text/html for A4 laser, text/vnd.citizen-clp for Citizen thermal, text/vnd.eltron-epl for EPL. The response is the print string itself, not JSON.",
+        "parameters": [
+          { "name": "shipmentId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Accept", "in": "header", "required": true, "schema": { "type": "string", "enum": ["text/html", "text/vnd.citizen-clp", "text/vnd.eltron-epl"] } },
+          { "name": "GeoSession", "in": "header", "required": true, "schema": { "type": "string" } },
+          { "name": "GeoClient", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "The print string, in the requested format",
+            "content": {
+              "text/html": { "schema": { "type": "string" } },
+              "text/vnd.citizen-clp": { "schema": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "/shipping/network/": {
+      "get": {
+        "summary": "List the networks available to the account",
+        "parameters": [
+          { "name": "GeoSession", "in": "header", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "The networks of the DPD group account",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": null,
+                  "data": [
+                    { "network": { "networkCode": "1^12", "networkDescription": "Next Day" } },
+                    { "network": { "networkCode": "1^19", "networkDescription": "Air Classic" } }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InsertShipmentRequest": {
+        "type": "object",
+        "required": ["collectionOnDelivery", "collectionDate", "consolidate", "consignment"],
+        "properties": {
+          "jobId": { "type": "integer", "nullable": true, "description": "Must always be null." },
+          "collectionOnDelivery": { "type": "boolean", "example": false },
+          "collectionDate": { "type": "string", "example": "2024-05-15T09:00:00", "description": "Collection date and approximate time. Error 1002 reads 'Incorrect date format YYYY-MM-DD'; every example in the specification is a second-precision local datetime with no zone." },
+          "consolidate": { "type": "boolean", "example": false },
+          "generateCustomsData": { "type": "string", "example": "Y", "description": "Must always be 'Y' on a customs flow - Northern Ireland included." },
+          "invoice": { "$ref": "#/components/schemas/Invoice" },
+          "consignment": { "type": "array", "items": { "$ref": "#/components/schemas/Consignment" } }
+        }
+      },
+      "Invoice": {
+        "type": "object",
+        "description": "Mandatory on every customs flow. Paper invoices are not accepted.",
+        "properties": {
+          "invoiceType": { "type": "integer", "example": 1 },
+          "invoiceExportReason": { "type": "string", "example": "01" },
+          "invoiceTermsOfDelivery": { "type": "string", "enum": ["DAP", "DT1"], "example": "DAP" },
+          "invoiceReference": { "type": "string", "example": "Invoice Reference" },
+          "shippingCost": { "description": "The carriage the customer paid. Send an empty string, not zero, when the cost already sits inside the consignment value.", "oneOf": [{ "type": "number" }, { "type": "string" }], "example": 5.0 },
+          "invoiceCustomsNumber": { "type": "string", "description": "USA only." },
+          "invoiceShipperDetails": { "$ref": "#/components/schemas/InvoiceParty" },
+          "invoiceDeliveryDetails": { "$ref": "#/components/schemas/InvoiceParty" }
+        }
+      },
+      "InvoiceParty": {
+        "type": "object",
+        "required": ["address"],
+        "properties": {
+          "address": { "$ref": "#/components/schemas/Address" },
+          "contactDetails": { "$ref": "#/components/schemas/ContactDetails" },
+          "eoriNumber": { "type": "string", "example": "GB123456789000", "description": "GB and 12 digits. Mandatory on all three flows for the shipper, and on the delivery party wherever that party's UKIMS number is sent." },
+          "valueAddedTaxNumber": { "type": "string", "example": "GB999888777", "description": "GB and 9 digits, GB entity only." },
+          "ukimsNumber": { "type": "string", "example": "XIUKIM47700000000000000000001", "description": "UK Internal Market Scheme number. Required on B2B Not-At-Risk from whichever party holds it; DPD accepts one party's number, alongside that same party's EORI." },
+          "isBusiness": { "type": "boolean", "description": "Delivery party only. Mandatory on all three Northern Ireland flows." },
+          "atRisk": { "type": "boolean", "description": "Delivery party only. Whether the goods are at risk of onward movement into the EU. B2B only." },
+          "pidNumber": { "type": "string", "description": "Not applicable to Northern Ireland." }
+        }
+      },
+      "Consignment": {
+        "type": "object",
+        "required": ["networkCode", "numberOfParcels", "totalWeight", "collectionDetails", "deliveryDetails"],
+        "properties": {
+          "consignmentNumber": { "type": "string", "nullable": true, "description": "Must always be null - DPD issues it." },
+          "consignmentRef": { "type": "string", "nullable": true, "description": "The specification's table says this must always be null; dpdUK-integration/CONTEXT.md defines it as the product's order number, which is what the integration sends. Unresolved." },
+          "networkCode": { "type": "string", "example": "1^12" },
+          "numberOfParcels": { "type": "integer", "example": 1 },
+          "totalWeight": { "type": "number", "example": 0.65, "description": "Kilogrammes, non-zero, and never less than the summed unit weights." },
+          "customsValue": { "type": "number", "example": 36.0, "description": "Non-zero and exclusive of VAT." },
+          "customsCurrency": { "type": "string", "enum": ["GBP", "EUR"], "example": "GBP" },
+          "parcelDescription": { "type": "string", "example": "Cotton T-Shirt|Wool Scarf", "description": "The products, pipe-separated." },
+          "deliveryInstructions": { "type": "string", "example": "Leave at reception" },
+          "shippingRef1": { "type": "string", "example": "B2B-TEST-0001" },
+          "shippingRef2": { "type": "string" },
+          "shippingRef3": { "type": "string" },
+          "liability": { "type": "boolean", "example": false },
+          "liabilityValue": { "type": "integer", "nullable": true, "description": "Null while liability is false." },
+          "collectionDetails": { "$ref": "#/components/schemas/PartyDetails" },
+          "deliveryDetails": { "$ref": "#/components/schemas/PartyDetails" },
+          "parcel": { "type": "array", "items": { "$ref": "#/components/schemas/Parcel" } }
+        }
+      },
+      "PartyDetails": {
+        "type": "object",
+        "required": ["address"],
+        "properties": {
+          "address": { "$ref": "#/components/schemas/Address" },
+          "contactDetails": { "$ref": "#/components/schemas/ContactDetails" },
+          "notificationDetails": {
+            "type": "object",
+            "description": "At least one of the two is required on the delivery party.",
+            "properties": {
+              "email": { "type": "string", "example": "buyer@customer.example.com" },
+              "mobile": { "type": "string", "example": "442890123456" }
+            }
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "required": ["countryCode", "postcode", "street", "town"],
+        "properties": {
+          "organisation": { "type": "string", "example": "Byrne Retail Ltd" },
+          "countryCode": { "type": "string", "example": "GB", "description": "IATA country code." },
+          "postcode": { "type": "string", "example": "BT11DA" },
+          "street": { "type": "string", "example": "14 Royal Avenue" },
+          "locality": { "type": "string", "example": "Suite 3" },
+          "town": { "type": "string", "example": "Belfast" },
+          "county": { "type": "string", "example": "Northern Ireland" }
+        }
+      },
+      "ContactDetails": {
+        "type": "object",
+        "properties": {
+          "contactName": { "type": "string", "example": "Aoife Byrne" },
+          "telephone": { "type": "string", "example": "442890123456" }
+        }
+      },
+      "Parcel": {
+        "type": "object",
+        "description": "One physical package. The parcel array is how customs data is declared.",
+        "required": ["packageNumber"],
+        "properties": {
+          "packageNumber": { "type": "integer", "example": 1 },
+          "parcelProduct": { "type": "array", "items": { "$ref": "#/components/schemas/ParcelProduct" } }
+        }
+      },
+      "ParcelProduct": {
+        "type": "object",
+        "description": "One SKU as packed in that package.",
+        "properties": {
+          "productCode": { "type": "string", "example": "SKU-001" },
+          "productItemsDescription": { "type": "string", "example": "Cotton T-Shirt" },
+          "productTypeDescription": { "type": "string", "example": "Apparel" },
+          "productFabricContent": { "type": "string", "description": "Textiles and apparel only.", "example": "100% cotton" },
+          "countryOfOrigin": { "type": "string", "example": "GB" },
+          "productHarmonisedCode": { "type": "string", "example": "610910", "description": "Commodity code, 8 digits." },
+          "unitWeight": { "type": "number", "example": 0.25, "description": "Kilogrammes, non-zero, never more than the parcel weight." },
+          "numberOfItems": { "type": "integer", "example": 2, "description": "The quantity in this package. Non-zero." },
+          "unitValue": { "type": "number", "example": 6.0, "description": "Value of one unit, exclusive of VAT. Non-zero." },
+          "productUrl": { "type": "string", "description": "Russia and DPD Direct Japan only." }
+        }
+      }
+    }
+  }
+}

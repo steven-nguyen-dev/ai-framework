@@ -1,0 +1,123 @@
+{
+ "source": "ETON sale order SOCJFT7Z5JVQB, masked",
+ "note": "The add-on-deal gift: adjustments.order_seller_discount is 1000000 while adjustments.seller_discount is 0, because seller_discount covers the ordered lines only. Reading the shorter field pushed the 1000000 gift at full list with nothing against it.",
+ "fields": "Only the fields the create and pricing paths read. Personal data, addresses and the order's own identity are not carried -- the suite supplies those. OMS row ids are renumbered into the suite's own range; every price, quantity and SKU is what OMS sent.",
+ "data": {
+  "marketplace_code": "shopee_vn",
+  "seller_currency": "VND",
+  "voucher_seller": 40000.0,
+  "order_adjustment": {
+   "marketplace_discount": 91520.0,
+   "seller_discount": 40000.0,
+   "adjustments": {
+    "order_original_price": 1612000,
+    "order_seller_discount": 1000000,
+    "seller_discount": 0,
+    "voucher_from_seller": 40000,
+    "shopee_discount": 0,
+    "voucher_from_shopee": 91520,
+    "coins": 0,
+    "actual_shipping_fee": 0,
+    "seller_shipping_discount": 0,
+    "shopee_shipping_rebate": 0,
+    "service_fee": 34460,
+    "buyer_total_amount": 480480,
+    "items": [
+     {
+      "item_sku": "",
+      "model_sku": "1023253_CB12",
+      "quantity_purchased": 1,
+      "original_price": 612000,
+      "selling_price": 612000,
+      "discounted_price": 612000,
+      "seller_discount": 0,
+      "shopee_discount": 0,
+      "discount_from_voucher_seller": 40000,
+      "discount_from_voucher_shopee": 91520,
+      "discount_from_coin": 0,
+      "is_main_item": true
+     },
+     {
+      "item_sku": "HOPCOM",
+      "model_sku": "",
+      "quantity_purchased": 1,
+      "original_price": 1000000,
+      "selling_price": 0,
+      "discounted_price": 0,
+      "seller_discount": 1000000,
+      "shopee_discount": 0,
+      "discount_from_voucher_seller": 0,
+      "discount_from_voucher_shopee": 0,
+      "discount_from_coin": 0,
+      "is_main_item": false
+     }
+    ]
+   }
+  },
+  "order_items": [
+   {
+    "order_item_id": 9200371,
+    "sku": "1023253_CB12",
+    "inventory_sku": null,
+    "quantity": 1,
+    "item_price": "612000.0",
+    "paid_price": "480480.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "40000.0",
+    "channel_discount": "91520.0",
+    "is_gwp_item": false,
+    "kit_details": [
+     {
+      "inventory_product_sku": "1023253",
+      "quantity": 12,
+      "price": "612000.0"
+     }
+    ],
+    "line_item_details": [
+     {
+      "line_item_id": 9200371,
+      "item_original_price": 612000.0,
+      "item_paid_price": 612000.0,
+      "seller_voucher_amount": 40000.0,
+      "voucher_platform": 91520.0,
+      "tax_amount": null,
+      "shipping_fee_original": 0.0,
+      "shipping_fee_seller_discount": 0.0,
+      "shipping_fee_platform_discount": "0.0",
+      "seller_discount_on_retail_price": 0.0,
+      "marketplace_discount_on_retail_price": 0.0
+     }
+    ]
+   },
+   {
+    "order_item_id": 9200372,
+    "sku": "HOPCOM",
+    "inventory_sku": "HOPCOM",
+    "quantity": 1,
+    "item_price": "0.0",
+    "paid_price": "0.0",
+    "tax_amount": "0.0",
+    "shipping_amount": "0.0",
+    "seller_discount": "40000.0",
+    "channel_discount": "91520.0",
+    "is_gwp_item": false,
+    "line_item_details": [
+     {
+      "line_item_id": 9200372,
+      "item_original_price": 1000000.0,
+      "item_paid_price": 0.0,
+      "seller_voucher_amount": 0.0,
+      "voucher_platform": 0.0,
+      "tax_amount": null,
+      "shipping_fee_original": 0.0,
+      "shipping_fee_seller_discount": 0.0,
+      "shipping_fee_platform_discount": "0.0",
+      "seller_discount_on_retail_price": 1000000.0,
+      "marketplace_discount_on_retail_price": 0.0
+     }
+    ]
+   }
+  ]
+ }
+}

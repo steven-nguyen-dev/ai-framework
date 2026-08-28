@@ -7,7 +7,7 @@ defect is an edit to that one file.
 
 The results contract, the verdicts and the traps a runner hits:
 [`../TESTING.md`](../TESTING.md). The worked example, carrying every
-part of the engine: [`../eton/suite-flow2.py`](../eton/suite-flow2.py).
+part of the engine: [`../eton/suite-create-order.py`](../eton/suite-create-order.py).
 
 ---
 
@@ -108,6 +108,6 @@ reader needs when the case goes red again.
 
 **A case that cannot prove its last assertion** under the settings a run was given is `blocked`,
 not `fail` — declare it with `Blocked(when=…, reason=…)` so a documented gap is never read as a
-regression. `suite-flow2.py`'s N10 is the worked example: `@Recover` only reports an order unsynchronized
+regression. `suite-create-order.py`'s N10 is the worked example: `@Recover` only reports an order unsynchronized
 when `event_name` is the value it compares against, so a run sending anything else leaves that
 assertion unproven.

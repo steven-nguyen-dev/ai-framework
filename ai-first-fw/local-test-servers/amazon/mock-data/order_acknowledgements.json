@@ -1,0 +1,16 @@
+[
+  {
+    "payload": {
+      "orderAcknowledgements": [
+        {
+          "purchaseOrderNumber": "PO-AMZN-2026-001",
+          "acknowledgementDate": "2026-08-26T12:00:00Z",
+          "acknowledgementStatus": {
+            "code": "Acknowledged",
+            "description": "Order accepted"
+          }
+        }
+      ]
+    }
+  }
+]
