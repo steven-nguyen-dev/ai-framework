@@ -1137,8 +1137,18 @@ header{flex:none;height:48px;max-height:48px;padding:0 20px;display:flex;align-i
 .wrap{display:flex;flex:1;min-height:0;height:auto;overflow:hidden;width:100%;box-sizing:border-box}
 aside{width:22vw;min-width:270px;max-width:360px;flex:none;background:var(--panel);
 border-right:1px solid var(--line-2);padding:1.4vh 10px;overflow-y:auto;height:100%;box-sizing:border-box}
-aside h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
-margin:0 0 9px;padding:0 3px;font-weight:600}
+.aside-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;padding:0 3px}
+.aside-hd h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0;font-weight:600}
+.batch-run-btn{padding:3px 9px;border:0;border-radius:var(--radius);background:var(--pass-bg);color:var(--pass-fg);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.batch-run-btn:hover{background:var(--pass-bg-2)}
+.batch-run-btn[disabled]{background:var(--mute-bg);color:var(--muted);cursor:not-allowed}
+.batch-run-btn.running{background:var(--run-bg);color:var(--run-fg);animation:pulse 1.1s ease-in-out infinite}
+.aside-subbar{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 6px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line);margin-bottom:8px}
+.aside-sel-all-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:11px;color:var(--ink-2);font-weight:500}
+.aside-sel-all-label input{margin:0;cursor:pointer}
+.aside-queue-indicator{font-size:10.5px;color:var(--run-fg);font-weight:600}
+.suite-chk-label{display:inline-flex;align-items:center;margin-right:2px;cursor:pointer;flex:none}
+.suite-chk-label input{margin:0;cursor:pointer}
 .run{display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:none;border:0;cursor:pointer;
 padding:4px 6px 4px 8px;font-size:12px;color:var(--ink-2);border-radius:6px;transition:background .1s;flex:none;box-sizing:border-box}
 .run:hover{background:var(--hover)}
@@ -1346,7 +1356,17 @@ table.ck tr.no td.cl,table.ck tr.no td.ce{color:var(--ink)}
 </header>
 <div class="wrap">
   <aside>
-    <h2>Test Suites</h2>
+    <div class="aside-hd">
+      <h2>Test Suites</h2>
+      <button class="batch-run-btn" id="btn-batch-run" type="button" onclick="startBatchRun()">▶ Run Selected</button>
+    </div>
+    <div class="aside-subbar">
+      <label class="aside-sel-all-label">
+        <input type="checkbox" id="chk-suite-all" checked onchange="toggleAllSuites(this.checked)">
+        <span>Select All</span>
+      </label>
+      <span class="aside-queue-indicator" id="aside-queue-indicator"></span>
+    </div>
     <div id="tree"></div>
   </aside>
   <main>
@@ -1387,6 +1407,8 @@ table.ck tr.no td.cl,table.ck tr.no td.ce{color:var(--ink)}
 <script>
 var current=null, result=null, open={}, suites=[], run={}, wasRunning=false, expanded={}, suiteInfoOpen={}, suiteCasePickOpen={}, suiteOpen={}, termOpen=false;
 var knownSuiteCases={}, caseSelection={};
+var suiteSelection={};
+var batchQueue=[], isBatchRunning=false, batchTotal=0, batchCurrentIndex=0;
 var viewMode = localStorage.getItem('test_view_mode') || 'business';
 var SHOWN=10;
 
@@ -1709,9 +1731,17 @@ function drawTree(){
     }
 
     var isRunningThis = !!run.running && run.suite === s.id;
+    var isQueued = isBatchRunning && batchQueue.some(function(item){ return item.suiteId === s.id; });
+    var queuePosition = -1;
+    if(isQueued){
+      queuePosition = batchQueue.findIndex(function(item){ return item.suiteId === s.id; }) + 1;
+    }
+
     var btnText = 'Run All';
     if(isRunningThis){
       btnText = 'Running…';
+    } else if(isQueued){
+      btnText = 'Queued #' + queuePosition;
     } else {
       var allCount = suiteCases.length;
       if(caseSelection[s.id]){
@@ -1722,11 +1752,14 @@ function drawTree(){
       }
     }
 
+    var isSuiteChecked = suiteSelection[s.id] !== false;
+
     return '<details class="grp" data-suite-grp="'+esc(s.id)+'"'+(isSuiteOpen?' open':'')+'>'+
       '<summary class="ghd">'+
+        (s.orphan?'':'<label class="suite-chk-label" onclick="event.stopPropagation();" title="Include in batch run"><input type="checkbox" data-suite-chk="'+esc(s.id)+'"'+(isSuiteChecked?' checked':'')+((busy||isBatchRunning)?' disabled':'')+'>'+'</label>')+
         '<span class="s-arrow">&#9656;</span>'+
         '<span class="nm" title="'+esc(s.name||s.id)+'">'+esc(s.name||s.id)+'</span>'+
-        (s.orphan?'':'<button class="go" type="button" data-run-suite="'+esc(s.id)+'" id="run-btn-'+esc(s.id)+'"'+(busy?' disabled'+(isRunningThis?'':' title="A test suite is currently running"'):'')+'>'+
+        (s.orphan?'':'<button class="go" type="button" data-run-suite="'+esc(s.id)+'" id="run-btn-'+esc(s.id)+'"'+((busy||isBatchRunning)?' disabled'+(isRunningThis?'':' title="A test suite is currently running"'):'')+'>'+
           esc(btnText)+'</button>')+
       '</summary>'+
       '<div class="grp-body">'+
@@ -1748,6 +1781,114 @@ function drawTree(){
     d.ontoggle=function(){suiteInfoOpen[d.dataset.sinfo]=d.open;};});
   [].forEach.call(document.querySelectorAll('details[data-scases]'),function(d){
     d.ontoggle=function(){suiteCasePickOpen[d.dataset.scases]=d.open;};});
+  updateBatchRunButton();
+}
+
+function syncSelectAllSuiteCheckbox(){
+  var allChks = document.querySelectorAll('input[data-suite-chk]');
+  var checkedChks = document.querySelectorAll('input[data-suite-chk]:checked');
+  var masterChk = document.getElementById('chk-suite-all');
+  if(masterChk && allChks.length > 0){
+    masterChk.checked = (checkedChks.length === allChks.length);
+    masterChk.indeterminate = (checkedChks.length > 0 && checkedChks.length < allChks.length);
+  }
+}
+
+function updateBatchRunButton(){
+  var btn = document.getElementById('btn-batch-run');
+  var indicator = document.getElementById('aside-queue-indicator');
+  if(!btn) return;
+
+  var activeSuites = suites.filter(function(s){ return !s.orphan; });
+  var selectedSuites = activeSuites.filter(function(s){ return suiteSelection[s.id] !== false; });
+  var count = selectedSuites.length;
+
+  if(isBatchRunning){
+    btn.className = 'batch-run-btn running';
+    btn.textContent = 'Queue ' + batchCurrentIndex + '/' + batchTotal + '…';
+    btn.disabled = true;
+    if(indicator) indicator.textContent = 'Running ' + batchCurrentIndex + '/' + batchTotal;
+  } else {
+    btn.className = 'batch-run-btn';
+    btn.textContent = '▶ Run Selected (' + count + ')';
+    btn.disabled = (count === 0 || !!run.running);
+    if(indicator) indicator.textContent = '';
+  }
+  syncSelectAllSuiteCheckbox();
+}
+
+function toggleAllSuites(checked){
+  suites.forEach(function(s){
+    if(!s.orphan) suiteSelection[s.id] = checked;
+  });
+  [].forEach.call(document.querySelectorAll('input[data-suite-chk]'), function(i){
+    i.checked = checked;
+  });
+  updateBatchRunButton();
+}
+
+function startBatchRun(){
+  if(run.running || isBatchRunning) return;
+  var chosenSuites = suites.filter(function(s){
+    return !s.orphan && (suiteSelection[s.id] !== false);
+  });
+  if(!chosenSuites.length) return;
+
+  batchQueue = chosenSuites.map(function(s){
+    var flags = [].filter.call(document.querySelectorAll('input[data-suite="'+s.id+'"][data-flag]:checked'), function(){return true;}).map(function(i){return i.value;});
+    var allCaseChks = document.querySelectorAll('input[data-suite="'+s.id+'"][data-case]');
+    var checkedCases = [].filter.call(allCaseChks, function(i){ return i.checked; }).map(function(i){ return i.dataset.case; });
+    var chosenCases = (allCaseChks.length > 0 && checkedCases.length < allCaseChks.length) ? checkedCases : [];
+    return { suiteId: s.id, flags: flags, cases: chosenCases, name: s.name || s.id };
+  });
+
+  isBatchRunning = true;
+  batchTotal = batchQueue.length;
+  batchCurrentIndex = 0;
+  runNextInBatch();
+}
+
+function runNextInBatch(){
+  if(!isBatchRunning) return;
+  if(batchQueue.length === 0){
+    isBatchRunning = false;
+    batchTotal = 0;
+    batchCurrentIndex = 0;
+    drawTree();
+    updateBatchRunButton();
+    return;
+  }
+
+  var item = batchQueue.shift();
+  batchCurrentIndex++;
+  updateBatchRunButton();
+  drawTree();
+
+  fetch('RUN_URL', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ suite: item.suiteId, flags: item.flags, cases: item.cases })
+  }).then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok){
+        console.error('Failed to start suite in batch:', d ? d.error : 'Unknown error');
+        setTimeout(runNextInBatch, 1000);
+      } else {
+        tick();
+      }
+    })
+    .catch(function(err){
+      console.error('Batch run error on ' + item.suiteId, err);
+      setTimeout(runNextInBatch, 1000);
+    });
+}
+
+function stopBatch(){
+  isBatchRunning = false;
+  batchQueue = [];
+  batchTotal = 0;
+  batchCurrentIndex = 0;
+  fetch('STOP_URL', { method: 'POST' }).then(tick);
 }
 
 function selectAllCases(suiteId, checked){
@@ -1849,16 +1990,29 @@ function drawRun(){
   }
   var pre=document.getElementById('outp'); if(pre && !done && termOpen) pre.scrollTop=pre.scrollHeight;
   var sb=document.getElementById('stopbtn');
-  if(sb) sb.onclick=function(ev){ ev.stopPropagation(); sb.disabled=true; fetch('STOP_URL',{method:'POST'}).then(tick); };
+  if(sb) sb.onclick=function(ev){ ev.stopPropagation(); sb.disabled=true; stopBatch(); };
 }
 
 function tick(){
   fetch('STATUS_URL').then(function(r){return r.json();}).then(function(s){
-    run=s; drawRun(); drawTree();
+    run=s; drawRun(); drawTree(); updateBatchRunButton();
     if(s.running){
       current=null; load();
       setTimeout(tick, 1500);
-    } else if(wasRunning){ wasRunning=false; current=null; load(); }
+    } else if(wasRunning){
+      wasRunning=false; current=null; load();
+      if(isBatchRunning){
+        if(batchQueue.length > 0){
+          setTimeout(runNextInBatch, 600);
+        } else {
+          isBatchRunning = false;
+          batchTotal = 0;
+          batchCurrentIndex = 0;
+          updateBatchRunButton();
+          drawTree();
+        }
+      }
+    }
     wasRunning = wasRunning || !!s.running;
   }).catch(function(){});
 }
@@ -2031,12 +2185,17 @@ document.addEventListener('click', function(ev){
   if(runSuite && !runSuite.dataset.runCase){
       ev.preventDefault();
       ev.stopPropagation();
+      isBatchRunning = false;
+      batchQueue = [];
+      batchTotal = 0;
+      batchCurrentIndex = 0;
       var suiteId = runSuite.dataset.runSuite;
       var flags=[].filter.call(document.querySelectorAll('input[data-suite="'+suiteId+'"][data-flag]:checked'), function(){return true;}).map(function(i){return i.value;});
       var allCaseChks = document.querySelectorAll('input[data-suite="'+suiteId+'"][data-case]');
       var checkedCases = [].filter.call(allCaseChks, function(i){ return i.checked; }).map(function(i){ return i.dataset.case; });
       var chosenCases = (allCaseChks.length > 0 && checkedCases.length < allCaseChks.length) ? checkedCases : [];
       runSuite.disabled=true; runSuite.textContent='Starting…';
+      updateBatchRunButton();
       fetch('RUN_URL', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({suite:suiteId, flags:flags, cases:chosenCases})
@@ -2047,6 +2206,13 @@ document.addEventListener('click', function(ev){
 });
 
 document.addEventListener('change', function(ev){
+  var suiteChk = ev.target.closest('input[data-suite-chk]');
+  if(suiteChk){
+    var sid = suiteChk.dataset.suiteChk;
+    suiteSelection[sid] = suiteChk.checked;
+    updateBatchRunButton();
+    return;
+  }
   var caseChk = ev.target.closest('input[data-case]');
   if(caseChk){
     var sid = caseChk.dataset.suite;
@@ -2262,31 +2428,31 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
 
             def suite_cases(g):
                 all_known = collections.OrderedDict()
-                sorted_runs = sorted(g.get("runs", []), key=lambda r: len((r.get("_result") or {}).get("cases") or []), reverse=True)
-                for r in sorted_runs:
-                    res = r.get("_result")
-                    if res and res.get("cases"):
-                        for c in res.get("cases"):
-                            cid = c.get("id")
-                            if cid and cid not in all_known:
-                                all_known[cid] = {"id": cid, "name": c.get("name"), "shape": c.get("shape", "normal")}
+                orig = next((s for s in suites if s.get("id") == g.get("id")), {})
+                cmd = orig.get("command") or g.get("command") or []
+                for part in cmd:
+                    if isinstance(part, str) and part.endswith(".py") and "mock.py" not in part:
+                        target = part if os.path.isabs(part) else os.path.normpath(os.path.join(suite_cwd or ".", part))
+                        if os.path.isfile(target):
+                            try:
+                                with open(target, "r", encoding="utf-8") as f:
+                                    text = f.read()
+                                matches = re.findall(r'case\s*\(\s*["\']([A-Za-z0-9_.-]+)["\']\s*,\s*["\']([^"\']+)["\']', text)
+                                for cid, name in matches:
+                                    if cid not in all_known:
+                                        shape = "error" if cid.startswith("E") else ("gap" if cid.startswith("G") else "normal")
+                                        all_known[cid] = {"id": cid, "name": name, "shape": shape}
+                            except Exception:
+                                pass
                 if not all_known:
-                    orig = next((s for s in suites if s.get("id") == g.get("id")), {})
-                    cmd = orig.get("command") or g.get("command") or []
-                    for part in cmd:
-                        if isinstance(part, str) and part.endswith(".py") and "mock.py" not in part:
-                            target = part if os.path.isabs(part) else os.path.normpath(os.path.join(suite_cwd or ".", part))
-                            if os.path.isfile(target):
-                                try:
-                                    with open(target, "r", encoding="utf-8") as f:
-                                        text = f.read()
-                                    matches = re.findall(r'case\s*\(\s*["\']([A-Za-z0-9_.-]+)["\']\s*,\s*["\']([^"\']+)["\']', text)
-                                    for cid, name in matches:
-                                        if cid not in all_known:
-                                            shape = "error" if cid.startswith("E") else ("gap" if cid.startswith("G") else "normal")
-                                            all_known[cid] = {"id": cid, "name": name, "shape": shape}
-                                except Exception:
-                                    pass
+                    sorted_runs = sorted(g.get("runs", []), key=lambda r: len((r.get("_result") or {}).get("cases") or []), reverse=True)
+                    for r in sorted_runs:
+                        res = r.get("_result")
+                        if res and res.get("cases"):
+                            for c in res.get("cases"):
+                                cid = c.get("id")
+                                if cid and cid not in all_known:
+                                    all_known[cid] = {"id": cid, "name": c.get("name"), "shape": c.get("shape", "normal")}
                 return list(all_known.values())
 
             def public(run):

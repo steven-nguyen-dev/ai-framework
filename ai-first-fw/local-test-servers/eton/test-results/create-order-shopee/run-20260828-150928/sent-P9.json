@@ -1,0 +1,134 @@
+{
+  "event_parameters": {
+    "seller_code": "SSIN10000007004",
+    "seller_id": "7004",
+    "store_id": "16643",
+    "warehouse_code": "eton",
+    "store_code": "SS0000016643",
+    "store_name": "Shopee Store",
+    "zone_id": 1,
+    "event_name": "order_creation",
+    "marketplace_code": "shopee_vn"
+  },
+  "data": {
+    "order_id": "92000381",
+    "order_number": "SO-ETON-CO-P9-SHOPEE-KIT3",
+    "market_place_order_number": "MP-428839066042874",
+    "warehouse_code": "eton",
+    "marketplace_code": "shopee_vn",
+    "store_code": "SS0000016643",
+    "seller_currency": "VND",
+    "customer_first_name": "Nguyen",
+    "customer_last_name": "Van A",
+    "customer_email": "customer@example.com",
+    "payment_method": "COD",
+    "created_at": "2026-08-13T10:24:33.000Z",
+    "shipping_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "billing_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "shipping_method": {
+      "shipping_type": "Standard"
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200381,
+        "sku": "1023163_CB3MIX",
+        "inventory_sku": null,
+        "quantity": 1,
+        "item_price": "105000.0",
+        "paid_price": "100000.0",
+        "tax_amount": "0.0",
+        "shipping_amount": "0.0",
+        "seller_discount": "0.0",
+        "channel_discount": "5000.0",
+        "is_gwp_item": false,
+        "kit_details": [
+          {
+            "inventory_product_sku": "1023163",
+            "quantity": 1,
+            "price": "46000.0"
+          },
+          {
+            "inventory_product_sku": "1023165",
+            "quantity": 1,
+            "price": "34000.0"
+          },
+          {
+            "inventory_product_sku": "1023168",
+            "quantity": 1,
+            "price": "45000.0"
+          }
+        ],
+        "line_item_details": [
+          {
+            "line_item_id": 9200381,
+            "item_original_price": "105000.0",
+            "item_paid_price": "105000.0",
+            "seller_voucher_amount": "0.0",
+            "voucher_platform": "5000.0",
+            "tax_amount": "",
+            "shipping_fee_original": "0.0",
+            "shipping_fee_seller_discount": "0.0",
+            "shipping_fee_platform_discount": "0.0",
+            "seller_discount_on_retail_price": "0.0",
+            "marketplace_discount_on_retail_price": "0.0"
+          }
+        ]
+      }
+    ],
+    "voucher_seller": 0.0,
+    "order_adjustment": {
+      "marketplace_discount": 5000.0,
+      "seller_discount": 0.0,
+      "adjustments": {
+        "order_original_price": 105000,
+        "order_seller_discount": 0,
+        "seller_discount": 0,
+        "voucher_from_seller": 0,
+        "shopee_discount": 0,
+        "voucher_from_shopee": 5000,
+        "coins": 0,
+        "actual_shipping_fee": 0,
+        "seller_shipping_discount": 0,
+        "shopee_shipping_rebate": 0,
+        "service_fee": 8775,
+        "buyer_total_amount": 100000,
+        "items": [
+          {
+            "item_sku": "1023163_CB3MIX",
+            "model_sku": "1023163_CB3MIX",
+            "quantity_purchased": 1,
+            "original_price": 105000,
+            "selling_price": 105000,
+            "discounted_price": 105000,
+            "seller_discount": 0,
+            "shopee_discount": 0,
+            "discount_from_voucher_seller": 0,
+            "discount_from_voucher_shopee": 5000,
+            "discount_from_coin": 0,
+            "is_main_item": false
+          }
+        ]
+      }
+    }
+  }
+}

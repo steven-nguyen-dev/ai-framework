@@ -1,0 +1,42 @@
+[
+  {
+    "id": "P6",
+    "name": "P6. TikTok - the promo lands on the line that can carry it",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:40:16.485255+00:00",
+    "returned_at": "2026-08-28T08:40:16.511217+00:00"
+  },
+  {
+    "id": "P7",
+    "name": "P7. TikTok - both discounts read from order_adjustment",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:40:23.612962+00:00",
+    "returned_at": "2026-08-28T08:40:23.640199+00:00"
+  },
+  {
+    "id": "P10",
+    "name": "P10. TikTok - a gift priced like the purchase is still given away",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:40:30.758608+00:00",
+    "returned_at": "2026-08-28T08:40:30.790117+00:00"
+  },
+  {
+    "id": "P11",
+    "name": "P11. TikTok - four identical gifts under one SKU",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:40:37.894056+00:00",
+    "returned_at": "2026-08-28T08:40:37.930926+00:00"
+  },
+  {
+    "id": "P12",
+    "name": "P12. TikTok - an order discount that does not divide evenly",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:40:45.106429+00:00",
+    "returned_at": "2026-08-28T08:40:45.150395+00:00"
+  }
+]

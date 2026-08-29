@@ -1,0 +1,72 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-28T08:43:46.659991+00:00",
+      "live_entries": 1,
+      "accumulated": 1,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:43:53.789127+00:00",
+      "live_entries": 2,
+      "accumulated": 2,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:44:00.901513+00:00",
+      "live_entries": 4,
+      "accumulated": 4,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:45:51.041072+00:00",
+      "live_entries": 7,
+      "accumulated": 7,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:45:58.191570+00:00",
+      "live_entries": 8,
+      "accumulated": 8,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:46:28.307683+00:00",
+      "live_entries": 12,
+      "accumulated": 12,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:46:35.433784+00:00",
+      "live_entries": 13,
+      "accumulated": 13,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:46:42.757334+00:00",
+      "live_entries": 13,
+      "accumulated": 13,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:46:50.027126+00:00",
+      "live_entries": 14,
+      "accumulated": 14,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:46:57.335573+00:00",
+      "live_entries": 16,
+      "accumulated": 16,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:47:00.451085+00:00",
+      "live_entries": 16,
+      "accumulated": 16,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}

@@ -1,0 +1,306 @@
+{
+  "name": "createOrder - TikTok pricing",
+  "at": "2026-08-28T08:40:16.485255+00:00",
+  "run": "run-20260828-154016",
+  "suite": "create-order-tiktok",
+  "summary": {
+    "fail": 4,
+    "running": 1,
+    "pending": 2
+  },
+  "evidence": {
+    "status": "run in progress",
+    "mock log": "captured, 1 call(s)",
+    "database": "captured",
+    "pushUnsynchronizedOrder delta": "not captured",
+    "APP": "https://localhost",
+    "DB_NAME": "wms_integrations_test",
+    "EVENT_NAME": "order_creation",
+    "MOCK": "http://127.0.0.1:23101",
+    "RABBIT": "http://127.0.0.1:15672",
+    "RABBIT_AUTH": "guest:guest"
+  },
+  "cases": [
+    {
+      "id": "P6",
+      "name": "TikTok - the promo lands on the line that can carry it",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 148000, 'OrderSellerDiscount': 13400, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 0, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 28300, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 28300, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1022281', 2, 148000, 13400, 0, 0, 0, 0), ('1024681', 2, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "Send the order to Eton: expected 1, got 0, Write the order to the database: expected 1, got 0, Send the price detail to Eton: expected 1, got 0",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        }
+      ],
+      "verdict": "fail",
+      "note": "The one production order in this set Eton rejected outright, three attempts in a row: the 13400 seller discount was put on the zero-priced gift line, whose own base could not carry it, and Eton answered 400 'Promo amount is over total.'. The discount is now spread across the lines in proportion to their base, so a zero-priced line takes none of it. The mock cannot answer the way Eton did -- its conditions have no arithmetic -- so the rule is judged on the pushed body instead.",
+      "given": "A tiktok_vn order of a priced kit line and a zero-priced gift line, with the order's seller discount carried on order_adjustment.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Items[0] carries the whole 13400 against its base of 148000.",
+        "Items[1] carries none of it -- base 0, promo 0.",
+        "Every line's promo is inside its own base, which is the rule Eton enforces and the mock does not.",
+        "ShippingFee 28300 comes from shipping_fee_original and is cancelled by an equal ShippingDiscountPlatform."
+      ],
+      "detail": {
+        "order_id": "92000351",
+        "order_number": "SO-ETON-CO-P6-TIKTOK-GIFT",
+        "intake": "tiktok-gift-line"
+      },
+      "calls": []
+    },
+    {
+      "id": "P7",
+      "name": "TikTok - both discounts read from order_adjustment",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 175000, 'OrderSellerDiscount': 15001, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 16000, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 52200, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 52200, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1025377', 5, 175000, 15001, 0, 16000, 0, 0), ('1025377', 1, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "Send the order to Eton: expected 1, got 0, Write the order to the database: expected 1, got 0, Send the price detail to Eton: expected 1, got 0",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        }
+      ],
+      "verdict": "fail",
+      "note": "Proves the first step of the TikTok order-discount precedence, and proves the figures are read once rather than summed: OMS repeats both on every item, so summing the flat copies would double them. The odd 15001 is deliberate -- it is the real amount, and a rounded 15000 would not show a spread that lost a unit. Those two order-level discounts are also what UnclassifiedDiscount is derived from, and it reconciles to 0 against what the buyer paid.",
+      "given": "A tiktok_vn order carrying seller_discount 15001 and marketplace_discount 16000 on order_adjustment, with a kit line and its zero-priced twin.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "OrderSellerDiscount 15001 and OrderPlatformDiscount 16000, each read once.",
+        "Items[0] carries both in full; Items[1], priced at 0, carries neither.",
+        "UnclassifiedDiscount is 0: the base less both discounts is exactly the paid total.",
+        "The lines sum to OrderBasePrice 175000."
+      ],
+      "detail": {
+        "order_id": "92000361",
+        "order_number": "SO-ETON-CO-P7-TIKTOK-CARRIED",
+        "intake": "tiktok-carried-discounts"
+      },
+      "calls": []
+    },
+    {
+      "id": "P10",
+      "name": "TikTok - a gift priced like the purchase is still given away",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 120000, 'OrderSellerDiscount': 3602, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 45396, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 82300, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 82300, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1027575', 2, 30000, 900.5, 0, 11349, 0, 0), ('1027573', 2, 30000, 900.5, 0, 11349, 0, 0), ('1027576', 2, 30000, 900.5, 0, 11349, 0, 0), ('1027574', 2, 30000, 900.5, 0, 11349, 0, 0), ('1027575', 1, 0, 0, 0, 0, 0, 0), ('1027573', 1, 0, 0, 0, 0, 0, 0), ('1027576', 1, 0, 0, 0, 0, 0, 0), ('1027574', 1, 0, 0, 0, 0, 0, 0), ('1027575', 2, 0, 0, 0, 0, 0, 0), ('1027573', 2, 0, 0, 0, 0, 0, 0), ('1027576', 2, 0, 0, 0, 0, 0, 0), ('1027574', 2, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "Send the order to Eton: expected 1, got 0, Write the order to the database: expected 1, got 0, Send the price detail to Eton: expected 1, got 0",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        }
+      ],
+      "verdict": "fail",
+      "note": "P6 is a gift line priced at zero, which is what OMS sends 7851 times out of 7859. This is one of the 8 it does not: on the '4 MIX TANG 4 MIX' promotion it copied the purchased line's item_price and paid_price onto the is_gwp_item line beside it, so the order base price came out at 240000 -- twice the 120000 OMS states in its own item_total. is_gwp_item is read as 'this line is given away' rather than trusting the price on it, which is the treatment OrderItemsUtility already applies to a gift line on an e-invoice: the line stays, its money goes to zero. Not a mapping bug on our side -- an OMS data defect the mapper defends against.",
+      "given": "A tiktok_vn order of three order items -- one bought, two flagged is_gwp_item, one of which carries the bought line's prices -- each exploding into four kit components, so twelve lines are pushed.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "OrderBasePrice is 120000, matching OMS's own item_total, not the 240000 the copied prices would produce.",
+        "All twelve lines are still pushed -- the gift lines are kept so the payload still matches the sale order, they are just worth nothing.",
+        "Only the four bought components carry base and promo; the eight gift lines are zero throughout.",
+        "The lines sum to OrderBasePrice 120000."
+      ],
+      "detail": {
+        "order_id": "92000391",
+        "order_number": "SO-ETON-CO-P10-TIKTOK-GWP",
+        "intake": "tiktok-mispriced-gift"
+      },
+      "calls": []
+    },
+    {
+      "id": "P11",
+      "name": "TikTok - four identical gifts under one SKU",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 936000, 'OrderSellerDiscount': 276000, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 99000, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 356800, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 356800, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1024506', 24, 936000, 276000, 0, 99000, 0, 0), ('1024506', 3, 0, 0, 0, 0, 0, 0), ('1024506', 3, 0, 0, 0, 0, 0, 0), ('1024506', 3, 0, 0, 0, 0, 0, 0), ('1024506', 3, 0, 0, 0, 0, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "Send the order to Eton: expected 1, got 0, Write the order to the database: expected 1, got 0, Send the price detail to Eton: expected 1, got 0",
+      "summary": "no create call \u00b7 no push call \u00b7 0 rows",
+      "checks": [
+        {
+          "label": "Send the order to JPluger",
+          "what": "POST /jpluger/wms/createOrders (publish only)",
+          "expected": "200",
+          "actual": "200",
+          "ok": true
+        },
+        {
+          "label": "Send the order to Eton",
+          "what": "POST /api/v0.2/saleorders/single",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Write the order to the database",
+          "what": "rows in the `orders` table for this order",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        },
+        {
+          "label": "Send the price detail to Eton",
+          "what": "POST /api/v0.2/saleorders/{code}/priceDetail",
+          "expected": "1",
+          "actual": "0",
+          "ok": false
+        }
+      ],
+      "verdict": "fail",
+      "note": "Five lines under one SKU, four of them identical in every field. Any mapping that keyed a line on its SKU, or deduplicated lines that look alike, would collapse these four into one and send Eton a sale order short of three gifts -- and a gift is real stock that has to be picked. The whole 276000 seller discount also has to land on the single priced line, because none of the four zero-priced lines can carry any of it.",
+      "given": "A tiktok_vn order of five lines all carrying SKU 1024506: one priced at 936000 for 24 units, and four gifts of 3 units each at zero.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "Five lines are pushed, not one -- identical gift lines are kept apart.",
+        "The priced line takes the whole 276000 seller discount and the whole 99000 platform discount.",
+        "Each of the four gift lines is zero in all six amounts, so none of them breaches its own base.",
+        "The lines sum to OrderBasePrice 936000."
+      ],
+      "detail": {
+        "order_id": "92000401",
+        "order_number": "SO-ETON-CO-P11-TIKTOK-GIFTS4",
+        "intake": "tiktok-repeated-gifts"
+      },
+      "calls": []
+    },
+    {
+      "id": "P12",
+      "name": "TikTok - an order discount that does not divide evenly",
+      "shape": "intake",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Map every order-level component: {'OrderBasePrice': 91000, 'OrderSellerDiscount': 1352, 'OrderSellerVoucher': 0, 'OrderPlatformDiscount': 48410, 'OrderPlatformVoucher': 0, 'OrderCoinsOrCashback': 0, 'ShippingFee': 29800, 'ShippingDiscountSeller': 0, 'ShippingDiscountPlatform': 29800, 'ServiceFee': 0, 'Tax': 0, 'UnclassifiedDiscount': 0, 'UnclassifiedFee': 0, 'CurrencyCode': 'VND'} \u00b7 Send line totals, not unit prices: [('1025607', 1, 27000, 401.142857, 0, 14363.406593, 0, 0), ('1025703', 1, 64000, 950.857143, 0, 34046.593407, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "firing\u2026",
+      "checks": [],
+      "verdict": "running",
+      "note": "TikTok states one discount for the whole order, so the mapper has to spread it across the lines by base-price share and the shares here are all repeating: 1352 over 27000 and 64000 of a 91000 order. The last priced line takes the remainder rather than its own share, so Sum(Items[].SellerDiscount) is 1352 exactly and not 1351.9999999. The amounts below are the only fractional figures any case in these suites expects, which is why TOLERANCE exists.",
+      "given": "A tiktok_vn order of two differently priced lines, 27000 and 64000, carrying an order-level seller discount of 1352 and a platform discount of 48410.",
+      "then": [
+        "Create accepted, Status 'New'; one row in orders; one push accepted.",
+        "The seller discount splits 401.142857 / 950.857143 by base-price share.",
+        "The platform discount splits 14363.406593 / 34046.593407 the same way.",
+        "Both lines stay inside their own base, and the lines sum to OrderBasePrice 91000."
+      ],
+      "detail": {
+        "order_id": "92000411",
+        "order_number": "SO-ETON-CO-P12-TIKTOK-SPLIT",
+        "intake": "tiktok-uneven-split"
+      },
+      "calls": []
+    },
+    {
+      "id": "N5",
+      "name": "TikTok - flat fallback (empty line_item_details)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 1 \u00b7 Eton answers the price detail: 200 \u00b7 Send line totals, not unit prices: [('SKU-ETON-001', 2, 200000, 5000, 0, 10000, 0, 0)] \u00b7 Split the order total across the lines: True \u00b7 Keep each line's promo inside its own base: True",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "hasLineItemPricing has to fall back to the flat fields rather than read an empty array as 'no pricing'. Hand-written on purpose: no production intake here has an empty line_item_details on its only line, so the last step of the discount precedence -- the flat per-item copies, read as a max because OMS repeats them on every line -- has nothing real to stand on.",
+      "given": "A tiktok_th order whose line_item_details is empty, but whose item_price and paid_price are non-zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "One price detail push, accepted, mapped flat from the item's own fields: base 200000, seller discount 5000, platform discount 10000."
+      ],
+      "detail": {
+        "order_id": "92000005",
+        "order_number": "SO-ETON-CO-N5-TIKTOK-FLAT"
+      },
+      "calls": []
+    },
+    {
+      "id": "N6",
+      "name": "TikTok - zero prices, nothing to push (boundary)",
+      "shape": "normal",
+      "expected": "Send the order to Eton: 1 \u00b7 Eton answers the create: 200 \u00b7 Read the marker in the reply: New \u00b7 Write the order to the database: 1 \u00b7 Send the price detail to Eton: 0",
+      "actual": "queued",
+      "checks": [],
+      "verdict": "pending",
+      "note": "The boundary between 'flat fallback' and 'no data'. Zeros pushed to Eton would assert the order had no discount, tax or shipping \u2014 silent corruption, not a visible failure. Proves pushPricingIfMapped skips instead.",
+      "given": "A tiktok_vn order whose line_item_details is empty AND whose item_price and paid_price are both zero.",
+      "then": [
+        "Create accepted, Status 'New'.",
+        "One row in orders.",
+        "No price detail call is made at all."
+      ],
+      "detail": {
+        "order_id": "92000006",
+        "order_number": "SO-ETON-CO-N6-TIKTOK-ZERO"
+      },
+      "calls": []
+    }
+  ]
+}

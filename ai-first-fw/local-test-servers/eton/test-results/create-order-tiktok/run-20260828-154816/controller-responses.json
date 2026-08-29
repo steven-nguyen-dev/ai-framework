@@ -1,0 +1,58 @@
+[
+  {
+    "id": "P6",
+    "name": "P6. TikTok - the promo lands on the line that can carry it",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:16.331773+00:00",
+    "returned_at": "2026-08-28T08:48:16.354369+00:00"
+  },
+  {
+    "id": "P7",
+    "name": "P7. TikTok - both discounts read from order_adjustment",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:23.455839+00:00",
+    "returned_at": "2026-08-28T08:48:23.488965+00:00"
+  },
+  {
+    "id": "P10",
+    "name": "P10. TikTok - a gift priced like the purchase is still given away",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:30.601909+00:00",
+    "returned_at": "2026-08-28T08:48:30.639150+00:00"
+  },
+  {
+    "id": "P11",
+    "name": "P11. TikTok - four identical gifts under one SKU",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:37.788303+00:00",
+    "returned_at": "2026-08-28T08:48:37.819288+00:00"
+  },
+  {
+    "id": "P12",
+    "name": "P12. TikTok - an order discount that does not divide evenly",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:44.977729+00:00",
+    "returned_at": "2026-08-28T08:48:45.011773+00:00"
+  },
+  {
+    "id": "N5",
+    "name": "N5. TikTok - flat fallback (empty line_item_details)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:52.147442+00:00",
+    "returned_at": "2026-08-28T08:48:52.198718+00:00"
+  },
+  {
+    "id": "N6",
+    "name": "N6. TikTok - zero prices, nothing to push (boundary)",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:48:59.287708+00:00",
+    "returned_at": "2026-08-28T08:48:59.309575+00:00"
+  }
+]

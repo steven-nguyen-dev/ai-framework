@@ -1,12 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "ai-first-fw-utilities",
-  "version": "1.2.0",
-  "description": "Standalone engineering utility skills for architecture review, diagram making, documentation writing, prompt building, PR descriptions, unslop text refinement, glossary and gotchas harvesting, and API extraction (lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, pr-desc-writer, unslop, glossary-maker, naver-api-extractor, lotteon-api-extractor).",
+  "version": "1.3.0",
+  "description": "Standalone engineering utility skills for architecture review, diagram making, documentation writing, prompt building, PR descriptions, branch syncing, unslop text refinement, glossary and gotchas harvesting, and API extraction (lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, pr-desc-writer, git-coordinator, unslop, glossary-maker, naver-api-extractor, lotteon-api-extractor).",
   "author": {
     "name": "Steven Nguyen"
   },
   "skills": [
+    "./git-coordinator",
     "./glossary-maker",
     "./lotteon-api-extractor",
     "./lv1-architecture-review",

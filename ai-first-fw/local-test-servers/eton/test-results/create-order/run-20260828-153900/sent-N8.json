@@ -1,0 +1,63 @@
+{
+  "event_parameters": {
+    "seller_code": "SSIN10000007004",
+    "seller_id": "7004",
+    "store_id": "16643",
+    "warehouse_code": "eton",
+    "store_code": "SS0000016643",
+    "store_name": "Shopee Store",
+    "zone_id": 1,
+    "event_name": "order_creation",
+    "marketplace_code": "shopee_vn"
+  },
+  "data": {
+    "order_id": "92000008",
+    "order_number": "SO-ETON-CO-N8-PACKED",
+    "market_place_order_number": "MP-428839066042874",
+    "warehouse_code": "eton",
+    "marketplace_code": "shopee_vn",
+    "store_code": "SS0000016643",
+    "seller_currency": "VND",
+    "customer_first_name": "Nguyen",
+    "customer_last_name": "Van A",
+    "customer_email": "customer@example.com",
+    "payment_method": "COD",
+    "created_at": "2026-08-13T10:24:33.000Z",
+    "shipping_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "billing_address": {
+      "first_name": "Nguyen",
+      "last_name": "Van A",
+      "address1": "123 Le Loi Street",
+      "address2": "District 1",
+      "city": "Ho Chi Minh City",
+      "state_name": "Ho Chi Minh",
+      "post_code": "700000",
+      "country_code": "VN",
+      "phone": "+84901234567"
+    },
+    "shipping_method": {
+      "shipping_type": "Standard"
+    },
+    "order_items": [
+      {
+        "order_item_id": 9200108,
+        "name": "Combo Tra Oolong Cau Tre",
+        "sku": "1025377_CB3",
+        "inventory_sku": "SKU-ETON-001",
+        "item_price": "105000.0",
+        "paid_price": "92850.0",
+        "quantity": 1
+      }
+    ]
+  }
+}

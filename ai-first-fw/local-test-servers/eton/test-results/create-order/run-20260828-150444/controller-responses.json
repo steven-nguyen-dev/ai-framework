@@ -1,0 +1,66 @@
+[
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:04:45.045082+00:00",
+    "returned_at": "2026-08-28T08:04:45.066638+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:04:52.200140+00:00",
+    "returned_at": "2026-08-28T08:04:52.232308+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:04:59.349673+00:00",
+    "returned_at": "2026-08-28T08:04:59.378702+00:00"
+  },
+  {
+    "id": "N11",
+    "name": "N11. Eton 400 generic - reported unsynchronized",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:05:06.521169+00:00",
+    "returned_at": "2026-08-28T08:05:06.553111+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:05:13.663085+00:00",
+    "returned_at": "2026-08-28T08:05:13.701892+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:05:20.825200+00:00",
+    "returned_at": "2026-08-28T08:05:20.865403+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:05:28.041878+00:00",
+    "returned_at": "2026-08-28T08:05:28.079896+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:05:35.166858+00:00",
+    "returned_at": "2026-08-28T08:05:35.193599+00:00"
+  }
+]

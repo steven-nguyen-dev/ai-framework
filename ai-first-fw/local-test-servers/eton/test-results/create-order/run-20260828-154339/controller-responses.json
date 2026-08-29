@@ -1,0 +1,82 @@
+[
+  {
+    "id": "N7",
+    "name": "N7. Haravan - out of scope channel",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:43:39.599232+00:00",
+    "returned_at": "2026-08-28T08:43:39.652644+00:00"
+  },
+  {
+    "id": "N8",
+    "name": "N8. Packed order",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:43:46.750858+00:00",
+    "returned_at": "2026-08-28T08:43:46.778464+00:00"
+  },
+  {
+    "id": "N9",
+    "name": "N9. Replay - Eton answers BESO05 already exists",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:43:53.862461+00:00",
+    "returned_at": "2026-08-28T08:43:53.891799+00:00"
+  },
+  {
+    "id": "N10",
+    "name": "N10. Eton 500 - retry then recover",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:44:00.991445+00:00",
+    "returned_at": "2026-08-28T08:44:01.025553+00:00"
+  },
+  {
+    "id": "N11",
+    "name": "N11. Eton 400 generic - reported unsynchronized",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:45:51.125542+00:00",
+    "returned_at": "2026-08-28T08:45:51.170818+00:00"
+  },
+  {
+    "id": "N12",
+    "name": "N12. Pricing rejected - retried alone, then the order stands",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:45:58.268793+00:00",
+    "returned_at": "2026-08-28T08:45:58.291791+00:00"
+  },
+  {
+    "id": "N13",
+    "name": "N13. Empty order_items - mock validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:46:28.396748+00:00",
+    "returned_at": "2026-08-28T08:46:28.420355+00:00"
+  },
+  {
+    "id": "N16",
+    "name": "N16. Unmappable payload - reported rather than escaping",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:46:35.679769+00:00",
+    "returned_at": "2026-08-28T08:46:35.743468+00:00"
+  },
+  {
+    "id": "K4",
+    "name": "K4. Kit with a component missing its SKU - validation 400",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:46:42.947242+00:00",
+    "returned_at": "2026-08-28T08:46:43.008776+00:00"
+  },
+  {
+    "id": "N14",
+    "name": "N14. Pricing payload - every property named once",
+    "controller_status": 200,
+    "controller_body": "{\"status\":true,\"message\":\"Success\",\"summary\":\"\"}",
+    "fired_at": "2026-08-28T08:46:50.185815+00:00",
+    "returned_at": "2026-08-28T08:46:50.319845+00:00"
+  }
+]

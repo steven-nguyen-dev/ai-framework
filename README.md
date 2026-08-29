@@ -66,6 +66,9 @@ Gated AI skills that enforce engineering rigor before code is touched:
 * **`code-reviewer`**: Cold pull request and branch diff reviewer auditing requirements compliance, codebase rules, and security.
 
 ### 2. ⚡ Standalone Utilities (`ai-first-fw/utilities/`)
+* **`git-coordinator`**: Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree (merge, build, push, draft PR) and tears down mirrors once landed.
+* **`pr-desc-writer`**: Reads the session and diff, fills the repository PR template, and offers to apply it directly to the open GitHub pull request.
+* **`unslop`**: Strips AI tells, filler, and throat-clearing from technical markdown documentation without inventing facts.
 * **`lv1-diagram-maker`**: Generates elegant, professional Mermaid architecture and flow diagrams using muted-dark aesthetics.
 * **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
 * **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.
@@ -129,6 +132,9 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/plan-reviewer
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/code-reviewer
 
 # Utility Skills
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/git-coordinator
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/pr-desc-writer
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/unslop
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-diagram-maker
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-architecture-review
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-doc-writer

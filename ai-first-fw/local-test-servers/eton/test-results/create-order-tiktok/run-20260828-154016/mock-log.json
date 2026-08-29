@@ -1,0 +1,83 @@
+{
+  "name": "Eton WMS",
+  "host": "http://127.0.0.1:23101",
+  "entries": [
+    {
+      "seq": 1,
+      "at": "2026-08-28T08:40:33.601Z",
+      "durationMs": 0.282,
+      "rule": "5xx -- exercises createOrder is5xxServerError() and @Retryable",
+      "curl": "curl -i -X POST 'http://127.0.0.1:23101/api/v0.2/saleorders/single' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"ClientSoCode\":\"92000010\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"SKU-ETON-001\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N10-SERVERERROR\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}'",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23101/api/v0.2/saleorders/single",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": "***redacted***",
+          "Content-Length": "865",
+          "Host": "127.0.0.1:23101",
+          "Connection": "Keep-Alive",
+          "User-Agent": "Apache-HttpClient/4.5.13 (Java/11.0.31)",
+          "Accept-Encoding": "gzip,deflate"
+        },
+        "body": {
+          "ClientSoCode": "92000010",
+          "SourceClientBranch": "SS0000016643",
+          "CustPhone": "+84901234567",
+          "CustName": "Nguyen Van A",
+          "CustType": 0,
+          "ShippingServiceCode": "BCS",
+          "ShippingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "BillingAddressNo": "123 Le Loi Street, District 1, Ho Chi Minh City, 700000",
+          "FinalCOD": 0.0,
+          "BizType": "B2C",
+          "ListSODetail": [
+            {
+              "SKU": "SKU-ETON-001",
+              "Qty": 1,
+              "Price": 105000.0,
+              "Amount": 105000.0,
+              "ActualAmount": 92850.0,
+              "VATPercent": 0.0,
+              "PromotionPercent": 0.0,
+              "CODAmount": 0.0
+            }
+          ],
+          "RefCode": "SO-ETON-CO-N10-SERVERERROR",
+          "ClientPickup": true,
+          "IsGotDocument": false,
+          "NoPack": false,
+          "IsPreOrder": false,
+          "IsLabelling": false,
+          "IsOnHold": false,
+          "WarehouseCode": "eton",
+          "SOType": 1,
+          "IsUsingClientShippingLabel": true,
+          "TotalAmount": 0.0,
+          "PromotionAmount": 0.0,
+          "ActualAmount": 0.0,
+          "TotalCODAmount": 0.0,
+          "SalesChannel": "Shopee",
+          "FulfillmentServiceCode": "Standard"
+        },
+        "bodyText": "{\"ClientSoCode\":\"92000010\",\"SourceClientBranch\":\"SS0000016643\",\"CustPhone\":\"+84901234567\",\"CustName\":\"Nguyen Van A\",\"CustType\":0,\"ShippingServiceCode\":\"BCS\",\"ShippingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"BillingAddressNo\":\"123 Le Loi Street, District 1, Ho Chi Minh City, 700000\",\"FinalCOD\":0.0,\"BizType\":\"B2C\",\"ListSODetail\":[{\"SKU\":\"SKU-ETON-001\",\"Qty\":1,\"Price\":105000.0,\"Amount\":105000.0,\"ActualAmount\":92850.0,\"VATPercent\":0.0,\"PromotionPercent\":0.0,\"CODAmount\":0.0}],\"RefCode\":\"SO-ETON-CO-N10-SERVERERROR\",\"ClientPickup\":true,\"IsGotDocument\":false,\"NoPack\":false,\"IsPreOrder\":false,\"IsLabelling\":false,\"IsOnHold\":false,\"WarehouseCode\":\"eton\",\"SOType\":1,\"IsUsingClientShippingLabel\":true,\"TotalAmount\":0.0,\"PromotionAmount\":0.0,\"ActualAmount\":0.0,\"TotalCODAmount\":0.0,\"SalesChannel\":\"Shopee\",\"FulfillmentServiceCode\":\"Standard\"}"
+      },
+      "response": {
+        "status": 500,
+        "statusText": "Internal Server Error",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "ErrorCode": null,
+          "HasError": true,
+          "ErrorMessages": [
+            "Internal server error"
+          ]
+        },
+        "bodyText": "{\"ErrorCode\": null, \"HasError\": true, \"ErrorMessages\": [\"Internal server error\"]}"
+      }
+    }
+  ]
+}

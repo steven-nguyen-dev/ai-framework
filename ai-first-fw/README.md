@@ -134,10 +134,14 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/plan-reviewer
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/code-reviewer
 
 # Utility Skills
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/git-coordinator
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/pr-desc-writer
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/unslop
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-diagram-maker
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-architecture-review
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-doc-writer
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-prompt-builder
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/glossary-maker
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/naver-api-extractor
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lotteon-api-extractor
 ```

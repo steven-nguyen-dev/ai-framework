@@ -1,0 +1,54 @@
+{
+  "captures": [
+    {
+      "at": "2026-08-28T08:48:23.365496+00:00",
+      "live_entries": 2,
+      "accumulated": 2,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:48:30.501739+00:00",
+      "live_entries": 4,
+      "accumulated": 4,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:48:37.651341+00:00",
+      "live_entries": 6,
+      "accumulated": 6,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:48:44.830744+00:00",
+      "live_entries": 8,
+      "accumulated": 8,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:48:52.026446+00:00",
+      "live_entries": 10,
+      "accumulated": 10,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:48:59.211070+00:00",
+      "live_entries": 12,
+      "accumulated": 12,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:49:06.324410+00:00",
+      "live_entries": 13,
+      "accumulated": 13,
+      "reset_detected": false
+    },
+    {
+      "at": "2026-08-28T08:49:09.421783+00:00",
+      "live_entries": 13,
+      "accumulated": 13,
+      "reset_detected": false
+    }
+  ],
+  "live_log_cleared_mid_run": false,
+  "entries_only_in_run_folder": 0
+}
