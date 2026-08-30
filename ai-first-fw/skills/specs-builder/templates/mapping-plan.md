@@ -47,9 +47,9 @@
      Copy evidence exactly. A rewritten quote is a defect, not a shorter sentence. Where you
      quote a partner doc, a payload or a line of code, it arrives verbatim or it does not arrive.
 
-     This document mints `MAP-xx`, and nothing else. Every other identifier — `GAP-xx`, `SRC-xx`,
-     a Jira key, a requirement number — is cited here and minted elsewhere. Cited, never
-     restated: if the meaning of one is worth repeating here, it was in the wrong place.
+     This document mints `MAP-xx`, and nothing else. Every other identifier — a Jira key, a
+     requirement number, an ID another document minted — is cited here, never restated: if the
+     meaning of one is worth repeating here, it was in the wrong place.
 
      Narrative lives here. This is the plan-side half of the rule whose spec-side half is the output
      contract in `SKILL.md`: a fact needing a clause of justification to stand up is a row in this file,
@@ -101,9 +101,9 @@
 
      THE COLUMNS
 
-       ID          — `MAP-01` upward, minted here and never reused. The unmapped table (§3), the
-                     gap ledger and the hand-off report cite these numbers, so a number that
-                     changes meaning between runs is worse than a gap.
+       ID          — `MAP-01` upward, minted here and never reused. The unmapped table (§3) and
+                     the hand-off report cite these numbers, so a number that changes meaning
+                     between runs is worse than a gap.
        OMS Property
                    — our side of the boundary, as the field is actually named.
        External Property
@@ -186,8 +186,8 @@
      Where the grade is expressed. Where the area's harness has a mechanism for unresolved
      contract fields, use it: an `A`-grade value is filled directly, while `B` and `C` leave the
      slot blank and let the area's recommendation block carry the fallback. Where the area has no
-     such mechanism, the grade lives in this file and the gap ledger only — never invent one in
-     the spec.
+     such mechanism, the grade lives in this file and the hand-off report only — never invent
+     one in the spec.
 
      Check: every row carries a grade in its Confidence cell, every silent-failure row has all
      four of its mandatory cells filled, every row citing a sibling names which impl and whether

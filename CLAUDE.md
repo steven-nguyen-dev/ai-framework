@@ -21,7 +21,7 @@ This workspace manages two repositories:
 - For modifications outside this repository, request explicit confirmation naming the specific target file before editing.
 
 ## Repository Layout
-- `ai-first-fw/skills/` — Core 6-stage lifecycle skills (`analysis-handoff`, `implementation-planner`, `specs-builder`, `plan-reviewer`, `specs-reviewer`, `code-reviewer`). Default location for lifecycle skills.
+- `ai-first-fw/skills/` — Core lifecycle skills (`write-analysis`, `implementation-planner`, `specs-builder`, `review-code`). Default location for lifecycle skills.
 - `ai-first-fw/utilities/` — Standalone engineering utilities and API extractors.
 - `ai-first-fw/local-report-servers/` — Local report and dashboard servers (managed by `portal.py` on port 24000).
 - `ai-first-fw/local-theme/` — Shared dark report theme source of truth (`theme.css`, `theme.js`, `theme.json`).

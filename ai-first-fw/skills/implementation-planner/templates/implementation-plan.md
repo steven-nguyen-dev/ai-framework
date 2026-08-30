@@ -60,7 +60,7 @@
      ESTABLISH EACH CLAIM BY OPENING FILES, never by recalling what this session did. A count you
      did not enumerate is a guess.
 
-     STRIP THIS COMMENT AND THE ONE BELOW at the end of Step 3, before the cold review and G2. A
+     STRIP THIS COMMENT AND THE ONE BELOW at the end of Step 3, before the quality-bar review and G2. A
      reviewer judges the result, not the method. -->
 
 <!-- WRITING RULES

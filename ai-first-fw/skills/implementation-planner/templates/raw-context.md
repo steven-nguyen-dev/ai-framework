@@ -26,15 +26,13 @@
 | 4 | `requirements approved` | The human ticked G1. Every gap carries a disposition |
 | 5 | `codebase read` | Every unverifiable fact is settled, and the tests are demonstrably runnable |
 | 6 | `specs generated` | `specs-builder` wrote `mapping-plan.md` and filled the spec folder |
-| 7 | `plan generated` | `implementation-plan.md` is complete |
+| 7 | `plan generated` | `implementation-plan.md` is complete and cleared the quality bar |
 | 8 | `plan approved` | The human ticked G2. *Nothing in production changed before this* |
 | 9 | `code generated` | Phase 1 tests ran red, the code compiles, phase 2 tests exist, the suite runs green |
-| 10 | `code reviewed` | The cold review is on disk and every gap is dispositioned |
-| 11 | `closed` | Promoted, de-referenced, retained |
+| 10 | `closed` | Promoted, de-referenced, retained |
 
-**Rung 6 is skipped when no specs are generated** — the work moves rung 5 to rung 7. **Rungs 4, 8
-and 10 are never skipped.** A review is not a rung: it does not advance the state and does not hold
-it.
+**Rung 6 is skipped where no specs are generated** — the work moves rung 5 to rung 7. **Rungs 4 and
+8 are never skipped.** A review is not a rung: it does not advance the state and does not hold it.
 
 ---
 

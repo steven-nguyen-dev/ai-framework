@@ -13,23 +13,23 @@ The **AI-First Framework** standardizes the entire software development lifecycl
                │
                ▼
    ┌───────────────────────┐
-   │   analysis-handoff    │ ──► System boundaries, blast radius & test matrix
+   │    write-analysis     │ ──► Mapping spec, requirements spec & ticket summary
    └───────────┬───────────┘
                ▼
    ┌───────────────────────┐
    │ implementation-planner│ ──► Gate G1: Acceptance criteria & edge cases approved
    └───────────┬───────────┘
                ▼
-   ┌───────────────────────┐     ┌──────────────────┐
-   │     specs-builder     │ ──► │  specs-reviewer  │ (Cold Diagnostic Spec Audit)
-   └───────────┬───────────┘     └──────────────────┘
+   ┌───────────────────────┐
+   │     specs-builder     │ ──► Spec folder & mapping plan (confidence graded)
+   └───────────┬───────────┘
                ▼
+   ┌───────────────────────┐
+   │ implementation-planner│ ──► Gate G2: Plan Approved (Cold Plan Quality Bar)
+   └───────────┬───────────┘
+               ▼                 
    ┌───────────────────────┐     ┌──────────────────┐
-   │ implementation-planner│ ──► │  plan-reviewer   │ (Cold Plan & Evidence Audit)
-   └───────────┬───────────┘     └──────────────────┘
-               ▼                 └── Gate G2: Plan Approved (Unblocks Code Changes)
-   ┌───────────────────────┐     ┌──────────────────┐
-   │      Development      │ ──► │  code-reviewer   │ (Cold Branch Diff & Standard Audit)
+   │      Development      │ ──► │   review-code    │ (Cold Branch Diff & Standard Audit)
    └───────────┬───────────┘     └──────────────────┘
                ▼
    [ Verified Pull Request & Production Deployment ]
@@ -43,8 +43,8 @@ The **AI-First Framework** standardizes the entire software development lifecycl
 ai-framework/
 ├── .claude-plugin/              # Claude Code plugin & marketplace manifest
 ├── ai-first-fw/
-│   ├── skills/                  # Core 6-stage lifecycle gated skills
-│   ├── utilities/               # Standalone engineering utilities & API extractors
+│   ├── skills/                  # Core lifecycle gated skills (v2.0.0)
+│   ├── utilities/               # Standalone engineering utilities & API extractors (v2.0.0)
 │   ├── local-theme/             # Unified dark developer theme tokens, CSS & JS
 │   ├── local-report-servers/    # Live engineering dashboards & distribution .app installers
 │   ├── local-test-servers/      # Spec-driven mock engine & integration test runner
@@ -58,25 +58,19 @@ ai-framework/
 
 ### 1. 🛡️ Lifecycle Skills (`ai-first-fw/skills/`)
 Gated AI skills that enforce engineering rigor before code is touched:
-* **`analysis-handoff`**: Pre-planning artifact generator. Maps touched modules, blast radius, error topologies, and regression boundaries.
-* **`write-analysis`**: Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
-* **`implementation-planner`**: Master lifecycle orchestrator managing approval gates (`G1` requirements approval, `G2` technical plan approval).
-* **`specs-builder`**: Analyzes third-party API documentation and schema samples to build robust field mapping specifications.
-* **`specs-reviewer`**: Independent cold auditor that verifies specifications against API harnesses and edge-case criteria.
-* **`plan-reviewer`**: Cold plan auditor that validates proposed implementation plans against codebase evidence.
-* **`code-reviewer`**: Cold pull request and branch diff reviewer auditing requirements compliance, codebase rules, and security.
+* **`write-analysis`** (`v0.1.0`): Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
+* **`implementation-planner`** (`v0.8.0`): Master lifecycle orchestrator managing approval gates (`G1` requirements approval, `G2` technical plan approval).
+* **`specs-builder`** (`v0.10.0`): Fills integration spec folders and writes confidence-graded mapping plans against test harnesses.
+* **`review-code`** (`v2.0.0`): Cold pull request and branch diff reviewer auditing requirements compliance, codebase rules, and security across 3 isolated passes.
 
 ### 2. ⚡ Standalone Utilities (`ai-first-fw/utilities/`)
-* **`git-coordinator`**: Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree (merge, build, push, draft PR) and tears down mirrors once landed.
-* **`pr-desc-writer`**: Reads the session and diff, fills the repository PR template, and offers to apply it directly to the open GitHub pull request.
-* **`unslop`**: Strips AI tells, filler, and throat-clearing from technical markdown documentation without inventing facts.
-* **`write-skill`**: Authors and revises agent skills adhering to the framework standard, structure, and quality levers.
-* **`lv1-diagram-maker`**: Generates elegant, professional Mermaid architecture and flow diagrams using muted-dark aesthetics.
-* **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
-* **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.
-* **`lv1-prompt-builder`**: Compiles structured, context-rich system prompts for subagent workflows.
-* **`glossary-maker`**: Harvests a repository once into two documents — an ISO 704:2022 `GLOSSARY.md` terminology reference, and a `GOTCHAS` file per partition carrying the behaviours no single file states.
-* **`naver-api-extractor` & `lotteon-api-extractor`**: Automated tools for extracting, parsing, and documenting e-commerce APIs.
+* **`draw-diagram`** (`v1.0.0`): Draws one Mermaid block (flowchart, sequence, state, ER) styled to the shared dark palette and parsed before shipping.
+* **`git-coordinator`** (`v0.4.0`): Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree (merge, build, push, draft PR) and tears down mirrors once landed.
+* **`pr-desc-writer`** (`v0.3.0`): Reads the session and diff, fills the repository PR template, and offers to apply it directly to the open GitHub pull request.
+* **`write-docs`** (`v1.0.0`): Writes one technical knowledge note in the house style — drafted in temp, every fact traced to its source, every uncertainty carried to an Open questions section.
+* **`write-skill`** (`v0.1.0`): Authors and revises agent skills adhering to the framework standard, structure, and quality levers.
+* **`lv1-architecture-review`** (`v0.0.2`): High-level system architecture and modularity design reviewer.
+* **`naver-api-extractor`** (`v0.0.1`) & **`lotteon-api-extractor`** (`v0.0.1`): Automated tools for extracting, parsing, and documenting e-commerce APIs.
 
 ### 3. 📊 Local Report Servers (`ai-first-fw/local-report-servers/`)
 Native live dashboards and standalone shareable macOS `.app` packages:
@@ -126,21 +120,20 @@ Install specific skills directly into any project:
 
 ```bash
 # Core Lifecycle Skills
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/analysis-handoff
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/write-analysis
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/implementation-planner
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/specs-builder
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/specs-reviewer
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/plan-reviewer
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/code-reviewer
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/review-code
 
 # Utility Skills
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/draw-diagram
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/git-coordinator
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/pr-desc-writer
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/unslop
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-diagram-maker
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-docs
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-skill
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-architecture-review
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-doc-writer
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/glossary-maker
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/naver-api-extractor
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lotteon-api-extractor
 ```
 
 ---

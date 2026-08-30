@@ -3,7 +3,7 @@
 Standalone utility and helper skills. Each one does its own job and composes with
 nothing — no shared artifacts, no handoffs, no gates.
 
-> **Not part of the AI-First Framework lifecycle.** The six AI-First FW skills
+> **Not part of the AI-First Framework lifecycle.** The AI-First Framework lifecycle skills
 > live exclusively in [`skills/`](../skills). This folder
 > sits in the same repository only so the utilities ship in the same git repo. Nesting
 > is packaging, not status: nothing here participates in the lifecycle, and no
@@ -22,5 +22,5 @@ skill and belongs one level up.
 
 ## Invocation mode
 
-- **Model-invoked** (`lv1-diagram-maker`): Automatically discovered and invoked by AI models whenever generating, editing, or styling Mermaid diagrams.
-- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (such as `lv1-architecture-review`, `lv1-prompt-builder`, `glossary-maker`, `lotteon-api-extractor`, `naver-api-extractor`, `lv1-doc-writer`) that run only when explicitly typed by the human.
+- **Model-invoked** (`draw-diagram`, `git-coordinator`, `pr-desc-writer`, `write-skill`): Automatically discovered and invoked by AI models whenever performing their matching tasks.
+- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (`write-docs`, `lv1-architecture-review`, `naver-api-extractor`, `lotteon-api-extractor`) that run only when explicitly typed by the human.

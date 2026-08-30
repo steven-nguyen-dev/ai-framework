@@ -1,7 +1,7 @@
 ---
 name: implementation-planner
-description: Review-driven implementation lifecycle from input fitness demand to approved production code.
-version: 0.7.1
+description: Review-driven implementation lifecycle from input fitness demand to approved production code, holding the plan against a cold quality bar before the gate.
+version: 0.8.0
 disable-model-invocation: true
 ---
 
@@ -11,11 +11,33 @@ disable-model-invocation: true
 **No production code changes before a human approves the plan.**
 
 This skill governs one piece of work from *a human describes what they want* to *the code is
-approved*. This file is the run: the steps, the gates, and when to demand approval.
+approved*, and lands it in `<repo-root>/.scratchpads/<feature-slug>/`. This file is the run: the
+steps, the gates, and when to demand approval.
 
-**The templates carry the writing.** Each one holds its own fill order, its rules and its done-when
-list, in comments it keeps until its step ends. Copy the template, fill it under its own comments,
-and do not look for the rules anywhere else — this file does not repeat them.
+**The templates carry the writing.** `templates/raw-context.md`, `templates/business-requirements.md`
+and `templates/implementation-plan.md` each hold their own fill order, rules and done-when list, in
+comments they keep until their step ends. Copy the template, fill it under its own comments, and do
+not look for the rules anywhere else — this file does not repeat them.
+
+**`references/quality-bar.md` holds what the plan is judged against.** Step 3 hands it to a reviewer
+sub-agent; nothing else in the run reads it.
+
+---
+
+## Inputs
+
+- **The human's material** — every artifact they supplied: ticket body, doc link, screenshot, pasted
+  text, payload sample. Arrives at the invocation, or after Step 0 demands it.
+- **The project `CLAUDE.md`** — write restrictions, domain routing, output conventions. Read at the
+  end of Step 0, never before it.
+- **The target area's standards** — the coding standard, the area spec folder or harness. Read
+  yourself in Step 2, because their words enter the plan.
+- **The target codebase** — read by sub-agent under P4, one per unsettled claim.
+- **A feature folder path** — supplied instead of material when the invocation resumes prior work.
+  See *Re-entry*.
+- **The spec artifacts, where the area ships a harness** — `mapping-plan.md` and
+  `<area>/specs/<integration>/`, written by `specs-builder` when Step 2 triggers it. Read as
+  material, and the plan covers what they leave.
 
 ---
 
@@ -30,12 +52,12 @@ understanding in writing for a human to approve. `business-requirements.md` is t
 **P3 — No gap crosses a gate unattended.** Every open gap takes an explicit human disposition at
 every gate.
 
-**P4 — Delegate the reading.** Reading the codebase, reading multiple files for context, and
-researching multiple online sources each go to a sub-agent. A sub-agent returns verdicts, facts and
-`file · Class.method` — never file bodies, never its search narrative, and never a chosen answer.
-Material you quote or fill from — a template, the coding standard, a spec harness form — you read
-yourself. Online research covers public material only; a partner's contract is supplied by the
-human, never researched.
+**P4 — Delegate the reading.** Reading the codebase, reading multiple files for context, reviewing
+the plan against the quality bar, and researching multiple online sources each go to a sub-agent. A
+sub-agent returns verdicts, findings and `file · Class.method` — never file bodies, never its search
+narrative, and never a chosen answer. Material you quote or fill from — a template, the coding
+standard, a spec harness form — you read yourself. Online research covers public material only; a
+partner's contract is supplied by the human, never researched.
 
 **P5 — A turn ends with work or with a question, never with an intention.** Announcing the next step
 is not performing it. Where the work does not fit the turn, say what is written and what is not.
@@ -56,11 +78,11 @@ Anything not **fit** escalates Light to Standard. Any debt the human accepts esc
 
 **Light, defined.** The one message still carries the rule set read back, the file list with
 `[NEW]` / `UPDATE`, and one test line per criterion in the shape of the test plan's phase 1
-(plan §4). G1 and G2 may be approved in a single human
-turn, and the work ends when the tests are green. A gap at Light lives in the message; on escalation
-the files are created and every open gap moves into the log.
+(plan §4). G1 and G2 may be approved in a single human turn, and the work ends when the tests are
+green. A gap at Light lives in the message; on escalation the files are created and every open gap
+moves into the log.
 
-Light has no folder and no cold review.
+Light has no folder, and no quality-bar review.
 
 ---
 
@@ -73,10 +95,11 @@ Per feature, in **`<repo-root>/.scratchpads/<feature-slug>/`**:
 - `refined/` — extracts a command produced from a large material.
 - `business-requirements.md` — **the intent**. Stripped of its comments at the end of Step 1.
 - `implementation-plan.md` — **the design**. Stripped of its comments at the end of Step 3.
-- *(If specs were generated: `mapping-plan.md` — written by `specs-builder`, never inline.)*
+- *(Where the area has specs: `mapping-plan.md` — written by `specs-builder`, never inline.)*
 
-Reviewers add their own: `plan-review-report.md`, `specs-review-report.md`, `code-review-report.md`.
-Each re-review overwrites its own.
+**No reviewer writes into the folder.** The plan's reviewer is a sub-agent, and it returns its
+findings to this agent in Step 3. What survives becomes a `GAP` line here, and nothing else of its
+output is kept.
 
 **Strip the comments before the artifact is reviewed.** A reviewer judges the result, not the
 method. Rules left in a reviewed file invite a compliance check instead of a quality one. Delete each
@@ -89,13 +112,7 @@ skill, read its comment blocks, then edit the stripped copy.
 
 ---
 
-## The run
-
-### Step 0 — Intake
-
-**Owes:** the weight class is stated — and recorded, at Standard; every artifact the human supplied
-has its `SRC` line and a written verdict; and anything not **fit** has been demanded back or opened
-as a gap.
+## Step 0 — Intake
 
 **Before the project `CLAUDE.md`. Before any prior planning folder. Before any router or any code.**
 The first output of this skill is a message to the human about their material, and the only thing
@@ -144,10 +161,11 @@ the target module's area spec or harness, the coding standard and output convent
 target module — which domain owns it, whether it is current, whether it deploys — each from a
 document rather than from memory.
 
-### Step 1 — Requirements
+**Completion:** the weight class is stated — and recorded, at Standard; every artifact the human
+supplied has its `SRC` line and a written verdict; and anything not **fit** has been demanded back
+or opened as a gap.
 
-**Owes:** you and the human share one understanding, written down as criteria a reviewer could hold
-code against, with every question that shaped it on the record.
+## Step 1 — Requirements
 
 Copy `templates/business-requirements.md` into the feature folder — the folder and its
 `raw-context.md` exist from Step 0 — and fill it under its own comments.
@@ -165,10 +183,10 @@ Sort every gap by owner before the gate: **codebase** — verify in Step 2; **do
 
 Strip the comment blocks from `business-requirements.md`. **→ G1.**
 
-### Step 2 — Read the codebase
+**Completion:** you and the human share one understanding, written down as criteria a reviewer could
+hold code against, with every question that shaped it on the record.
 
-**Owes:** every unverifiable claim from the interview is settled against the code, and the tests are
-demonstrably runnable.
+## Step 2 — Read the codebase
 
 **Read yourself**, because their words enter the plan: the project `CLAUDE.md`, the area spec folder
 and harness, the coding standard.
@@ -182,35 +200,56 @@ evidence you were handed is wasted work. Refuted claims go back to the human.
 **Record the test invocation and its output, and re-confirm the target module scope.** A plan whose
 tests cannot be run is a plan Step 4 discovers is unbuildable.
 
-**Specs handoff — a rule, not a judgement.** Hand off to `specs-builder` **if and only if** the
-target area ships a spec harness (`<area>/specs/_templates/` exists) **and** the target module's
-full path contains no folder ending in `legacy`. If both hold: print `specs-builder <feature folder
-path>`, set §0 `Next action` to it, and end the turn. The human runs it, then the cold spec review,
-then re-invokes this skill to resume at Step 3. `specs-builder` is the only author of
-`mapping-plan.md`, and the rules governing it — schema completeness, data lineage, and what makes a
-field mapping evidenced rather than asserted — live in that skill, not this one. If either fails: go
-to Step 3 and plan the whole feature.
+**Specs — a rule, not a judgement.** Trigger `specs-builder` **if and only if** the target area
+ships a spec harness (`<area>/specs/_templates/` exists) **and** the target module's full path
+contains no folder ending in `legacy`. If either test fails, go to Step 3 and plan the whole
+feature.
 
-### Step 3 — Plan
+**Pass it the area, not this folder, and let it settle redo against reuse.** `specs-builder` takes
+the area whose `specs/_templates/` holds the harness, and it decides for itself whether to build the
+folder fresh or work from what is already in it. Nothing is handed over and no turn ends on a
+printed invocation.
 
-**Owes:** a design a reviewer can hold against the requirements — every file change justified, every
-criterion given a test, every disagreement with the specs already settled.
+**It reports in chat, and this run records what it said.** Log its verdict line as a `FACT`, each of
+its open questions as a `GAP` with its owner, and each platform gap it names. Set §0 `State` to
+`specs generated`. `specs-builder` is the only author of `mapping-plan.md` and the spec files, and
+the rules governing them — schema completeness, data lineage, and what makes a field mapping
+evidenced rather than asserted — live in that skill, not this one. Step 3 then plans what the specs
+leave.
 
-Fill `templates/implementation-plan.md` under its own comments. Strip its comment blocks. Run the
-cold review, then **→ G2.**
+**This is the only skill this run triggers.** Every other reader it needs is a sub-agent.
 
-### Step 4 — Implement
+**Completion:** every unverifiable claim from the interview is settled against the code, the tests
+are demonstrably runnable, and — where the two tests fired — `specs-builder` has reported and its
+verdict, open questions and platform gaps are on the log.
 
-**Only after G2.** **Owes:** code that does what G2 approved, with a red run proving the acceptance
-tests bite and an unfiltered green run proving the module still works.
+## Step 3 — Plan
+
+Fill `templates/implementation-plan.md` under its own comments. Strip its comment blocks.
+
+**Then hand the plan to a reviewer sub-agent.** Give it the feature folder path and
+`references/quality-bar.md`, and nothing from this conversation — that file states what it reads,
+how it judges and how it reports. It returns findings in chat; it writes no file and edits nothing.
+
+Fix every blocker and every defect it returns, then send it back. **At most 3 rounds.** A finding
+still standing after the third opens a `GAP` line and reaches the human at G2 as a disposition.
+
+**→ G2.**
+
+**Completion:** `implementation-plan.md` holds no `<!--`, the reviewer's last round returned no
+blocker, and every finding left standing has its `GAP` line in the log.
+
+## Step 4 — Implement
+
+**Only after G2.**
 
 **The order is fixed, and the same for every feature.** It exists because tests written after the
 code tend to describe it rather than judge it.
 
 1. **Phase 1 tests.** One per phase 1 row of the test plan (plan §4). Commit them.
 2. **Red run.** Record the failing invocation, the output and the commit SHA. A phase 1 row naming a
-   spec file has no test to write — the spec carries it and the spec review verified it, so the log
-   line names it as excluded and says which spec it rests on.
+   spec file has no test to write — the spec carries it, so the log line names it as excluded and
+   says which spec it rests on.
 3. **Implement the file changes (plan §1)**, honouring `Sequencing constraints`. Report each file
    as it lands.
 4. **Compile.**
@@ -219,25 +258,28 @@ code tend to describe it rather than judge it.
    that fails, so a filtered run is not evidence. Record it.
 
 **Build from the specs first where they exist**, then the file changes (plan §1) for the remainder.
-The two do not overlap, so nothing is built twice. Where no specs were generated, the file changes
+The two do not overlap, so nothing is built twice. Where the area has no specs, the file changes
 (plan §1) are the sole blueprint.
 
 **Keep planning-folder IDs out of shipped code.** `SRC`, `AC`, `NFR`, `TD` and `MAP` mean nothing to
 a reader without the folder, which is every reader after cleanup. Comments in code and spec files
 cover what the code does not, and never repeat it.
 
-**Phase 2 tests are expected additions, not tampering.** `code-reviewer` diffs the phase 1 tests
-from the red-run SHA and treats any weakening as a finding.
+**Phase 1 tests are not touched after the red run.** Phase 2 adds tests; it does not soften the
+ones that already bit. Where a phase 1 test must change, that is a `DEC` line naming what changed
+and why, so a reader diffing from the G2 baseline finds the reason rather than the weakening.
 
 **There is no gate here.** Step 4 ends on its own checks, and the developer decides when the work is
-ready. Three things hold before the state moves to `code reviewed`: the cold `code-reviewer` report
-is on disk and every blocker in it is fixed or dispositioned; every open gap carries a human
-disposition; and the artifacts' done-when lists are satisfied. Then report the diff, the red-run and
-green-run output, and the reviewer verdict line — that is what the pull request body carries.
+ready. Run the gate-request pass, then report the diff, the red-run and green-run output, and every
+open gap with its disposition — that is what the pull request body carries. A cold review of the
+diff is the pull request's own business, run against the G2 baseline, and this run neither invokes
+it nor waits for it.
 
-### Cleanup
+**Completion:** the code does what G2 approved; a red run proves the acceptance tests bite and an
+unfiltered green run proves the module still works; every open gap carries a human disposition; and
+the artifacts' done-when lists are satisfied.
 
-**Owes:** what the folder learned outlives the folder.
+## Step 5 — Cleanup
 
 Promote hard-to-reverse findings into the durable document that owns them, **de-referencing on
 promotion — strip line numbers and planning-folder IDs**, which go stale and mean nothing to a
@@ -248,6 +290,9 @@ line saying there were none. A plan the build had to correct is the cheapest sig
 which part of the planning was weak, and it is discarded unless it is written here.
 
 Set the state to `closed`. Leave the folder on disk.
+
+**Completion:** what the folder learned outlives the folder — every debt line carries a promotion
+decision, every departure from the plan carries its `DEC` line, and §0 reads `closed`.
 
 ---
 
@@ -497,11 +542,7 @@ back.*
 | Gate | After | The human approves | Blocks |
 |---|---|---|---|
 | **G1** | Step 1 | The business understanding — the value, the workflow, every criterion and constraint | Reading code on wrong assumptions |
-| **G2** | Step 3 | The plan — file changes, debt, governance, the test plan — plus `mapping-plan.md` and the specs where they exist, the spec review verdict line, and every open gap's disposition | **Any production code change** |
-
-**Spec files are contract, not production code.** The G2 block covers the production code tree. A
-spec folder under `<area>/specs/<integration>/` is written before G2 by design — it is what G2
-approves, alongside the plan.
+| **G2** | Step 3 | The plan — file changes, debt, governance, the test plan — plus the specs where the area has them, and every open gap's disposition | **Any production code change** |
 
 ### The gate-request pass — before every gate, and before Step 4 ends
 
@@ -510,11 +551,9 @@ files and listing the IDs — **never by recalling what this session did.** A co
 enumerate is a guess, and a guessed count is the failure this pass exists to catch. Two artifacts
 whose counts must match are compared as two written lists.
 
-**Three done-when items have a command, and the command is the evidence:**
+**Two done-when items have a command, and the command is the evidence:**
 
 - strip complete — `grep -c '<!--' <file>` returns `0`;
-- criteria against phase 1 — `grep -o 'AC-[0-9]*' business-requirements.md | sort -u` against the
-  same over `implementation-plan.md`, diffed;
 - the baseline — `git rev-parse HEAD`, and at G2 `git hash-object` per planning artifact.
 
 **Then read each artifact top to bottom as its reader**, who has the file and nothing else. The list
@@ -527,18 +566,7 @@ questions, answered by reading, not by grepping:
 - **Does every diagram render?** Render it. Where no renderer exists on this machine, say so in the
   gate request — an unrendered diagram is presented as unverified, never as checked.
 
-**Then run the cold review — before G2 and at the end of Step 4 only; G1 has no reviewer.** Print
-the invocation — `plan-reviewer <feature folder path>` before G2, `code-reviewer <feature folder
-path>` at the end of Step 4 — set §0 `Next action` to it, and end the turn. The human runs it in a
-fresh session. The review is mandatory at both.
-
-**The review loop.** On re-entry, read the report the reviewer left in the folder. Blockers return
-the work to its step: fix the artifacts, then hand the human the re-review invocation. **At most 2
-cycles** — findings that survive go to the human as gap dispositions, at the gate or in the pull
-request body. **A G2 request always carries the latest report's verdict line, and so does the pull
-request.**
-
-Both are skipped at **Light**.
+G1 has no reviewer. The plan's reviewer runs in Step 3, and is skipped at **Light**.
 
 ### The four dispositions
 
@@ -565,8 +593,8 @@ gate with a gap still open *is* disposition 4**, and it mints a debt line.
 
 On approval, record it in §0 `Baseline`: the branch commit SHA (`git rev-parse HEAD`) and, at G2,
 one content hash per planning artifact (`git hash-object <file>`) — the folder is gitignored and has
-no commit SHA of its own. G2's SHA is the fixed point `code-reviewer` diffs against, so it is the
-one that must be right.
+no commit SHA of its own. G2's SHA is the fixed point any later review of the diff runs from, so it
+is the one that must be right.
 
 ---
 
@@ -597,13 +625,29 @@ work that reached rung 6 is the failure this prevents.
 | `awaiting source material`, `intake complete` | Step 0 |
 | `interviewed`, `requirements generated` | Step 1 |
 | `requirements approved` | Step 2 |
-| `codebase read` | Step 2's specs handoff, or Step 3 where it does not fire |
-| `specs generated` | Step 3 — read the spec review's verdict line first |
+| `codebase read` | Step 2's `specs-builder` trigger, or Step 3 where it does not fire |
+| `specs generated` | Step 3 |
 | `plan generated` | The gate-request pass, then G2 |
 | `plan approved` | Step 4 |
-| `code generated` | Step 4's exit checks |
-| `code reviewed` | Cleanup |
+| `code generated` | Step 4's exit checks, then Step 5 |
 
 Then diff the folder's artifacts against §0's expectations and state any partial work aloud.
 **Where §0 and the folder disagree, say so and stop** — a resumption on a wrong rung writes over
 work.
+
+---
+
+## The bar
+
+- Every artifact the human supplied carries an `SRC` line and a fitness verdict, minted before it
+  was judged.
+- G1 and G2 each carry an explicit human `"approve"`, and every gap open at each carries one of the
+  four dispositions.
+- No production file changed before G2.
+- `implementation-plan.md` cleared `references/quality-bar.md` — no blocker standing, and every
+  surviving finding on a `GAP` line.
+- Every artifact presented at a gate holds no `<!--`.
+- Phase 1 tests ran red before the implementation, and the module's unfiltered suite ran green after
+  it, both recorded with their invocation and output.
+- Every `GAP` carries an owner and a search record; every `TD` carries what would settle it.
+- §0 names the current rung, and `Open gaps` lists them by ID and name.
