@@ -59,6 +59,7 @@ ai-framework/
 ### 1. 🛡️ Lifecycle Skills (`ai-first-fw/skills/`)
 Gated AI skills that enforce engineering rigor before code is touched:
 * **`analysis-handoff`**: Pre-planning artifact generator. Maps touched modules, blast radius, error topologies, and regression boundaries.
+* **`write-analysis`**: Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
 * **`implementation-planner`**: Master lifecycle orchestrator managing approval gates (`G1` requirements approval, `G2` technical plan approval).
 * **`specs-builder`**: Analyzes third-party API documentation and schema samples to build robust field mapping specifications.
 * **`specs-reviewer`**: Independent cold auditor that verifies specifications against API harnesses and edge-case criteria.
@@ -69,6 +70,7 @@ Gated AI skills that enforce engineering rigor before code is touched:
 * **`git-coordinator`**: Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree (merge, build, push, draft PR) and tears down mirrors once landed.
 * **`pr-desc-writer`**: Reads the session and diff, fills the repository PR template, and offers to apply it directly to the open GitHub pull request.
 * **`unslop`**: Strips AI tells, filler, and throat-clearing from technical markdown documentation without inventing facts.
+* **`write-skill`**: Authors and revises agent skills adhering to the framework standard, structure, and quality levers.
 * **`lv1-diagram-maker`**: Generates elegant, professional Mermaid architecture and flow diagrams using muted-dark aesthetics.
 * **`lv1-architecture-review`**: High-level system architecture and modularity design reviewer.
 * **`lv1-doc-writer`**: Formats clear, maintainable technical documentation and runbooks.

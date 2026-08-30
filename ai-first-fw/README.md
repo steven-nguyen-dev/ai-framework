@@ -27,8 +27,9 @@ ai-first-fw/
 ## 🧩 Components Overview
 
 ### 1. [`skills/`](skills) — Core Lifecycle Skills
-A set of six specialized, composable skills that guide AI agents through a gated development lifecycle:
+A set of specialized, composable skills that guide AI agents through a gated development lifecycle:
 - **`analysis-handoff`**: Captures systems touched, blast radius, required end states, and dependencies before planning begins.
+- **`write-analysis`**: Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
 - **`implementation-planner`**: Orchestrates the multi-step lifecycle across approval gates (`G1` requirements approval, `G2` implementation plan approval).
 - **`specs-builder`**: Analyzes API documentation and payload samples to produce mapping plans and integration specifications.
 - **`specs-reviewer`**: Performs cold diagnostic audits on specifications against integration harnesses and API documentation.

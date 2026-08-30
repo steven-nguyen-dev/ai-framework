@@ -9,14 +9,14 @@
   "plugins": [
     {
       "name": "ai-first-fw-skills",
-      "description": "Core AI-First Framework lifecycle skills: analysis-handoff, implementation-planner, specs-builder, specs-reviewer, plan-reviewer, and code-reviewer.",
-      "version": "1.0.8",
+      "description": "Core AI-First Framework lifecycle skills: analysis-handoff, write-analysis, implementation-planner, specs-builder, specs-reviewer, plan-reviewer, and code-reviewer.",
+      "version": "1.1.0",
       "source": "./ai-first-fw/skills"
     },
     {
       "name": "ai-first-fw-utilities",
-      "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, pr-desc-writer, git-coordinator, unslop, glossary-maker, naver-api-extractor, and lotteon-api-extractor.",
-      "version": "1.3.0",
+      "description": "Standalone engineering utility skills: lv1-diagram-maker, lv1-architecture-review, lv1-doc-writer, lv1-prompt-builder, write-skill, pr-desc-writer, git-coordinator, unslop, glossary-maker, naver-api-extractor, and lotteon-api-extractor.",
+      "version": "1.4.0",
       "source": "./ai-first-fw/utilities"
     },
     {
