@@ -1036,6 +1036,7 @@ def clean_legacy_symlinks() -> list[str]:
     cleaned = []
     for d in [
         HOME / ".claude/skills",
+        HOME / ".claude-clone/skills",
         HOME / ".gemini/config/skills",
         HOME / ".gemini/antigravity/skills",
         HOME / ".gemini/antigravity-cli/skills",
@@ -1064,43 +1065,52 @@ def uninstall_plugin_item(plugin_id: str, install_path_str: str) -> dict[str, An
     shutil.move(str(path), str(dest))
 
     # Also clean up installed_plugins.json if it was a registered Claude plugin
-    installed_file = HOME / ".claude/plugins/installed_plugins.json"
-    if installed_file.is_file():
-        try:
-            data = json.loads(installed_file.read_text(encoding="utf-8"))
-            plugins_dict = data.get("plugins", {})
-            if plugin_id in plugins_dict:
-                del plugins_dict[plugin_id]
-                installed_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        except Exception:
-            pass
-
-    # Also clean up extensions-installations.json if it was a Claude Desktop Extension
-    ext_file = HOME / "Library/Application Support/Claude/extensions-installations.json"
-    if ext_file.is_file():
-        try:
-            data = json.loads(ext_file.read_text(encoding="utf-8"))
-            ext_dict = data.get("extensions", {})
-            ext_id = plugin_id.replace("claude:cowork:ext:", "")
-            if ext_id in ext_dict:
-                del ext_dict[ext_id]
-                ext_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        except Exception:
-            pass
-
-    # Also clean up Cowork rpm manifest.json across sessions
-    sessions_root = HOME / "Library/Application Support/Claude/local-agent-mode-sessions"
-    if sessions_root.is_dir():
-        for m_file in sessions_root.rglob("rpm/manifest.json"):
+    for installed_file in [HOME / ".claude/plugins/installed_plugins.json", HOME / ".claude-clone/plugins/installed_plugins.json"]:
+        if installed_file.is_file():
             try:
-                m_data = json.loads(m_file.read_text(encoding="utf-8"))
-                p_list = m_data.get("plugins", [])
-                p_id_cleaned = plugin_id.replace("claude:cowork:rpm:", "")
-                p_list = [p for p in p_list if p.get("id") != p_id_cleaned and p.get("name") != path.name]
-                m_data["plugins"] = p_list
-                m_file.write_text(json.dumps(m_data, indent=2), encoding="utf-8")
+                data = json.loads(installed_file.read_text(encoding="utf-8"))
+                plugins_dict = data.get("plugins", {})
+                if plugin_id in plugins_dict:
+                    del plugins_dict[plugin_id]
+                    installed_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
             except Exception:
                 pass
+
+    # Also clean up extensions-installations.json if it was a Claude Desktop Extension
+    for ext_file in [
+        HOME / "Library/Application Support/Claude/extensions-installations.json",
+        HOME / "Library/Application Support/Claude-Clone/extensions-installations.json",
+        HOME / "Library/Application Support/Claude-One/extensions-installations.json",
+    ]:
+        if ext_file.is_file():
+            try:
+                data = json.loads(ext_file.read_text(encoding="utf-8"))
+                ext_dict = data.get("extensions", {})
+                ext_id = plugin_id.replace("claude:cowork:ext:", "")
+                if ext_id in ext_dict:
+                    del ext_dict[ext_id]
+                    ext_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+
+    # Also clean up Cowork rpm manifest.json across sessions in Claude, Claude-Clone, and Claude-One
+    for app_supp in [
+        HOME / "Library/Application Support/Claude",
+        HOME / "Library/Application Support/Claude-Clone",
+        HOME / "Library/Application Support/Claude-One",
+    ]:
+        sessions_root = app_supp / "local-agent-mode-sessions"
+        if sessions_root.is_dir():
+            for m_file in sessions_root.rglob("rpm/manifest.json"):
+                try:
+                    m_data = json.loads(m_file.read_text(encoding="utf-8"))
+                    p_list = m_data.get("plugins", [])
+                    p_id_cleaned = plugin_id.replace("claude:cowork:rpm:", "")
+                    p_list = [p for p in p_list if p.get("id") != p_id_cleaned and p.get("name") != path.name]
+                    m_data["plugins"] = p_list
+                    m_file.write_text(json.dumps(m_data, indent=2), encoding="utf-8")
+                except Exception:
+                    pass
 
     return {"success": True, "plugin_id": plugin_id, "backup_path": str(dest)}
 
@@ -1265,152 +1275,182 @@ def remove_marketplace(name: str) -> dict[str, Any]:
 
 
 def sync_cowork_plugins() -> list[str]:
-    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and installed marketplace plugins to Claude Desktop Cowork sessions."""
+    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and installed marketplace plugins to Claude Desktop & Claude-Clone Cowork sessions."""
     synced = []
-    app_supp = HOME / "Library/Application Support/Claude"
-    sessions_root = app_supp / "local-agent-mode-sessions"
-    if not sessions_root.is_dir():
-        return synced
+    app_supp_dirs = [
+        HOME / "Library/Application Support/Claude",
+        HOME / "Library/Application Support/Claude-Clone",
+        HOME / "Library/Application Support/Claude-One",
+    ]
 
     workspace = WORKSPACE
     now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     cache_root = HOME / ".claude/plugins/cache"
 
-    for manifest_file in sessions_root.rglob("rpm/manifest.json"):
-        base_rpm = manifest_file.parent
-        try:
-            manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
-            plugins_list = manifest_data.get("plugins", [])
+    for app_supp in app_supp_dirs:
+        if not app_supp.is_dir() or (app_supp.is_symlink() and app_supp.name == "Claude-One"):
+            continue
+        sessions_root = app_supp / "local-agent-mode-sessions"
+        if not sessions_root.is_dir():
+            continue
 
-            # Identify official/installed IDs from manifest or directory
-            skills_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-skills" or p.get("id") == "plugin_01NcPbSGH4AdLAJUHBHejvNR"), None)
-            utils_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-utilities" or p.get("id") == "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"), None)
-
-            # Preserve real ID if present; fallback to standard known installed ID
-            skills_plugin_id = skills_entry.get("id") if (skills_entry and skills_entry.get("id") and not skills_entry.get("id").startswith("plugin_01AiFirstFwSkills001")) else "plugin_01NcPbSGH4AdLAJUHBHejvNR"
-            utils_plugin_id = utils_entry.get("id") if (utils_entry and utils_entry.get("id") and not utils_entry.get("id").startswith("plugin_01AiFirstUtilities01")) else "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"
-
-            # 1. Sync ai-first-fw-skills directly to plugin root
-            skills_src = workspace / "ai-first-fw/skills"
-            if skills_src.is_dir():
-                skills_dest = base_rpm / skills_plugin_id
-                if skills_dest.exists():
-                    shutil.rmtree(skills_dest)
-                shutil.copytree(skills_src, skills_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
-                (skills_dest / ".claude-plugin").mkdir(exist_ok=True)
-                if (skills_src / "plugin.json").is_file():
-                    shutil.copy2(skills_src / "plugin.json", skills_dest / ".claude-plugin/plugin.json")
-
-            # 2. Sync ai-first-fw-utilities directly to plugin root
-            utils_src = workspace / "ai-first-fw/utilities"
-            if utils_src.is_dir():
-                utils_dest = base_rpm / utils_plugin_id
-                if utils_dest.exists():
-                    shutil.rmtree(utils_dest)
-                shutil.copytree(utils_src, utils_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
-                (utils_dest / ".claude-plugin").mkdir(exist_ok=True)
-                if (utils_src / "plugin.json").is_file():
-                    shutil.copy2(utils_src / "plugin.json", utils_dest / ".claude-plugin/plugin.json")
-
-            # 3. Clean up any obsolete temporary/duplicate IDs
-            for obsolete_id in ("plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01"):
-                if obsolete_id not in (skills_plugin_id, utils_plugin_id):
-                    obsolete_path = base_rpm / obsolete_id
-                    if obsolete_path.exists():
-                        shutil.rmtree(obsolete_path, ignore_errors=True)
-
-            # 4. Sync other installed marketplace plugins (e.g. mattpocock-skills)
-            for p in plugins_list:
-                p_name = p.get("name")
-                p_id = p.get("id")
-                if not p_name or not p_id or p_name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
-                    continue
-                if cache_root.is_dir():
-                    matching_dirs = list(cache_root.glob(f"*/{p_name}/*"))
-                    if matching_dirs:
-                        latest_cached = sorted([d for d in matching_dirs if d.is_dir()], key=lambda d: d.name)[-1]
-                        dest = base_rpm / p_id
-                        if dest.exists():
-                            shutil.rmtree(dest)
-                        shutil.copytree(latest_cached, dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
-                        (dest / ".claude-plugin").mkdir(exist_ok=True)
-                        if (latest_cached / "plugin.json").is_file():
-                            shutil.copy2(latest_cached / "plugin.json", dest / ".claude-plugin/plugin.json")
-                p["updatedAt"] = now_iso
-                p["updatedAtVerified"] = True
-
-            # 5. Update manifest entries
-            updated_plugins = [
-                p for p in plugins_list
-                if p.get("id") not in (skills_plugin_id, utils_plugin_id, "plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01")
-                and p.get("name") not in ("ai-first-fw-skills", "ai-first-fw-utilities")
-            ]
-
-            skills_meta = skills_entry or {}
-            updated_plugins.append({
-                "id": skills_plugin_id,
-                "name": "ai-first-fw-skills",
-                "displayName": skills_meta.get("displayName", "AI-First Framework Skills"),
-                "updatedAt": now_iso,
-                "updatedAtVerified": True,
-                "marketplaceId": skills_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
-                "marketplaceName": skills_meta.get("marketplaceName", "ai-framework"),
-                "installedBy": skills_meta.get("installedBy", "user"),
-                "installationPreference": skills_meta.get("installationPreference", "available")
-            })
-
-            utils_meta = utils_entry or {}
-            updated_plugins.append({
-                "id": utils_plugin_id,
-                "name": "ai-first-fw-utilities",
-                "displayName": utils_meta.get("displayName", "AI-First Framework Utilities"),
-                "updatedAt": now_iso,
-                "updatedAtVerified": True,
-                "marketplaceId": utils_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
-                "marketplaceName": utils_meta.get("marketplaceName", "ai-framework"),
-                "installedBy": utils_meta.get("installedBy", "user"),
-                "installationPreference": utils_meta.get("installationPreference", "available")
-            })
-
-            manifest_data["plugins"] = updated_plugins
-            manifest_data["lastUpdated"] = int(time.time() * 1000)
-            manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
-            synced.append(str(base_rpm))
-        except Exception:
-            pass
-
-    # Also sync ~/Claude/plugins if present
-    cfg_file = app_supp / "claude_desktop_config.json"
-    cowork_path = HOME / "Claude"
-    if cfg_file.is_file():
-        try:
-            cfg_data = json.loads(cfg_file.read_text(encoding="utf-8"))
-            cowork_path = Path(cfg_data.get("coworkUserFilesPath", str(HOME / "Claude")))
-        except Exception:
-            pass
-    cowork_plugins_dir = cowork_path / "plugins"
-    if cowork_plugins_dir.is_dir():
-        skills_link = cowork_plugins_dir / "ai-first-fw-skills"
-        utils_link = cowork_plugins_dir / "ai-first-fw-utilities"
-        if skills_link.is_symlink() or skills_link.exists():
+        for manifest_file in sessions_root.rglob("rpm/manifest.json"):
+            base_rpm = manifest_file.parent
             try:
-                skills_link.unlink(missing_ok=True)
-            except Exception:
-                shutil.rmtree(skills_link, ignore_errors=True)
-        try:
-            skills_link.symlink_to(workspace / "ai-first-fw/skills", target_is_directory=True)
-        except Exception:
-            pass
+                manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
+                plugins_list = manifest_data.get("plugins", [])
 
-        if utils_link.is_symlink() or utils_link.exists():
-            try:
-                utils_link.unlink(missing_ok=True)
+                # Identify official/installed IDs from manifest or directory
+                skills_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-skills" or p.get("id") == "plugin_01NcPbSGH4AdLAJUHBHejvNR"), None)
+                utils_entry = next((p for p in plugins_list if p.get("name") == "ai-first-fw-utilities" or p.get("id") == "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"), None)
+
+                # Preserve real ID if present; fallback to standard known installed ID
+                skills_plugin_id = skills_entry.get("id") if (skills_entry and skills_entry.get("id") and not skills_entry.get("id").startswith("plugin_01AiFirstFwSkills001")) else "plugin_01NcPbSGH4AdLAJUHBHejvNR"
+                utils_plugin_id = utils_entry.get("id") if (utils_entry and utils_entry.get("id") and not utils_entry.get("id").startswith("plugin_01AiFirstUtilities01")) else "plugin_01Ek9Vap9MMJ3ZvpYBzNomna"
+
+                # 1. Sync ai-first-fw-skills directly to plugin root
+                skills_src = workspace / "ai-first-fw/skills"
+                if skills_src.is_dir():
+                    skills_dest = base_rpm / skills_plugin_id
+                    if skills_dest.exists():
+                        shutil.rmtree(skills_dest)
+                    shutil.copytree(skills_src, skills_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                    (skills_dest / ".claude-plugin").mkdir(exist_ok=True)
+                    if (skills_src / "plugin.json").is_file():
+                        shutil.copy2(skills_src / "plugin.json", skills_dest / ".claude-plugin/plugin.json")
+
+                # 2. Sync ai-first-fw-utilities directly to plugin root
+                utils_src = workspace / "ai-first-fw/utilities"
+                if utils_src.is_dir():
+                    utils_dest = base_rpm / utils_plugin_id
+                    if utils_dest.exists():
+                        shutil.rmtree(utils_dest)
+                    shutil.copytree(utils_src, utils_dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                    (utils_dest / ".claude-plugin").mkdir(exist_ok=True)
+                    if (utils_src / "plugin.json").is_file():
+                        shutil.copy2(utils_src / "plugin.json", utils_dest / ".claude-plugin/plugin.json")
+
+                # 3. Clean up any obsolete temporary/duplicate IDs
+                for obsolete_id in ("plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01"):
+                    if obsolete_id not in (skills_plugin_id, utils_plugin_id):
+                        obsolete_path = base_rpm / obsolete_id
+                        if obsolete_path.exists():
+                            shutil.rmtree(obsolete_path, ignore_errors=True)
+
+                # 4. Sync other installed marketplace plugins (e.g. mattpocock-skills)
+                for p in plugins_list:
+                    p_name = p.get("name")
+                    p_id = p.get("id")
+                    if not p_name or not p_id or p_name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+                        continue
+                    if cache_root.is_dir():
+                        matching_dirs = list(cache_root.glob(f"*/{p_name}/*"))
+                        if matching_dirs:
+                            latest_cached = sorted([d for d in matching_dirs if d.is_dir()], key=lambda d: d.name)[-1]
+                            dest = base_rpm / p_id
+                            if dest.exists():
+                                shutil.rmtree(dest)
+                            shutil.copytree(latest_cached, dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                            (dest / ".claude-plugin").mkdir(exist_ok=True)
+                            if (latest_cached / "plugin.json").is_file():
+                                shutil.copy2(latest_cached / "plugin.json", dest / ".claude-plugin/plugin.json")
+                    p["updatedAt"] = now_iso
+                    p["updatedAtVerified"] = True
+
+                # 5. Update manifest entries
+                updated_plugins = [
+                    p for p in plugins_list
+                    if p.get("id") not in (skills_plugin_id, utils_plugin_id, "plugin_01AiFirstFwSkills001", "plugin_01AiFirstUtilities01")
+                    and p.get("name") not in ("ai-first-fw-skills", "ai-first-fw-utilities")
+                ]
+
+                skills_meta = skills_entry or {}
+                updated_plugins.append({
+                    "id": skills_plugin_id,
+                    "name": "ai-first-fw-skills",
+                    "displayName": skills_meta.get("displayName", "AI-First Framework Skills"),
+                    "updatedAt": now_iso,
+                    "updatedAtVerified": True,
+                    "marketplaceId": skills_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
+                    "marketplaceName": skills_meta.get("marketplaceName", "ai-framework"),
+                    "installedBy": skills_meta.get("installedBy", "user"),
+                    "installationPreference": skills_meta.get("installationPreference", "available")
+                })
+
+                utils_meta = utils_entry or {}
+                updated_plugins.append({
+                    "id": utils_plugin_id,
+                    "name": "ai-first-fw-utilities",
+                    "displayName": utils_meta.get("displayName", "AI-First Framework Utilities"),
+                    "updatedAt": now_iso,
+                    "updatedAtVerified": True,
+                    "marketplaceId": utils_meta.get("marketplaceId", "marketplace_01JiAwPPGztsSf8qBEDumJwo"),
+                    "marketplaceName": utils_meta.get("marketplaceName", "ai-framework"),
+                    "installedBy": utils_meta.get("installedBy", "user"),
+                    "installationPreference": utils_meta.get("installationPreference", "available")
+                })
+
+                manifest_data["plugins"] = updated_plugins
+                manifest_data["lastUpdated"] = int(time.time() * 1000)
+                manifest_file.write_text(json.dumps(manifest_data, indent=2), encoding="utf-8")
+                synced.append(f"{app_supp.name}:{base_rpm.parent.name}")
             except Exception:
-                shutil.rmtree(utils_link, ignore_errors=True)
-        try:
-            utils_link.symlink_to(workspace / "ai-first-fw/utilities", target_is_directory=True)
-        except Exception:
-            pass
+                pass
+
+        # Sync skills-plugin built-in skills if in Claude-Clone / Claude-One from primary Claude app
+        if app_supp.name in ("Claude-Clone", "Claude-One"):
+            src_sp_dirs = list((HOME / "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin").glob("*/*")) if (HOME / "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin").is_dir() else []
+            dst_sp_dirs = list((app_supp / "local-agent-mode-sessions/skills-plugin").glob("*/*")) if (app_supp / "local-agent-mode-sessions/skills-plugin").is_dir() else []
+            if src_sp_dirs and dst_sp_dirs:
+                src_sp = src_sp_dirs[0]
+                for dst_sp in dst_sp_dirs:
+                    try:
+                        for item in dst_sp.iterdir():
+                            if item.is_dir():
+                                shutil.rmtree(item)
+                            else:
+                                item.unlink()
+                        for item in src_sp.iterdir():
+                            if item.is_dir():
+                                shutil.copytree(item, dst_sp / item.name, symlinks=True)
+                            else:
+                                shutil.copy2(item, dst_sp / item.name)
+                        synced.append(f"{app_supp.name}:skills-plugin")
+                    except Exception:
+                        pass
+
+        # Also sync ~/Claude/plugins if present
+        cfg_file = app_supp / "claude_desktop_config.json"
+        cowork_path = HOME / "Claude"
+        if cfg_file.is_file():
+            try:
+                cfg_data = json.loads(cfg_file.read_text(encoding="utf-8"))
+                cowork_path = Path(cfg_data.get("coworkUserFilesPath", str(HOME / "Claude")))
+            except Exception:
+                pass
+        cowork_plugins_dir = cowork_path / "plugins"
+        if cowork_plugins_dir.is_dir():
+            skills_link = cowork_plugins_dir / "ai-first-fw-skills"
+            utils_link = cowork_plugins_dir / "ai-first-fw-utilities"
+            if skills_link.is_symlink() or skills_link.exists():
+                try:
+                    skills_link.unlink(missing_ok=True)
+                except Exception:
+                    shutil.rmtree(skills_link, ignore_errors=True)
+            try:
+                skills_link.symlink_to(workspace / "ai-first-fw/skills", target_is_directory=True)
+            except Exception:
+                pass
+
+            if utils_link.is_symlink() or utils_link.exists():
+                try:
+                    utils_link.unlink(missing_ok=True)
+                except Exception:
+                    shutil.rmtree(utils_link, ignore_errors=True)
+            try:
+                utils_link.symlink_to(workspace / "ai-first-fw/utilities", target_is_directory=True)
+            except Exception:
+                pass
 
     return synced
 
@@ -1463,7 +1503,7 @@ def sync_antigravity_plugins() -> list[str]:
 
 
 def pull_updates_from_marketplaces() -> dict[str, Any]:
-    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins."""
+    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins across Claude, Claude-One, Claude Code clone, and Antigravity."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
     installed_file = HOME / ".claude/plugins/installed_plugins.json"
 
@@ -1621,7 +1661,90 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
         except Exception as e:
             errors.append(f"Failed updating installed plugins: {e}")
 
-    # 3. Clean any legacy symlinks to maintain zero symlink footprint
+    # 3. Synchronize to .claude-clone environment if present
+    clone_dir = HOME / ".claude-clone"
+    if clone_dir.is_dir():
+        try:
+            # Sync cache
+            src_cache = HOME / ".claude/plugins/cache"
+            dst_cache = clone_dir / "plugins/cache"
+            if src_cache.is_dir():
+                dst_cache.mkdir(parents=True, exist_ok=True)
+                for mp in src_cache.iterdir():
+                    if not mp.is_dir() or mp.name.startswith("."):
+                        continue
+                    for p in mp.iterdir():
+                        if not p.is_dir() or p.name.startswith("."):
+                            continue
+                        for v in p.iterdir():
+                            if not v.is_dir() or v.name.startswith("."):
+                                continue
+                            target_v = dst_cache / mp.name / p.name / v.name
+                            if not target_v.exists():
+                                target_v.parent.mkdir(parents=True, exist_ok=True)
+                                shutil.copytree(v, target_v, symlinks=True)
+
+            # Sync installed_plugins.json
+            if installed_file.is_file():
+                inst_text = installed_file.read_text(encoding="utf-8")
+                clone_inst_text = inst_text.replace("/.claude/", "/.claude-clone/")
+                (clone_dir / "plugins/installed_plugins.json").write_text(clone_inst_text, encoding="utf-8")
+
+            # Sync known_marketplaces.json
+            if known_mp_file.is_file():
+                known_text = known_mp_file.read_text(encoding="utf-8")
+                clone_known_text = known_text.replace("/.claude/", "/.claude-clone/")
+                (clone_dir / "plugins/known_marketplaces.json").write_text(clone_known_text, encoding="utf-8")
+
+            # Sync marketplaces folder
+            src_mp = HOME / ".claude/plugins/marketplaces"
+            dst_mp = clone_dir / "plugins/marketplaces"
+            if src_mp.is_dir():
+                dst_mp.mkdir(parents=True, exist_ok=True)
+                for mp_folder in src_mp.iterdir():
+                    if not mp_folder.is_dir() or mp_folder.name.startswith("."):
+                        continue
+                    dst_mp_folder = dst_mp / mp_folder.name
+                    if not dst_mp_folder.exists():
+                        shutil.copytree(mp_folder, dst_mp_folder, symlinks=True)
+
+            # Sync personal skills
+            src_skills = HOME / ".claude/skills"
+            dst_skills = clone_dir / "skills"
+            if src_skills.is_dir():
+                dst_skills.mkdir(parents=True, exist_ok=True)
+                for s_item in src_skills.iterdir():
+                    if s_item.name.startswith("."):
+                        continue
+                    dst_s_item = dst_skills / s_item.name
+                    if dst_s_item.exists():
+                        if dst_s_item.is_dir():
+                            shutil.rmtree(dst_s_item)
+                        else:
+                            dst_s_item.unlink()
+                    if s_item.is_dir():
+                        shutil.copytree(s_item, dst_s_item, symlinks=True)
+                    else:
+                        shutil.copy2(s_item, dst_s_item)
+
+            # Sync hooks
+            src_hooks = HOME / ".claude/hooks"
+            dst_hooks = clone_dir / "hooks"
+            if src_hooks.is_dir():
+                dst_hooks.mkdir(parents=True, exist_ok=True)
+                for h_item in src_hooks.iterdir():
+                    if h_item.name.startswith("."):
+                        continue
+                    dst_h_item = dst_hooks / h_item.name
+                    if not dst_h_item.exists():
+                        if h_item.is_dir():
+                            shutil.copytree(h_item, dst_h_item, symlinks=True)
+                        else:
+                            shutil.copy2(h_item, dst_h_item)
+        except Exception as e:
+            errors.append(f"Failed syncing to .claude-clone: {e}")
+
+    # 4. Clean any legacy symlinks to maintain zero symlink footprint
     cleaned_symlinks = clean_legacy_symlinks()
     cowork_synced = sync_cowork_plugins()
     antigravity_synced = sync_antigravity_plugins()
@@ -1907,55 +2030,65 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
         cfg_file.write_text(json.dumps(cfg, indent=4), encoding="utf-8")
 
     elif target == "claude_desktop":
-        cfg_file = HOME / "Library/Application Support/Claude/claude_desktop_config.json"
-        cfg = {}
-        if cfg_file.is_file():
-            try:
-                with open(cfg_file) as f:
-                    cfg = json.load(f)
-            except Exception:
-                pass
-        servers = cfg.setdefault("mcpServers", {})
-        if enable:
-            if is_local:
-                servers[server_id] = {
-                    "command": cmd,
-                    "args": args
-                }
+        desktop_cfg_files = [
+            HOME / "Library/Application Support/Claude/claude_desktop_config.json",
+            HOME / "Library/Application Support/Claude-Clone/claude_desktop_config.json",
+            HOME / "Library/Application Support/Claude-One/claude_desktop_config.json",
+        ]
+        for cfg_file in desktop_cfg_files:
+            if not cfg_file.parent.is_dir() and (cfg_file.name.startswith("Claude-Clone") or cfg_file.name.startswith("Claude-One")):
+                continue
+            cfg = {}
+            if cfg_file.is_file():
+                try:
+                    with open(cfg_file) as f:
+                        cfg = json.load(f)
+                except Exception:
+                    pass
+            servers = cfg.setdefault("mcpServers", {})
+            if enable:
+                if is_local:
+                    servers[server_id] = {
+                        "command": cmd,
+                        "args": args
+                    }
+                else:
+                    servers[server_id] = known_external.get(server_id, {}).get("claude_desktop", {"url": "http://127.0.0.1:64342/stream", "type": "http"})
             else:
-                servers[server_id] = known_external.get(server_id, {}).get("claude_desktop", {"url": "http://127.0.0.1:64342/stream", "type": "http"})
-        else:
-            servers.pop(server_id, None)
-            servers.pop(f"{server_id}-local", None)
-        cfg_file.parent.mkdir(parents=True, exist_ok=True)
-        cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+                servers.pop(server_id, None)
+                servers.pop(f"{server_id}-local", None)
+            cfg_file.parent.mkdir(parents=True, exist_ok=True)
+            cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
     elif target == "claude_code":
-        # 1. Update ~/.claude.json
-        cfg_file = HOME / ".claude.json"
-        cfg = {}
-        if cfg_file.is_file():
-            try:
-                with open(cfg_file) as f:
-                    cfg = json.load(f)
-            except Exception:
-                pass
-        servers = cfg.setdefault("mcpServers", {})
-        if enable:
-            if is_local:
-                servers[server_id] = {
-                    "type": "stdio",
-                    "command": cmd,
-                    "args": args,
-                    "env": {}
-                }
+        # 1. Update ~/.claude.json and ~/.claude-clone/.claude.json
+        code_cfg_files = [HOME / ".claude.json", HOME / ".claude-clone/.claude.json"]
+        for cfg_file in code_cfg_files:
+            if not cfg_file.parent.is_dir() and ".claude-clone" in str(cfg_file):
+                continue
+            cfg = {}
+            if cfg_file.is_file():
+                try:
+                    with open(cfg_file) as f:
+                        cfg = json.load(f)
+                except Exception:
+                    pass
+            servers = cfg.setdefault("mcpServers", {})
+            if enable:
+                if is_local:
+                    servers[server_id] = {
+                        "type": "stdio",
+                        "command": cmd,
+                        "args": args,
+                        "env": {}
+                    }
+                else:
+                    servers[server_id] = known_external.get(server_id, {}).get("claude_code", {"url": "http://127.0.0.1:64342/stream", "type": "http"})
             else:
-                servers[server_id] = known_external.get(server_id, {}).get("claude_code", {"url": "http://127.0.0.1:64342/stream", "type": "http"})
-        else:
-            servers.pop(server_id, None)
-            servers.pop(f"{server_id}-local", None)
-        cfg_file.parent.mkdir(parents=True, exist_ok=True)
-        cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+                servers.pop(server_id, None)
+                servers.pop(f"{server_id}-local", None)
+            cfg_file.parent.mkdir(parents=True, exist_ok=True)
+            cfg_file.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
         # 2. Also keep workspace .mcp.json synchronized
         if is_local:
