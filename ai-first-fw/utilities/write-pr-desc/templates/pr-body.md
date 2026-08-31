@@ -1,8 +1,16 @@
-<!-- The shape of a pull request description in this repo. `pr-desc-writer` is the process that
-     fills it; this file is only the shape.
+<!-- The shape of a pull request description in this repo, and every rule the filled body satisfies.
+     `write-pr-desc` is the process that fills it; this file is the shape and the rules.
 
-  · One clause per bullet, each thing said once. Every bullet's subject is a behaviour, and one
-    bullet covers every file that serves it.
+  Boundaries — the description covers this branch and stands alone for its reader.
+
+  Tone — whatever changed is the grammatical subject, in the present tense, stating what now holds
+    of it. Report the facts and let the reviewer appraise them.
+
+  Concision — length tracks the size of the change. Each thing said once. Keep every line the
+    reviewer would miss.
+
+  · One clause per bullet. Every bullet's subject is a behaviour, and one bullet covers every file
+    that serves it.
   · Shortest form that still says it: what over how, why where the what stands alone without it.
   · Only what changed — every line that survives names something this branch altered.
   · Spell out every code, ticket id and fixture value — what it means alongside its value, so it
@@ -48,7 +56,8 @@
 ### 4. Verification
 
 #### 4.1 How to test
-<!-- Commands a reviewer can run, and what has to be running first. -->
+<!-- Commands a reviewer can run, and what has to be running first. Repeat what the developer said
+     about testing; where the changes touch tests, "run the unit tests" says it. -->
 -
 
 #### 4.2 Proof

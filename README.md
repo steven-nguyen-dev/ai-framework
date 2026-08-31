@@ -65,9 +65,9 @@ Gated AI skills that enforce engineering rigor before code is touched:
 
 ### 2. ⚡ Standalone Utilities (`ai-first-fw/utilities/`)
 * **`draw-diagram`** (`v1.0.0`): Draws one Mermaid block (flowchart, sequence, state, ER) styled to the shared dark palette and parsed before shipping.
-* **`git-coordinator`** (`v0.4.0`): Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree (merge, build, push, draft PR) and tears down mirrors once landed.
-* **`pr-desc-writer`** (`v0.3.0`): Reads the session and diff, fills the repository PR template, and offers to apply it directly to the open GitHub pull request.
+* **`sync-pr`** (`v2.0.0`): Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree — merge, build and unit-test the touched modules, push, draft PR where none is open — and tears down mirrors once landed.
 * **`write-docs`** (`v1.0.0`): Writes one technical knowledge note in the house style — drafted in temp, every fact traced to its source, every uncertainty carried to an Open questions section.
+* **`write-pr-desc`** (`v1.0.0`): Reads the session and the branch diff, fills the repository PR template, and applies the approved body to the open GitHub pull request.
 * **`write-skill`** (`v0.1.0`): Authors and revises agent skills adhering to the framework standard, structure, and quality levers.
 * **`lv1-architecture-review`** (`v0.0.2`): High-level system architecture and modularity design reviewer.
 * **`naver-api-extractor`** (`v0.0.1`) & **`lotteon-api-extractor`** (`v0.0.1`): Automated tools for extracting, parsing, and documenting e-commerce APIs.
@@ -127,8 +127,8 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/review-code
 
 # Utility Skills
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/draw-diagram
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/git-coordinator
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/pr-desc-writer
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-pr
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-pr-desc
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-docs
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-skill
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-architecture-review

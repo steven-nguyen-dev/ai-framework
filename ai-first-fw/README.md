@@ -36,9 +36,9 @@ A set of specialized, composable skills that guide AI agents through a gated dev
 ### 2. [`utilities/`](utilities) — Standalone Skills
 Independent helper skills for focused tasks outside the core lifecycle:
 - **`draw-diagram`** (`v1.0.0`): Mermaid diagram generation and styling adhering to the shared dark palette.
-- **`git-coordinator`** (`v0.4.0`): Safe worktree-isolated feature promotion to QA/UAT mirror branches.
-- **`pr-desc-writer`** (`v0.3.0`): Automatic PR description authoring aligned to repo templates and direct PR submission.
+- **`sync-pr`** (`v2.0.0`): Worktree-isolated feature promotion to QA/UAT mirror branches, gated on a scoped build and unit tests.
 - **`write-docs`** (`v1.0.0`): Technical knowledge note writing adhering to repo standards.
+- **`write-pr-desc`** (`v1.0.0`): PR description authoring aligned to the repo template, applied to the open pull request on approval.
 - **`write-skill`** (`v0.1.0`): Skill authoring and revising under standard quality levers.
 - **`lv1-architecture-review`** (`v0.0.2`): Architecture checklist auditing.
 - **`naver-api-extractor`** (`v0.0.1`) & **`lotteon-api-extractor`** (`v0.0.1`): E-commerce API spec extraction and generation.
@@ -138,8 +138,8 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/review-code
 
 # Utility Skills
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/draw-diagram
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/git-coordinator
-npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/pr-desc-writer
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-pr
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-pr-desc
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-docs
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-skill
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/lv1-architecture-review
