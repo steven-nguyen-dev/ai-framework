@@ -128,7 +128,7 @@ itself instead of failing startup with an exec error the client reports only as 
     "kibana-explorer": {
       "command": "bash",
       "args": [
-        "/Users/nguyennguyen.anchanto/Projects/ai-framework/ai-first-fw/local-mcps/kibana-explorer/launch.sh"
+        "${CLAUDE_PROJECT_DIR}/ai-first-fw/local-mcps/kibana-explorer/launch.sh"
       ]
     }
   }
