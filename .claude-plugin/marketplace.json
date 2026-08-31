@@ -10,19 +10,19 @@
     {
       "name": "ai-first-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: write-analysis, implementation-planner, specs-builder, and review-code.",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "source": "./ai-first-fw/skills"
     },
     {
       "name": "ai-first-fw-utilities",
       "description": "Standalone engineering utility skills: draw-diagram, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "source": "./ai-first-fw/utilities"
     },
     {
       "name": "ai-first-fw-mcps",
       "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Install this where project-scoped .mcp.json is not read, such as Cowork.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./ai-first-fw/local-mcps"
     }
   ]
