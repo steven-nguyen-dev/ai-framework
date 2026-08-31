@@ -59,6 +59,10 @@ Pass B's checklist. Every line is answered by reading the changed files at both 
   the diff rewrote: name who supplied the value then, and who supplies it now. A supplier with no
   successor is a silent regression — no exception, no red test. Count the remaining references to any
   member the diff stopped reading; zero across the module is the finding.
+- **Conditionality** — every branch the diff removes, widens, or replaces with an unconditional path:
+  name the condition at the fixed point, the inputs it excluded, and what now runs for them. A path
+  the base gated and this runs for everything is a silent widening — the excluded inputs carry no
+  exception and no red test.
 - **Contract at the edge** — a changed signature, DTO field, enum value, column, index, queue message
   or config key: name every caller, producer, consumer and migration at the fixed point, and say for
   each whether it still holds.

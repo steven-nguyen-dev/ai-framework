@@ -1,6 +1,6 @@
 # [INTEGRATION_NAME] Data Mapping & Technical Specification Template
 
-**Document Identifier:** `[PROJECT_CODE]-[INTEGRATION_NAME]-mapping-spec.md`  
+**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` (e.g. `IA-5105-product-types-mapping-spec.md`)  
 **Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / Initiative Title]*  
 **Source System / Origin:** `[SOURCE_SYSTEM]` (e.g. Marketplace, Carrier, ERP, POS, 3PL, Custom Channel)  
 **Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Inventory Core)  

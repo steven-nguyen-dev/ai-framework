@@ -1,5 +1,6 @@
 # [TICKET_KEY] Summary — [Short Feature Title]
 
+**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-summary.md` (e.g. `IA-5105-product-types-summary.md`)  
 **Ticket:** `[JIRA_ISSUE_KEY]` — [user story N / feature name]  
 **Related:** `[SIBLING_TICKET_KEY]` ([what it covers]) · `[SIBLING_TICKET_KEY]` ([what it covers])  
 **Source documents:** `[requirements-doc.md]` · `[change-request-doc.md]` · `[mapping-doc.md]`  

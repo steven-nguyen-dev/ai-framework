@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: Cold review of a branch or pull request diff — three isolated passes, one report in chat.
-version: 2.0.0
+version: 2.0.1
 disable-model-invocation: true
 ---
 

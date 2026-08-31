@@ -1,6 +1,6 @@
 # [TARGET_SYSTEM] Engineering Requirements & Field Change Specification Template
 
-**Document Identifier:** `[TARGET_SYSTEM_LOWER]-[FEATURE_SLUG]-requirements-spec.md`  
+**Document Identifier:** `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` (e.g. `IA-5105-oms-taxonomy-requirements-spec.md`)  
 **Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / User Story Title]*  
 **Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Core Billing, Routing Engine)  
 **System Specification Reference:** `[TARGET_SYSTEM] Data Model / API Spec` (e.g. `[service]-swagger.json`, `schema.proto`, `models.ts`)  
