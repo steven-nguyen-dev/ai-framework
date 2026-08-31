@@ -14,8 +14,8 @@ Every MCP server requiring authentication follows a strict security standard:
 2. **Every tool ships a `.env.example` template**:
    * Contains dummy placeholder values with clear documentation for each required variable.
 3. **Automated Setup (`setup.sh` / `--init-env`)**:
-   * Running `python3 server.py --init-env` (in `jira-reader`) or `./setup.sh` (in `kibana-explorer`) automatically seeds `.env` from `.env.example` if `.env` does not already exist, and reminds the developer to fill in their personal credentials.
-   * `kibana-explorer/launch.sh` — the entry point `.mcp.json` invokes — performs the same `.env` seeding and builds `.venv` if it is missing, so a fresh clone starts without a manual setup step.
+   * Running `bash setup.sh` at the root of `local-mcps/` provides a unified interactive wizard to configure both Jira and Kibana credentials, test connections, and save configurations.
+   * `kibana-explorer/launch.sh` automatically seeds `.env` and builds `.venv` if missing.
 
 ---
 
@@ -28,24 +28,39 @@ Every MCP server requiring authentication follows a strict security standard:
 
 ---
 
-## 🚀 Quick Setup & Claude Code Integration
+## 🚀 Unified 1-Click Setup & Configuration
 
-### 1-Click Global Claude Code Setup (Interactive)
+### Option A: Interactive Wizard (Terminal)
+Run the single unified setup script to configure both Jira and Kibana credentials and test connectivity:
 ```bash
-# Set up Jira Reader MCP globally in Claude Code
+bash ai-first-fw/local-mcps/setup.sh
+```
+
+### Option B: Inside Claude Code (Plugin Command)
+If you have installed the `ai-first-fw-mcps` plugin, run:
+```bash
+/ai-first-fw-mcps:config
+```
+
+### Option C: Individual Component Setup
+```bash
+# Jira Reader only
 bash ai-first-fw/local-mcps/jira-reader/install-claude.sh
 
-# Set up Kibana Explorer MCP globally in Claude Code
+# Kibana Explorer only
 bash ai-first-fw/local-mcps/kibana-explorer/install-claude.sh
 ```
 
-### Local Workspace Setup & Diagnostics
-```bash
-# Test Jira Reader connection
-python3 ai-first-fw/local-mcps/jira-reader/server.py --init-env
-python3 ai-first-fw/local-mcps/jira-reader/server.py --test
+---
 
-# Bootstrap & test Kibana Explorer
-bash ai-first-fw/local-mcps/kibana-explorer/setup.sh
-bash ai-first-fw/local-mcps/kibana-explorer/launch.sh --selftest
-```
+## 🔄 Verification in Claude Code
+
+1. Reload plugins:
+   ```bash
+   /reload-plugins
+   ```
+2. Check MCP status:
+   ```bash
+   /mcp
+   ```
+   Both `jira-reader` and `kibana-explorer` should display `● connected`.

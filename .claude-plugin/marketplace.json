@@ -21,8 +21,8 @@
     },
     {
       "name": "ai-first-fw-mcps",
-      "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Install this where project-scoped .mcp.json is not read, such as Cowork.",
-      "version": "1.0.1",
+      "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Includes unified setup wizard and /config command.",
+      "version": "1.0.2",
       "source": "./ai-first-fw/local-mcps"
     }
   ]
