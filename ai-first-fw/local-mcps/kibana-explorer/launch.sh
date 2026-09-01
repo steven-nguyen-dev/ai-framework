@@ -37,14 +37,4 @@ if needs_bootstrap; then
     echo "[kibana-explorer] dependencies installed" >&2
 fi
 
-if [ ! -f "$DIR/.env" ]; then
-    if [ -f "$DIR/.env.example" ]; then
-        cp "$DIR/.env.example" "$DIR/.env"
-        echo "[kibana-explorer] created $DIR/.env from .env.example - fill in your Kibana credentials" >&2
-    elif [ -f "$DIR/.env.sample" ]; then
-        cp "$DIR/.env.sample" "$DIR/.env"
-        echo "[kibana-explorer] created $DIR/.env from .env.sample - fill in your Kibana credentials" >&2
-    fi
-fi
-
 exec "$PY" "$DIR/server.py" "$@"

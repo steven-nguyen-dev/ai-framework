@@ -1242,4 +1242,22 @@ if __name__ == "__main__":
         sys.exit(_interactive_setup())
     if "--selftest" in sys.argv:
         sys.exit(_selftest())
+
+    # Check configuration on startup
+    try:
+        cfg = _config()
+        if not cfg.get("url") or (not cfg.get("password") and not cfg.get("static_cookie")):
+            raise ValueError("Kibana credentials missing")
+    except Exception as exc:
+        sys.stderr.write(
+            "\n"
+            "==============================================================================\n"
+            "⚠️ SETUP REQUIRED: Kibana Explorer is not configured yet.\n"
+            "==============================================================================\n"
+            "👉 Please run '/config' in chat to set up your Kibana credentials interactively.\n"
+            "   (Or create ~/.mcp/kibana-explorer.env with KIBANA_URL, KIBANA_USERNAME, KIBANA_PASSWORD)\n"
+            "==============================================================================\n\n"
+        )
+        sys.exit(1)
+
     mcp.run(transport="stdio")
