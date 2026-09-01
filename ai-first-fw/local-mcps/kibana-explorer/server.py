@@ -1255,18 +1255,7 @@ if __name__ == "__main__":
         cfg = _config()
         if not cfg.get("url") or _is_placeholder(cfg["url"]):
             raise ValueError("Kibana URL missing")
-        if (not cfg.get("password") or _is_placeholder(cfg["password"])) and not cfg.get("static_cookie"):
-            raise ValueError("Kibana credentials missing")
-    except Exception as exc:
-        sys.stderr.write(
-            "\n"
-            "==============================================================================\n"
-            "⚠️ SETUP REQUIRED: Kibana Explorer is not configured yet.\n"
-            "==============================================================================\n"
-            "👉 Please run '/config' in chat to set up your Kibana credentials interactively.\n"
-            "   (Or create ~/.mcp/kibana-explorer.env with KIBANA_URL, KIBANA_USERNAME, KIBANA_PASSWORD)\n"
-            "==============================================================================\n\n"
-        )
-        sys.exit(1)
+    except Exception:
+        sys.stderr.write("[kibana-explorer] ⚠️ Notice: Kibana credentials not configured yet. Run /config to setup.\n")
 
     mcp.run(transport="stdio")

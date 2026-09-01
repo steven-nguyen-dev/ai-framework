@@ -1,0 +1,15 @@
+{
+  "description": "Auto-check MCP credentials and display setup banner on session start",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/check_setup.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

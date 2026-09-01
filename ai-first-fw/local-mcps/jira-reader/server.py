@@ -1308,19 +1308,8 @@ def run_stdio_server() -> None:
     """Main JSON-RPC stdio event loop."""
     try:
         cfg = _get_config()
-        if not cfg.get("host") or (not cfg.get("pat") and not (cfg.get("email") and cfg.get("api_token"))):
-            raise ValueError("Jira credentials missing")
     except Exception:
-        sys.stderr.write(
-            "\n"
-            "==============================================================================\n"
-            "⚠️ SETUP REQUIRED: Jira Reader is not configured yet.\n"
-            "==============================================================================\n"
-            "👉 Please run '/config' in chat to set up your Jira credentials interactively.\n"
-            "   (Or create ~/.mcp/jira-reader.env with JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN)\n"
-            "==============================================================================\n\n"
-        )
-        sys.exit(1)
+        sys.stderr.write(f"[{SERVER_NAME}] ⚠️ Notice: Jira credentials not configured yet. Run /config to setup.\n")
 
     sys.stderr.write(f"[{SERVER_NAME}] Starting stdio transport (MCP v{MCP_PROTOCOL_VERSION})...\n")
     while True:
