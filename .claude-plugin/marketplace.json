@@ -21,8 +21,8 @@
     },
     {
       "name": "ai-first-fw-mcps",
-      "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Type /config in chat to configure credentials.",
-      "version": "1.0.8",
+      "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Type /setup-mcps in chat to configure credentials.",
+      "version": "1.0.9",
       "source": "./ai-first-fw/local-mcps"
     }
   ]

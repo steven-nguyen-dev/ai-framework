@@ -14,12 +14,12 @@ if not kibana_env.exists():
 
 if missing:
     missing_str = ", ".join(missing)
-    msg = f"\n⚠️ [AI-First Framework] Setup Required: {missing_str} not configured yet.\n👉 Type /config in chat to set up credentials.\n"
+    msg = f"\n⚠️ [AI-First Framework] Setup Required: {missing_str} not configured yet.\n👉 Type /setup-mcps in chat to set up credentials.\n"
     output = {
         "systemMessage": msg,
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",
-            "additionalContext": f"NOTICE: The following MCP servers are unconfigured: {missing_str}. Remind the user to type /config to set up credentials."
+            "additionalContext": f"NOTICE: The following MCP servers are unconfigured: {missing_str}. Remind the user to type /setup-mcps to set up credentials."
         }
     }
     print(json.dumps(output))
