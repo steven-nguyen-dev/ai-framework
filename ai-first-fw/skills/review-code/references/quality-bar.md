@@ -1,16 +1,21 @@
 # Quality bar
 
-The bar a pass is answered against. Every line of §1 is answered for every changed file, and every
-line of §2 at both SHAs: a line with nothing to report reads `clear`, and a line you could not settle
-reads `unknown` with what stopped you. The answered checklist is the deliverable; the findings are
-what falls out of it.
+The bar a pass is answered against. Every file a pass was given carries a §1 answer:
 
-§1 and §2 grade on blast radius and reach `blocker`. §3 carries `note`.
+- A file with nothing to report reads `all clear`.
+- A file holding a finding or an unsettled line answers item by item, and each unsettled line reads
+  `unknown` with what stopped you.
+- A file that adds or modifies an entry point, or moves a field to a terminus, answers items 5, 6, 7
+  and 9 by name — that is where a silent drop and an open door live, so each carries its own line.
+
+The answered checklist is the deliverable; the findings are what falls out of it.
+
+§1 and §2 findings grade on blast radius, up to `blocker`. §3 findings carry `note`.
 
 ## §1 — The code on its own terms
 
-Pass A's checklist. This pass holds the code to itself: it reads what the diff added, and asks of
-each line what it does to a caller, a row and a thread.
+Pass A's checklist, over every carried file. This pass holds the code to itself: it reads what the
+diff added, and asks of each line what it does to a caller, a row and a thread.
 
 1. **Resource lifecycle** — every stream, connection, client, lock, transaction, thread pool, session
    and temp file the diff opens: name where it closes on the success path and on every throw. A close
@@ -19,8 +24,8 @@ each line what it does to a caller, a row and a thread.
    caller receives, and what state is left behind. A catch that swallows, logs and continues, or
    converts a failure into a success status is a finding on its own.
 3. **Concurrency** — shared mutable state reachable from two threads, check-then-act sequences,
-   non-atomic compound operations, unsafe publication, a blocking call inside a lock, and state held
-   on a bean that outlives one request.
+   non-atomic compound operations, unsafe publication, a blocking call inside a lock, and mutable
+   state held on an instance the container shares across requests.
 4. **Boundaries** — null, empty, zero, negative, one element, max size, off-by-one, overflow,
    duplicate and out-of-order, for each new parameter, each new branch condition and each new
    collection operation. For each, name what the type admits and what the code handles.
@@ -45,14 +50,15 @@ each line what it does to a caller, a row and a thread.
 10. **Tests** — every new branch is named by a test that fails without it, and every assertion a
     modified test kept still asserts what it asserted.
 11. **The stack's own traps** — read the stack and version from the build file, list that stack's
-    traps, then read the diff for them. Java Spring Boot is the expected target.
+    traps, then read the diff for them.
 12. **Naming and shape** — each new name states what the thing does or holds, each new unit does one
     job, and each piece of logic a reader cannot follow from the code carries the comment that
     explains why it is that way.
 
 ## §2 — What the base did and this does not
 
-Pass B's checklist. Every line is answered by reading the changed files at both SHAs.
+Pass B's checklist. Every line is answered by reading the files in B's inventory at both SHAs. An
+added file answers from its own text and from what the base wrote for it to read.
 
 - **Provenance** — every value the diff touches had a supplier at the fixed point. For each read the
   diff removes, each field a framework or mapper filled before the new code runs, and each condition
