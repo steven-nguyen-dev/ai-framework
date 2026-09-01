@@ -22,3 +22,8 @@ env/
 _to_delete/
 *.bak
 
+# Archives & packages
+*.zip
+*.tar.gz
+*.tgz
+
