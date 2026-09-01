@@ -145,6 +145,13 @@ def _auto_discover_env() -> None:
 _auto_discover_env()
 
 
+def _is_placeholder(val: str) -> bool:
+    if not val:
+        return True
+    lower = val.lower()
+    return any(p in lower for p in ["example.com", "your-domain", "your_api_token", "your-email", "xxx", "your_token", "your_pat", "your_username", "your_password", "your_kibana_password"])
+
+
 def _get_config() -> Dict[str, str]:
     """Retrieve and validate Jira configuration from environment variables."""
     host = os.environ.get("JIRA_HOST", "").strip().rstrip("/")
@@ -153,19 +160,16 @@ def _get_config() -> Dict[str, str]:
     pat = os.environ.get("JIRA_PAT", "").strip()
     api_version = os.environ.get("JIRA_API_VERSION", "3").strip()
 
-    if not host:
+    if not host or _is_placeholder(host):
         raise ValueError(
-            "JIRA_HOST environment variable is missing.\n"
-            "Please set JIRA_HOST (e.g. 'https://your-domain.atlassian.net' or 'https://jira.yourcompany.com').\n"
-            "Run 'python3 server.py --init-env' to generate a .env template."
+            "JIRA_HOST environment variable is missing or placeholder.\n"
+            "Please set JIRA_HOST (e.g. 'https://anchantoplan.atlassian.net')."
         )
 
-    if not pat and (not email or not api_token):
+    if (not pat or _is_placeholder(pat)) and (not email or not api_token or _is_placeholder(email) or _is_placeholder(api_token)):
         raise ValueError(
-            "Jira authentication credentials missing. Please configure either:\n"
-            "  1. Jira Cloud: JIRA_EMAIL and JIRA_API_TOKEN (Generate at https://id.atlassian.com/manage-profile/security/api-tokens)\n"
-            "  2. Jira Server/DC: JIRA_PAT (Personal Access Token)\n"
-            "Run 'python3 server.py --init-env' to generate a .env template."
+            "Jira authentication credentials missing or placeholder.\n"
+            "Please configure JIRA_EMAIL and JIRA_API_TOKEN."
         )
 
     return {

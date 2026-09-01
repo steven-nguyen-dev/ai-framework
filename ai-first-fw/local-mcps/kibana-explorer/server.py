@@ -117,6 +117,13 @@ _CACHED_VERSION: Optional[str] = None
 # Configuration & transport
 # ---------------------------------------------------------------------------
 
+def _is_placeholder(val: str) -> bool:
+    if not val:
+        return True
+    lower = val.lower()
+    return any(p in lower for p in ["example.com", "your-email", "your_kibana_password", "your-domain", "your_api_token", "xxx", "your_username", "your_password"])
+
+
 def _config() -> Dict[str, Any]:
     try:
         from dotenv import load_dotenv
@@ -126,7 +133,7 @@ def _config() -> Dict[str, Any]:
         pass
 
     url = os.environ.get("KIBANA_URL", "").strip().rstrip("/")
-    if not url:
+    if not url or _is_placeholder(url):
         raise ValueError(
             "KIBANA_URL is not configured yet. "
             "Please ask the user for Kibana URL and login credentials, then call `kibana_configure`."
@@ -1246,7 +1253,9 @@ if __name__ == "__main__":
     # Check configuration on startup
     try:
         cfg = _config()
-        if not cfg.get("url") or (not cfg.get("password") and not cfg.get("static_cookie")):
+        if not cfg.get("url") or _is_placeholder(cfg["url"]):
+            raise ValueError("Kibana URL missing")
+        if (not cfg.get("password") or _is_placeholder(cfg["password"])) and not cfg.get("static_cookie"):
             raise ValueError("Kibana credentials missing")
     except Exception as exc:
         sys.stderr.write(

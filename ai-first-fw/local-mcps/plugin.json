@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "ai-first-fw-mcps",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Local stdio MCP servers for the AI-First Framework: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Includes unified /config setup command.",
   "author": {
     "name": "Steven Nguyen"
