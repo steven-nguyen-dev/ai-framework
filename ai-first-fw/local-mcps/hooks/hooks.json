@@ -1,7 +1,17 @@
 {
-  "description": "Auto-check MCP credentials and display setup banner on session start",
+  "description": "Auto-detect unconfigured MCP credentials and guide the user in chat",
   "hooks": {
     "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/check_setup.py\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
       {
         "hooks": [
           {
