@@ -22,7 +22,7 @@
     {
       "name": "ai-first-fw-mcps",
       "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Auto-prompts for setup when unconfigured.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "source": "./ai-first-fw/local-mcps"
     }
   ]

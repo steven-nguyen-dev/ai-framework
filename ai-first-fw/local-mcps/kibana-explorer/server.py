@@ -55,8 +55,9 @@ try:
 except Exception:
     pass
 
-GLOBAL_KIBANA_ENV = GLOBAL_MCPS_DIR / "kibana-explorer.env"
-LEGACY_MCPS_ENV = Path.home() / ".mcps/kibana-explorer.env"
+GLOBAL_KIBANA_ENV = GLOBAL_MCPS_DIR / ".kibana-explorer.env"
+LEGACY_DOT_KIBANA_ENV = GLOBAL_MCPS_DIR / "kibana-explorer.env"
+LEGACY_MCPS_ENV = Path.home() / ".mcps/.kibana-explorer.env"
 LEGACY_KIBANA_ENV = Path.home() / ".kibana.env"
 LOCAL_KIBANA_ENV = Path(__file__).resolve().parent / ".env"
 _ENV_PATH = LOCAL_KIBANA_ENV
@@ -67,6 +68,8 @@ try:
         load_dotenv(dotenv_path=LEGACY_KIBANA_ENV)
     if LEGACY_MCPS_ENV.exists():
         load_dotenv(dotenv_path=LEGACY_MCPS_ENV)
+    if LEGACY_DOT_KIBANA_ENV.exists():
+        load_dotenv(dotenv_path=LEGACY_DOT_KIBANA_ENV)
     if GLOBAL_KIBANA_ENV.exists():
         load_dotenv(dotenv_path=GLOBAL_KIBANA_ENV, override=True)
     if LOCAL_KIBANA_ENV.exists():

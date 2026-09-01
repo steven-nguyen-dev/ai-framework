@@ -118,7 +118,7 @@ def _get_global_env_path() -> Path:
         d.mkdir(parents=True, exist_ok=True)
     except Exception:
         pass
-    return d / "jira-reader.env"
+    return d / ".jira-reader.env"
 
 
 def _auto_discover_env() -> None:
@@ -126,8 +126,9 @@ def _auto_discover_env() -> None:
     script_dir = Path(__file__).resolve().parent
     project_root = _find_project_root()
     candidates = [
-        Path.home() / ".mcp/jira-reader.env",
         Path.home() / ".mcp/.jira-reader.env",
+        Path.home() / ".mcp/jira-reader.env",
+        Path.home() / ".mcps/.jira-reader.env",
         Path.home() / ".mcps/jira-reader.env",
         Path.home() / ".config/mcps/jira-reader.env",
         Path.home() / ".jira.env",
