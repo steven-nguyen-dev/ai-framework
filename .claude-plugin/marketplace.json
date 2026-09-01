@@ -15,14 +15,14 @@
     },
     {
       "name": "ai-first-fw-utilities",
-      "description": "Standalone engineering utility skills: draw-diagram, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.0.4",
+      "description": "Standalone engineering utility skills: draw-diagram, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
+      "version": "2.1.0",
       "source": "./ai-first-fw/utilities"
     },
     {
       "name": "ai-first-fw-mcps",
       "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Includes unified setup wizard and /config command.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "source": "./ai-first-fw/local-mcps"
     }
   ]

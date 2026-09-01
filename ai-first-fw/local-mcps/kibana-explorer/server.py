@@ -49,12 +49,30 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from kql import KqlError, to_dsl  # noqa: E402
 
+GLOBAL_MCPS_DIR = Path.home() / ".mcp"
+try:
+    GLOBAL_MCPS_DIR.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
+
+GLOBAL_KIBANA_ENV = GLOBAL_MCPS_DIR / "kibana-explorer.env"
+LEGACY_MCPS_ENV = Path.home() / ".mcps/kibana-explorer.env"
+LEGACY_KIBANA_ENV = Path.home() / ".kibana.env"
+LOCAL_KIBANA_ENV = Path(__file__).resolve().parent / ".env"
+_ENV_PATH = LOCAL_KIBANA_ENV
+
 try:
     from dotenv import load_dotenv
-    _ENV_PATH = Path(__file__).resolve().parent / ".env"
-    load_dotenv(dotenv_path=_ENV_PATH) if _ENV_PATH.exists() else load_dotenv()
+    if LEGACY_KIBANA_ENV.exists():
+        load_dotenv(dotenv_path=LEGACY_KIBANA_ENV)
+    if LEGACY_MCPS_ENV.exists():
+        load_dotenv(dotenv_path=LEGACY_MCPS_ENV)
+    if GLOBAL_KIBANA_ENV.exists():
+        load_dotenv(dotenv_path=GLOBAL_KIBANA_ENV, override=True)
+    if LOCAL_KIBANA_ENV.exists():
+        load_dotenv(dotenv_path=LOCAL_KIBANA_ENV, override=True)
 except ImportError:  # pragma: no cover - dotenv is a soft dependency
-    _ENV_PATH = Path(__file__).resolve().parent / ".env"
+    pass
 
 try:
     from mcp.server.fastmcp import FastMCP
@@ -109,7 +127,10 @@ def _config() -> Dict[str, Any]:
 
     url = os.environ.get("KIBANA_URL", "").strip().rstrip("/")
     if not url:
-        raise ValueError("KIBANA_URL is not set. Copy .env.sample to .env and fill it in.")
+        raise ValueError(
+            "KIBANA_URL is not configured yet. "
+            "Please ask the user for Kibana URL and login credentials, then call `kibana_configure`."
+        )
 
     verify = os.environ.get("KIBANA_VERIFY_SSL", "true").strip().lower()
     return {
@@ -705,6 +726,419 @@ def kibana_raw_bsearch(
     return _bsearch(body, index_pattern)
 
 
+# ---------------------------------------------------------------------------
+# Generic Pipeline Flow & Health Tools
+# ---------------------------------------------------------------------------
+
+DEFAULT_GENERIC_STAGES = [
+    {"name": "1. Internal Trigger", "match": "order_creation, webhook.worker, on_order_creation"},
+    {"name": "2. Ingress / Publish", "match": "CREATE order API is called, publishMessageToKafkaTopic, createOrders"},
+    {"name": "3. Queue Consume", "match": "WMSKafkaConsumerService consume, consumed message, KafkaListener"},
+    {"name": "4. External Dispatch", "match": "success response, response_code, execute.request, fetchOrderDetailList"},
+]
+
+
+@mcp.tool()
+def kibana_trace_pipeline(
+    ids: List[str],
+    stages: Optional[List[Dict[str, str]]] = None,
+    time_range: str = "now-24h",
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    index_pattern: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Generic End-to-End Pipeline Hop Tracer.
+    
+    WHEN TO USE:
+    - Use when the user asks to "trace", "track", or "debug" one or more entity IDs (e.g. order numbers, 
+      tracking SNs, SKU IDs, transaction IDs, webhook payloads) across an integration lifecycle.
+    - Identifies exactly which pipeline hop succeeded and which stage dropped/lost the entity.
+    
+    DEFAULT 4-HOP STAGES (if `stages` is omitted):
+    1. Internal Trigger (OMS / Core webhook event)
+    2. Ingress / Publish (Integration API received & published to Kafka/RabbitMQ)
+    3. Queue Consume (Worker / KafkaListener picked up the message)
+    4. External Dispatch (Dispatched to external 3PL / WMS / Marketplace API & returned response)
+
+    Parameters:
+    - ids: List of identifiers to trace, e.g. ['260824600GYHEN', '585694778777765166'].
+    - stages: (Optional) Custom list of stages with 'name' and 'match' keywords.
+      Example for Cancellation flow:
+        [
+          {"name": "1. Webhook Ingress", "match": "mpc/shopee/orders, push"},
+          {"name": "2. Callback Worker", "match": "mark_complete_and_cancel_by_callback"},
+          {"name": "3. State Transition", "match": "STATE_LOG, mark_cancel"}
+        ]
+    - start / end: Absolute ISO-8601 timestamps (e.g. '2026-08-23T00:00:00Z').
+    - time_range: Relative window like 'now-24h', 'now-7d' (ignored if start/end given).
+    """
+    if not ids:
+        return {"error": "empty_ids", "message": "Please provide at least one ID to trace."}
+
+    resolved_stages = stages if (stages and isinstance(stages, list)) else DEFAULT_GENERIC_STAGES
+    stage_names = [s.get("name", f"Stage {i+1}") for i, s in enumerate(resolved_stages)]
+    
+    # Parse match terms (supports comma or 'or' separation)
+    stage_matchers = []
+    for s in resolved_stages:
+        raw_m = s.get("match", "")
+        if " or " in raw_m:
+            terms = [t.strip().lower() for t in raw_m.split(" or ") if t.strip()]
+        else:
+            terms = [t.strip().lower() for t in raw_m.split(",") if t.strip()]
+        stage_matchers.append(terms)
+
+    # Process IDs in chunks of 10
+    chunk_size = 10
+    all_logs: List[Dict[str, Any]] = []
+
+    for i in range(0, len(ids), chunk_size):
+        chunk = [str(x).strip() for x in ids[i : i + chunk_size] if str(x).strip()]
+        if not chunk:
+            continue
+        chunk_kql = " or ".join(f'"{cid}"' for cid in chunk)
+        res = kibana_search_logs(
+            kql=chunk_kql,
+            time_range=time_range,
+            start=start,
+            end=end,
+            limit=500,
+            sort="asc",
+            index_pattern=index_pattern,
+        )
+        if isinstance(res, dict) and "logs" in res:
+            all_logs.extend(res["logs"])
+
+    # Build per-ID trace
+    traces: Dict[str, Any] = {}
+    funnel_counts: Dict[str, int] = {name: 0 for name in stage_names}
+
+    for entity_id in ids:
+        str_id = str(entity_id).strip()
+        matched_stages: Dict[str, Dict[str, Any]] = {}
+
+        for log in all_logs:
+            msg_str = json.dumps(log.get("message", "")) if not isinstance(log.get("message"), str) else log.get("message", "")
+            if str_id not in msg_str:
+                continue
+
+            msg_lower = msg_str.lower()
+            for idx, stage_name in enumerate(stage_names):
+                if stage_name in matched_stages:
+                    continue
+                match_terms = stage_matchers[idx]
+                if any(term in msg_lower for term in match_terms):
+                    matched_stages[stage_name] = {
+                        "timestamp": log.get("timestamp"),
+                        "app": log.get("app"),
+                        "snippet": (msg_str[:200] + "...") if len(msg_str) > 200 else msg_str,
+                    }
+
+        timeline = []
+        last_stage = None
+        for name in stage_names:
+            if name in matched_stages:
+                funnel_counts[name] += 1
+                last_stage = name
+                timeline.append({"stage": name, **matched_stages[name]})
+
+        is_complete = len(timeline) == len(stage_names)
+        drop_stage = None
+        if not is_complete:
+            for name in stage_names:
+                if name not in matched_stages:
+                    drop_stage = name
+                    break
+
+        traces[str_id] = {
+            "status": "COMPLETED" if is_complete else "DROPPED",
+            "last_successful_stage": last_stage or "NONE",
+            "drop_stage": drop_stage,
+            "stages_completed": f"{len(timeline)} / {len(stage_names)}",
+            "timeline": timeline,
+        }
+
+    total_ids = len(ids)
+    completed_count = sum(1 for t in traces.values() if t["status"] == "COMPLETED")
+    dropped_count = total_ids - completed_count
+    completion_rate = round((completed_count / total_ids) * 100, 1) if total_ids > 0 else 0.0
+
+    return {
+        "total_ids": total_ids,
+        "completed": completed_count,
+        "dropped": dropped_count,
+        "completion_rate_pct": completion_rate,
+        "stages": stage_names,
+        "funnel": funnel_counts,
+        "traces": traces,
+    }
+
+
+@mcp.tool()
+def kibana_pipeline_health(
+    ingress_kql: str,
+    egress_kql: str,
+    error_kql: Optional[str] = None,
+    time_range: str = "now-1h",
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    interval: str = "auto",
+    index_pattern: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Generic Pipeline Health, Throughput & Lag Monitor.
+    
+    WHEN TO USE:
+    - Use when the user asks to "check health", "monitor throughput", "measure lag", or "detect drop rate" 
+      between any upstream ingress event (e.g. OMS Webhook / Stock Event) and downstream egress event (e.g. Queue Consumer / External Dispatch).
+    - Returns overall status ('HEALTHY', 'DEGRADED', 'CRITICAL_OUTAGE'), drop/lag percentage, error counts, and interval timeline.
+
+    Parameters:
+    - ingress_kql: KQL matching incoming events (e.g. 'application: "NEW_OMS_PROD" and "WebhookWorker"').
+    - egress_kql: KQL matching outbound/dispatched events (e.g. 'application: "APAC_INTEGRATIONS_WMS" and "consumed message"').
+    - error_kql: (Optional) KQL matching pipeline errors.
+    - time_range / start / end / interval / index_pattern: standard time and index parameters.
+    """
+    bad_in = _parse_or_error(ingress_kql)
+    if bad_in:
+        return bad_in
+    bad_eg = _parse_or_error(egress_kql)
+    if bad_eg:
+        return bad_eg
+
+    hist_in = kibana_log_histogram(
+        kql=ingress_kql, time_range=time_range, start=start, end=end, interval=interval, index_pattern=index_pattern
+    )
+    hist_eg = kibana_log_histogram(
+        kql=egress_kql, time_range=time_range, start=start, end=end, interval=interval, index_pattern=index_pattern
+    )
+
+    total_in = hist_in.get("total_hits", 0) or 0
+    total_eg = hist_eg.get("total_hits", 0) or 0
+
+    total_err = 0
+    hist_err = {}
+    if error_kql and error_kql.strip():
+        bad_err = _parse_or_error(error_kql)
+        if not bad_err:
+            hist_err = kibana_log_histogram(
+                kql=error_kql, time_range=time_range, start=start, end=end, interval=interval, index_pattern=index_pattern
+            )
+            total_err = hist_err.get("total_hits", 0) or 0
+
+    # Align timeline buckets
+    in_buckets = {b["time"]: b["count"] for b in hist_in.get("buckets", []) if "time" in b}
+    eg_buckets = {b["time"]: b["count"] for b in hist_eg.get("buckets", []) if "time" in b}
+    err_buckets = {b["time"]: b["count"] for b in hist_err.get("buckets", []) if "time" in b}
+
+    all_times = sorted(set(in_buckets.keys()) | set(eg_buckets.keys()))
+    timeline = []
+    for t in all_times:
+        inc = in_buckets.get(t, 0)
+        egc = eg_buckets.get(t, 0)
+        errc = err_buckets.get(t, 0)
+        diff = inc - egc
+        timeline.append({
+            "time": t,
+            "ingress": inc,
+            "egress": egc,
+            "diff_lag": diff,
+            "errors": errc,
+        })
+
+    drop_lag = max(0, total_in - total_eg)
+    drop_rate = round((drop_lag / total_in) * 100, 1) if total_in > 0 else 0.0
+    err_rate = round((total_err / total_in) * 100, 1) if total_in > 0 else 0.0
+
+    status = "HEALTHY"
+    if total_in > 0 and total_eg == 0:
+        status = "CRITICAL_OUTAGE"
+    elif drop_rate > 10.0 or err_rate > 10.0:
+        status = "DEGRADED"
+
+    return {
+        "status": status,
+        "summary": {
+            "total_ingress": total_in,
+            "total_egress": total_eg,
+            "net_drop_lag": drop_lag,
+            "drop_rate_pct": drop_rate,
+            "total_errors": total_err,
+            "error_rate_pct": err_rate,
+        },
+        "time_range": {"start": start or time_range, "end": end or "now"},
+        "interval": hist_in.get("interval"),
+        "timeline": timeline,
+    }
+
+
+@mcp.tool()
+def kibana_detect_service_gaps(
+    kql: str,
+    time_range: str = "now-24h",
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    min_gap_minutes: int = 5,
+    index_pattern: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Generic Silent Gap, Downtime & Service Outage Detector.
+    
+    WHEN TO USE:
+    - Use when investigating outages, downtime, service restarts, dead queue consumers, 
+      or wondering "when did the service crash or stop processing messages?".
+    - Scans log streams for unexpected silence (0 logs emitted for >= min_gap_minutes) and checks for restart events following each gap.
+
+    Parameters:
+    - kql: KQL targeting the service or consumer (e.g. 'application: "APAC_INTEGRATIONS_WMS" and "consumed message"').
+    - min_gap_minutes: Minimum consecutive silence in minutes to flag as an outage (default: 5).
+    - time_range / start / end / index_pattern: standard time parameters.
+    """
+    bad = _parse_or_error(kql)
+    if bad:
+        return bad
+
+    # Use 1m intervals to precisely measure gaps
+    hist = kibana_log_histogram(
+        kql=kql, time_range=time_range, start=start, end=end, interval="1m", index_pattern=index_pattern
+    )
+    buckets = hist.get("buckets", [])
+    if not buckets:
+        return {
+            "kql": kql,
+            "gaps_found": 0,
+            "total_downtime_minutes": 0,
+            "min_gap_threshold_minutes": min_gap_minutes,
+            "gaps": [],
+            "message": "No log activity found in the specified window."
+        }
+
+    gaps = []
+    current_gap_start = None
+    zero_count = 0
+
+    for b in buckets:
+        cnt = b.get("count", 0)
+        t = b.get("time")
+        if cnt == 0:
+            if current_gap_start is None:
+                current_gap_start = t
+            zero_count += 1
+        else:
+            if zero_count >= min_gap_minutes:
+                gaps.append({
+                    "gap_start": current_gap_start,
+                    "gap_end": t,
+                    "duration_minutes": zero_count,
+                })
+            current_gap_start = None
+            zero_count = 0
+
+    # Catch trailing gap
+    if zero_count >= min_gap_minutes:
+        gaps.append({
+            "gap_start": current_gap_start,
+            "gap_end": buckets[-1].get("time"),
+            "duration_minutes": zero_count,
+        })
+
+    # For each gap, check if there was a startup/restart event right after the gap ended
+    for g in gaps:
+        restart_probe = kibana_search_logs(
+            kql=f'{kql} and ("Starting" or "Started" or "Initializing" or "boot" or "Spring" or "JVM")',
+            start=g["gap_end"],
+            time_range="now-15m",
+            limit=3,
+            index_pattern=index_pattern,
+        )
+        has_restart = bool(restart_probe.get("total_hits", 0) > 0)
+        g["restart_detected"] = has_restart
+        if has_restart and restart_probe.get("logs"):
+            first_log = restart_probe["logs"][0]
+            g["restart_log_timestamp"] = first_log.get("timestamp")
+            g["restart_log_snippet"] = str(first_log.get("message"))[:150]
+
+    total_downtime = sum(g["duration_minutes"] for g in gaps)
+
+    return {
+        "kql": kql,
+        "gaps_found": len(gaps),
+        "total_downtime_minutes": total_downtime,
+        "min_gap_threshold_minutes": min_gap_minutes,
+        "gaps": gaps,
+    }
+
+
+@mcp.tool()
+def kibana_configure(
+    url: str,
+    username: str,
+    password: str,
+    index_pattern: Optional[str] = None,
+    verify_ssl: bool = True,
+) -> Dict[str, Any]:
+    """
+    👉 [SETUP REQUIRED - START HERE] Self-Service In-Chat Configuration Tool.
+    Configure or update Kibana connection credentials directly from chat without running terminal scripts.
+    Automatically tests authentication and persists credentials to ~/.mcp/kibana-explorer.env.
+
+    Parameters:
+    - url: Kibana base URL (e.g. 'https://kibana.internal.company.com:5601').
+    - username: Login username.
+    - password: Login password.
+    - index_pattern: (Optional) Default Elasticsearch index pattern (defaults to 'logs-*-*,logs-*,filebeat-*').
+    - verify_ssl: Set False if your Kibana instance uses internal/self-signed SSL certificates.
+    """
+    clean_url = url.strip().rstrip("/")
+    clean_user = username.strip()
+    clean_pass = password.strip()
+    clean_pattern = (index_pattern or "").strip() or DEFAULT_INDEX_PATTERN
+    ssl_str = "true" if verify_ssl else "false"
+
+    content = f"""# Kibana Explorer MCP Configuration (.env)
+KIBANA_URL={clean_url}
+KIBANA_USERNAME={clean_user}
+KIBANA_PASSWORD={clean_pass}
+KIBANA_INDEX_PATTERN={clean_pattern}
+KIBANA_VERIFY_SSL={ssl_str}
+"""
+    for target in [GLOBAL_KIBANA_ENV, LOCAL_KIBANA_ENV]:
+        try:
+            with open(target, "w", encoding="utf-8") as f:
+                f.write(content)
+            target.chmod(0o600)
+        except Exception:
+            pass
+
+    # Update process environment
+    os.environ["KIBANA_URL"] = clean_url
+    os.environ["KIBANA_USERNAME"] = clean_user
+    os.environ["KIBANA_PASSWORD"] = clean_pass
+    os.environ["KIBANA_INDEX_PATTERN"] = clean_pattern
+    os.environ["KIBANA_VERIFY_SSL"] = ssl_str
+
+    # Invalidate cached cookies
+    global _CACHED_COOKIE, _CACHED_VERSION
+    _CACHED_COOKIE = None
+    _CACHED_VERSION = None
+
+    test_result = kibana_check_connection()
+    if test_result.get("ok"):
+        return {
+            "status": "CONFIGURED_AND_CONNECTED",
+            "message": f"Successfully connected to Kibana at {clean_url} (Version: {test_result.get('kibana_version')}).",
+            "details": test_result,
+        }
+    else:
+        return {
+            "status": "CONFIGURED_BUT_CONNECTION_FAILED",
+            "message": "Saved credentials to .env, but authentication test failed.",
+            "error": test_result.get("error"),
+            "hint": "Please verify URL, username, password, or check if VPN is required.",
+        }
+
+
 @mcp.tool()
 def kibana_check_connection() -> Dict[str, Any]:
     """
@@ -733,6 +1167,62 @@ def kibana_check_connection() -> Dict[str, Any]:
     return report
 
 
+def _interactive_setup() -> int:
+    """Interactive step-by-step CLI configuration wizard for Kibana Explorer."""
+    import getpass
+    print("=" * 70)
+    print("  Kibana Explorer MCP — Interactive Configuration Wizard")
+    print("=" * 70)
+    print("This wizard will ask for each required setting step-by-step.\n")
+
+    current = {}
+    if _ENV_PATH.exists():
+        try:
+            with open(_ENV_PATH, "r", encoding="utf-8") as f:
+                for line in f:
+                    if "=" in line and not line.strip().startswith("#"):
+                        k, v = line.strip().split("=", 1)
+                        current[k.strip()] = v.strip().strip('"').strip("'")
+        except Exception:
+            pass
+
+    default_url = current.get("KIBANA_URL", "https://kibana.internal.company.com:5601")
+    url = input(f"1. Kibana Base URL [{default_url}]: ").strip() or default_url
+    url = url.rstrip("/")
+
+    default_user = current.get("KIBANA_USERNAME", "admin")
+    username = input(f"2. Kibana Username [{default_user}]: ").strip() or default_user
+
+    password = getpass.getpass("3. Kibana Password (input hidden): ").strip()
+    if not password and "KIBANA_PASSWORD" in current:
+        password = current["KIBANA_PASSWORD"]
+
+    default_pattern = current.get("KIBANA_INDEX_PATTERN", DEFAULT_INDEX_PATTERN)
+    pattern = input(f"4. Default Index Pattern [{default_pattern}]: ").strip() or default_pattern
+
+    default_ssl = current.get("KIBANA_VERIFY_SSL", "true")
+    ssl_in = input(f"5. Verify SSL certificates? (Y/n) [{default_ssl}]: ").strip().lower()
+    verify_ssl = "false" if ssl_in in ("n", "no", "false") else "true"
+
+    content = f"""# Kibana Explorer MCP Configuration (.env)
+KIBANA_URL={url}
+KIBANA_USERNAME={username}
+KIBANA_PASSWORD={password}
+KIBANA_INDEX_PATTERN={pattern}
+KIBANA_VERIFY_SSL={verify_ssl}
+"""
+    with open(_ENV_PATH, "w", encoding="utf-8") as f:
+        f.write(content)
+    try:
+        _ENV_PATH.chmod(0o600)
+    except Exception:
+        pass
+
+    print(f"\n✔ Configuration saved to {_ENV_PATH}")
+    print("Testing connection against Kibana...")
+    return _selftest()
+
+
 def _selftest() -> int:
     print("Kibana MCP self-test")
     print("=" * 60)
@@ -748,6 +1238,8 @@ def _selftest() -> int:
 
 
 if __name__ == "__main__":
+    if "--setup" in sys.argv or "--init-env" in sys.argv or "--configure" in sys.argv:
+        sys.exit(_interactive_setup())
     if "--selftest" in sys.argv:
         sys.exit(_selftest())
     mcp.run(transport="stdio")

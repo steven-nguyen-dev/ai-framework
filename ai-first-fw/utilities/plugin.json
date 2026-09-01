@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "ai-first-fw-utilities",
-  "version": "2.0.4",
-  "description": "Standalone engineering utility skills for architecture review, diagram making, documentation writing, skill authoring, PR descriptions, PR syncing, and API extraction (draw-diagram, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, write-skill).",
+  "version": "2.1.0",
+  "description": "Standalone engineering utility skills for architecture review, diagram making, documentation writing, skill authoring, PR descriptions, PR syncing, context-folder syncing, and API extraction (draw-diagram, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, write-skill).",
   "author": {
     "name": "Steven Nguyen"
   },
@@ -11,6 +11,7 @@
     "./lotteon-api-extractor",
     "./lv1-architecture-review",
     "./naver-api-extractor",
+    "./sync-context",
     "./sync-pr",
     "./write-docs",
     "./write-pr-desc",

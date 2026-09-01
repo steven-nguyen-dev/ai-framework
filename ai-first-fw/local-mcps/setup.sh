@@ -12,7 +12,10 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 JIRA_DIR="$DIR/jira-reader"
 KIBANA_DIR="$DIR/kibana-explorer"
-GLOBAL_JIRA_ENV="$HOME/.jira.env"
+GLOBAL_MCPS_DIR="$HOME/.mcp"
+mkdir -p "$GLOBAL_MCPS_DIR"
+GLOBAL_JIRA_ENV="$GLOBAL_MCPS_DIR/jira-reader.env"
+GLOBAL_KIBANA_ENV="$GLOBAL_MCPS_DIR/kibana-explorer.env"
 LOCAL_JIRA_ENV="$JIRA_DIR/.env"
 KIBANA_ENV="$KIBANA_DIR/.env"
 
@@ -192,8 +195,10 @@ KIBANA_INDEX_PATTERN=$kibana_pattern
 KIBANA_VERIFY_SSL=$kibana_ssl
 EOF
     chmod 600 "$KIBANA_ENV"
+    cp "$KIBANA_ENV" "$GLOBAL_KIBANA_ENV"
+    chmod 600 "$GLOBAL_KIBANA_ENV"
 
-    echo -e "${GREEN}✔ Saved Kibana credentials to $KIBANA_ENV${RESET}"
+    echo -e "${GREEN}✔ Saved Kibana credentials to $GLOBAL_KIBANA_ENV and $KIBANA_ENV${RESET}"
     echo -e "${CYAN}Bootstrapping virtual environment and verifying connectivity...${RESET}"
     if bash "$KIBANA_DIR/launch.sh" --selftest; then
         echo -e "${GREEN}✔ Kibana Explorer selftest PASSED!${RESET}"

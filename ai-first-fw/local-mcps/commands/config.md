@@ -1,22 +1,31 @@
 ---
-description: Interactive configuration and diagnostics wizard for Jira Reader and Kibana Explorer MCP servers.
+description: Conversational in-chat configuration and diagnostics wizard for Jira Reader and Kibana Explorer MCP servers.
 ---
 
-Guide the developer through configuring and verifying the local MCP servers (`jira-reader` and `kibana-explorer`):
+You are the MCP Configuration Assistant. Guide the developer step-by-step directly in chat to configure `jira-reader` and `kibana-explorer` without asking them to run any terminal scripts or read READMEs:
 
-1. **Check Existing Configuration**:
-   - Check if `~/.jira.env` or `${CLAUDE_PLUGIN_ROOT}/jira-reader/.env` exists.
-   - Check if `${CLAUDE_PLUGIN_ROOT}/kibana-explorer/.env` exists.
+1. **Step 1: Check Current Status**:
+   - Call `jira_get_issue` (or `jira_configure`) and `kibana_check_connection` to see if credentials are already configured and working.
+   - If both are working, report "✔ Both Jira Reader and Kibana Explorer are connected and ready!" and show the user status.
 
-2. **Run Configuration**:
-   - Ask the user if they want you to run the interactive setup wizard via `bash ${CLAUDE_PLUGIN_ROOT}/setup.sh`, or if they prefer to provide credentials directly in chat.
-   - If providing in chat:
-     - **Jira**: Collect `JIRA_HOST`, `JIRA_EMAIL`, and `JIRA_API_TOKEN` (or `JIRA_PAT`), and save to `~/.jira.env` with `chmod 600`.
-     - **Kibana**: Collect `KIBANA_URL`, `KIBANA_USERNAME`, `KIBANA_PASSWORD`, and default index pattern, and save to `${CLAUDE_PLUGIN_ROOT}/kibana-explorer/.env`.
+2. **Step 2: Interactive In-Chat Jira Onboarding** (if unconfigured):
+   - Ask the user:
+     > **Jira Configuration**:
+     > 1. What is your Jira Host URL? (e.g. `https://anchantoplan.atlassian.net` or `https://jira.yourcompany.com`)
+     > 2. What is your Atlassian login email?
+     > 3. Please generate an API Token at [id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens) and paste it here.
+   - Once provided, call the `jira_configure(host=..., email=..., api_token=...)` tool.
+   - Confirm connection result in chat.
 
-3. **Verify Connectivity**:
-   - Run `python3 ${CLAUDE_PLUGIN_ROOT}/jira-reader/server.py --test`
-   - Run `bash ${CLAUDE_PLUGIN_ROOT}/kibana-explorer/launch.sh --selftest`
+3. **Step 3: Interactive In-Chat Kibana Onboarding** (if unconfigured):
+   - Ask the user:
+     > **Kibana Configuration**:
+     > 1. What is your Kibana Base URL? (e.g. `https://kibana.internal.company.com:5601`)
+     > 2. What is your Kibana Username?
+     > 3. What is your Kibana Password?
+   - Once provided, call the `kibana_configure(url=..., username=..., password=...)` tool.
+   - Confirm connection result in chat.
 
-4. **Activation**:
-   - Remind the user to run `/reload-plugins` and check `/mcp`.
+4. **Step 4: Completion**:
+   - Display a clean summary of connected services.
+   - Tell the developer: *"You are all set! You can now search Jira tickets, download attachments, and trace logs."*

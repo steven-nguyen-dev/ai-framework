@@ -147,8 +147,11 @@ The same block works for Antigravity (`~/.gemini/config/mcp_config.json`) and Cl
 
 ## Available MCP Tools
 
-| Tool | Parameters | Description |
+| Tool | Parameters | Description / When to Use |
 | :--- | :--- | :--- |
+| `kibana_trace_pipeline` | `ids`, `stages`, `time_range`, `start`, `end`, `index_pattern` | **Trace specific entities (orders, SKUs, events, tracking SNs) across multi-hop integration stages.** Pinpoints exact drop stage. |
+| `kibana_pipeline_health` | `ingress_kql`, `egress_kql`, `error_kql`, `time_range`, `start`, `end`, `interval`, `index_pattern` | **Measure throughput, backlog, and drop rate between any upstream and downstream stage over time.** Returns overall health status. |
+| `kibana_detect_service_gaps` | `kql`, `time_range`, `start`, `end`, `min_gap_minutes`, `index_pattern` | **Detect service downtime, silent periods, crashed workers, or dead queue consumers.** Checks for restart events following gaps. |
 | `kibana_search_logs` | `kql`, `query`, `time_range`, `start`, `end`, `service_name`, `log_level`, `limit`, `index_pattern`, `sort` | Search logs by KQL and return formatted documents. `query` is a deprecated alias for `kql`. |
 | `kibana_count_logs` | `kql`, `time_range`, `start`, `end`, `service_name`, `log_level`, `index_pattern` | Count matches without returning documents. |
 | `kibana_log_histogram` | `kql`, `time_range`, `interval`, `start`, `end`, `breakdown_field`, `service_name`, `log_level`, `index_pattern` | Bucket matches over time to find when a spike started. |
@@ -158,9 +161,30 @@ The same block works for Antigravity (`~/.gemini/config/mcp_config.json`) and Cl
 | `kibana_raw_bsearch` | `body`, `index_pattern` | Escape hatch for raw Query DSL and aggregations. |
 | `kibana_check_connection` | — | Version, login, and probe-query health check. |
 
-Time windows accept relative strings (`now-15m`, `now-24h`, `now-7d`) or absolute ISO-8601 `start` /
-`end` bounds. `kibana_log_histogram`'s `interval` defaults to `auto`, which fits roughly 50 buckets
-to the window.
+---
+
+## AI Agent Decision Guide (Which Tool to Choose?)
+
+```
+                     USER REQUEST / GOAL
+                              │
+  ┌───────────────────────────┼───────────────────────────┐
+  ▼                           ▼                           ▼
+"Why is order X stuck?"    "Is the stock sync        "Did the service crash?"
+"Trace these 50 IDs"       healthy right now?"       "Find downtime windows"
+"Where did message drop?"  "Measure drop/lag"        "Check dead consumers"
+  │                           │                           │
+  ▼                           ▼                           ▼
+[kibana_trace_pipeline]   [kibana_pipeline_health]   [kibana_detect_service_gaps]
+  │                           │                           │
+  ├─> Traces sequential hops  ├─> Ingress vs Egress       ├─> Scans 0-log periods
+  └─> Funnel drop-off matrix  └─> Drop rate % & Status    └─> Flags restart events
+```
+
+* **Need raw log details for a single query?** $\rightarrow$ `kibana_search_logs`
+* **Need quick hit count only?** $\rightarrow$ `kibana_count_logs`
+* **Need time-series spike chart?** $\rightarrow$ `kibana_log_histogram`
+* **Need recent ERROR stack traces?** $\rightarrow$ `kibana_get_recent_errors`
 
 ---
 

@@ -112,16 +112,28 @@ def _load_env_file(filepath: Path) -> bool:
         return False
 
 
+def _get_global_env_path() -> Path:
+    d = Path.home() / ".mcp"
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
+    return d / "jira-reader.env"
+
+
 def _auto_discover_env() -> None:
-    """Search and load .env from likely locations."""
+    """Search and load .env from standard global hidden directory and local locations."""
     script_dir = Path(__file__).resolve().parent
     project_root = _find_project_root()
     candidates = [
+        Path.home() / ".mcp/jira-reader.env",
+        Path.home() / ".mcp/.jira-reader.env",
+        Path.home() / ".mcps/jira-reader.env",
+        Path.home() / ".config/mcps/jira-reader.env",
+        Path.home() / ".jira.env",
         script_dir / ".env",
         project_root / ".env",
         Path.cwd() / ".env",
-        Path.home() / ".config/jira/.env",
-        Path.home() / ".jira.env",
     ]
     for candidate in candidates:
         if candidate.is_file():
@@ -732,26 +744,39 @@ def jira_read_text_attachment(
     }
 
 
-def jira_search_issues(jql: str, max_results: int = 10) -> Dict[str, Any]:
+def jira_search_issues(
+    jql: str,
+    max_results: int = 10,
+    start_at: Optional[int] = None,
+    next_page_token: Optional[str] = None,
+) -> Dict[str, Any]:
     """
     Search Jira issues using JQL (Jira Query Language).
+    Supports both Jira Cloud (/search/jql with nextPageToken) and Jira Server/DC (/search with startAt).
     """
     config = _get_config()
     v = config["api_version"]
-    params = {
+    params: Dict[str, Any] = {
         "jql": jql,
         "maxResults": max_results,
-        "fields": "summary,status,assignee,attachment,comment,created,updated",
+        "fields": "summary,status,priority,assignee,reporter,attachment,comment,created,updated",
     }
+    if start_at is not None:
+        params["startAt"] = start_at
+    if next_page_token:
+        params["nextPageToken"] = next_page_token
 
-    # Jira Cloud API v3 uses /search/jql; v2 uses /search
-    search_path = f"/rest/api/{v}/search/jql" if str(v) == "3" else f"/rest/api/{v}/search"
+    # Atlassian Jira Cloud uses /rest/api/{v}/search/jql (CHANGE-2046)
+    # Jira Server / Data Center uses /rest/api/{v}/search
+    primary_path = f"/rest/api/{v}/search/jql"
+    fallback_path = f"/rest/api/{v}/search"
 
+    content = None
     try:
-        _, content, _ = _make_request("GET", search_path, params=params)
-    except Exception:
-        # Fallback to /search if /search/jql is not supported
-        _, content, _ = _make_request("GET", f"/rest/api/{v}/search", params=params)
+        _, content, _ = _make_request("GET", primary_path, params=params)
+    except FileNotFoundError:
+        # Fall back to legacy /search only if /search/jql endpoint does not exist (404)
+        _, content, _ = _make_request("GET", fallback_path, params=params)
 
     data = json.loads(content.decode("utf-8"))
 
@@ -764,8 +789,10 @@ def jira_search_issues(jql: str, max_results: int = 10) -> Dict[str, Any]:
         issues.append({
             "key": item.get("key"),
             "summary": fields.get("summary"),
-            "status": fields.get("status", {}).get("name"),
+            "status": fields.get("status", {}).get("name") if fields.get("status") else None,
+            "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
             "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
+            "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
             "comment_count": comment_count,
             "attachment_count": len(att_list),
             "attachments": [
@@ -776,13 +803,112 @@ def jira_search_issues(jql: str, max_results: int = 10) -> Dict[str, Any]:
                 }
                 for a in att_list
             ],
+            "created": fields.get("created"),
+            "updated": fields.get("updated"),
         })
 
-    return {
-        "total": data.get("total", 0),
+    res: Dict[str, Any] = {
         "returned": len(issues),
         "issues": issues,
     }
+    if "total" in data and data["total"] is not None:
+        res["total"] = data["total"]
+    if "startAt" in data and data["startAt"] is not None:
+        res["start_at"] = data["startAt"]
+    if "nextPageToken" in data and data["nextPageToken"] is not None:
+        res["next_page_token"] = data["nextPageToken"]
+    if "isLast" in data and data["isLast"] is not None:
+        res["is_last"] = data["isLast"]
+
+    return res
+
+
+def jira_configure(
+    host: str,
+    email: Optional[str] = None,
+    api_token: Optional[str] = None,
+    pat: Optional[str] = None,
+    download_dir: Optional[str] = None,
+    api_version: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Self-Service In-Chat Configuration Tool for Jira Reader.
+    Configure Jira connection credentials directly from chat without running terminal scripts.
+    Automatically tests authentication and persists credentials to ~/.jira.env and local .env.
+    """
+    clean_host = host.strip().rstrip("/")
+    clean_email = (email or "").strip()
+    clean_token = (api_token or "").strip()
+    clean_pat = (pat or "").strip()
+    clean_dir = (download_dir or "").strip() or ".scratchpads/downloads"
+    clean_ver = (api_version or "").strip() or ("2" if clean_pat else "3")
+
+    if not clean_host:
+        return {"status": "ERROR", "message": "Jira host URL is required (e.g. 'https://anchantoplan.atlassian.net')."}
+
+    if not clean_pat and (not clean_email or not clean_token):
+        return {
+            "status": "ERROR",
+            "message": (
+                "Please provide either:\n"
+                "1. Jira Cloud: email and api_token (generate at https://id.atlassian.com/manage-profile/security/api-tokens)\n"
+                "2. Jira Server/Data Center: pat (Personal Access Token)"
+            )
+        }
+
+    env_content = f"""# Jira Reader MCP Configuration (.env)
+JIRA_HOST={clean_host}
+JIRA_DOWNLOAD_DIR={clean_dir}
+JIRA_API_VERSION={clean_ver}
+"""
+    if clean_pat:
+        env_content += f"JIRA_PAT={clean_pat}\n"
+    else:
+        env_content += f"JIRA_EMAIL={clean_email}\nJIRA_API_TOKEN={clean_token}\n"
+
+    # Save to global discovery and local .env
+    for target_path in [_get_global_env_path(), Path(__file__).resolve().parent / ".env"]:
+        try:
+            with open(target_path, "w", encoding="utf-8") as f:
+                f.write(env_content)
+            target_path.chmod(0o600)
+        except Exception:
+            pass
+
+    # Update current process environment
+    os.environ["JIRA_HOST"] = clean_host
+    os.environ["JIRA_DOWNLOAD_DIR"] = clean_dir
+    os.environ["JIRA_API_VERSION"] = clean_ver
+    if clean_pat:
+        os.environ["JIRA_PAT"] = clean_pat
+        os.environ.pop("JIRA_EMAIL", None)
+        os.environ.pop("JIRA_API_TOKEN", None)
+    else:
+        os.environ["JIRA_EMAIL"] = clean_email
+        os.environ["JIRA_API_TOKEN"] = clean_token
+        os.environ.pop("JIRA_PAT", None)
+
+    # Test connection
+    try:
+        status, body, _ = _make_request("GET", "/rest/api/3/myself" if clean_ver == "3" else "/rest/api/2/myself", timeout=15)
+        if status in (200, 201):
+            user_data = json.loads(body.decode("utf-8"))
+            display_name = user_data.get("displayName") or user_data.get("name") or "Authenticated User"
+            return {
+                "status": "CONFIGURED_AND_CONNECTED",
+                "message": f"Successfully connected to Jira as '{display_name}' at {clean_host}.",
+                "user": display_name,
+            }
+        else:
+            return {
+                "status": "CONFIGURED_BUT_FAILED",
+                "message": f"Saved credentials, but Jira returned HTTP {status}: {body.decode('utf-8')[:200]}",
+            }
+    except Exception as exc:
+        return {
+            "status": "CONFIGURED_BUT_FAILED",
+            "message": f"Saved credentials, but connection test failed: {exc}",
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -790,6 +916,37 @@ def jira_search_issues(jql: str, max_results: int = 10) -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 TOOLS_SPEC = [
+    {
+        "name": "jira_configure",
+        "description": "Self-service in-chat configuration tool. Use when Jira credentials are missing or need updating. Configures host, email, and API token directly from chat.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "Jira base URL, e.g. 'https://anchantoplan.atlassian.net'.",
+                },
+                "email": {
+                    "type": "string",
+                    "description": "(For Jira Cloud) Atlassian login email address.",
+                },
+                "api_token": {
+                    "type": "string",
+                    "description": "(For Jira Cloud) API token generated at https://id.atlassian.com/manage-profile/security/api-tokens.",
+                },
+                "pat": {
+                    "type": "string",
+                    "description": "(For Jira Server / Data Center) Personal Access Token.",
+                },
+                "download_dir": {
+                    "type": "string",
+                    "description": "(Optional) Attachment download directory (defaults to .scratchpads/downloads).",
+                },
+            },
+            "required": ["host"],
+        },
+        "handler": jira_configure,
+    },
     {
         "name": "jira_get_issue",
         "description": "Fetch complete details for a Jira issue by its key (e.g. 'PROJ-123'), including summary, description (ADF parsed), status, assignee, reporter, comments list with author details, and metadata of all attachments.",
@@ -920,12 +1077,20 @@ TOOLS_SPEC = [
             "properties": {
                 "jql": {
                     "type": "string",
-                    "description": "The JQL query string (e.g. 'project = PROJ AND status = \"In Progress\"').",
+                    "description": "The JQL query string (e.g. 'project = PROJ AND status = \"In Progress\"'). Note: Jira Cloud requires bounded queries (e.g. with project, text search, or date filter).",
                 },
                 "max_results": {
                     "type": "integer",
                     "description": "Maximum number of issues to return (default: 10).",
                     "default": 10,
+                },
+                "start_at": {
+                    "type": "integer",
+                    "description": "(Optional) The starting index for pagination (used by Jira Server / Data Center).",
+                },
+                "next_page_token": {
+                    "type": "string",
+                    "description": "(Optional) Cursor pagination token returned from previous search call (used by Jira Cloud).",
                 },
             },
             "required": ["jql"],
@@ -989,19 +1154,73 @@ def _handle_json_rpc_message(msg: Dict[str, Any]) -> None:
         return
 
     if method == "tools/list":
-        tools_list = [
-            {
+        is_configured = False
+        try:
+            cfg = _get_config()
+            is_configured = bool(cfg.get("host") and (cfg.get("pat") or (cfg.get("email") and cfg.get("api_token"))))
+        except Exception:
+            is_configured = False
+
+        tools_list = []
+        for t in TOOLS_SPEC:
+            desc = t["description"]
+            if not is_configured:
+                if t["name"] == "jira_configure":
+                    desc = "👉 [SETUP REQUIRED - START HERE] " + desc
+                else:
+                    desc = "⚠️ [UNCONFIGURED - Run /config or call jira_configure first] " + desc
+
+            tools_list.append({
                 "name": t["name"],
-                "description": t["description"],
+                "description": desc,
                 "inputSchema": t["inputSchema"],
-            }
-            for t in TOOLS_SPEC
-        ]
+            })
+
         _send_json_rpc({
             "jsonrpc": "2.0",
             "id": msg_id,
             "result": {
                 "tools": tools_list,
+            },
+        })
+        return
+
+    if method == "resources/list":
+        is_configured = False
+        try:
+            cfg = _get_config()
+            is_configured = bool(cfg.get("host") and (cfg.get("pat") or (cfg.get("email") and cfg.get("api_token"))))
+        except Exception:
+            is_configured = False
+
+        status_text = "Connected" if is_configured else "⚠️ UNCONFIGURED (Run /config)"
+        _send_json_rpc({
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "result": {
+                "resources": [
+                    {
+                        "uri": "jira://status",
+                        "name": f"Jira Connection Status: {status_text}",
+                        "description": "Current authentication and connection status for Jira Reader.",
+                        "mimeType": "application/json",
+                    }
+                ],
+            },
+        })
+        return
+
+    if method == "prompts/list":
+        _send_json_rpc({
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "result": {
+                "prompts": [
+                    {
+                        "name": "setup",
+                        "description": "Configure credentials for Jira Reader and Kibana Explorer.",
+                    }
+                ],
             },
         })
         return
