@@ -1,8 +1,8 @@
 ---
 name: review-code
-description: Cold review of a branch or pull request diff — three isolated passes, one report in chat.
-version: 2.2.0
-disable-model-invocation: true
+description: Cold review of a branch or pull request diff — three isolated passes, one report in chat. Use on "review this code", "review the diff", "review this branch", "review this PR", or when a change needs checking against the repo's coding standard before it merges.
+version: 2.3.0
+disable-model-invocation: false
 ---
 
 # review-code

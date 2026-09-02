@@ -1,8 +1,8 @@
 ---
 name: write-analysis
-description: Write the claim library, mapping spec, requirements spec and ticket summary for one requirement, from its Jira ticket or brief, every party's API documentation, and the repository it runs in.
-version: 0.4.0
-disable-model-invocation: true
+description: Write the claim library, mapping spec, requirements spec and ticket summary for one requirement, from its Jira ticket or brief, every party's API documentation, and the repository it runs in. Use on "write the analysis", "analyse this ticket", "write the mapping spec", "write the requirements spec", or when a Jira ticket or brief needs its analysis documents before implementation.
+version: 0.5.0
+disable-model-invocation: false
 ---
 
 # write-analysis
