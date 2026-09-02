@@ -8,7 +8,14 @@ The bar a pass is answered against. Every file a pass was given carries a §1 an
 - A file that adds or modifies an entry point, or moves a field to a terminus, answers items 5, 6, 7
   and 9 by name — that is where a silent drop and an open door live, so each carries its own line.
 
-The answered checklist is the deliverable; the findings are what falls out of it.
+Files the inventory puts in one `shape` group carry one answer between them, written against the
+representative the group names and closing `N others share this shape: <paths>`. Eight transformers
+generated from one template are one file under eight names, and answering them eight times buys the
+same finding eight times. An item that turns on a file's own identity — a name, a value, a call unique
+to it — is still answered per file.
+
+The answered checklist is the deliverable; the findings are what falls out of it. Every finding names
+the item it fell out of, by number.
 
 ## Grading
 
@@ -97,6 +104,8 @@ Repeated Switches, Shotgun Surgery, Divergent Change, Speculative Generality, Me
 Man, Refused Bequest.
 
 - Each is a heuristic over the diff's own hunks, so a match names the hunks or files that make it one.
+- Each runs once per shape group, not once per file — Duplicated Code across eight files generated
+  from one template is one finding naming the group, not eight naming each other.
 - Each is reported by its own name, hedged — "possible Feature Envy" — and carried at `note`.
 - Each names what is wrong and stops there; the refactoring is the author's.
 
@@ -113,5 +122,6 @@ A suppression is earned per smell and named in the report.
   suppression names the file and what it demonstrates. A habit is evidence *for* the finding:
   Duplicated Code, Primitive Obsession, Message Chains, Middle Man and Repeated Switches stand where
   a sibling repeats them, because that sibling is the finding's own evidence.
-- **Every suppression is reported.** Close with one line — `smells: <n>/14 applied · suppressed:
-  <smell> (<rule or file that earned it>), …` — so the coverage line carries what the floor gave up.
+- **Every suppression is reported.** Close with one line — `smells: <n>/14 · applied: <names> ·
+  suppressed: <smell> (<rule or file that earned it>), …` — where the applied names number exactly
+  `<n>` and no name stands in both lists, so the coverage line carries what the floor gave up.

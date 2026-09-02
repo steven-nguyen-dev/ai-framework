@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: Cold review of a branch or pull request diff — three isolated passes, one report in chat. Use on "review this code", "review the diff", "review this branch", "review this PR", or when a change needs checking against the repo's coding standard before it merges.
-version: 2.3.0
+version: 2.4.0
 disable-model-invocation: false
 ---
 
@@ -33,7 +33,7 @@ worktree, so the review's own files stay clear of the diff it reviews:
 
 | Artefact | Holds |
 |---|---|
-| `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, and `addition-only` where the deleted count is zero |
+| `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, `addition-only` where the deleted count is zero, a `shape` group name shared by files whose hunks are the same shape under different names — a near-clone transformer, a mirrored DTO, a generated accessor or `equals()` — and `mechanical` where every deleted line is an import, a comment, dead code or a zero-caller member |
 | `code.diff` | the rename-aware diff over the carried files |
 | `excluded.numstat` | the counts for the excluded files |
 | `commits.txt` | the commit list over the pair |
@@ -43,10 +43,15 @@ snapshot, a lock or a generated file; every other file is carried. Every later s
 reads this pair and these four paths, so a ref resolves once, here, and a pass opens an excluded file
 on demand.
 
+Where a carried file's row carries a non-zero deleted count or a rename, write its fixed-point and
+head text beside the artefacts as `<path>@base` and `<path>@head`, so a pass opens a path instead of
+resolving one.
+
 Where the target resolves to no pair, or the diff is empty, report that and stop.
 
-**Completion:** the four artefacts exist at named paths, and `inventory.md` holds a row for every
-changed file.
+**Completion:** the four artefacts exist at named paths, `inventory.md` holds a row for every changed
+file, every file sharing its shape with another carries a `shape` group name, and every file the
+inventory marks with a deletion or a rename has its two texts on disk.
 
 ## Step 2 — Resolve the standard
 
@@ -74,13 +79,21 @@ Every brief carries the SHA pair, the four step 1 paths, the standard and the pa
 `inventory.md` for the files its own row below names, opens them at the SHA its brief gives it,
 performs its own review in its own context, and returns findings in step 7's shape.
 
+**A pass is the last agent in its own chain.** It works its own file list itself and dispatches
+nothing further: the fan-out a large list invites costs a spin-up, a bar load, a file re-read and a
+report per child, and buys a finding the pass would have reached itself. Where the list outruns one
+context, it reports the files it could not reach and returns short rather than delegating them. Its
+return opens with the agent count it ran as, which is one — the orchestrator has no other way to see a
+breach, since a dispatch it did not make carries it no parent and no cost.
+
 | Pass | Brief | Its files | Reads |
 |---|---|---|---|
 | **A · Intrinsic** | Is the new code sound on its own terms? | every carried file | `quality-bar.md` §1, §3, §4 |
-| **B · Regression** | What worked at the fixed point and does not now? Read each file at both SHAs. | every carried file the inventory marks with a non-zero deleted count or a rename, and every added migration, schema and config file — an added one carries no fixed-point version and still answers §2 against the rows and messages the base wrote | `quality-bar.md` §2 |
+| **B · Regression** | What worked at the fixed point and does not now? Read each file at both SHAs. | every carried file the inventory marks with a rename, and every added migration, schema and config file — an added one carries no fixed-point version and still answers §2 against the rows and messages the base wrote. Of the files carrying a non-zero deleted count, those the inventory leaves unmarked answer §2 in full; a file marked `mechanical` answers one question — *does any caller or behaviour go with it?* — and closes there | `quality-bar.md` §2 |
 
 **Completion:** both agents were dispatched from a context holding the four paths, the standard and
-the bar, and each return is in hand or named as failed, timed out or empty.
+the bar; each return is in hand or named as failed, timed out or empty; and each return opens with the
+agent count it ran as, which is one.
 
 ## Step 4 — Read the ask
 
@@ -97,13 +110,23 @@ source exists and the fetch failed for want of a connector, an authorisation, a 
 rather than outcome — a class to use, a query to write, a call to make, an order to run in. Each is a
 claim pass C tests against the diff's behaviour.
 
-**Completion:** every source carries `read`, `not found` or `unreachable (<why>)`, and every
-technical prescription stands in a list as its own quoted sentence.
+**Enumerate the requirements, and name the suspects.** List every requirement the ask states, one
+line each, carrying the source it came from. Where reading the ask against the change already raises
+a contradiction — a field the ask names and the diff spells differently, a default the ask sets and
+the diff assumes — name it. That is pass C's lead, it costs nothing here, and it is the reading that
+found the blocker in the run this step exists for.
+
+**Completion:** every source carries `read`, `not found` or `unreachable (<why>)`, every technical
+prescription stands in a list as its own quoted sentence, and every requirement stands in the list
+with its source.
 
 ## Step 5 — Dispatch pass C
 
-Pass C's brief is step 3's, plus the ask in full and the prescription list. It holds the diff against
-the ask, and against that alone — A and B have already settled the code's own soundness. It answers:
+Pass C's brief is step 3's, plus the requirement list, the prescription list, and the suspects step 4
+named. The documents behind them travel by path, opened by C where a line it must settle is not
+settled by the list — step 4 already paid to read them, and a brief carrying the ask whole makes C pay
+again. It holds the diff against the ask, and against that alone — A and B have already settled the
+code's own soundness. It answers:
 
 - **Every requirement, accounted for** — satisfied by named lines, partially satisfied, or absent.
 - **Business meaning over green tests** — code that satisfies its tests and still lands what the
@@ -150,28 +173,32 @@ A finding is six things:
    A line you place by hunk alone says so in place of the number.
 3. **Which pass** — `A`, `B` or `C`.
 4. **What it contradicts** — the requirement source, the standard's rule, the named sibling, the
-   stack practice, the named smell, or `quality`.
+   stack practice, or the bar's own item by number: `§1.7`, `§2 provenance`, `§3 Feature Envy`. Every
+   finding names one, so a later run reads what each item cost and what it caught.
 5. **Severity** — after step 6.
 6. **Blast radius** — its named boundary.
 
 Group under **Blockers**, **Defects**, **Notes**, in that order; within a group, A findings, then B,
 then C. A group holding nothing reads `0 findings`.
 
-Close with three lines: coverage (files reviewed, every excluded file with its counts, and anything
-you read outside the diff with what sent you there), an *Adjacent, not reviewed* list carrying
-everything else you noticed, and §4's suppression line.
+Close with three lines: coverage (files reviewed, each shape group with the files it stood for, every
+excluded file with its counts, and anything you read outside the diff with what sent you there), an
+*Adjacent, not reviewed* list — each entry a place the review touched and left, with the reason it was
+left, so a place with no reason to name is not an entry — and §4's suppression line.
 
 **Completion:** the report stands in chat with its four head lines, every finding in the six-part
-shape, three groups each carrying findings or `0 findings`, and the three closing lines.
+shape carrying its item number, three groups each carrying findings or `0 findings`, and the three
+closing lines.
 
 ## The bar
 
 - The review ran in a session holding no history of the change, and A and B were dispatched before
   any requirement text was read.
-- Every finding cites a line the diff adds or modifies at the head SHA, and carries a severity earned
-  from a named boundary.
-- Every carried file carries a §1 answer, and every §2 duty is answered at both SHAs over B's
-  inventory.
+- Every pass ran as one agent, and each return says so.
+- Every finding cites a line the diff adds or modifies at the head SHA, names the bar item it came
+  from, and carries a severity earned from a named boundary.
+- Every carried file carries a §1 answer or stands in a shape group whose representative does, and
+  every §2 duty is answered at both SHAs over B's inventory.
 - Every requirement carries satisfied, partial or absent with the lines that settle it, and every
   prescription carries a verdict.
 - Every suppressed smell stands in the suppression line with what earned it.
