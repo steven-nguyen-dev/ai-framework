@@ -15,6 +15,8 @@
   · Only what changed — every line that survives names something this branch altered.
   · Spell out every code, ticket id and fixture value — what it means alongside its value, so it
     reads to someone other than its author.
+  · Name what changed and what it replaced. Where a sample value would illustrate it, name the
+    field or rule instead — a reviewer reads an example as the change itself.
   · Paths are repo-relative.
   · Delete every heading and comment left unfilled. Keep the original numbers on the headings that
     survive, gaps included.
@@ -46,7 +48,9 @@
 <!-- One bullet per capability the branch adds or alters, the one a reviewer must grasp first
      at the top. 200 characters each, hard cap — split what exceeds it into separate bullets.
      What, not how. Why where the what needs it to read.
-     Several files serving one capability are one bullet; a path trails the bullet. -->
+     Several files serving one capability are one bullet; a path trails the bullet.
+     Bullets sit under a bold heading naming the flow, endpoint or domain they change — one
+     heading per group, and a heading for what the branch removes. -->
 -
 
 ### 3. Impact & Risks

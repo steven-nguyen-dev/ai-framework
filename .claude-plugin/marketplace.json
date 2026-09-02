@@ -16,7 +16,7 @@
     {
       "name": "ai-first-fw-utilities",
       "description": "Standalone engineering utility skills: draw-diagram, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "source": "./ai-first-fw/utilities"
     },
     {

@@ -1,7 +1,7 @@
 ---
 name: write-pr-desc
 description: Writes the pull request description for the current branch from this session's work and the branch diff, filled into the repo's PR template, then applies it to the open pull request once the developer approves. Use on "write the PR description", "draft the PR body", on "update the PR description", and when asked to open or raise a pull request.
-version: 1.0.0
+version: 1.1.0
 disable-model-invocation: false
 ---
 
@@ -38,11 +38,15 @@ Group what changed by the capability it serves, not by the file it sits in.
 
 Copy `templates/pr-body.md` and fill the copy under its own comments.
 
+Where a pull request body already stands, read it and carry forward only lines the diff still
+supports. Every line describing code this branch deletes is dropped.
+
 Ship the filled body twice: one fenced markdown block in chat, and the same text in a scratch file
 for `--body-file`.
 
-**Completion:** every section of the copy is filled or deleted, and the scratch file's path is
-named in chat.
+**Completion:** every section of the copy is filled or deleted, every line inherited from the
+existing body is matched to a change the diff still carries, and the scratch file's path is named
+in chat.
 
 ## Step 4 — Get the body approved
 
