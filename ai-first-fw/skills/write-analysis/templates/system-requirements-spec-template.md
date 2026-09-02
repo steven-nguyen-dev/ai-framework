@@ -1,170 +1,173 @@
-# [TARGET_SYSTEM] Engineering Requirements & Field Change Specification Template
+# [TARGET_SYSTEM] Requirements — [Short Feature Title]
 
-**Document Identifier:** `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` (e.g. `IA-5105-oms-taxonomy-requirements-spec.md`)  
-**Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / User Story Title]*  
-**Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Core Billing, Routing Engine)  
-**System Specification Reference:** `[TARGET_SYSTEM] Data Model / API Spec` (e.g. `[service]-swagger.json`, `schema.proto`, `models.ts`)  
-**External Integration / Context:** `[SOURCE_SYSTEM / CHANNEL]` (e.g. Marketplace, Carrier, ERP, WMS Partner, Pricing Feed)  
-**Author / Lead Architect:** `[Author / Team Name]`  
-**Target Release / Sprint:** `[vX.Y.Z / Sprint N]`  
-
----
-
-## 1. Executive Summary & Change Scope Overview
-
-This specification details the exact schema, API payload, database migration, and validation updates required in `[TARGET_SYSTEM]` to implement `[FEATURE_NAME]`.
-
-### Core Engineering Guideline
-**Semantic Reuse First:** Before proposing a new property or endpoint in `[TARGET_SYSTEM]`, engineers and architects must verify whether an existing field in the data model already carries equivalent business meaning.
-
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ SCOPE SUMMARY BOX                                                                      │
-├──────────────────────────────────────┬────────┬────────────────────────────────────────┤
-│ Category                             │ Count  │ Engineering & QA Action                │
-├──────────────────────────────────────┼────────┼────────────────────────────────────────┤
-│ 🔴 ADD (New Properties / Columns)    │ [Count]│ Active schema extension & DB migration │
-│ 🟡 UPDATE (Modified Logic / Schema)  │ [Count]│ Validation, type, or mapping change    │
-│ ⚪ REMOVE / DEPRECATE (Legacy)       │ [Count]│ Phase out legacy field or manual flow  │
-│ 🟢 REUSE (Existing Properties)       │ [Count]│ ZERO WORK (Mapped directly as-is)      │
-└──────────────────────────────────────┴────────┴────────────────────────────────────────┘
-```
+**Document Identifier:** `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` (e.g. `IA-5105-oms-taxonomy-requirements-spec.md`)
+**Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / User Story Title]*
+**Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Core Billing, Routing Engine)
+**System Specification Reference:** `[TARGET_SYSTEM] Data Model / API Spec` (e.g. `[service]-swagger.json`, `schema.proto`, `models.ts`)
+**External Integration / Context:** `[SOURCE_SYSTEM / CHANNEL]` (e.g. Marketplace, Carrier, ERP, Pricing Feed)
+**Claim library:** `[JIRA_ISSUE_KEY]-[TOPIC]-library.md` — every `L-n` in this document resolves there
+**Author / Team:** `[Author / Team Name]`
+**Target Release / Sprint:** `[vX.Y.Z / Sprint N]`
 
 ---
 
-## 2. Actionable Implementation Items (What Development Needs to Build)
+## How to use this template
 
-> [!IMPORTANT]
-> This section contains **ONLY** the properties, models, endpoints, and workflows that require **active development, schema alterations, or database migrations**.
+*(Delete this whole section before you publish the document.)*
 
----
+This is the **requirements spec**. Its reader owns `[TARGET_SYSTEM]` and arrives holding one
+endpoint. It tells that reader what changes on that endpoint.
 
-### 2.1 Interface Group 1: `[INTERFACE_TYPE: REST / GraphQL / Event Queue]`
-* **Endpoint / Event Topic:** `[HTTP_METHOD / TOPIC] [PATH_OR_TOPIC_NAME]` (e.g. `POST /rest/v1/orders/bulk_sync`, `kafka.inbound.inventory.v1`)
-* **Target Model / DTO:** `[TargetRequestDTO / EventPayload]`
-* **Persistence Target:** `[Database Table / Collection Name]`
+**Writing rules.**
 
-| Property Path / Field | Data Type | Change Status | Example Value | Persistence Impact | Technical Requirement & Business Rationale (Jira Ref) |
-| :--- | :--- | :---: | :--- | :--- | :--- |
-| `$.[new_property_1]` | `[data_type]` | **ADD** | `"[example_1]"` | `New Column: [col_name]` | **[FR-XX]:** State why this field is newly needed and why existing fields cannot represent it. |
-| `$.[new_property_2]` | `[data_type]` | **ADD** | `[example_2]` | `New Column: [col_name]` | **[FR-XX]:** External channel correlation ID, audit timestamp, or version tracking. |
-| `$.[existing_property_1]` | `[data_type]` | **UPDATE** | `[example_3]` | `Alter Column: [col_name]` | **[FR-XX]:** Describe logic/validation adjustment (e.g. changing string enum to boolean, increasing length limit). |
-
----
-
-### 2.2 Interface Group 2: `[INTERFACE_TYPE: Metadata / Schema / Rules Engine]`
-* **Endpoint / Event Topic:** `[HTTP_METHOD / TOPIC] [PATH_OR_TOPIC_NAME]` (e.g. `POST /rest/v1/rules/bulk_upsert`)
-* **Target Model / DTO:** `[DynamicRuleDTO / MetadataDTO]`
-
-| Property Path / Field | Data Type | Change Status | Example Value | Persistence Impact | Technical Requirement & Business Rationale (Jira Ref) |
-| :--- | :--- | :---: | :--- | :--- | :--- |
-| `$.[raw_payload_blob]` | `string / json` | **ADD** | `"{...}"` | `New Column: [col_name]` (JSON/Text) | **[FR-XX]:** Complete raw external schema/payload storage for replay, auditing, and future-proofing. |
-| `$.[version_checksum]` | `string` | **ADD** | `"[hash_value]"` | `New Column: [col_name]` (Indexed) | **[FR-XX]:** Version hash used for upstream change detection and cache invalidation. |
-| `$.[options_array]` | `array[string]` | **ADD** | `["val1", "val2"]` | `New Column / Sub-table` | **[FR-XX]:** Support multi-option / unit arrays. |
-| `$.[mandatory_flag]` | `boolean` | **UPDATE** | `true` | `Constraint Update` | **[FR-XX]:** Enforce strict boolean validation derived from source schema requirements. |
+- Group by endpoint. One `###` section per endpoint or flow, headed by the method and path. Its
+  change rows and its payload diff sit together in that section, stated once.
+- Every property carries one change status: `ADD`, `UPDATE`, `REMOVE` or `REUSE`. Settle it against
+  the target system's data model before you write the row.
+- Reuse first. Before you write `ADD`, check whether a property already in the model carries the
+  same business meaning, and record the check as a `REUSE` row or a stopped search.
+- Write each `ADD` and `UPDATE` requirement in the receiving team's own terms: the property, the
+  column, the validation. Start it with a verb.
+- Every row carries an `L-n`. The claim library states the citation rule and holds every locator.
+- Use pure Markdown headings and links. Write counts as numbers.
+- Keep the endpoints this ticket touches and delete the rest.
 
 ---
 
-### 2.3 Interface Group 3: `[INTERFACE_TYPE: Query / Read / Egress]`
-* **Endpoint / Event Topic:** `[HTTP_METHOD / TOPIC] [PATH_OR_TOPIC_NAME]` (e.g. `GET /rest/v1/entities/{id}`)
-* **Target Model / DTO:** `[TargetResponseDTO]`
+## 1. Scope
 
-| Property Path / Field | Data Type | Change Status | Example Value | Technical Requirement & Business Rationale (Jira Ref) |
-| :--- | :--- | :---: | :--- | :--- |
-| `$.response.[new_field]` | `[data_type]` | **ADD** | `"[example]"` | **[FR-XX]:** Exposes newly ingested field in read APIs for consumer UI rendering or downstream systems. |
-| `$.query.[legacy_param]` | `[data_type]` | **DEPRECATE** | `false` | **[FR-XX]:** Deprecated query parameter or filter flag phased out by this release. |
+This specification states the schema, payload, migration and validation changes `[TARGET_SYSTEM]`
+makes to support `[FEATURE_NAME]`.
+
+| Status | Count | Engineering action |
+| :--- | :-: | :--- |
+| ADD | [n] | New property, column and migration |
+| UPDATE | [n] | Validation, type or mapping change on an existing property |
+| REMOVE / DEPRECATE | [n] | Phase out a legacy property, endpoint or flow |
+| REUSE | [n] | No work; the property already carries this meaning |
+
+**Endpoints this ticket changes**
+
+| Endpoint / topic | Section | Changes |
+| :--- | :--- | :--- |
+| `[POST /rest/v1/endpoint_a]` | 2.1 | [n] ADD, [n] UPDATE |
+| `[POST /rest/v1/endpoint_b]` | 2.2 | [n] ADD |
+| `[GET /rest/v1/endpoint_c]` | 2.3 | [n] ADD, [n] DEPRECATE |
 
 ---
 
-### 2.4 Deprecated / Removed Workflows & Legacy Assumptions
+## 2. Changes, by endpoint
 
-| Workflow / Component / Assumption | Change Status | Technical Action & Jira Rationale |
-| :--- | :---: | :--- |
-| `[Legacy Manual File Upload / Workflow]` | **REMOVE** | **[FR-XX]:** Replaced by automated API synchronization; deprecate manual upload UI and background worker. |
-| `[Obsolete Single-Tenant Assumption]` | **REMOVE** | **[FR-XX]:** Remove global singleton logic; scope all record operations by tenant / marketplace isolation key. |
-| `[Unused Legacy Endpoint]` | **DEPRECATE** | **[FR-XX]:** Mark endpoint as deprecated; return Sunset HTTP header. |
+### 2.1 `[POST /rest/v1/endpoint_a]`
 
----
+* **Interface:** `[REST | GraphQL | Event topic]`
+* **Target DTO:** `[TargetRequestDTO]`
+* **Persistence target:** `[Database table or collection]`
+* **Carries:** [The flow and the source data this endpoint receives.] `L-n`
 
-## 3. Minimal Payload Diffs for Engineering
+| Property path | Type | Status | Example | Persistence impact | Requirement | Claim |
+| :--- | :--- | :---: | :--- | :--- | :--- | :--- |
+| `$.[new_property_1]` | `[type]` | ADD | `"[example]"` | New column `[col_name]` | [Verb-led statement of what to build, and why no existing property carries it.] | `L-n` |
+| `$.[new_property_2]` | `[type]` | ADD | `[example]` | New column `[col_name]`, indexed | [Statement.] | `L-n` |
+| `$.[existing_property]` | `[type]` | UPDATE | `[example]` | Alter column `[col_name]` | [The validation or type change, stated as the new rule.] | `L-n` |
+| `$.[legacy_property]` | `[type]` | REMOVE | — | Drop column `[col_name]` | [What replaces it.] | `L-n` |
+| `$.code` | `string` | REUSE | `"ID_00123"` | None | Already the unique primary identifier. | `L-n` |
+| `$.name` | `string` | REUSE | `"Standard Name"` | None | Already the human-readable display label. | `L-n` |
+| `$.channel_code` | `string` | REUSE | `"STORE_US_01"` | None | Already provides multi-tenant isolation. | `L-n` |
 
-The snippets below highlight **ONLY newly added and modified fields in context**:
+**Request payload diff**
 
-### Request Payload Diff: `[HTTP_METHOD] [PATH_1]`
 ```json
 {
   "existing_field_id": "ID_001",
   "existing_field_name": "Standard Name",
-  "new_property_1": "sample_new_value",        // <-- [ADD] Reason: External tracking reference
-  "new_property_2": true,                     // <-- [ADD] Reason: Terminal leaf / state flag
-  "existing_property_1": true                 // <-- [UPDATE] Reason: Enforced strict boolean validation
+  "new_property_1": "sample_new_value",
+  "new_property_2": true,
+  "existing_property": true
 }
 ```
 
-### Request Payload Diff: `[HTTP_METHOD] [PATH_2]`
+`new_property_1` and `new_property_2` are new. `existing_property` changes from `[old type or rule]`
+to `[new type or rule]`.
+
+### 2.2 `[POST /rest/v1/endpoint_b]`
+
+* **Interface:** `[REST | GraphQL | Event topic]`
+* **Target DTO:** `[MetadataDTO]`
+* **Persistence target:** `[Database table or collection]`
+* **Carries:** [The flow and the source data this endpoint receives.] `L-n`
+
+| Property path | Type | Status | Example | Persistence impact | Requirement | Claim |
+| :--- | :--- | :---: | :--- | :--- | :--- | :--- |
+| `$.[raw_payload_blob]` | `string / json` | ADD | `"{...}"` | New column `[col_name]`, JSON | Store the external payload verbatim so a replay reprocesses without a refetch. | `L-n` |
+| `$.[version_checksum]` | `string` | ADD | `"[hash]"` | New column `[col_name]`, indexed | Detect upstream change without comparing every field. | `L-n` |
+| `$.[mandatory_flag]` | `boolean` | UPDATE | `true` | Constraint update | Accept booleans only; the source sends a strict boolean. | `L-n` |
+| `$.field_code` | `string` | REUSE | `"color"` | None | Already the attribute key. | `L-n` |
+| `$.field_values[]` | `array` | REUSE | `[{"name":"Red","value":"red"}]` | None | Already holds the selectable option pairs. | `L-n` |
+
+**Request payload diff**
+
 ```json
 {
   "entity_code": "CODE_123",
-  "version_checksum": "V_ABC987",             // <-- [ADD] Reason: Upstream change detection hash
-  "raw_payload_blob": "{...unedited_json...}",// <-- [ADD] Reason: Verbatim raw schema persistence
+  "version_checksum": "V_ABC987",
+  "raw_payload_blob": "{...unedited_json...}",
   "attributes": [
     {
       "attribute_code": "color",
-      "mandatory": true,                      // <-- [UPDATE] Reason: Strict boolean derived from schema
-      "unit_options": ["cm", "inches"]        // <-- [ADD] Reason: Allowed dimensional measurement units
+      "mandatory": true,
+      "unit_options": ["cm", "inches"]
     }
   ]
 }
 ```
 
----
+`version_checksum`, `raw_payload_blob` and `unit_options` are new. `mandatory` becomes a strict
+boolean.
 
-## 4. Unchanged Existing Properties (REUSE = Do Nothing)
+### 2.3 `[GET /rest/v1/endpoint_c]`
 
-> [!NOTE]
-> The properties listed below **already exist in `[TARGET_SYSTEM]`'s data models with matching business semantics**.
-> **ZERO development work is required on these fields.** They are mapped directly as-is.
+* **Interface:** Query / read
+* **Target DTO:** `[TargetResponseDTO]`
+* **Carries:** [Which consumer reads this, and what it does with the new field.] `L-n`
 
-### 4.1 Primary Entity Properties (No System Changes Needed)
-
-| Existing `[TARGET_SYSTEM]` Property | Location in API / Model | `[SOURCE_SYSTEM]` Equivalent | Semantic Equivalence Justification |
-| :--- | :--- | :--- | :--- |
-| `code` / `id` | `[ModelNameDTO]` | Source Entity ID / Key | Already serves as the unique primary identifier. |
-| `name` / `title` | `[ModelNameDTO]` | Source Entity Name | Already serves as the primary human-readable display label. |
-| `presentation` / `path` | `[ModelNameDTO]` | Source Breadcrumb / Hierarchy | Already designed for user-facing hierarchical/formatted display. |
-| `channel_code` / `tenant_id` | `[ModelNameDTO]` | Store / Channel Scope | Already provides multi-tenant / multi-store isolation. |
-| `parent_code` / `parent_id` | `[ModelNameDTO]` | Source Parent Reference | Already manages parent-child relational links. |
-| `sequence` / `position` | `[ModelNameDTO]` | Source Display Order Index | Already handles order and sorting indexing. |
-| `status` / `active` | `[ModelNameDTO]` | Source State / Active Flag | Already manages record lifecycle state. |
+| Property path | Type | Status | Example | Requirement | Claim |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| `$.response.[new_field]` | `[type]` | ADD | `"[example]"` | Return the newly ingested property so `[consumer]` renders it. | `L-n` |
+| `$.query.[legacy_param]` | `[type]` | DEPRECATE | `false` | Return a `Sunset` header on this parameter; `[replacement]` supersedes it. | `L-n` |
 
 ---
 
-### 4.2 Attribute / Metadata / Line Item Properties (No System Changes Needed)
+## 3. Flows and assumptions this ticket retires
 
-| Existing `[TARGET_SYSTEM]` Property | Location in API / Model | `[SOURCE_SYSTEM]` Equivalent | Semantic Equivalence Justification |
-| :--- | :--- | :--- | :--- |
-| `field_code` / `key` | `[AttributeDTO / LineDTO]` | Source Property Key / SKU | Standard attribute or item key. |
-| `field_name` / `label` | `[AttributeDTO / LineDTO]` | Source Property Title / Description | Display label in UI forms or documents. |
-| `data_type` / `field_type` | `[AttributeDTO / LineDTO]` | Source Type Specification | Standard types (`singleSelect`, `textField`, `datefield`, etc.). |
-| `field_values[]` / `options` | `[AttributeDTO / LineDTO]` | Source Enum / Allowed Values List | Selectable `[{ name, value }]` key-value pairs. |
-| `criteria` / `description` | `[AttributeDTO / LineDTO]` | Source Field Description / Tooltip | Instructional text and validation rules. |
-| `standard_field_code` | `[AttributeDTO / LineDTO]` | System Internal Normalized Key | Internal normalized cross-channel mapping identifier. |
+Changes that land on no single endpoint.
+
+| Workflow, component or assumption | Status | Action | Claim |
+| :--- | :---: | :--- | :--- |
+| `[Legacy manual file upload]` | REMOVE | Retire the upload screen and its worker; `[endpoint]` replaces it. | `L-n` |
+| `[Single-tenant assumption]` | REMOVE | Scope every record operation by the tenant key. | `L-n` |
+| `[Unused legacy endpoint]` | DEPRECATE | Return a `Sunset` header, and remove after `[release]`. | `L-n` |
 
 ---
 
-## 5. Engineering Checklist & Verification Gate
+## 4. Verification gate
 
-### Database & Schema Verification
-- [ ] Database migration script written and tested (adding `[ADD]` columns).
-- [ ] Database indexes created for newly added search/foreign key columns.
-- [ ] Data model / DTO classes updated in codebase with serialization annotations.
+Each line below checks a row of section 2. Delete a line whose rows this ticket does not carry.
 
-### Validation & Logic Verification
-- [ ] Ingestion validators updated to enforce `[UPDATE]` strictness rules.
-- [ ] Upsert idempotency verified (sending duplicate payloads updates existing records without duplication).
-- [ ] Inactive / Soft-delete reconciliation verified (omitted records marked inactive, not hard-deleted).
+**Schema**
 
-### Regression & Backwards Compatibility
-- [ ] Existing endpoints operating on `[REUSE]` fields tested with **zero regressions**.
-- [ ] Deprecated parameters / legacy upload pathways gracefully handled without system crash.
-- [ ] Unit test coverage $\ge$ 80% for new mapper and validation classes.
+- [ ] Migration script written and run for every `ADD` column.
+- [ ] Index created on every column the tables mark indexed.
+- [ ] DTO classes updated with serialisation annotations for every `ADD` and `UPDATE` property.
+
+**Logic**
+
+- [ ] Validators enforce the rule stated in every `UPDATE` row.
+- [ ] A repeated payload updates the existing record and creates no duplicate.
+- [ ] Records absent from a full sync take the state section 6 of the mapping spec names.
+
+**Compatibility**
+
+- [ ] Every endpoint operating on a `REUSE` property passes its existing tests unchanged.
+- [ ] Every `DEPRECATE` parameter still returns a response, with its `Sunset` header.
+- [ ] New mapper and validation classes carry tests at the coverage this repository requires.

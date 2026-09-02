@@ -1,164 +1,139 @@
-# [INTEGRATION_NAME] Data Mapping & Technical Specification Template
+# [INTEGRATION_NAME] Data Mapping Specification
 
-**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` (e.g. `IA-5105-product-types-mapping-spec.md`)  
-**Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / Initiative Title]*  
-**Source System / Origin:** `[SOURCE_SYSTEM]` (e.g. Marketplace, Carrier, ERP, POS, 3PL, Custom Channel)  
-**Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Inventory Core)  
-**Target Interface Spec:** `[TARGET_INTERFACE_REFERENCE]` (e.g. OpenAPI / Swagger, AsyncAPI, Protobuf, GraphQL)  
-**Document Author / Team:** `[Author / Team Name]`  
-**Target Release / Version:** `[vX.Y.Z / Sprint N]`  
-
----
-
-## 1. Executive Summary & Architectural Scope
-
-### 1.1 Integration Objective
-* **Problem Statement:** Briefly describe what business process is being automated or integrated.
-* **Scope Boundary:** Specify what data flows in-scope (Ingress / Egress) and what is explicitly out-of-scope.
-
-### 1.2 Communication & Protocol Pattern
-*(Select the active pattern and remove unused ones)*
-* **Pattern A: Synchronous REST / GraphQL** (Real-time HTTP Request/Response)
-* **Pattern B: Asynchronous Job / Polling** (Trigger Request $\rightarrow$ Poll Status $\rightarrow$ Fetch Result Document)
-* **Pattern C: Event-Driven / Webhooks** (Pub/Sub, Kafka, Webhook payloads, Message Queues)
-* **Pattern D: Scheduled File / Batch** (SFTP, S3, CSV, XML, EDI)
+**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` (e.g. `IA-5105-product-types-mapping-spec.md`)
+**Reference Tracking:** `[JIRA_ISSUE_KEY]` — *[Feature / Initiative Title]*
+**Source System / Origin:** `[SOURCE_SYSTEM]` (e.g. Marketplace, Carrier, ERP, POS, 3PL, Custom Channel)
+**Target Internal System:** `[TARGET_SYSTEM]` (e.g. OMS, WMS, OXM, PT, Inventory Core)
+**Target Interface Spec:** `[TARGET_INTERFACE_REFERENCE]` (e.g. OpenAPI / Swagger, AsyncAPI, Protobuf, GraphQL)
+**Claim library:** `[JIRA_ISSUE_KEY]-[TOPIC]-library.md` — every `L-n` in this document resolves there
+**Author / Team:** `[Author / Team Name]`
+**Target Release / Version:** `[vX.Y.Z / Sprint N]`
 
 ---
 
-## 2. Structural Archetype & Hierarchy Alignment
+## How to use this template
 
-Choose the structural topology of the data being mapped:
+*(Delete this whole section before you publish the document.)*
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ DATA TOPOLOGY SELECTION (Choose applicable archetype)                                  │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ • ARCHETYPE 1: Flat / Key-Value (e.g. Inventory counts, Price tiers, Tracking numbers) │
-│ • ARCHETYPE 2: Header-Detail / Master-Child (e.g. Orders + Items, ASNs + Lines)        │
-│ • ARCHETYPE 3: Hierarchical / Tree / Graph (e.g. Categories, Warehouse Bins, BOM Kits) │
-│ • ARCHETYPE 4: Dynamic / Extensible EAV (e.g. Custom fields, Dynamic product schemas)  │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+This is the **mapping spec**. It answers one question per property: what value reaches the target,
+and why that property needs it.
 
-### 2.1 Entity Level / Component Alignment Matrix
+**Writing rules.**
 
-| Level / Layer | `[SOURCE_SYSTEM]` Source Concept | `[TARGET_SYSTEM]` Target Component | Structural Archetype | Alignment Rationale |
+- Group by endpoint. One `###` section per endpoint that carries data, headed by the method and
+  path, in the order the flow calls them. A property row sits under the endpoint that carries it.
+- **Transformation** states the operation on the value: direct map, cast, parse, enum lookup,
+  concatenate, inject from context.
+- **Reason** is one clause naming why the target property needs that value. Keep it under about
+  twelve words. "Enum lookup, see §5" is a transformation; "OMS routes on this status" is a reason.
+- Where one property carries a rule too long for a clause, write the clause here and the rule in the
+  enum matrix or a numbered note below the table.
+- Every row carries an `L-n`. The claim library states the citation rule and holds every locator.
+- Use pure Markdown headings and links.
+- Keep the sections this ticket uses and delete the rest.
+
+---
+
+## 1. Scope
+
+* **Problem statement:** [What business process this integration automates.] `L-n`
+* **In scope:** [The data flows this document covers, ingress and egress.]
+* **Out of scope:** [What a reader might expect here and will not find, and where it lives instead.]
+* **Communication pattern:** [Synchronous REST | Asynchronous job and poll | Event-driven or webhook | Scheduled file or batch] `L-n`
+
+---
+
+## 2. Entity alignment
+
+How the source hierarchy lands on the target hierarchy. One row per level.
+
+| Level | `[SOURCE_SYSTEM]` concept | `[TARGET_SYSTEM]` component | Cardinality | Alignment rationale |
 | :--- | :--- | :--- | :--- | :--- |
-| **Scope / Tenant** | `[Source Account / Market ID]` | `[Tenant / Store / Channel Code]` | Context Header | Enforces multi-tenant isolation |
-| **Primary Entity** | `[Source Parent / Header]` | `[Target Master / Header Record]` | Flat / Header | Main entity container |
-| **Nested Sub-Entity** | `[Source Line / Child Item]` | `[Target Child / Line Item / Sub-Node]` | Child / Array | 1-to-many relationship |
-| **Dynamic Attributes** | `[Source Custom Fields / Schema]` | `[Target Dynamic Attributes / EAV]` | Dynamic (Key-Value) | Variable metadata fields |
+| Scope / tenant | `[Source account / market ID]` | `[Tenant / store / channel code]` | 1-to-1 | Multi-tenant isolation |
+| Primary entity | `[Source parent / header]` | `[Target master / header record]` | 1-to-1 | Main entity container |
+| Child entity | `[Source line / child item]` | `[Target child / line item]` | 1-to-many | [Why the child is separate] |
+| Dynamic attributes | `[Source custom fields]` | `[Target dynamic attributes / EAV]` | 1-to-many | [Why these are not columns] |
 
 ---
 
-## 3. Endpoints & Interface Inventory
+## 3. Flows
 
-### 3.1 `[SOURCE_SYSTEM]` Interfaces (Source of Truth)
-| # | Interface / Method & Path | Invocation Trigger | Payload Format | Throttling / Rate Limits |
+One block per flow. Name the endpoints it calls, in order, so a reader reaches the right section
+of §4.
+
+### Flow 1: [Name, e.g. Initial synchronisation]
+
+**Trigger:** [Manual, connection setup, cron, webhook.] `L-n`
+
+1. `[GET /path/on/source]` — [what it returns]
+2. `[POST /rest/v1/target_endpoint]` — [what it persists]
+
+### Flow 2: [Name, e.g. Delta maintenance]
+
+**Trigger:** [Webhook or version check.] `L-n`
+
+1. `[POST /path/on/source]` — [what it returns]
+2. `[POST /rest/v1/target_endpoint]` — [what it upserts]
+
+---
+
+## 4. Field mapping, by endpoint
+
+### 4.1 `[POST /rest/v1/target_endpoint]`
+
+* **Called by:** Flow 1, step 2 · Flow 2, step 2
+* **Source object:** `[source_payload.header_object]`
+* **Target DTO:** `[TARGET_SYSTEM] / [TargetModelDTO]`
+* **Rate limit:** `[e.g. 5 req/sec]` `L-n`
+
+| # | Source field path | Target property | Type | Transformation | Reason | Nullable | Example | Claim |
+| :-: | :--- | :--- | :--- | :--- | :--- | :-: | :--- | :--- |
+| 1 | `$.source_id` | `code` | `string` | Cast to string, trim | Primary key of the target record | No | `"ID_00123"` | `L-1` |
+| 2 | `$.source_name` | `name` | `string` | Direct map | Display label in the target UI | No | `"Standard Name"` | `L-2` |
+| 3 | `$.status_code` | `status` | `string` | Enum lookup, §5 | Target routes work on this state | No | `"ACTIVE"` | `L-3` |
+| 4 | `$.timestamps.created` | `created_at` | `date-time` | Parse ISO 8601 to UTC | Orders records when events arrive late | Yes | `"2026-08-26T10:00:00Z"` | `L-4` |
+| 5 | `[Context]` | `channel_code` | `string` | Inject tenant identifier | Scopes the record to one store | No | `"STORE_US_01"` | `L-5` |
+
+**Child rows: `[TargetChildDTO[]]`** — source node `[source_payload.line_items[]]`
+
+| # | Source field path | Target property | Type | Transformation | Reason | Nullable | Example | Claim |
+| :-: | :--- | :--- | :--- | :--- | :--- | :-: | :--- | :--- |
+| 6 | `$.line_items[*].item_id` | `line_item_code` | `string` | Direct map | Identifies the line within the parent | No | `"LINE_01"` | `L-6` |
+| 7 | `$.line_items[*].quantity` | `qty` | `integer` | Parse integer, default 0 | Target deducts stock on this number | No | `5` | `L-7` |
+
+### 4.2 `[POST /rest/v1/other_endpoint]`
+
+* **Called by:** Flow 2, step 1
+* **Source object:** `[source_payload.custom_attributes]`
+* **Target DTO:** `[AttributeListDTO]`
+
+| # | Source field path | Target property | Type | Transformation | Reason | Nullable | Example | Claim |
+| :-: | :--- | :--- | :--- | :--- | :--- | :-: | :--- | :--- |
+| 1 | `$.attributes.color` | `field_code: "color"` | `singleSelect` | Map allowed values to `field_values[]` | Target renders a dropdown from these | Yes | `"red"` to `{"name": "Red", "value": "red"}` | `L-8` |
+| 2 | `$.attributes.dimensions` | `field_code: "dim"` | `textField` | Flatten object, append unit | Target holds no numeric-with-unit type | Yes | `{"w": 10, "u": "cm"}` to `"10 cm"` | `L-9` |
+
+---
+
+## 5. Enum translation
+
+One row per source value. State the fallback where the source can send a value this table omits.
+
+| Property | Source value (`[SOURCE_SYSTEM]`) | Target value (`[TARGET_SYSTEM]`) | Fallback | Claim |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | `[POST /path/to/source]` | User Action / Event / Cron | `JSON / XML / CSV` | `[e.g. 5 req/sec]` |
-| 2 | `[GET /path/to/source/{id}]` | Status Check / Fetch | `JSON / XML / Stream` | `[e.g. 10 req/sec]` |
-
-### 3.2 `[TARGET_SYSTEM]` Interfaces (Consumer / Persistence)
-| # | Interface / Method & Path | Operation Mode | Payload DTO / Schema | Persistence Action |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | `[POST /rest/v1/bulk_endpoint]` | Bulk / Batch Ingestion | `[BulkRequestDTO]` | Idempotent Upsert |
-| 2 | `[POST /rest/v1/single_endpoint]` | Single / Delta Update | `[SingleRequestDTO]` | Create / Update |
+| `status` | `"PENDING_APPROVAL"`, `"IN_REVIEW"` | `"under_review"` | `"draft"` on an unlisted value | `L-n` |
+| `status` | `"PUBLISHED"`, `"ACTIVE"`, `"1"` | `"active"` | — | `L-n` |
+| `status` | `"ARCHIVED"`, `"DELETED"`, `"0"` | `"inactive"` | — | `L-n` |
+| `type` | `"KIT_OR_BUNDLE"` | `"kit"` | `"simple"` on an unlisted value | `L-n` |
 
 ---
 
-## 4. End-to-End Operational Workflows
+## 6. Uniqueness and ordering
 
-### Flow 1: Full / Initial Synchronization Flow
-```
-[Trigger: Manual / Connection Setup] ──► [1. Fetch Source Data] ──► [2. Transform & Validate] ──► [3. Push to Target]
-```
-1. **Trigger & Fetch:** Initiates request to `[SOURCE_SYSTEM]` (sync request, async report, or batch export).
-2. **Transform & Normalize:** Parses source format (XML/JSON/CSV), maps fields, handles data type casting.
-3. **Ingest & Persist:** Calls `[TARGET_SYSTEM]` bulk endpoint; records transaction logs and entity mappings.
+State what this integration settles. Where the answer is not settled, name it in the summary's open
+questions instead of writing a default here.
 
-### Flow 2: Delta / Event-Driven Maintenance Flow
-```
-[Trigger: Webhook / Version Check] ──► [1. Filter Delta Changes] ──► [2. Target Upsert (No Full Sync)]
-```
-1. Detects delta via webhook or checksum/version hash comparison.
-2. Updates only changed records in `[TARGET_SYSTEM]` without repeating the full data dump.
-
-### Flow 3: Downstream Business Flow
-Describes how downstream transactional processes (e.g. order fulfillment, stock deduction, price computation) consume the stored data without querying the external source API at runtime.
-
----
-
-## 5. Field Mapping & Transformation Specification
-
-### 5.1 Primary / Header Entity Mapping
-* **Source Object / Node:** `[source_payload.header_object]`
-* **Target Interface / Model:** `[TARGET_SYSTEM] / [TargetModelDTO]`
-
-| # | `[SOURCE_SYSTEM]` Field Path | `[TARGET_SYSTEM]` Property | Data Type | Transformation & Business Logic | Nullable? | Example Value |
-| :-: | :--- | :--- | :--- | :--- | :-: | :--- |
-| 1 | `$.source_id` | `code` / `id` | `string` | Cast to string, trim whitespace | No | `"ID_00123"` |
-| 2 | `$.source_name` | `name` | `string` | Direct map | No | `"Standard Name"` |
-| 3 | `$.status_code` | `status` | `string` | Enum mapping (see Section 6) | No | `"ACTIVE"` |
-| 4 | `$.timestamps.created` | `created_at` | `date-time` | Parse ISO 8601 UTC string | Yes | `"2026-08-26T10:00:00Z"` |
-| 5 | `[Context / Environment]` | `channel_code` | `string` | Injected store/tenant identifier | No | `"STORE_US_01"` |
-
----
-
-### 5.2 Child / Nested Entity / Line Items Mapping
-* **Source Object / Node:** `[source_payload.line_items[]]`
-* **Target Interface / Model:** `[TARGET_SYSTEM] / [TargetChildDTO[]]`
-
-| # | `[SOURCE_SYSTEM]` Field Path | `[TARGET_SYSTEM]` Property | Data Type | Transformation & Business Logic | Nullable? | Example Value |
-| :-: | :--- | :--- | :--- | :--- | :-: | :--- |
-| 1 | `$.line_items[*].item_id` | `line_item_code` | `string` | Unique child entity reference | No | `"LINE_01"` |
-| 2 | `$.line_items[*].quantity` | `qty` | `integer` | Parse integer, default to 0 | No | `5` |
-| 3 | `$.line_items[*].unit_price`| `price` | `number` | Numeric decimal value | No | `29.99` |
-| 4 | `$.line_items[*].parent_ref`| `parent_code` | `string` | Link to parent entity code | Yes | `"ID_00123"` |
-
----
-
-### 5.3 Dynamic Attributes / Metadata / Custom Fields Mapping (If applicable)
-* **Source Object / Node:** `[source_payload.custom_attributes{}]`
-* **Target Interface / Model:** `[TARGET_SYSTEM] / [AttributeListDTO]`
-
-| # | Source Property Key | Target Attribute Field | Target Data Type | Transformation Rule | Example Source $\rightarrow$ Target |
-| :-: | :--- | :--- | :--- | :--- | :--- |
-| 1 | `$.attributes.color` | `field_code: "color"` | `singleSelect` | Map allowed values to `field_values[]` | `"red"` $\rightarrow$ `{"name": "Red", "value": "red"}` |
-| 2 | `$.attributes.dimensions` | `field_code: "dim"` | `textField` | Flatten nested object or capture unit | `{"w": 10, "u": "cm"}` $\rightarrow$ `"10 cm"` |
-
----
-
-## 6. Enum & Value Translation Matrix
-
-| Domain Property | Source Value (`[SOURCE_SYSTEM]`) | Target Value (`[TARGET_SYSTEM]`) | Fallback / Default Behavior |
-| :--- | :--- | :--- | :--- |
-| **Status / State** | `"PENDING_APPROVAL"`, `"IN_REVIEW"` | `"under_review"` | Default to `"draft"` if unknown |
-| **Status / State** | `"PUBLISHED"`, `"ACTIVE"`, `"1"` | `"active"` | — |
-| **Status / State** | `"ARCHIVED"`, `"DELETED"`, `"0"` | `"inactive"` | — |
-| **Type Classification** | `"STANDARD_ITEM"` | `"simple"` | Default to `"simple"` |
-| **Type Classification** | `"KIT_OR_BUNDLE"` | `"kit"` | — |
-
----
-
-## 7. Data Type & Formatting Standards
-
-| Source Construct | Target API Data Type | Target UI / Processing Behavior | Transformation Rule |
-| :--- | :--- | :--- | :--- |
-| `String with Enum / Options` | `singleSelect` / `COMBO_BOX` | Single-choice Dropdown | Populates `field_values: [{name, value}]` |
-| `Array of Strings / Enums` | `multiSelect` | Multi-select Checkbox / Tags | Populates array of values |
-| `Open Text (unbounded)` | `textField` / `string` | Standard Text Input Box | Direct string transfer |
-| `Large / Multiline Text` | `richText` / `text` | Multiline Textarea / Editor | Preserves safe HTML/Markdown |
-| `Numeric / Floating Point` | `number` / `integer` | Numeric Validation Box | Apply min/max boundary constraints |
-| `ISO 8601 Timestamp` | `datefield` / `date-time` | Date/Time Picker | Standardize to UTC `YYYY-MM-DDTHH:mm:ssZ` |
-| `Nested Key-Value Object` | `treeSelect` / `json` | Structured Sub-form | Flatten with dot notation or store raw JSON |
-
----
-
-## 8. Multi-Tenancy, Idempotency & Error Handling
-
-1. **Composite Uniqueness Key:** Define the unique composite key: `[TENANT_ID / CHANNEL_CODE] + [PRIMARY_ENTITY_CODE]`.
-2. **Idempotency Strategy:** Repeated payloads must update existing records without creating duplicates or duplicating sub-items.
-3. **Out-of-Order Events:** If using webhooks or queues, compare event timestamps / version hashes (`version_timestamp >= stored_timestamp`).
-4. **Soft Deletion / Reconciliation:** Missing records from full synchronization dumps must be flagged as `inactive` or `archived`, never hard-deleted.
-5. **Partial Failures & Circuit Breaking:** Record-level failures in batch payloads must be logged with source request ID, error code, and retry eligibility without failing the entire batch.
+* **Composite key:** `[TENANT_ID or CHANNEL_CODE] + [PRIMARY_ENTITY_CODE]` `L-n`
+* **Repeat delivery:** [What a second copy of the same payload does to the stored record.] `L-n`
+* **Out-of-order events:** [The field compared, and what happens when the arriving value is older.] `L-n`
+* **Records absent from a full sync:** [What the integration does with them.] `L-n`
+* **Record-level failure in a batch:** [What is logged, and what happens to the rest of the batch.] `L-n`

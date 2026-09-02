@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "ai-first-fw-skills",
-  "version": "2.0.5",
+  "version": "2.0.8",
   "description": "Core AI-First Framework lifecycle skills for review-driven, specification-first software development (write-analysis, implementation-planner, specs-builder, and review-code).",
   "author": {
     "name": "Steven Nguyen"

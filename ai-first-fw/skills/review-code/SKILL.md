@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: Cold review of a branch or pull request diff — three isolated passes, one report in chat.
-version: 2.1.1
+version: 2.2.0
 disable-model-invocation: true
 ---
 
@@ -14,53 +14,39 @@ Run it in a session holding no history of this change — the conversation that 
 one context a cold read is defined against. Where that history is in your context, say so at the head
 of the report and hand the review to a fresh session.
 
-`references/quality-bar.md` holds the bar the passes read — the checklist every changed file is
-answered against (§1), what the base did and this does not (§2), the smells (§3), and what earns a
-suppression (§4).
+`references/quality-bar.md` holds what the passes read: how a finding is graded, the checklist every
+carried file is answered against (§1), what the base did and this does not (§2), the smells (§3), and
+what earns a suppression (§4).
 
 ## Inputs
 
 - **Target** — a pull request URL or number, or a ref the diff runs since; absent one, the current
   branch against its merge-base with the default branch.
-- **The ask** — the requirement the change answers: documents the human supplies, the pull request
-  description and its linked issues, a Jira key appearing anywhere, else the commit messages and any
-  spec sitting beside the changed code.
-- **The standard** — the coding authority nearest the changed files: a quality document, an enabled
-  tooling rule, the nearest working sibling, the stack's accepted practice.
+- **The ask** — the requirement the change answers, from the sources step 4 orders.
+- **The standard** — the coding authority nearest the changed files, from the ladder step 2 orders.
 
 ## Step 1 — Pin the tree
 
-Resolve the target to an immutable SHA pair — fixed point and head — then work in this order, writing
-to `$(git rev-parse --git-dir)/review-code/<head short sha>/`, a directory outside the worktree, so
-the review's own files stay clear of the diff it reviews.
+Resolve the target to an immutable SHA pair — fixed point and head — and write the run's four
+artefacts to `$(git rev-parse --git-dir)/review-code/<head short sha>/`, a directory outside the
+worktree, so the review's own files stay clear of the diff it reviews:
 
-1. **Settle the excluded set.** Read `git diff --numstat -M <pair>`. A file is excluded where its path
-   holds data rather than code — a fixture, a test resource, a snapshot, a lock or generated file —
-   and every other file is carried. This pathspec names the common homes, and the numstat names the
-   rest:
+| Artefact | Holds |
+|---|---|
+| `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, and `addition-only` where the deleted count is zero |
+| `code.diff` | the rename-aware diff over the carried files |
+| `excluded.numstat` | the counts for the excluded files |
+| `commits.txt` | the commit list over the pair |
 
-   ```
-   ':(exclude)**/test/resources/**' ':(exclude)**/testdata/**' ':(exclude)**/fixtures/**'
-   ':(exclude)**/__snapshots__/**' ':(exclude)**/*.lock' ':(exclude)**/*-lock.*'
-   ```
+A file is excluded where its path holds data rather than code — a fixture, a test resource, a
+snapshot, a lock or a generated file; every other file is carried. Every later step and every pass
+reads this pair and these four paths, so a ref resolves once, here, and a pass opens an excluded file
+on demand.
 
-2. **Write the four artefacts** against that set:
+Where the target resolves to no pair, or the diff is empty, report that and stop.
 
-   | Artefact | Holds |
-   |---|---|
-   | `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, and `addition-only` where the deleted count is zero |
-   | `code.diff` | `git diff -M <pair>` over the carried files |
-   | `excluded.numstat` | the counts for the excluded files |
-   | `commits.txt` | the commit list over the pair |
-
-Every later step and every pass reads this pair and these four paths, so a ref resolves once, here,
-and a pass opens an excluded file on demand.
-
-State the argument you were given and the pair it resolved to. Where it resolves to no pair, or the
-diff is empty, report that and stop.
-
-**Completion:** the four artefacts exist at named paths, `inventory.md` holds a row for every changed
-file, and both SHAs stand in the report with the commit count.
+**Completion:** the four artefacts exist at named paths, and `inventory.md` holds a row for every
+changed file.
 
 ## Step 2 — Resolve the standard
 
@@ -74,20 +60,17 @@ Take the first authority that exists, nearest the changed files winning over the
    convention is the standard; name the file per finding.
 4. **The stack's accepted practice**, with stack and version read from the build file.
 
-Name what you found, or write `none found`.
-
 **Completion:** the standard is named by file, or reads `none found`, and each tooling rule credited
 is quoted from the line that enables it.
 
 ## Step 3 — Dispatch pass A and pass B
 
-Dispatch both briefs while the ask is still unread. This is the step that keeps the read cold: a
-reviewer holding the ticket reads the diff looking for the ticket, and stops seeing the leak, the
-race and the open entry point. Branch names, commit subjects and pull request text are requirement
-text, and they travel in step 5.
+Dispatch both briefs while the ask is still unread: a reviewer holding the ticket reads the diff
+looking for the ticket, and stops seeing the leak, the race and the open entry point. Branch names,
+commit subjects and pull request text are requirement text, and they travel in step 5.
 
-Each brief runs in its own agent and carries the SHA pair, the four step 1 paths, the standard and
-the path to `references/quality-bar.md` — that is the whole of what travels. Each agent reads
+Every brief carries the SHA pair, the four step 1 paths, the standard and the path to
+`references/quality-bar.md` — that is the whole of what travels to a pass. Each agent reads
 `inventory.md` for the files its own row below names, opens them at the SHA its brief gives it,
 performs its own review in its own context, and returns findings in step 7's shape.
 
@@ -112,17 +95,15 @@ source exists and the fetch failed for want of a connector, an authorisation, a 
 
 **Mark the technical prescriptions.** List every sentence in the ask that dictates implementation
 rather than outcome — a class to use, a query to write, a call to make, an order to run in. Each is a
-claim pass C tests against the diff's behaviour, and each is answerable by the outcome it produced.
+claim pass C tests against the diff's behaviour.
 
 **Completion:** every source carries `read`, `not found` or `unreachable (<why>)`, and every
 technical prescription stands in a list as its own quoted sentence.
 
 ## Step 5 — Dispatch pass C
 
-Pass C gets the SHA pair, the four step 1 paths, the ask in full, the standard and the prescription
-list.
-It holds the diff against the ask, and against that alone — A and B have already settled the code's
-own soundness. It answers:
+Pass C's brief is step 3's, plus the ask in full and the prescription list. It holds the diff against
+the ask, and against that alone — A and B have already settled the code's own soundness. It answers:
 
 - **Every requirement, accounted for** — satisfied by named lines, partially satisfied, or absent.
 - **Business meaning over green tests** — code that satisfies its tests and still lands what the
@@ -131,9 +112,9 @@ own soundness. It answers:
   `blocker`. This is the lift §1's terminus question waits for.
 - **Behaviour beyond the ask** — every behaviour the diff adds traces to a requirement, or stands in
   the report as scope creep.
-- **Prescription against outcome** — for each prescription from step 4: does the diff follow it, and
-  does following it produce what the requirement wanted? A prescription the diff followed into a
-  wrong outcome is a finding against the prescription, filed as a question to the human.
+- **Prescription against outcome** — for each prescription: does the diff follow it, and does
+  following it produce what the requirement wanted? A prescription the diff followed into a wrong
+  outcome is a finding against the prescription, filed as a question to the human.
 
 Where every source in step 4 came back `not found`, say so at the head of the report, and pass C
 holds the diff against its own names, commit messages and tests.
@@ -143,23 +124,12 @@ settle it, and every prescription from step 4 carries a verdict.
 
 ## Step 6 — Merge and grade
 
-Grade from blast radius, within the ceiling the finding's section carries. Blast radius is the
-boundary a human observes the failure at: the status the caller receives, the row persisted, the
-value sent onward, the credential printed, the request that hangs. A finding names its boundary.
+Grade every returned finding by `quality-bar.md` Grading. File one finding per place, at the worst
+severity any pass gave it, naming every pass that reached it and keeping every citation, each
+labelled with its pass.
 
-- `blocker` — merge waits on a human disposition.
-- `defect` — fix before merge, or take a disposition.
-- `note` — neither.
-
-Severity travels one way. A contradicted requirement lifts a finding one step; every other input
-leaves it where blast radius put it, so a leak, a race, an unguarded entry point and a swallowed
-failure keep their grade whatever the ask authorised.
-
-File one finding per place, at the worst severity any pass gave it, naming every pass that reached
-it and keeping every citation, each labelled with its pass.
-
-**Completion:** every returned finding carries a severity and a named boundary, and each place
-appears exactly once.
+**Completion:** every finding carries a severity and a named boundary, and each place appears exactly
+once.
 
 ## Step 7 — Report in chat
 
@@ -182,7 +152,7 @@ A finding is six things:
 4. **What it contradicts** — the requirement source, the standard's rule, the named sibling, the
    stack practice, the named smell, or `quality`.
 5. **Severity** — after step 6.
-6. **Blast radius** — the boundary a human observes it at.
+6. **Blast radius** — its named boundary.
 
 Group under **Blockers**, **Defects**, **Notes**, in that order; within a group, A findings, then B,
 then C. A group holding nothing reads `0 findings`.
@@ -196,16 +166,12 @@ shape, three groups each carrying findings or `0 findings`, and the three closin
 
 ## The bar
 
-- The review ran in a session holding no history of the change.
-- Every finding cites a line the diff adds or modifies at the head SHA.
-- A and B were dispatched before any requirement text was read, and the report says so on its own
-  line.
-- Every carried file carries a §1 answer, and a file holding a finding or an `unknown` answers item
-  by item.
-- Every §2 duty is answered at both SHAs over B's inventory.
-- Every source in step 4 carries `read`, `not found` or `unreachable (<why>)`.
+- The review ran in a session holding no history of the change, and A and B were dispatched before
+  any requirement text was read.
+- Every finding cites a line the diff adds or modifies at the head SHA, and carries a severity earned
+  from a named boundary.
+- Every carried file carries a §1 answer, and every §2 duty is answered at both SHAs over B's
+  inventory.
 - Every requirement carries satisfied, partial or absent with the lines that settle it, and every
   prescription carries a verdict.
-- Every finding carries a severity earned from a named boundary, and each place appears once.
 - Every suppressed smell stands in the suppression line with what earned it.
-- The report stands in chat.

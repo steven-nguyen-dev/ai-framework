@@ -10,7 +10,21 @@ The bar a pass is answered against. Every file a pass was given carries a §1 an
 
 The answered checklist is the deliverable; the findings are what falls out of it.
 
+## Grading
+
+Grade from blast radius: the boundary a human observes the failure at — the status the caller
+receives, the row persisted, the value sent onward, the credential printed, the request that hangs.
+A finding names its boundary.
+
+- `blocker` — merge waits on a human disposition.
+- `defect` — fix before merge, or take a disposition.
+- `note` — neither.
+
 §1 and §2 findings grade on blast radius, up to `blocker`. §3 findings carry `note`.
+
+Severity travels one way: a contradicted requirement lifts a finding one step; every other input
+leaves it where blast radius put it, so a leak, a race, an unguarded entry point and a swallowed
+failure keep their grade whatever the ask authorised.
 
 ## §1 — The code on its own terms
 
@@ -23,26 +37,23 @@ diff added, and asks of each line what it does to a caller, a row and a thread.
 2. **Failure paths** — every call that can throw or return an error: name what catches it, what the
    caller receives, and what state is left behind. A catch that swallows, logs and continues, or
    converts a failure into a success status is a finding on its own.
-3. **Concurrency** — shared mutable state reachable from two threads, check-then-act sequences,
-   non-atomic compound operations, unsafe publication, a blocking call inside a lock, and mutable
-   state held on an instance the container shares across requests.
-4. **Boundaries** — null, empty, zero, negative, one element, max size, off-by-one, overflow,
-   duplicate and out-of-order, for each new parameter, each new branch condition and each new
-   collection operation. For each, name what the type admits and what the code handles.
+3. **Concurrency** — name the shared mutable state reachable from two threads, and hold each
+   check-then-act sequence, compound operation, publication and blocking call inside a lock against
+   it. State held on an instance the container shares across requests is shared state.
+4. **Boundaries** — for each new parameter, each new branch condition and each new collection
+   operation, name what the type admits and what the code handles. The gap is the finding.
 5. **Authorisation per entry point** — every new or modified endpoint, handler, listener or consumer:
-   name where the caller's right to *this* resource is checked, in this handler. Authentication
-   elsewhere answers a different question.
+   name where the caller's right to *this* resource is checked, in this handler.
 6. **Untrusted input** — every value reaching a query, path, URL, command, deserializer, template,
-   redirect or reflective call: name what constrains it. Parameterised statements, an allow-list of
-   hosts, a canonicalised path resolved under its root, output encoded for its sink, an origin or
-   token check on a state-changing request, and a type-bound deserializer are the constraints that
-   hold; injection, XSS, CSRF, path traversal, SSRF and deserialization of caller-supplied types are
-   what stands where one is missing.
+   redirect or reflective call: name the constraint that holds it — a parameterised statement, an
+   allow-list, a path canonicalised under its root, output encoded for its sink, an origin or token
+   check on a state-changing request, a type-bound deserializer. A value reaching a sink with none of
+   these named is the finding.
 7. **Secrets and disclosure** — credentials, tokens, keys and personal data in logs, exception
    messages, error responses, and anything serialised outward.
-8. **Cost per call** — a query inside a loop over rows, an unbounded query or page size, a loop or
-   collection that grows with caller-supplied input, a new predicate or join column with an index
-   behind it, an allocation per element on a hot path, and the complexity of each new loop nest.
+8. **Cost per call** — name the work each new call does as its inputs grow: queries per row, page and
+   query bounds, collections that grow with caller-supplied input, an index behind each new predicate
+   or join column, allocation per element on a hot path, and the complexity of each new loop nest.
 9. **Terminus** — every field the diff moves reaches one: a column, an outbound field, a response, a
    log line. Account for each at its terminus, in the shape and unit it arrived in. A field landing
    nowhere, or landing changed, is a silent drop — no exception, no red test, the count its only
@@ -80,36 +91,14 @@ added file answers from its own text and from what the base wrote for it to read
 
 ## §3 — The smells
 
-Fowler, *Refactoring* ch.3, matched against the diff every run. Each reads *what it is* → *how it is
-fixed*, and each is a labelled heuristic — "possible Feature Envy" — carried at `note`.
+Fowler, *Refactoring* ch.3. Match all fourteen against the diff every run — Mysterious Name,
+Duplicated Code, Long Function, Long Parameter List, Feature Envy, Data Clumps, Primitive Obsession,
+Repeated Switches, Shotgun Surgery, Divergent Change, Speculative Generality, Message Chains, Middle
+Man, Refused Bequest.
 
-- **Mysterious Name** — a function, variable or type whose name leaves what it does or holds unsaid.
-  → rename it; where no honest name comes, the design is the finding.
-- **Duplicated Code** — the same logic shape stands in more than one hunk or file in the change.
-  → extract the shape, call it from both.
-- **Long Function** — a function holding several jobs, read by scrolling. → extract each job to a
-  named function.
-- **Long Parameter List** — a call taking more arguments than a reader holds at once. → pass the
-  object the arguments describe, or derive them inside.
-- **Feature Envy** — a method reaching into another object's data more than its own. → move the
-  method onto the data it envies.
-- **Data Clumps** — the same few fields or parameters travel together, a type waiting to be born.
-  → bundle them into one type and pass that.
-- **Primitive Obsession** — a primitive or string standing in for a domain concept. → give the
-  concept its own small type.
-- **Repeated Switches** — the same switch or if-cascade on the same type recurs across the change.
-  → replace it with polymorphism, or one map both sites share.
-- **Shotgun Surgery** — one logical change forces scattered edits across many files in the diff.
-  → gather what changes together into one module.
-- **Divergent Change** — one file is edited for several unrelated reasons. → split it so each module
-  changes for one reason.
-- **Speculative Generality** — abstraction, parameters or hooks serving a need the ask does not
-  carry. → inline it back until a real need shows.
-- **Message Chains** — long `a.b().c().d()` navigation the caller depends on. → hide the walk behind
-  one method on the first object.
-- **Middle Man** — a class or function that mostly delegates onward. → call the real target direct.
-- **Refused Bequest** — a subclass or implementer that overrides or ignores most of what it inherits.
-  → use composition.
+- Each is a heuristic over the diff's own hunks, so a match names the hunks or files that make it one.
+- Each is reported by its own name, hedged — "possible Feature Envy" — and carried at `note`.
+- Each names what is wrong and stops there; the refactoring is the author's.
 
 ## §4 — What earns a suppression
 
@@ -117,8 +106,8 @@ A suppression is earned per smell and named in the report.
 
 - **A found authority overrides.** Where the standard endorses what a smell would flag, the smell is
   suppressed and the standard's line is quoted.
-- **An enabled tooling rule, quoted.** A rule covering the smell and switched on in the config
-  suppresses it, per smell and per rule; formatting rules cover none of §3.
+- **An enabled tooling rule, quoted.** A rule suppresses a smell where it constrains structure and is
+  switched on in the config, per smell and per rule.
 - **A sibling's deliberate choice, named.** The nearest working sibling is a convention where it
   holds one consistently — a naming shape, an error-handling shape, a layering rule — and the
   suppression names the file and what it demonstrates. A habit is evidence *for* the finding:
