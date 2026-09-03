@@ -1,0 +1,215 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture. The IA-5105 mapping spec section 1.1 states this file is \"hand-authored for a different test, not a capture\" and that it \"models neither item_type_keyword nor recommended_browse_nodes as an actual schema property\". The plan section 1 table lists it as trimmed and records recommended_browse_nodes as absent. Gate G-4 exists because no real US capture is available, so nothing observed here may be cited as Amazon US's behaviour.",
+  "$schema": "https://schemas.amazon.com/selling-partners/definitions/product-types/meta-schema/v1",
+  "$id": "https://schemas.amazon.com/selling-partners/definitions/product-types/schema/v1/LUGGAGE",
+  "$comment": "Amazon product type definition for LUGGAGE product type",
+  "$defs": {
+    "marketplace_id": {
+      "default": "ATVPDKIKX0DER",
+      "editable": false,
+      "hidden": true,
+      "examples": [
+        "Amazon.com"
+      ],
+      "type": "string",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "ATVPDKIKX0DER"
+          ],
+          "enumNames": [
+            "Amazon.com"
+          ]
+        }
+      ]
+    },
+    "language_tag": {
+      "default": "en_US",
+      "editable": false,
+      "hidden": true,
+      "examples": [
+        "English (United States)"
+      ],
+      "type": "string",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "en_US"
+          ],
+          "enumNames": [
+            "English (United States)"
+          ]
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "item_name",
+    "brand"
+  ],
+  "properties": {
+    "item_name": {
+      "title": "Item Name",
+      "description": "The title of the product.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Item Name",
+            "type": "string",
+            "maxLength": 200
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "brand": {
+      "title": "Brand",
+      "description": "Name of the brand associated with the product.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Brand",
+            "type": "string",
+            "maxLength": 100
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "external_product_id": {
+      "title": "External Product ID",
+      "description": "Standard identifier for the product (UPC, EAN, GTIN).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value",
+          "type"
+        ],
+        "properties": {
+          "value": {
+            "title": "External Product ID Value",
+            "type": "string",
+            "maxLength": 40
+          },
+          "type": {
+            "title": "External Product ID Type",
+            "type": "string",
+            "enum": [
+              "EAN",
+              "UPC",
+              "GTIN"
+            ],
+            "enumNames": [
+              "EAN",
+              "UPC",
+              "GTIN"
+            ]
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "color": {
+      "title": "Color",
+      "description": "The color of the luggage.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Color",
+            "type": "string",
+            "enum": [
+              "Black",
+              "Blue",
+              "Red",
+              "Silver"
+            ],
+            "enumNames": [
+              "Black",
+              "Blue",
+              "Red",
+              "Silver"
+            ]
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "capacity": {
+      "title": "Capacity",
+      "description": "Luggage storage capacity in liters.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Capacity Value",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string",
+            "enum": [
+              "liters"
+            ],
+            "enumNames": [
+              "Liters"
+            ]
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    }
+  }
+}

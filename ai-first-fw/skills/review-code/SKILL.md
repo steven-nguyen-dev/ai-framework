@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: Cold review of a branch or pull request diff — three isolated passes, one report in chat. Use on "review this code", "review the diff", "review this branch", "review this PR", or when a change needs checking against the repo's coding standard before it merges.
-version: 2.4.0
+version: 2.7.0
 disable-model-invocation: false
 ---
 
@@ -27,13 +27,24 @@ what earns a suppression (§4).
 
 ## Step 1 — Pin the tree
 
+**A working tree is not a head.** Where the target resolves to uncommitted work, `git stash create`
+writes that state as a real commit object without touching the tree: pin its SHA as the head. The
+tree keeps moving — the author is usually fixing what you are reviewing — and a review pinned to a
+path rather than an object cites lines that no longer say what it read, dispatches a pass against
+files another edit has since changed, and leaves a file that gained deletions after its pass finished
+answered by nobody. Say in the report that the head is a stashed working tree, and name the branch it
+was taken from.
+
 Resolve the target to an immutable SHA pair — fixed point and head — and write the run's four
-artefacts to `$(git rev-parse --git-dir)/review-code/<head short sha>/`, a directory outside the
-worktree, so the review's own files stay clear of the diff it reviews:
+artefacts to `$(git rev-parse --git-dir)/review-code/<head short sha>-<run id>/`, a directory outside
+the worktree, so the review's own files stay clear of the diff it reviews. **The run id is fresh per
+invocation**, because the head SHA alone is not: a second session reviewing the same head writes the
+same paths, and a directory already holding artefacts belongs to another run — at another skill
+version, over another triage. Write your own rather than reading it.
 
 | Artefact | Holds |
 |---|---|
-| `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, `addition-only` where the deleted count is zero, a `shape` group name shared by files whose hunks are the same shape under different names — a near-clone transformer, a mirrored DTO, a generated accessor or `equals()` — and `mechanical` where every deleted line is an import, a comment, dead code or a zero-caller member |
+| `inventory.md` | one row per changed file: path, added, deleted, `carried` or `excluded`, `addition-only` where the deleted count is zero, a `shape` group name shared by files whose hunks are the same shape under different names — a near-clone transformer, a mirrored DTO, a generated accessor or `equals()` — and `logic-removing` unless every deleted line is inert — an import, a comment, whitespace, a formatting change, an `@Override`. A deleted annotation, type or interface declaration, constant value or config key is never inert: `@PreAuthorize`, `@Transactional` and `@Valid` move behaviour without moving a statement, and they are the deletions most likely to regress in silence |
 | `code.diff` | the rename-aware diff over the carried files |
 | `excluded.numstat` | the counts for the excluded files |
 | `commits.txt` | the commit list over the pair |
@@ -43,15 +54,18 @@ snapshot, a lock or a generated file; every other file is carried. Every later s
 reads this pair and these four paths, so a ref resolves once, here, and a pass opens an excluded file
 on demand.
 
-Where a carried file's row carries a non-zero deleted count or a rename, write its fixed-point and
-head text beside the artefacts as `<path>@base` and `<path>@head`, so a pass opens a path instead of
-resolving one.
+Where a carried file's row is marked `logic-removing` or renamed, write its fixed-point and head text
+beside the artefacts as `<path>@base` and `<path>@head`, so a pass opens a path instead of resolving
+one. Write them by shell redirect — the text belongs on disk, not in the context that writes it — and
+write them for no other file: an unmarked file is answered from its hunks, and a text nobody opens is
+bytes on disk for nothing.
 
 Where the target resolves to no pair, or the diff is empty, report that and stop.
 
-**Completion:** the four artefacts exist at named paths, `inventory.md` holds a row for every changed
-file, every file sharing its shape with another carries a `shape` group name, and every file the
-inventory marks with a deletion or a rename has its two texts on disk.
+**Completion:** the run directory was created by this run and held nothing before it, the four
+artefacts exist at named paths, `inventory.md` holds a row for every changed file, every file sharing
+its shape with another carries a `shape` group name, and every file marked `logic-removing` or renamed
+has its two texts on disk.
 
 ## Step 2 — Resolve the standard
 
@@ -81,15 +95,20 @@ performs its own review in its own context, and returns findings in step 7's sha
 
 **A pass is the last agent in its own chain.** It works its own file list itself and dispatches
 nothing further: the fan-out a large list invites costs a spin-up, a bar load, a file re-read and a
-report per child, and buys a finding the pass would have reached itself. Where the list outruns one
-context, it reports the files it could not reach and returns short rather than delegating them. Its
-return opens with the agent count it ran as, which is one — the orchestrator has no other way to see a
-breach, since a dispatch it did not make carries it no parent and no cost.
+report per child, and buys a finding the pass would have reached itself. Its return opens with the
+agent count it ran as, which is one — the orchestrator has no other way to see a breach, since a
+dispatch it did not make carries it no parent and no cost.
+
+Where the list outruns one context, the pass returns the files it reached and names the rest
+`not reached` — never a thinner read of all of them, which reports itself complete. The orchestrator
+then dispatches a second agent of that same pass over exactly those files and merges the two returns
+as one pass: a split it chose and can count, against one the pass took on its own. A `not reached`
+file no second agent covered stands in the coverage line and in the verdict.
 
 | Pass | Brief | Its files | Reads |
 |---|---|---|---|
 | **A · Intrinsic** | Is the new code sound on its own terms? | every carried file | `quality-bar.md` §1, §3, §4 |
-| **B · Regression** | What worked at the fixed point and does not now? Read each file at both SHAs. | every carried file the inventory marks with a rename, and every added migration, schema and config file — an added one carries no fixed-point version and still answers §2 against the rows and messages the base wrote. Of the files carrying a non-zero deleted count, those the inventory leaves unmarked answer §2 in full; a file marked `mechanical` answers one question — *does any caller or behaviour go with it?* — and closes there | `quality-bar.md` §2 |
+| **B · Regression** | What worked at the fixed point and does not now? Read the hunks, then what they reach. | every carried file the inventory marks `logic-removing` or renamed, and every added migration, schema and config file — an added one carries no fixed-point version and still answers §2 against the rows and messages the base wrote. An unmarked file carrying deletions answers one question — *does any caller or behaviour go with it?* — from its hunks alone, and closes there | `quality-bar.md` §2 |
 
 **Completion:** both agents were dispatched from a context holding the four paths, the standard and
 the bar; each return is in hand or named as failed, timed out or empty; and each return opens with the
@@ -101,6 +120,16 @@ Only now, and in this order: the documents the human supplied, in full · a pull
 description, its linked issues and every file it links · the issue and attachments behind any Jira
 key in the title, body, branch name or commit messages · with none of those, the commit messages and
 any spec sitting beside the changed code.
+
+The last rung is a fallback, reached only where the rungs above found nothing — so a local document
+that outranks the ticket cannot be said on this ladder, and a run that meets one files it at the
+bottom and then quietly treats it as the top. **A spec beside the changed code that names the ticket
+and declares itself the newer authority is read at the rung it claims**, above the document it
+supersedes, and the report's authorities line names both with the claim that ordered them.
+
+Read every source in full. The requirement a diff silently fails is the one stated where you would not
+think to look, and pass C can only mark absent what this step wrote down — so this is the one reading
+in the run that is not economised.
 
 Mark each source **read**, **`not found`** (searched, absent), or **`unreachable (<why>)`** — the
 source exists and the fetch failed for want of a connector, an authorisation, a live link. Only
@@ -116,9 +145,9 @@ a contradiction — a field the ask names and the diff spells differently, a def
 the diff assumes — name it. That is pass C's lead, it costs nothing here, and it is the reading that
 found the blocker in the run this step exists for.
 
-**Completion:** every source carries `read`, `not found` or `unreachable (<why>)`, every technical
-prescription stands in a list as its own quoted sentence, and every requirement stands in the list
-with its source.
+**Completion:** every source carries `read`, `not found` or `unreachable (<why>)` and the rung it was
+read at, every technical prescription stands in a list as its own quoted sentence, and every
+requirement stands in the list with its source.
 
 ## Step 5 — Dispatch pass C
 
@@ -139,6 +168,10 @@ code's own soundness. It answers:
   following it produce what the requirement wanted? A prescription the diff followed into a wrong
   outcome is a finding against the prescription, filed as a question to the human.
 
+Where the diff carries behaviour tracing to no requirement in the list, C reads the ask itself before
+filing it as scope creep: an enumeration that dropped a requirement and a diff that exceeded the ask
+look identical from the list alone.
+
 Where every source in step 4 came back `not found`, say so at the head of the report, and pass C
 holds the diff against its own names, commit messages and tests.
 
@@ -151,8 +184,15 @@ Grade every returned finding by `quality-bar.md` Grading. File one finding per p
 severity any pass gave it, naming every pass that reached it and keeping every citation, each
 labelled with its pass.
 
-**Completion:** every finding carries a severity and a named boundary, and each place appears exactly
-once.
+**Count the returns in, then count them out.** A merge summarises, and summarising is how a pass's
+defect leaves as somebody else's note — the report reads complete either way, because a finding that
+vanished contradicts nothing left in it. Number every finding in every return before merging, and
+account for each: filed under its own severity, or merged into a named finding at a severity no lower
+than the one its pass gave it.
+
+**Completion:** every numbered finding from every return is filed or named as merged into one that
+is, no merge lowered a severity, every finding carries a severity and a named boundary, and each place
+appears exactly once.
 
 ## Step 7 — Report in chat
 
@@ -195,6 +235,8 @@ closing lines.
 - The review ran in a session holding no history of the change, and A and B were dispatched before
   any requirement text was read.
 - Every pass ran as one agent, and each return says so.
+- Every carried file was reached by its pass, or stands in the report as `not reached`.
+- The head is an object, not a path, and every finding in every return reached the report.
 - Every finding cites a line the diff adds or modifies at the head SHA, names the bar item it came
   from, and carries a severity earned from a named boundary.
 - Every carried file carries a §1 answer or stands in a shape group whose representative does, and

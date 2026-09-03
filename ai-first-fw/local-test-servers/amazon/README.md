@@ -16,7 +16,40 @@ python3 mock.py amazon --check
 
 # Run the automated smoke test suite (39 test cases, 152 assertions)
 python3 amazon/suite-smoke.py
+
+# Run the Marketplace Taxonomy suite -- the discovery calls, and the OMS category payload
+python3 amazon/suite-taxonomy.py
+
+# Run the store-connect suites -- the OMS attributes payload, US and non-US (needs the OMS mock)
+python3 amazon/suite-connect-us.py
+python3 amazon/suite-connect-non-us.py
 ```
+
+## The IA-5105 suites
+
+Three of the four suites judge what the integration sends to Anchanto OMS. They share
+[`ia5105_requirements.py`](ia5105_requirements.py), which holds every expected value with the
+document and section it comes from: the IA-5105 browse-node and listing plan (the current
+amendment), the OMS taxonomy requirements spec, the product-types mapping spec,
+`anchanto-oms/anchanto-oms-swagger.json`, and Amazon's own captured schemas. **No expected value in
+it was derived by reading the JPluger Amazon integration**, so a failing check is an argument about
+the requirement rather than a description of the code.
+
+| Suite | Judges | Needs |
+|---|---|---|
+| `suite-smoke.py` | The SP-API mock itself -- 375 routes, the sandbox fixtures, the S3 data plane | Amazon mock only |
+| `suite-taxonomy.py` | Definitions discovery per market, and `POST /rest/v1/bulk_categories` | OMS mock for the `TAX-CAT-*` cases; without it they are `blocked` |
+| `suite-connect-us.py` | `POST /rest/v1/bulk_categories_attributes` for a US store, and the absence of a browse-node row and of any browse-tree report | Both mocks |
+| `suite-connect-non-us.py` | The same for DE, ES, FR, AU, GB and JP, and the `recommended_browse_nodes` pair in full | Both mocks |
+
+**Payloads are judged on what arrived, not on what was built.** Each suite clears the OMS mock's
+call log in preflight, fires, and reads the bodies back out of `:23001/log/data`. A suite that
+asserts on a dict it still holds in memory proves only that its input is its input.
+
+**What produces the payload.** `amazon_taxonomy_transformer.py` is a local stand-in for the JPluger
+Amazon integration, which this harness cannot start -- there is no app under test here the way
+`eton/suite-create-order.py` has one. Where the stand-in and the requirement disagree, the suites
+fail, and that is the report.
 
 ---
 
@@ -221,13 +254,25 @@ are represented on purpose:
   (`Küche, Haushalt & Wohnen`), and the naive split's token count often *equals* the id count — so
   a length assertion passes on corrupted data. Resolve the id chain through a node map instead.
 
-Three trees are served, with disjoint root sets so a test can prove which one it received:
+Five trees are served, with disjoint root sets so a test can prove which one it received:
 
-| `reportOptions.MarketplaceId` | Tree | Root node ids |
-|---|---|---|
-| `A1PA6795UKMFR9` (DE) | German major appliances, duplicate node id | `908824031`, `3169011` |
-| `A13V1IB3VIYZZH` (FR) | French home & DIY | `340859031` |
-| omitted, or anything else | **Seller's default store** — US electronics, plus Amazon's own documented example node | `172282`, `000000001` |
+| `reportOptions.MarketplaceId` | Tree | Root node ids | Leaves for a product type |
+|---|---|---|---|
+| `A1PA6795UKMFR9` (DE) | German major appliances, duplicate node id | `908824031`, `3169011` | `PRODUCT` ×2 |
+| `A13V1IB3VIYZZH` (FR) | French home & DIY | `340859031` | `MAJOR_APPLIANCES` ×1 |
+| `A1RKKUPIHCS9HS` (ES) | Spanish home & kitchen — **SYNTHETIC** | `599392031` | `PRODUCT` ×2 |
+| `A39IBJ37TRP1C6` (AU) | Australian automotive — **SYNTHETIC** | `4851723051` | `AUTO_PART` ×1 |
+| omitted, or anything else | **Seller's default store** — US electronics, plus Amazon's own documented example node | `172282`, `000000001` | `HEADPHONES`, `BLUE_PRODUCT_ITEM` |
+
+**The leaves are what the picker is built from,** and the DE tree had none until IA-5105 needed
+them: every node in the original German fixture states `hasChildren=true`, so the plan's §4.3
+transform — which skips a node unless it is a leaf that states `productTypeDefinitions` — yielded
+nothing for it. The leaves added to DE, and the whole of the ES and AU trees, carry an XML comment
+saying **SYNTHETIC** and why: no capture in this repository states a German, Spanish or Australian
+browse node, so those ids are invented and must not be cited as observed. One DE leaf states
+`browseNodeAttributes/recommended_browse_nodes` with a value that differs from its `browseNodeId`,
+so the plan's value precedence (the stated attribute wins, `browseNodeId` is the fallback) is
+observable rather than assumed.
 
 That last row is the point: **omit `reportOptions` and every store receives the same tree.** That is
 what the real API does, and it makes the marketplace-isolation failure reproducible offline
@@ -251,6 +296,41 @@ attributes the way Amazon does: `item_weight` is an object with sibling `value` 
 properties, `unit` carrying its own enum — not a scalar with a separate unit list. `requirements`,
 `requirementsEnforced` and `locale` are echoed from the query so a test can assert what it asked
 for (suite case `DEF-1`).
+
+Amazon's own sandbox only publishes one product type (`LUGGAGE`, `ATVPDKIKX0DER`) with a
+generic fallback schema for everything else. [`build_taxonomy_fixtures.py`](build_taxonomy_fixtures.py)
+layers ten marketplace-specific product types on top, keyed on `(productType, marketplaceId)`. It is
+idempotent — re-run it if the fixtures change.
+
+**Three of the ten are genuine captures. The other seven are not, and each says so in its own
+`x-fixture-provenance`** at the top of the file. Nothing observed through a SYNTHETIC fixture may be
+cited as Amazon's behaviour; that is what gate G-4 on the IA-5105 plan is open about.
+
+| Market | marketplaceId | productType | Provenance |
+|---|---|---|---|
+| DE (Europe) | `A1PA6795UKMFR9` | `PRODUCT` | **Genuine capture** from live Amazon (claim `L-31`) |
+| ES (Europe) | `A1RKKUPIHCS9HS` | `PRODUCT` | **Genuine capture** from live Amazon (claim `L-32`) |
+| AU (Far East) | `A39IBJ37TRP1C6` | `AUTO_PART` | **Genuine capture** from live Amazon (claim `L-33`) |
+| US (North America) | `ATVPDKIKX0DER` | `LUGGAGE` | SYNTHETIC — the mapping spec §1.1 calls it "hand-authored for a different test, not a capture" |
+| FR (Europe) | `A13V1IB3VIYZZH` | `SHOES` | SYNTHETIC — hand-authored edge cases: an orphan `$ref`, a non-English locale, an unmodelled `amazonFutureKeyword` |
+| US | `ATVPDKIKX0DER` | `CLOTHING`, `ELECTRONICS`, `TOYS_AND_GAMES` | SYNTHETIC — no requirement document names them |
+| UK (Europe) | `A1F83G8C2ARO7P` | `FURNITURE` | SYNTHETIC — and its `recommended_browse_nodes` shape matches none of the three real captures |
+| JP (Far East) | `A1VC38T7YXB528` | `BEAUTY` | SYNTHETIC — same divergent shape as `FURNITURE` |
+
+The five originals are the exact fixture files under JPluger's
+`marketplace-integrations/src/test/resources/amazon/definitions/`, plus the provenance line. Two
+things make this more than a bigger `DEF-1`:
+
+- **DE and ES share a productType name.** Amazon reuses `PRODUCT` across marketplaces, so the
+  schema link carries `?marketplaceId=` and the `/s3/ptd-schema/{productType}` route branches on
+  it — a mock (or a client) keyed on `productType` alone would silently collapse two sellers'
+  categories onto one schema (suite case `TAX-EU-1`, the non-US counterpart of the browse tree's
+  `REP-2`).
+- **The generic fallback's `schema.checksum` is empty, not a fixed fake hex string.** A real
+  client verifies the downloaded schema bytes against it
+  (`AmazonDefinitionsUtility.checksumMatches` in JPluger); a static body can never hash to a fixed
+  checksum computed ahead of time, so the fallback would fail every real client's verification.
+  Empty/absent is the documented "Amazon stated none" pass-through (suite case `TAX-CKSUM`).
 
 ---
 

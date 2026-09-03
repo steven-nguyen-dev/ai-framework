@@ -11246,7 +11246,8 @@
               },
               {
                 "raw_body": {
-                  "contains": "INVALID"
+                  "contains": "INVALID",
+                  "case_sensitive": true
                 }
               },
               {

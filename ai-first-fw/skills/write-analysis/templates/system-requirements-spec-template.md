@@ -22,6 +22,10 @@ endpoint. It tells that reader what changes on that endpoint.
 
 - Group by endpoint. One `###` section per endpoint or flow, headed by the method and path. Its
   change rows and its payload diff sit together in that section, stated once.
+- Fence every payload diff as `jsonc`, and annotate every line of it with a trailing comment
+  carrying that property's status, its `L-n`, and one clause. A `REUSE` line carries `// [REUSE]`
+  and nothing more. The comments replace a prose note after the fence; do not write both.
+- Align the trailing comments of one diff on the same column, so the statuses read as a column.
 - Every property carries one change status: `ADD`, `UPDATE`, `REMOVE` or `REUSE`. Settle it against
   the target system's data model before you write the row.
 - Reuse first. Before you write `ADD`, check whether a property already in the model carries the
@@ -77,18 +81,15 @@ makes to support `[FEATURE_NAME]`.
 
 **Request payload diff**
 
-```json
+```jsonc
 {
-  "existing_field_id": "ID_001",
-  "existing_field_name": "Standard Name",
-  "new_property_1": "sample_new_value",
-  "new_property_2": true,
-  "existing_property": true
+  "existing_field_id": "ID_001",                 // [REUSE]
+  "existing_field_name": "Standard Name",        // [REUSE]
+  "new_property_1": "sample_new_value",          // [ADD]    L-n  [why no existing property carries it]
+  "new_property_2": true,                        // [ADD]    L-n  indexed; [what reads it]
+  "existing_property": true                      // [UPDATE] L-n  [old type or rule] → [new type or rule]
 }
 ```
-
-`new_property_1` and `new_property_2` are new. `existing_property` changes from `[old type or rule]`
-to `[new type or rule]`.
 
 ### 2.2 `[POST /rest/v1/endpoint_b]`
 
@@ -107,23 +108,20 @@ to `[new type or rule]`.
 
 **Request payload diff**
 
-```json
+```jsonc
 {
-  "entity_code": "CODE_123",
-  "version_checksum": "V_ABC987",
-  "raw_payload_blob": "{...unedited_json...}",
+  "entity_code": "CODE_123",                     // [REUSE]
+  "version_checksum": "V_ABC987",                // [ADD]    L-n  indexed; detects upstream change
+  "raw_payload_blob": "{...unedited_json...}",   // [ADD]    L-n  verbatim source, replayable
   "attributes": [
     {
-      "attribute_code": "color",
-      "mandatory": true,
-      "unit_options": ["cm", "inches"]
+      "attribute_code": "color",                 // [REUSE]
+      "mandatory": true,                         // [UPDATE] L-n  "Y"/"N" string → strict boolean
+      "unit_options": ["cm", "inches"]           // [ADD]    L-n  [which consumer needs the units]
     }
   ]
 }
 ```
-
-`version_checksum`, `raw_payload_blob` and `unit_options` are new. `mandatory` becomes a strict
-boolean.
 
 ### 2.3 `[GET /rest/v1/endpoint_c]`
 

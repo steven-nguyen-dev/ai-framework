@@ -18,6 +18,7 @@ import json, os, sys, time, urllib.request, urllib.error, shutil, datetime
 BASE = os.environ.get("BASE", "http://127.0.0.1:23002").rstrip("/")
 SUITE = os.environ.get("SUITE", "smoke")
 KEEP = "--keep-state" in sys.argv
+WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 CUST = "ANCHANTO"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -77,16 +78,28 @@ def publish():
     for c in CASES:
         r = RESULTS.get(c["id"])
         e = {"id": c["id"], "name": c["name"], "given": c["given"], "then": c["then"], "note": c["note"]}
-        e.update(r if r else {"verdict": "pending"})
+        if r:
+            e.update(r)
+        elif WANTED_CASES and c["id"] not in WANTED_CASES:
+            e.update({
+                "verdict": "skip",
+                "summary": "skipped (not selected)",
+                "checks": [],
+                "calls": [],
+                "detail": {}
+            })
+        else:
+            e.update({"verdict": "pending"})
         cases.append(e)
-    done = [c for c in cases if c["verdict"] in ("pass", "fail", "blocked")]
+    done = [c for c in cases if c["verdict"] in ("pass", "fail", "blocked", "skip")]
     doc = {"name": "Anchanto WMS (Wareo3) mock smoke -- 27 operations",
            "suite": SUITE,
-           "at": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "base_url": BASE,
            "summary": {"pass": sum(1 for c in done if c["verdict"] == "pass"),
                        "fail": sum(1 for c in done if c["verdict"] == "fail"),
-                       "blocked": sum(1 for c in done if c["verdict"] == "blocked")},
+                       "blocked": sum(1 for c in done if c["verdict"] == "blocked"),
+                       "skip": sum(1 for c in done if c["verdict"] == "skip")},
            "evidence": EVIDENCE, "cases": cases}
     os.makedirs(RUN_DIR, exist_ok=True)
     json.dump(doc, open(os.path.join(RUN_DIR, "results.json"), "w"), indent=2)
@@ -638,8 +651,12 @@ def main():
     preflight()
     os.makedirs(RUN_DIR, exist_ok=True)
     publish()
-    print("  cases    : %d\n" % len(CASES))
-    for c in CASES:
+    target_cases = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
+    if WANTED_CASES:
+        print("  cases    : %d selected of %d\n" % (len(target_cases), len(CASES)))
+    else:
+        print("  cases    : %d\n" % len(CASES))
+    for c in target_cases:
         v = run_case(c)
         publish()
         r = RESULTS[c["id"]]
@@ -653,12 +670,12 @@ def main():
     capture()
     EVIDENCE["status"] = "complete"
     publish()
-    p = sum(1 for c in CASES if RESULTS[c["id"]]["verdict"] == "pass")
-    nchecks = sum(len(RESULTS[c["id"]]["checks"]) for c in CASES)
-    print("\n  %d/%d cases passed, %d checks total" % (p, len(CASES), nchecks))
+    p = sum(1 for c in target_cases if RESULTS.get(c["id"], {}).get("verdict") == "pass")
+    nchecks = sum(len(RESULTS.get(c["id"], {}).get("checks", [])) for c in target_cases)
+    print("\n  %d/%d selected cases passed, %d checks total" % (p, len(target_cases), nchecks))
     print("  results: %s" % os.path.join(RUN_DIR, "results.json"))
     print("  /test  : %s/test" % BASE)
-    return 1 if p != len(CASES) else 0
+    return 1 if p != len(target_cases) else 0
 
 
 if __name__ == "__main__":

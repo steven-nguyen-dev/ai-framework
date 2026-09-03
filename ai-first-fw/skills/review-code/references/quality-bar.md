@@ -8,11 +8,15 @@ The bar a pass is answered against. Every file a pass was given carries a §1 an
 - A file that adds or modifies an entry point, or moves a field to a terminus, answers items 5, 6, 7
   and 9 by name — that is where a silent drop and an open door live, so each carries its own line.
 
-Files the inventory puts in one `shape` group carry one answer between them, written against the
-representative the group names and closing `N others share this shape: <paths>`. Eight transformers
-generated from one template are one file under eight names, and answering them eight times buys the
-same finding eight times. An item that turns on a file's own identity — a name, a value, a call unique
-to it — is still answered per file.
+Files the inventory puts in one `shape` group carry one answer between them for items 1–4, 8 and
+10–12, written against the representative the group names and closing `N others share this shape:
+<paths>`. Eight transformers generated from one template are one file under eight names, and answering
+them eight times buys the same finding eight times.
+
+**Items 5, 6, 7 and 9 — authorisation, untrusted input, secrets, terminus — are answered per file
+whatever the shape.** The same hunk in two files reaches two sinks: one added null check is a
+formality in a logging transformer and a control in a payment one, and shape does not tell them apart.
+These four are also the items that return clean most often, which is what a floor does.
 
 The answered checklist is the deliverable; the findings are what falls out of it. Every finding names
 the item it fell out of, by number.
@@ -75,8 +79,14 @@ diff added, and asks of each line what it does to a caller, a row and a thread.
 
 ## §2 — What the base did and this does not
 
-Pass B's checklist. Every line is answered by reading the files in B's inventory at both SHAs. An
-added file answers from its own text and from what the base wrote for it to read.
+Pass B's checklist, answered over B's inventory at both SHAs. An added file answers from its own text
+and from what the base wrote for it to read.
+
+**Read the hunks, then what they reach.** Each duty below turns on a deletion and the code around it —
+the removed read and its suppliers, the removed branch and its excluded inputs, the changed signature
+and its callers. Open the fixed-point file where a hunk does not settle its duty, and not before: a
+whole file at both SHAs is the most expensive way to answer a question about four lines, and B is
+given every file's text on disk precisely so it can open the ones that earn it.
 
 - **Provenance** — every value the diff touches had a supplier at the fixed point. For each read the
   diff removes, each field a framework or mapper filled before the new code runs, and each condition

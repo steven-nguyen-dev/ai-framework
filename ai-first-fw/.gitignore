@@ -21,6 +21,10 @@ __pycache__/
 # Downloads & local test outputs
 downloads/
 *.log
+*.tmp
+local-test-servers/amazon/mock-data/*.xml
+local-test-servers/**/mock-data/*.xml
+local-test-servers/**/test-results/
 
 # Operating System Files
 .DS_Store

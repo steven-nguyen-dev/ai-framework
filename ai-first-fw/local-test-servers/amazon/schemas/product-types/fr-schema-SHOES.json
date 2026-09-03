@@ -1,0 +1,123 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture. JPluger's own hand-authored edge-case fixture -- an orphan \"$ref\": \"#/$defs/does_not_exist\", a non-English locale, and an unmodelled \"amazonFutureKeyword\" construct. The IA-5105 plan section 1 table records recommended_browse_nodes as absent from it.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.amazon.com/selling-partners/definitions/product-types/SHOES",
+  "$comment": "Hand-authored fixture modelling the shape of an Amazon Product Type Definition schema.",
+  "type": "object",
+  "required": [
+    "item_name",
+    "color"
+  ],
+  "$defs": {
+    "language_tag": {
+      "description": "Balise de langue du fabricant",
+      "type": "string",
+      "editable": true,
+      "default": "fr_FR",
+      "examples": [
+        "fr_FR",
+        "en_GB"
+      ]
+    }
+  },
+  "properties": {
+    "item_name": {
+      "title": "Nom du produit",
+      "description": "Le titre affiché de l'article",
+      "type": "string",
+      "editable": true,
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[^\\n\\r]+$"
+    },
+    "color": {
+      "title": "Couleur",
+      "description": "Couleur principale",
+      "type": "string",
+      "editable": true,
+      "enum": [
+        "BLACK",
+        "WHITE",
+        "RED"
+      ],
+      "enumNames": [
+        "Noir",
+        "Blanc",
+        "Rouge"
+      ]
+    },
+    "heel_height": {
+      "title": "Hauteur du talon",
+      "type": "object",
+      "editable": true,
+      "properties": {
+        "value": {
+          "title": "Valeur",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "unit": {
+          "title": "Unité",
+          "type": "string",
+          "enum": [
+            "centimeters",
+            "inches"
+          ],
+          "enumNames": [
+            "Centimètres",
+            "Pouces"
+          ]
+        }
+      }
+    },
+    "bullet_point": {
+      "title": "Points clés",
+      "type": "array",
+      "editable": true,
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Texte",
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "manufacturer": {
+      "title": "Fabricant",
+      "type": "object",
+      "editable": true,
+      "properties": {
+        "name": {
+          "title": "Nom du fabricant",
+          "type": "string",
+          "maxLength": 100
+        },
+        "language_tag": {
+          "$ref": "#/$defs/language_tag"
+        }
+      }
+    },
+    "warranty_description": {
+      "title": "Description de la garantie",
+      "type": "string",
+      "editable": false,
+      "maxLength": 500,
+      "amazonFutureKeyword": {
+        "unmodelled": "a construct no parser pass anticipates"
+      }
+    },
+    "orphan_ref": {
+      "title": "Référence orpheline",
+      "$ref": "#/$defs/does_not_exist"
+    }
+  }
+}

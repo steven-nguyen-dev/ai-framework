@@ -1,0 +1,393 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/CLOTHING",
+  "title": "Clothing",
+  "description": "Amazon Selling Partner API Product Type Definition for CLOTHING (US Marketplace)",
+  "type": "object",
+  "required": [
+    "item_name",
+    "brand",
+    "feed_product_type",
+    "size",
+    "color",
+    "target_gender",
+    "age_range_description",
+    "outer_material_type"
+  ],
+  "properties": {
+    "item_name": {
+      "title": "Item Name",
+      "description": "The title or name of the clothing item as displayed on Amazon product detail page.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Item Name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[^\\n\\r]+$"
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "brand": {
+      "title": "Brand",
+      "description": "The brand, trademark, or manufacturer of the clothing item.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Brand",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "feed_product_type": {
+      "title": "Feed Product Type",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Feed Product Type",
+            "type": "string",
+            "enum": [
+              "shirt",
+              "pants",
+              "dress",
+              "outerwear",
+              "sweater",
+              "shorts",
+              "skirt",
+              "underwear"
+            ],
+            "enumNames": [
+              "Shirt",
+              "Pants",
+              "Dress",
+              "Outerwear",
+              "Sweater",
+              "Shorts",
+              "Skirt",
+              "Underwear"
+            ]
+          }
+        }
+      }
+    },
+    "size": {
+      "title": "Size",
+      "description": "Standardized apparel size.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Size",
+            "type": "string",
+            "enum": [
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "2XL",
+              "3XL"
+            ],
+            "enumNames": [
+              "Extra Small",
+              "Small",
+              "Medium",
+              "Large",
+              "Extra Large",
+              "2X-Large",
+              "3X-Large"
+            ]
+          }
+        }
+      }
+    },
+    "color": {
+      "title": "Color",
+      "description": "The primary color of the apparel.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Color",
+            "type": "string",
+            "enum": [
+              "black",
+              "white",
+              "navy",
+              "heather_grey",
+              "red",
+              "olive_green",
+              "burgundy"
+            ],
+            "enumNames": [
+              "Black",
+              "White",
+              "Navy Blue",
+              "Heather Grey",
+              "Red",
+              "Olive Green",
+              "Burgundy"
+            ]
+          }
+        }
+      }
+    },
+    "target_gender": {
+      "title": "Target Gender",
+      "description": "Intended gender for the clothing item.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Target Gender",
+            "type": "string",
+            "enum": [
+              "male",
+              "female",
+              "unisex"
+            ],
+            "enumNames": [
+              "Male",
+              "Female",
+              "Unisex"
+            ]
+          }
+        }
+      }
+    },
+    "age_range_description": {
+      "title": "Age Range Description",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Age Range Description",
+            "type": "string",
+            "enum": [
+              "adult",
+              "teen",
+              "kids",
+              "toddler",
+              "infant"
+            ],
+            "enumNames": [
+              "Adult",
+              "Teen",
+              "Kids",
+              "Toddler",
+              "Infant"
+            ]
+          }
+        }
+      }
+    },
+    "outer_material_type": {
+      "title": "Outer Material Type",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Outer Material Type",
+            "type": "string",
+            "enum": [
+              "cotton",
+              "polyester",
+              "wool",
+              "linen",
+              "silk",
+              "spandex",
+              "denim"
+            ],
+            "enumNames": [
+              "100% Cotton",
+              "Polyester",
+              "Wool",
+              "Linen",
+              "Silk",
+              "Spandex Blend",
+              "Denim"
+            ]
+          }
+        }
+      }
+    },
+    "bullet_point": {
+      "title": "Bullet Point",
+      "description": "Key product features (up to 5 bullet points).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Bullet Point",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          }
+        }
+      }
+    },
+    "care_instructions": {
+      "title": "Care Instructions",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Care Instructions",
+            "type": "string",
+            "enum": [
+              "machine_wash",
+              "hand_wash_only",
+              "dry_clean_only",
+              "machine_wash_cold"
+            ],
+            "enumNames": [
+              "Machine Wash Warm",
+              "Hand Wash Only",
+              "Dry Clean Only",
+              "Machine Wash Cold Gentle"
+            ]
+          }
+        }
+      }
+    },
+    "closure_type": {
+      "title": "Closure Type",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Closure Type",
+            "type": "string",
+            "enum": [
+              "button",
+              "zipper",
+              "pull_on",
+              "drawstring",
+              "hook_and_eye",
+              "snap"
+            ],
+            "enumNames": [
+              "Button",
+              "Zipper",
+              "Pull On",
+              "Drawstring",
+              "Hook and Eye",
+              "Snap"
+            ]
+          }
+        }
+      }
+    },
+    "warranty_description": {
+      "title": "Warranty Description",
+      "editable": false,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Warranty Description",
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "language_tag": {
+      "type": "string",
+      "title": "Language Tag",
+      "default": "en_US"
+    },
+    "marketplace_id": {
+      "type": "string",
+      "title": "Marketplace ID",
+      "default": "ATVPDKIKX0DER"
+    }
+  }
+}

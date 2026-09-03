@@ -31,6 +31,7 @@ BASE = os.environ.get("BASE", "http://127.0.0.1:23103").rstrip("/")
 SUITE = os.environ.get("SUITE", "smoke")
 KEEP = "--keep-state" in sys.argv
 FAST = "--fast" in sys.argv
+WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOCK_DIR = HERE
@@ -168,10 +169,21 @@ def publish():
             "then": c["then"],
             "note": c["note"]
         }
-        e.update(r if r else {"verdict": "pending"})
+        if r:
+            e.update(r)
+        elif WANTED_CASES and c["id"] not in WANTED_CASES:
+            e.update({
+                "verdict": "skip",
+                "summary": "skipped (not selected)",
+                "checks": [],
+                "calls": [],
+                "detail": {}
+            })
+        else:
+            e.update({"verdict": "pending"})
         cases.append(e)
 
-    done = [c for c in cases if c.get("verdict") in ("pass", "fail", "blocked")]
+    done = [c for c in cases if c.get("verdict") in ("pass", "fail", "blocked", "skip")]
     doc = {
         "name": "Amazon Selling Partner API (SP-API) Mock Smoke Suite",
         "suite": SUITE,
@@ -180,7 +192,8 @@ def publish():
         "summary": {
             "pass": sum(1 for c in done if c["verdict"] == "pass"),
             "fail": sum(1 for c in done if c["verdict"] == "fail"),
-            "blocked": sum(1 for c in done if c["verdict"] == "blocked")
+            "blocked": sum(1 for c in done if c["verdict"] == "blocked"),
+            "skip": sum(1 for c in done if c["verdict"] == "skip")
         },
         "evidence": EVIDENCE,
         "cases": cases
@@ -744,9 +757,16 @@ def _browse_tree(marketplace, with_report_options=True):
 def _roots(xml):
     """Top-level node ids: browsePathById carries an unnamed root id, so a root has 2 entries."""
     import xml.etree.ElementTree as ET
-    r = ET.fromstring(xml)
-    return sorted(n.findtext("browseNodeId") for n in r.findall("Node")
-                  if len(n.findtext("browsePathById").split(",")) == 2)
+    import io
+    source = io.StringIO(xml) if isinstance(xml, str) else io.BytesIO(xml)
+    roots = []
+    for event, n in ET.iterparse(source, events=("end",)):
+        if n.tag == "Node":
+            path = n.findtext("browsePathById") or ""
+            if len(path.split(",")) == 2:
+                roots.append(n.findtext("browseNodeId"))
+            n.clear()
+    return sorted(roots)
 
 
 def c_browse_tree_isolation(ch, calls, detail):
@@ -778,33 +798,55 @@ def c_browse_tree_isolation(ch, calls, detail):
 def c_browse_tree_shape(ch, calls, detail):
     import collections as _c
     import xml.etree.ElementTree as ET
+    import io
     st, _, xml = _browse_tree(MP_DE)
     calls.append("GET browse tree document -> %s" % st)
-    root = ET.fromstring(xml)
-    nodes = root.findall("Node")
-    ch.truthy("nodes present", "parsed Node elements", nodes)
 
-    ch.add("no isRoot element", "root is derived, not flagged", None, root.find(".//isRoot"))
+    source = io.StringIO(xml) if isinstance(xml, str) else io.BytesIO(xml)
+    first_node = None
+    node_count = 0
+    ids = []
+    commas = []
+    misleading = []
+
+    for event, n in ET.iterparse(source, events=("end",)):
+        if n.tag == "Node":
+            node_count += 1
+            if first_node is None:
+                first_node = {
+                    "isRoot": n.find(".//isRoot"),
+                    "parentNodeId": n.find(".//parentNodeId"),
+                    "browseNodeStoreContextName": n.findtext("browseNodeStoreContextName"),
+                    "productTypeDefinitions": n.findtext("productTypeDefinitions"),
+                }
+            nid = n.findtext("browseNodeId")
+            if nid:
+                ids.append(nid)
+            bname = n.findtext("browseNodeName") or ""
+            if "," in bname:
+                commas.append(nid)
+            bpath_name = n.findtext("browsePathByName") or ""
+            bpath_id = n.findtext("browsePathById") or ""
+            if len(bpath_name.split(",")) == len(bpath_id.split(",")):
+                misleading.append(nid)
+            n.clear()
+
+    ch.truthy("nodes present", "parsed Node elements", node_count > 0)
+    ch.add("no isRoot element", "root is derived, not flagged", None, first_node.get("isRoot") if first_node else None)
     ch.add("no parentNodeId element", "parent is derived from browsePathById",
-           None, root.find(".//parentNodeId"))
+           None, first_node.get("parentNodeId") if first_node else None)
     ch.truthy("browseNodeStoreContextName", "store-facing label present",
-              nodes[0].findtext("browseNodeStoreContextName"))
+              first_node.get("browseNodeStoreContextName") if first_node else None)
     ch.truthy("productTypeDefinitions", "product type join key present",
-              nodes[0].findtext("productTypeDefinitions"))
+              first_node.get("productTypeDefinitions") if first_node else None)
 
-    ids = [n.findtext("browseNodeId") for n in nodes]
     dupes = [i for i, c in _c.Counter(ids).items() if c > 1]
     ch.truthy("duplicate browseNodeId present", "one id, two placements (issue #4742)", dupes)
 
     # A name containing a comma makes browsePathByName unsplittable, and the token
     # count can still equal the id count -- so a length assertion passes on bad data.
-    commas = [n for n in nodes if "," in n.findtext("browseNodeName")]
     ch.truthy("comma in a browseNodeName", "browsePathByName is not splittable", commas)
-    misleading = [n for n in nodes
-                  if len(n.findtext("browsePathByName").split(",")) ==
-                     len(n.findtext("browsePathById").split(","))]
-    ch.truthy("naive split count can match id count", "length check is not a sufficient guard",
-              misleading)
+    ch.truthy("naive split count can match id count", "length check is not a sufficient guard", misleading)
 
 
 def c_listings_report_localised(ch, calls, detail):
@@ -838,8 +880,14 @@ def c_product_type_definition(ch, calls, detail):
 
     ch.add("schema is a link, not inline", "SchemaLink shape",
            True, isinstance(b.get("schema"), dict) and "link" in b.get("schema", {}))
-    ch.truthy("schema.checksum", "Base64 MD5 for change detection",
-              b.get("schema", {}).get("checksum"))
+    # This generic fallback's checksum is empty on purpose: a real client verifies the downloaded
+    # schema bytes against it (AmazonDefinitionsUtility.checksumMatches in JPluger), and empty/absent
+    # is the documented "Amazon stated none" pass -- a fixed, non-matching hex string here would
+    # instead fail every real client's verification, since the fallback's static body never hashes
+    # to it. Product types with real, checked-in fixtures (see suite-taxonomy.py) still carry the
+    # field, just empty, so its presence/shape is unchanged.
+    ch.add("schema.checksum is empty", "fail-open: matches whatever bytes /s3/ptd-schema serves",
+           "", b.get("schema", {}).get("checksum"))
     ch.add("productTypeVersion is an object", "not a bare string",
            True, isinstance(b.get("productTypeVersion"), dict))
     ch.add("version member present", "the value to store",
@@ -1107,6 +1155,8 @@ def preflight():
     if not os.path.isdir(MOCK_DIR):
         sys.exit(f"PREFLIGHT FAIL: {MOCK_DIR} does not exist")
     os.makedirs(DATA_DIR, exist_ok=True)
+    from generate_browse_tree_300mb import ensure_browse_tree_300mb
+    ensure_browse_tree_300mb()
 
     st, _ = call("POST", "/auth/o2/token", {"grant_type": "refresh_token"}, token=None, is_form=True)
     if st == 0:
@@ -1153,9 +1203,13 @@ def main():
     preflight()
     os.makedirs(RUN_DIR, exist_ok=True)
     publish()
-    print(f"  cases    : {len(CASES)}\n")
+    target_cases = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
+    if WANTED_CASES:
+        print(f"  cases    : {len(target_cases)} selected of {len(CASES)}\n")
+    else:
+        print(f"  cases    : {len(CASES)}\n")
 
-    for c in CASES:
+    for c in target_cases:
         v = run_case(c)
         publish()
         r = RESULTS[c["id"]]
@@ -1175,12 +1229,12 @@ def main():
     EVIDENCE["status"] = "complete"
     publish()
 
-    p = sum(1 for c in CASES if RESULTS[c["id"]]["verdict"] == "pass")
-    nchecks = sum(len(RESULTS[c["id"]]["checks"]) for c in CASES)
-    print(f"\n  {p}/{len(CASES)} cases passed, {nchecks} checks total")
+    p = sum(1 for c in target_cases if RESULTS.get(c["id"], {}).get("verdict") == "pass")
+    nchecks = sum(len(RESULTS.get(c["id"], {}).get("checks", [])) for c in target_cases)
+    print(f"\n  {p}/{len(target_cases)} selected cases passed, {nchecks} checks total")
     print(f"  results: {os.path.join(RUN_DIR, 'results.json')}")
     print(f"  /test  : {BASE}/test")
-    return 1 if p != len(CASES) else 0
+    return 1 if p != len(target_cases) else 0
 
 
 if __name__ == "__main__":

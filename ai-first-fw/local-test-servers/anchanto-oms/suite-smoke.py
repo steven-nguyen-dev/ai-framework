@@ -27,6 +27,7 @@ import urllib.request
 BASE = os.environ.get("BASE", "http://127.0.0.1:23001").rstrip("/")
 SUITE = os.environ.get("SUITE", "smoke")
 KEEP = "--keep-state" in sys.argv
+WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # This runner sits in the mock's own folder, beside the config it drives. The mock writes its
@@ -112,17 +113,29 @@ def publish():
     for entry in CASES:
         result = RESULTS.get(entry["id"])
         rendered = {k: entry[k] for k in ("id", "name", "given", "then", "note")}
-        rendered.update(result if result else {"verdict": "pending"})
+        if result:
+            rendered.update(result)
+        elif WANTED_CASES and entry["id"] not in WANTED_CASES:
+            rendered.update({
+                "verdict": "skip",
+                "summary": "skipped (not selected)",
+                "checks": [],
+                "calls": [],
+                "detail": {}
+            })
+        else:
+            rendered.update({"verdict": "pending"})
         cases.append(rendered)
-    done = [c for c in cases if c["verdict"] in ("pass", "fail", "blocked")]
+    done = [c for c in cases if c["verdict"] in ("pass", "fail", "blocked", "skip")]
     document = {
         "name": "Anchanto OMS (SelluSeller) mock smoke -- 74 operations",
         "suite": SUITE,
-        "at": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "base_url": BASE,
         "summary": {"pass": sum(1 for c in done if c["verdict"] == "pass"),
                     "fail": sum(1 for c in done if c["verdict"] == "fail"),
-                    "blocked": sum(1 for c in done if c["verdict"] == "blocked")},
+                    "blocked": sum(1 for c in done if c["verdict"] == "blocked"),
+                    "skip": sum(1 for c in done if c["verdict"] == "skip")},
         "evidence": EVIDENCE,
         "cases": cases,
     }
@@ -1175,8 +1188,12 @@ def main():
     preflight()
     os.makedirs(RUN_DIR, exist_ok=True)
     publish()
-    print("  cases    : %d\n" % len(CASES))
-    for entry in CASES:
+    target_cases = [entry for entry in CASES if not WANTED_CASES or entry["id"] in WANTED_CASES]
+    if WANTED_CASES:
+        print("  cases    : %d selected of %d\n" % (len(target_cases), len(CASES)))
+    else:
+        print("  cases    : %d\n" % len(CASES))
+    for entry in target_cases:
         verdict = run_case(entry)
         publish()
         result = RESULTS[entry["id"]]
@@ -1191,12 +1208,12 @@ def main():
     capture()
     EVIDENCE["status"] = "complete"
     publish()
-    passed = sum(1 for entry in CASES if RESULTS[entry["id"]]["verdict"] == "pass")
-    total_checks = sum(len(RESULTS[entry["id"]]["checks"]) for entry in CASES)
-    print("\n  %d/%d cases passed, %d checks total" % (passed, len(CASES), total_checks))
+    passed = sum(1 for entry in target_cases if RESULTS.get(entry["id"], {}).get("verdict") == "pass")
+    total_checks = sum(len(RESULTS.get(entry["id"], {}).get("checks", [])) for entry in target_cases)
+    print("\n  %d/%d selected cases passed, %d checks total" % (passed, len(target_cases), total_checks))
     print("  results: %s" % os.path.join(RUN_DIR, "results.json"))
     print("  /test  : %s/test" % BASE)
-    return 1 if passed != len(CASES) else 0
+    return 1 if passed != len(target_cases) else 0
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@
     {
       "name": "ai-first-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: write-analysis, implementation-planner, specs-builder, and review-code.",
-      "version": "2.0.10",
+      "version": "2.0.14",
       "source": "./ai-first-fw/skills"
     },
     {

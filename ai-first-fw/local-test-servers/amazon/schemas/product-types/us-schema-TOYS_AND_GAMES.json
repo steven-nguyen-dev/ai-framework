@@ -1,0 +1,159 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/TOYS_AND_GAMES",
+  "title": "Toys and Games",
+  "description": "Amazon Selling Partner API Product Type Definition for TOYS_AND_GAMES (US Marketplace)",
+  "type": "object",
+  "required": [
+    "item_name",
+    "brand",
+    "manufacturer_minimum_age",
+    "cpsia_cautionary_statement"
+  ],
+  "properties": {
+    "item_name": {
+      "title": "Item Name",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Item Name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "brand": {
+      "title": "Brand",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Brand",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "manufacturer_minimum_age": {
+      "title": "Manufacturer Minimum Age",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value",
+          "unit"
+        ],
+        "properties": {
+          "value": {
+            "title": "Minimum Age",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1200
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string",
+            "enum": [
+              "months",
+              "years"
+            ],
+            "enumNames": [
+              "Months",
+              "Years"
+            ]
+          }
+        }
+      }
+    },
+    "cpsia_cautionary_statement": {
+      "title": "CPSIA Cautionary Statement",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Cautionary Statement",
+            "type": "string",
+            "enum": [
+              "choking_hazard_balloon",
+              "choking_hazard_contains_a_marble",
+              "choking_hazard_contains_small_ball",
+              "choking_hazard_is_a_marble",
+              "choking_hazard_is_a_small_ball",
+              "choking_hazard_small_parts",
+              "no_warning_applicable"
+            ],
+            "enumNames": [
+              "Choking Hazard - Balloon",
+              "Choking Hazard - Contains a Marble",
+              "Choking Hazard - Contains Small Ball",
+              "Choking Hazard - Is a Marble",
+              "Choking Hazard - Is a Small Ball",
+              "Choking Hazard - Small Parts",
+              "No Warning Applicable"
+            ]
+          }
+        }
+      }
+    },
+    "number_of_players": {
+      "title": "Number of Players",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "minimum": {
+            "title": "Minimum Players",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "maximum": {
+            "title": "Maximum Players",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "language_tag": {
+      "type": "string",
+      "title": "Language Tag",
+      "default": "en_US"
+    },
+    "marketplace_id": {
+      "type": "string",
+      "title": "Marketplace ID",
+      "default": "ATVPDKIKX0DER"
+    }
+  }
+}

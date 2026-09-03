@@ -1,7 +1,7 @@
 ---
 name: write-analysis
 description: Write the claim library, mapping spec, requirements spec and ticket summary for one requirement, from its Jira ticket or brief, every party's API documentation, and the repository it runs in. Use on "write the analysis", "analyse this ticket", "write the mapping spec", "write the requirements spec", or when a Jira ticket or brief needs its analysis documents before implementation.
-version: 0.5.0
+version: 0.5.1
 disable-model-invocation: false
 ---
 
@@ -114,6 +114,8 @@ deleted.
 
 - Every section is headed by one endpoint or flow, and carries its change rows and its payload diff
   together.
+- Every payload diff is fenced `jsonc`, and every line of it carries a trailing comment holding a
+  status and, for `ADD` and `UPDATE`, an `L-n`.
 - Every mapping row appears under exactly one status, settled against the target system's data
   model.
 - Every `ADD` and `UPDATE` row states what the receiving team builds, in that team's own terms.

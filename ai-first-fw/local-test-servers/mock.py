@@ -1028,7 +1028,9 @@ def group_test_runs(results_dir, suites):
 
 
 def all_runs(groups):
-    return [run for group in groups for run in group["runs"]]
+    runs = [run for group in groups for run in group["runs"]]
+    runs.sort(key=lambda r: r.get("stamp") or r.get("id") or "", reverse=True)
+    return runs
 
 
 class SuiteRunner:
@@ -1971,7 +1973,8 @@ function drawRun(){
     statusText = 'Failed (Exit ' + run.exit_code + ')';
   }
 
-  var summaryBar = '<details class="term-drawer" id="term-drawer"'+(termOpen?' open':'')+'>'+
+  var isDrawerOpen = termOpen || (done && run.exit_code !== 0 && run.exit_code !== null && run.exit_code !== undefined);
+  var summaryBar = '<details class="term-drawer" id="term-drawer"'+(isDrawerOpen?' open':'')+'>'+
     '<summary class="term-summary">'+
       '<span class="s-arrow">&#9656;</span>'+
       '<span class="chip '+statusClass+'" style="display:inline-flex;align-items:center;gap:6px">'+statusText+'</span>'+
@@ -2309,7 +2312,12 @@ def build_routes(config, config_dir):
 # ----------------------------------------------------------------------------------------- serving
 
 def make_handler(config, routes, state, api_log=None, results_dir=None,
-                 suites=None, runner=None, suite_cwd=None, style=""):
+                 suites=None, runner=None, suite_cwd=None, style="", config_dir=None):
+    # A `respond.file` is written relative to the config that names it, so it resolves against the
+    # config's own folder -- the same base `state_dir` and `test_results_dir` already use. suite_cwd
+    # is where a suite command is spawned (the local-test-servers root) and is a different base;
+    # resolving fixtures against it made every relative `file` 404 when the server ran standalone.
+    fixture_dir = config_dir or suite_cwd or HERE
     unmatched_status = int(config.get("unmatched_status", 404))
     verbose = config.get("verbose", True)
     ui_path = config.get("log_ui_path", "/log")
@@ -2559,6 +2567,12 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
                 delay = respond.get("delay_ms")
                 if delay:
                     time.sleep(float(delay) / 1000.0)
+                if "file" in respond:
+                    file_rel = render(respond["file"], ctx)
+                    file_path = file_rel if os.path.isabs(file_rel) \
+                        else os.path.join(fixture_dir, file_rel)
+                    self._reply_file(int(respond.get("status", 200)), file_path, rule.get("name"), respond.get("headers"))
+                    return
                 self._reply(int(respond.get("status", 200)),
                             render(respond.get("body"), ctx),
                             rule.get("name"),
@@ -2569,6 +2583,39 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
                 "HasError": True,
                 "ErrorMessages": ["mock_server: no rule matched for %s %s" % (self.command, parsed.path)]
             }, None)
+
+        def _reply_file(self, status, file_path, rule_name, headers=None):
+            if not os.path.exists(file_path):
+                self._reply(404, {"error": "File not found: %s" % file_path}, rule_name)
+                return
+            file_size = os.path.getsize(file_path)
+            response_headers = dict(headers or {"Content-Type": "application/octet-stream"})
+            response_headers["Content-Length"] = str(file_size)
+
+            if api_log is not None:
+                call = dict(self._call)
+                call.update({
+                    "duration_ms": round((time.time() - call.pop("started_at")) * 1000, 3),
+                    "rule": rule_name,
+                    "status": status,
+                    "status_text": HTTPStatus(status).phrase if status in
+                                   {s.value for s in HTTPStatus} else "",
+                    "response_headers": response_headers,
+                    "response_body_text": "[file served: %s, %d bytes]" % (os.path.basename(file_path), file_size),
+                    "response_body_json": None,
+                })
+                api_log.record(call)
+
+            self.send_response(status)
+            for key, value in response_headers.items():
+                self.send_header(key, value)
+            self.end_headers()
+            with open(file_path, "rb") as f:
+                shutil.copyfileobj(f, self.wfile, length=64 * 1024)
+
+            if verbose:
+                print("  %s %s -> %s [%s] (%d bytes streamed)" % (
+                    self.command, self.path, status, rule_name or "", file_size), flush=True)
 
         def _reply(self, status, body, rule_name, headers=None):
             if body is None:
@@ -2591,8 +2638,8 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
                     "status_text": HTTPStatus(status).phrase if status in
                                    {s.value for s in HTTPStatus} else "",
                     "response_headers": response_headers,
-                    "response_body_text": payload.decode("utf-8", "replace"),
-                    "response_body_json": body if not isinstance(body, (str, bytes)) else None,
+                    "response_body_text": payload.decode("utf-8", "replace") if len(payload) <= 1048576 else "[body omitted: %d bytes]" % len(payload),
+                    "response_body_json": body if not isinstance(body, (str, bytes)) and len(payload) <= 1048576 else None,
                 })
                 api_log.record(call)
 
@@ -2764,7 +2811,8 @@ def main():
     theme = load_theme(config, config_dir)
     server = _Server((host, port),
                      make_handler(config, routes, state, api_log, results_dir,
-                                  suites, SuiteRunner(), HERE, theme_css(theme)))
+                                  suites, SuiteRunner(), HERE, theme_css(theme),
+                                  config_dir=config_dir))
     print("%s mock running on http://%s:%d (%d routes, %d configured)"
           % (config.get("name", "Mock"), host, port, len(routes),
              sum(1 for r in routes if r.source == "config")), flush=True)

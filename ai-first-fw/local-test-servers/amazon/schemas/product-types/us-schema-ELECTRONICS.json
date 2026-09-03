@@ -1,0 +1,271 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/ELECTRONICS",
+  "title": "Electronics",
+  "description": "Amazon Selling Partner API Product Type Definition for ELECTRONICS (US Marketplace)",
+  "type": "object",
+  "required": [
+    "item_name",
+    "brand",
+    "model_number",
+    "power_source_type",
+    "connectivity_technology"
+  ],
+  "properties": {
+    "item_name": {
+      "title": "Item Name",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Item Name",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "language_tag": {
+            "$ref": "#/$defs/language_tag"
+          },
+          "marketplace_id": {
+            "$ref": "#/$defs/marketplace_id"
+          }
+        }
+      }
+    },
+    "brand": {
+      "title": "Brand",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Brand",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "model_number": {
+      "title": "Model Number",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Model Number",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        }
+      }
+    },
+    "power_source_type": {
+      "title": "Power Source Type",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Power Source Type",
+            "type": "string",
+            "enum": [
+              "battery_powered",
+              "corded_electric",
+              "solar_powered",
+              "usb_powered"
+            ],
+            "enumNames": [
+              "Battery Powered",
+              "Corded Electric",
+              "Solar Powered",
+              "USB Powered"
+            ]
+          }
+        }
+      }
+    },
+    "connectivity_technology": {
+      "title": "Connectivity Technology",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Connectivity Technology",
+            "type": "string",
+            "enum": [
+              "bluetooth",
+              "wi_fi",
+              "usb",
+              "hdmi",
+              "nfc",
+              "auxiliary",
+              "ethernet"
+            ],
+            "enumNames": [
+              "Bluetooth",
+              "Wi-Fi",
+              "USB",
+              "HDMI",
+              "NFC",
+              "Auxiliary 3.5mm",
+              "Ethernet"
+            ]
+          }
+        }
+      }
+    },
+    "voltage": {
+      "title": "Voltage",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Voltage",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string",
+            "enum": [
+              "volts",
+              "millivolts"
+            ],
+            "enumNames": [
+              "Volts",
+              "Millivolts"
+            ]
+          }
+        }
+      }
+    },
+    "wattage": {
+      "title": "Wattage",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Wattage",
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 5000
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string",
+            "enum": [
+              "watts",
+              "kilowatts",
+              "milliwatts"
+            ],
+            "enumNames": [
+              "Watts",
+              "Kilowatts",
+              "Milliwatts"
+            ]
+          }
+        }
+      }
+    },
+    "battery_capacity": {
+      "title": "Battery Capacity",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "Battery Capacity",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "unit": {
+            "title": "Unit",
+            "type": "string",
+            "enum": [
+              "milliamp_hours",
+              "amp_hours",
+              "watt_hours"
+            ],
+            "enumNames": [
+              "Milliamp Hours (mAh)",
+              "Amp Hours (Ah)",
+              "Watt Hours (Wh)"
+            ]
+          }
+        }
+      }
+    },
+    "bullet_point": {
+      "title": "Bullet Point",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "Bullet Point",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "language_tag": {
+      "type": "string",
+      "title": "Language Tag",
+      "default": "en_US"
+    },
+    "marketplace_id": {
+      "type": "string",
+      "title": "Marketplace ID",
+      "default": "ATVPDKIKX0DER"
+    }
+  }
+}

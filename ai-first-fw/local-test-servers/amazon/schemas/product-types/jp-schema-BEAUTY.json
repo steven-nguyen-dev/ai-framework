@@ -1,0 +1,186 @@
+{
+  "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it. Same divergent recommended_browse_nodes shape as gb-schema-FURNITURE.json -- see that file. Suites use it for the empty-picker fallback branch and for multi-byte encoding, not as evidence of what Amazon states for a Japanese product type.",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/BEAUTY",
+  "title": "Beauty",
+  "description": "Amazon Selling Partner API Product Type Definition for BEAUTY (Japan Marketplace)",
+  "type": "object",
+  "required": [
+    "item_name",
+    "brand",
+    "item_form",
+    "skin_type",
+    "target_gender"
+  ],
+  "properties": {
+    "item_name": {
+      "title": "商品名",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "商品名",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "brand": {
+      "title": "ブランド名",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "ブランド名",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "item_form": {
+      "title": "商品の形状",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "商品の形状",
+            "type": "string",
+            "enum": [
+              "cream",
+              "lotion",
+              "serum",
+              "gel",
+              "oil",
+              "foam",
+              "spray",
+              "powder"
+            ],
+            "enumNames": [
+              "クリーム (Cream)",
+              "ローション・化粧水 (Lotion)",
+              "美容液 (Serum)",
+              "ジェル (Gel)",
+              "オイル (Oil)",
+              "泡・フォーム (Foam)",
+              "スプレー (Spray)",
+              "パウダー (Powder)"
+            ]
+          }
+        }
+      }
+    },
+    "skin_type": {
+      "title": "肌タイプ",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "title": "肌タイプ",
+            "type": "string",
+            "enum": [
+              "all_skin_types",
+              "sensitive",
+              "dry",
+              "oily",
+              "combination",
+              "normal"
+            ],
+            "enumNames": [
+              "全肌質対応 (All Skin Types)",
+              "敏感肌 (Sensitive)",
+              "乾燥肌 (Dry)",
+              "オイリー肌 (Oily)",
+              "混合肌 (Combination)",
+              "普通肌 (Normal)"
+            ]
+          }
+        }
+      }
+    },
+    "item_volume": {
+      "title": "容量・体積",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "容量",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "unit": {
+            "title": "単位",
+            "type": "string",
+            "enum": [
+              "milliliters",
+              "fluid_ounces",
+              "grams"
+            ],
+            "enumNames": [
+              "ミリリットル (ml)",
+              "液量オンス (fl oz)",
+              "グラム (g)"
+            ]
+          }
+        }
+      }
+    },
+    "recommended_browse_nodes": {
+      "title": "推奨ブラウズノード",
+      "editable": false,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "推奨ブラウズノード",
+            "type": "string",
+            "maxLength": 15
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "language_tag": {
+      "type": "string",
+      "title": "Language Tag",
+      "default": "ja_JP"
+    },
+    "marketplace_id": {
+      "type": "string",
+      "title": "Marketplace ID",
+      "default": "A1VC38T7YXB528"
+    }
+  }
+}

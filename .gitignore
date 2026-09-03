@@ -17,10 +17,12 @@ env/
 
 # Logs & temp
 *.log
+*.tmp
 .tmp*
 .backups/
 _to_delete/
 *.bak
+test-results/
 
 # Archives & packages
 *.zip
