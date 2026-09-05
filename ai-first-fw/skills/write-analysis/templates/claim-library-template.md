@@ -32,6 +32,8 @@ this document holds the locator, the quote and the searches that stopped.
   carry it, write the tight paraphrase the next session acts on. Keep your reasoning in the
   document that cites the row.
 - A search that found nothing is a claim. Record it in §4, so the next session searches new ground.
+- `Used in` names the document and its `##` section only — `mapping §4`, `requirements §2`,
+  `summary 2`. Subsection numbers move while this library is open; top-level numbers do not.
 - Every kind is one of `code`, `url`, `doc`, `jira`, `user`. §2 states the locator form for each.
 - Use pure Markdown headings and links.
 
@@ -39,16 +41,18 @@ this document holds the locator, the quote and the searches that stopped.
 
 ## 1. Keys
 
-Short keys stand in for long paths. Expand each one here, once.
+Short keys stand in for long paths. Expand each one here, once. Every expansion begins with `/` or
+`[K-REPO]`, so a file tool opens it as written.
 
 | Key | Expands to |
 | :--- | :--- |
-| `[KEY_A]` | `[full/path/to/partner-openapi.json]` |
-| `[KEY_B]` | `[full/path/to/target-system-swagger.json]` |
-| `[KEY_C]` | `[full/path/to/requirements-doc.md]` |
+| `K-REPO` | `[/absolute/path/to/repository-root]` |
+| `[KEY_A]` | `[/absolute/path/to/partner-openapi.json]` |
+| `[KEY_B]` | `[K-REPO]/[path/to/target-system-swagger.json]` |
+| `[KEY_C]` | `[K-REPO]/[path/to/requirements-doc.md]` |
 
-All other paths are relative to the `[repository-name]` root. Class names are given without their
-package where the name is unique in the repository.
+All other paths are relative to `[K-REPO]`. Class names are given without their package where the
+name is unique in the repository.
 
 ---
 
@@ -62,7 +66,7 @@ The form each kind takes. A row whose locator does not match its form is not yet
 | `url` | Full URL, then `(fetched YYYY-MM-DD)` — the page moves and the date says which version you read | `https://partner.dev/docs/catalog#status (fetched 2026-08-26)` |
 | `doc` | `document.md` §N, or `[KEY]` → `[json.pointer.path]` for a specification file | `[KEY_A]` → `components.schemas.Product.properties.status` |
 | `jira` | `KEY` + the field: `description`, `comment by [author] YYYY-MM-DD`, or `attachment [filename]` | `IA-5105 comment by J. Tan 2026-08-20` |
-| `user` | `[name]`, `[YYYY-MM-DD]`, and the decision in their words | `Steve, 2026-08-25, "we ship the DTO before OMS confirms"` |
+| `user` | `[name]`, `[YYYY-MM-DD]` — Says carries the decision in their words | `Steve, 2026-08-25` |
 
 ---
 
@@ -72,11 +76,11 @@ Every claim behind the three documents. Append as you write, and keep every numb
 
 | # | Claim | Kind | Locator | Says | Used in |
 | :-- | :--- | :--- | :--- | :--- | :--- |
-| L-1 | [The claim, in one sentence.] | `code` | `[path/to/File.ext:START-END]` | "[what the material says]" | mapping §5.1 |
+| L-1 | [The claim, in one sentence.] | `code` | `[path/to/File.ext:START-END]` | "[what the material says]" | mapping §5 |
 | L-2 | [The claim.] | `doc` | `[KEY_A]` → `[json.pointer.path]` | [tight paraphrase] | mapping §6 · requirements §3 |
-| L-3 | [The claim.] | `url` | `[https://…]` (fetched `[YYYY-MM-DD]`) | "[quote]" | summary 2.3 |
-| L-4 | [The claim.] | `jira` | `[KEY] comment by [author] [YYYY-MM-DD]` | "[quote]" | summary 2.1 |
-| L-5 | [The decision.] | `user` | `[name]`, `[YYYY-MM-DD]` | "[their words]" | summary 2.2 |
+| L-3 | [The claim.] | `url` | `[https://…]` (fetched `[YYYY-MM-DD]`) | "[quote]" | summary 2 |
+| L-4 | [The claim.] | `jira` | `[KEY] comment by [author] [YYYY-MM-DD]` | "[quote]" | summary 2 |
+| L-5 | [The decision.] | `user` | `[name]`, `[YYYY-MM-DD]` | "[their words]" | summary 2 |
 | L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | An absence. The file is where the next session re-checks it. | requirements §4 |
 
 ---

@@ -884,7 +884,7 @@ def c_product_type_definition(ch, calls, detail):
     # schema bytes against it (AmazonDefinitionsUtility.checksumMatches in JPluger), and empty/absent
     # is the documented "Amazon stated none" pass -- a fixed, non-matching hex string here would
     # instead fail every real client's verification, since the fallback's static body never hashes
-    # to it. Product types with real, checked-in fixtures (see suite-taxonomy.py) still carry the
+    # to it. Product types with real, checked-in fixtures (see IA-5105-US1-suite-taxonomy.py) still carry the
     # field, just empty, so its presence/shape is unchanged.
     ch.add("schema.checksum is empty", "fail-open: matches whatever bytes /s3/ptd-schema serves",
            "", b.get("schema", {}).get("checksum"))

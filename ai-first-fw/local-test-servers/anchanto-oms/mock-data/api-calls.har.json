@@ -7,52 +7,46 @@
     },
     "entries": [
       {
-        "startedDateTime": "2026-08-27T09:38:54.759Z",
-        "time": 0.603,
+        "startedDateTime": "2026-09-03T22:29:37.087Z",
+        "time": 0.312,
         "_seq": 1,
-        "_rule": null,
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check' -H 'Content-Type: application/json' --data-raw '{\"order_ids\":[1234,5678,9012]}'",
+        "_rule": "no marker -- 200, one order",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23001/rest/v1/orders/1' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***'",
         "request": {
-          "method": "POST",
-          "url": "http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check",
+          "method": "GET",
+          "url": "http://127.0.0.1:23001/rest/v1/orders/1",
           "httpVersion": "HTTP/1.1",
           "cookies": [],
           "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
             {
               "name": "Host",
               "value": "127.0.0.1:23001"
             },
             {
               "name": "User-Agent",
-              "value": "curl/8.7.1"
-            },
-            {
-              "name": "Accept",
-              "value": "*/*"
+              "value": "Python-urllib/3.14"
             },
             {
               "name": "Content-Type",
               "value": "application/json"
             },
             {
-              "name": "Content-Length",
-              "value": "30"
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
             }
           ],
           "queryString": [],
-          "postData": {
-            "mimeType": "application/json",
-            "text": "{\"order_ids\":[1234,5678,9012]}",
-            "_json": {
-              "order_ids": [
-                1234,
-                5678,
-                9012
-              ]
-            }
-          },
+          "postData": {},
           "headersSize": -1,
-          "bodySize": 30
+          "bodySize": 0
         },
         "response": {
           "status": 200,
@@ -66,81 +60,203 @@
             }
           ],
           "content": {
-            "size": 252,
+            "size": 2619,
             "mimeType": "application/json",
-            "text": "{\"action_name\": \"bulk_cancellation_check\", \"status\": true, \"total_records\": 3, \"request_processed_at\": \"2025-01-30T10:00:00Z\", \"orders\": [{\"id\": 1234, \"success\": true, \"order_number\": \"ORD123\", \"status\": \"pending\", \"error_message\": \"Order Not Found\"}]}",
+            "text": "{\"order_id\": 90114455, \"order_number\": \"TT-90210-A\", \"market_place_order_number\": \"90210\", \"parent_order_number\": null, \"marketplace_code\": \"tiktok\", \"marketplace_name\": \"TikTok Shop\", \"store_code\": \"TIKTOK_ID_01\", \"store_name\": \"TikTok Indonesia\", \"country_code\": \"ID\", \"seller_currency\": \"IDR\", \"payment_method\": \"cash on delivery\", \"is_cod\": true, \"price\": 262000.0, \"item_total\": 250000.0, \"payment_total\": 262000.0, \"shipping_amount\": \"12000.0\", \"items_count\": 1, \"status\": \"PACKED\", \"state\": \"PACKED\", \"statuses\": [\"New\", \"Paid\", \"Packed\"], \"order_date\": \"2026-08-15T10:22:31Z\", \"order_date_in_smp_timezone\": \"2026-08-15 17:22:31\", \"created_at\": \"2026-08-15T10:22:35Z\", \"updated_at\": \"2026-08-15T12:41:09Z\", \"marketplace_seller_id\": \"SELLER-8891\", \"warehouse_code\": \"ID-WH-01\", \"branch_code\": \"JKT-01\", \"tax_code\": \"PPN11\", \"company\": \"Anchanto Retail\", \"is_full_tax\": false, \"customer_id\": 771102, \"customer_email\": \"buyer@example.com\", \"customer_first_name\": \"Budi\", \"customer_last_name\": \"Santoso\", \"remarks\": \"Fragile\", \"delivery_info\": \"Leave at guard house\", \"gift_option\": false, \"gift_message\": \"\", \"fulfilment_by_marketplace\": false, \"order_origin\": \"MARKETPLACE\", \"shipping_address\": {\"first_name\": \"Budi\", \"last_name\": \"Santoso\", \"address_line1\": \"Jl. Sudirman No. 12\", \"address_line2\": \"Blok B\", \"city\": \"Jakarta\", \"state\": \"DKI Jakarta\", \"postcode\": \"10220\", \"country_code\": \"ID\", \"email\": \"buyer@example.com\", \"primary_phone\": \"+628123456789\"}, \"billing_address\": {\"first_name\": \"Budi\", \"last_name\": \"Santoso\", \"address_line1\": \"Jl. Sudirman No. 12\", \"city\": \"Jakarta\", \"postcode\": \"10220\", \"country_code\": \"ID\"}, \"pickup_address\": {\"address_line1\": \"Warehouse 1, Cakung\", \"city\": \"Jakarta\", \"postcode\": \"13910\", \"country_code\": \"ID\"}, \"seller_address\": {\"address_line1\": \"Menara Anchanto\", \"city\": \"Jakarta\", \"postcode\": \"12190\", \"country_code\": \"ID\"}, \"shipping_method\": {\"id\": 4411, \"name\": \"Standard\", \"code\": \"STD\"}, \"order_items\": [{\"order_item_id\": 55510011, \"line_item_id\": \"TT-90210-A-1\", \"sku\": \"SKU-RED-M\", \"inventory_sku\": \"INV-RED-M\", \"name\": \"Red T-Shirt M\", \"quantity\": 2, \"status\": \"PACKED\", \"item_price\": \"125000.0\", \"paid_price\": 250000.0, \"currency\": \"IDR\", \"shipping_amount\": \"12000.0\", \"tax_amount\": 25000.0, \"seller_discount\": 0.0, \"channel_discount\": 0.0, \"courier_code\": \"JNE\", \"shipment_provider\": \"JNE\", \"shipping_type\": \"DROPSHIP\", \"tracking_code\": \"JNE0099887766\", \"mp_tracking_numbers\": [\"JNE0099887766\"], \"item_codes\": [\"IC-90210-1\", \"IC-90210-2\"], \"shipment_number\": \"SHP-77120\", \"warehouse_code\": \"ID-WH-01\"}], \"statuses_changed_at\": null, \"generic_order_tables\": []}",
             "_json": {
-              "action_name": "bulk_cancellation_check",
-              "status": true,
-              "total_records": 3,
-              "request_processed_at": "2025-01-30T10:00:00Z",
-              "orders": [
+              "order_id": 90114455,
+              "order_number": "TT-90210-A",
+              "market_place_order_number": "90210",
+              "parent_order_number": null,
+              "marketplace_code": "tiktok",
+              "marketplace_name": "TikTok Shop",
+              "store_code": "TIKTOK_ID_01",
+              "store_name": "TikTok Indonesia",
+              "country_code": "ID",
+              "seller_currency": "IDR",
+              "payment_method": "cash on delivery",
+              "is_cod": true,
+              "price": 262000.0,
+              "item_total": 250000.0,
+              "payment_total": 262000.0,
+              "shipping_amount": "12000.0",
+              "items_count": 1,
+              "status": "PACKED",
+              "state": "PACKED",
+              "statuses": [
+                "New",
+                "Paid",
+                "Packed"
+              ],
+              "order_date": "2026-08-15T10:22:31Z",
+              "order_date_in_smp_timezone": "2026-08-15 17:22:31",
+              "created_at": "2026-08-15T10:22:35Z",
+              "updated_at": "2026-08-15T12:41:09Z",
+              "marketplace_seller_id": "SELLER-8891",
+              "warehouse_code": "ID-WH-01",
+              "branch_code": "JKT-01",
+              "tax_code": "PPN11",
+              "company": "Anchanto Retail",
+              "is_full_tax": false,
+              "customer_id": 771102,
+              "customer_email": "buyer@example.com",
+              "customer_first_name": "Budi",
+              "customer_last_name": "Santoso",
+              "remarks": "Fragile",
+              "delivery_info": "Leave at guard house",
+              "gift_option": false,
+              "gift_message": "",
+              "fulfilment_by_marketplace": false,
+              "order_origin": "MARKETPLACE",
+              "shipping_address": {
+                "first_name": "Budi",
+                "last_name": "Santoso",
+                "address_line1": "Jl. Sudirman No. 12",
+                "address_line2": "Blok B",
+                "city": "Jakarta",
+                "state": "DKI Jakarta",
+                "postcode": "10220",
+                "country_code": "ID",
+                "email": "buyer@example.com",
+                "primary_phone": "+628123456789"
+              },
+              "billing_address": {
+                "first_name": "Budi",
+                "last_name": "Santoso",
+                "address_line1": "Jl. Sudirman No. 12",
+                "city": "Jakarta",
+                "postcode": "10220",
+                "country_code": "ID"
+              },
+              "pickup_address": {
+                "address_line1": "Warehouse 1, Cakung",
+                "city": "Jakarta",
+                "postcode": "13910",
+                "country_code": "ID"
+              },
+              "seller_address": {
+                "address_line1": "Menara Anchanto",
+                "city": "Jakarta",
+                "postcode": "12190",
+                "country_code": "ID"
+              },
+              "shipping_method": {
+                "id": 4411,
+                "name": "Standard",
+                "code": "STD"
+              },
+              "order_items": [
                 {
-                  "id": 1234,
-                  "success": true,
-                  "order_number": "ORD123",
-                  "status": "pending",
-                  "error_message": "Order Not Found"
+                  "order_item_id": 55510011,
+                  "line_item_id": "TT-90210-A-1",
+                  "sku": "SKU-RED-M",
+                  "inventory_sku": "INV-RED-M",
+                  "name": "Red T-Shirt M",
+                  "quantity": 2,
+                  "status": "PACKED",
+                  "item_price": "125000.0",
+                  "paid_price": 250000.0,
+                  "currency": "IDR",
+                  "shipping_amount": "12000.0",
+                  "tax_amount": 25000.0,
+                  "seller_discount": 0.0,
+                  "channel_discount": 0.0,
+                  "courier_code": "JNE",
+                  "shipment_provider": "JNE",
+                  "shipping_type": "DROPSHIP",
+                  "tracking_code": "JNE0099887766",
+                  "mp_tracking_numbers": [
+                    "JNE0099887766"
+                  ],
+                  "item_codes": [
+                    "IC-90210-1",
+                    "IC-90210-2"
+                  ],
+                  "shipment_number": "SHP-77120",
+                  "warehouse_code": "ID-WH-01"
                 }
-              ]
+              ],
+              "statuses_changed_at": null,
+              "generic_order_tables": []
             }
           },
           "redirectURL": "",
           "headersSize": -1,
-          "bodySize": 252
+          "bodySize": 2619
         },
         "cache": {},
         "timings": {
           "send": 0,
-          "wait": 0.603,
+          "wait": 0.312,
           "receive": 0
         }
       },
       {
-        "startedDateTime": "2026-08-27T09:38:54.769Z",
-        "time": 0.072,
+        "startedDateTime": "2026-09-03T22:29:36.438Z",
+        "time": 1634.129,
         "_seq": 2,
-        "_rule": null,
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check' -H 'Content-Type: application/json' --data-raw '{\"order_ids\":[99999999]}'",
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Luggage\", \"code\": \"LUGGAGE\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
         "request": {
           "method": "POST",
-          "url": "http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
           "httpVersion": "HTTP/1.1",
           "cookies": [],
           "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
             {
               "name": "Host",
               "value": "127.0.0.1:23001"
             },
             {
               "name": "User-Agent",
-              "value": "curl/8.7.1"
-            },
-            {
-              "name": "Accept",
-              "value": "*/*"
+              "value": "Python-urllib/3.14"
             },
             {
               "name": "Content-Type",
               "value": "application/json"
             },
             {
-              "name": "Content-Length",
-              "value": "24"
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
             }
           ],
-          "queryString": [],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
           "postData": {
             "mimeType": "application/json",
-            "text": "{\"order_ids\":[99999999]}",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Luggage\", \"code\": \"LUGGAGE\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
             "_json": {
-              "order_ids": [
-                99999999
-              ]
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Luggage",
+                "code": "LUGGAGE",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
             }
           },
           "headersSize": -1,
-          "bodySize": 24
+          "bodySize": 207
         },
         "response": {
           "status": 200,
@@ -154,381 +270,126 @@
             }
           ],
           "content": {
-            "size": 252,
+            "size": 500,
             "mimeType": "application/json",
-            "text": "{\"action_name\": \"bulk_cancellation_check\", \"status\": true, \"total_records\": 3, \"request_processed_at\": \"2025-01-30T10:00:00Z\", \"orders\": [{\"id\": 1234, \"success\": true, \"order_number\": \"ORD123\", \"status\": \"pending\", \"error_message\": \"Order Not Found\"}]}",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
             "_json": {
-              "action_name": "bulk_cancellation_check",
-              "status": true,
-              "total_records": 3,
-              "request_processed_at": "2025-01-30T10:00:00Z",
-              "orders": [
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
                 {
-                  "id": 1234,
-                  "success": true,
-                  "order_number": "ORD123",
-                  "status": "pending",
-                  "error_message": "Order Not Found"
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
                 }
               ]
             }
           },
           "redirectURL": "",
           "headersSize": -1,
-          "bodySize": 252
+          "bodySize": 500
         },
         "cache": {},
         "timings": {
           "send": 0,
-          "wait": 0.072,
+          "wait": 1634.129,
           "receive": 0
         }
       },
       {
-        "startedDateTime": "2026-08-27T09:38:54.826Z",
-        "time": 0.083,
+        "startedDateTime": "2026-09-03T22:29:38.084Z",
+        "time": 1297.945,
         "_seq": 3,
-        "_rule": null,
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check' -H 'Content-Type: application/json' --data-raw '{\"order_ids\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301]}'",
+        "_rule": "no marker -- cancellation accepted, 200",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/orders/41277/cancel?marketplace_code=amazon_sp_fr&cancellation_reason=BuyerCanceled' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"order_items\": [{\"id\": 2866997, \"item_codes\": [\"OIID-01\"], \"item_quantity\": 2, \"reason\": \"BuyerCanceled\"}]}'",
         "request": {
           "method": "POST",
-          "url": "http://127.0.0.1:23001/rest/v1/orders/bulk_cancellation_check",
+          "url": "http://127.0.0.1:23001/rest/v1/orders/41277/cancel?marketplace_code=amazon_sp_fr&cancellation_reason=BuyerCanceled",
           "httpVersion": "HTTP/1.1",
           "cookies": [],
           "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "108"
+            },
             {
               "name": "Host",
               "value": "127.0.0.1:23001"
             },
             {
               "name": "User-Agent",
-              "value": "curl/8.7.1"
-            },
-            {
-              "name": "Accept",
-              "value": "*/*"
+              "value": "Python-urllib/3.14"
             },
             {
               "name": "Content-Type",
               "value": "application/json"
             },
             {
-              "name": "Content-Length",
-              "value": "1412"
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
             }
           ],
-          "queryString": [],
+          "queryString": [
+            {
+              "name": "marketplace_code",
+              "value": "amazon_sp_fr"
+            },
+            {
+              "name": "cancellation_reason",
+              "value": "BuyerCanceled"
+            }
+          ],
           "postData": {
             "mimeType": "application/json",
-            "text": "{\"order_ids\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301]}",
+            "text": "{\"order_items\": [{\"id\": 2866997, \"item_codes\": [\"OIID-01\"], \"item_quantity\": 2, \"reason\": \"BuyerCanceled\"}]}",
             "_json": {
-              "order_ids": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                24,
-                25,
-                26,
-                27,
-                28,
-                29,
-                30,
-                31,
-                32,
-                33,
-                34,
-                35,
-                36,
-                37,
-                38,
-                39,
-                40,
-                41,
-                42,
-                43,
-                44,
-                45,
-                46,
-                47,
-                48,
-                49,
-                50,
-                51,
-                52,
-                53,
-                54,
-                55,
-                56,
-                57,
-                58,
-                59,
-                60,
-                61,
-                62,
-                63,
-                64,
-                65,
-                66,
-                67,
-                68,
-                69,
-                70,
-                71,
-                72,
-                73,
-                74,
-                75,
-                76,
-                77,
-                78,
-                79,
-                80,
-                81,
-                82,
-                83,
-                84,
-                85,
-                86,
-                87,
-                88,
-                89,
-                90,
-                91,
-                92,
-                93,
-                94,
-                95,
-                96,
-                97,
-                98,
-                99,
-                100,
-                101,
-                102,
-                103,
-                104,
-                105,
-                106,
-                107,
-                108,
-                109,
-                110,
-                111,
-                112,
-                113,
-                114,
-                115,
-                116,
-                117,
-                118,
-                119,
-                120,
-                121,
-                122,
-                123,
-                124,
-                125,
-                126,
-                127,
-                128,
-                129,
-                130,
-                131,
-                132,
-                133,
-                134,
-                135,
-                136,
-                137,
-                138,
-                139,
-                140,
-                141,
-                142,
-                143,
-                144,
-                145,
-                146,
-                147,
-                148,
-                149,
-                150,
-                151,
-                152,
-                153,
-                154,
-                155,
-                156,
-                157,
-                158,
-                159,
-                160,
-                161,
-                162,
-                163,
-                164,
-                165,
-                166,
-                167,
-                168,
-                169,
-                170,
-                171,
-                172,
-                173,
-                174,
-                175,
-                176,
-                177,
-                178,
-                179,
-                180,
-                181,
-                182,
-                183,
-                184,
-                185,
-                186,
-                187,
-                188,
-                189,
-                190,
-                191,
-                192,
-                193,
-                194,
-                195,
-                196,
-                197,
-                198,
-                199,
-                200,
-                201,
-                202,
-                203,
-                204,
-                205,
-                206,
-                207,
-                208,
-                209,
-                210,
-                211,
-                212,
-                213,
-                214,
-                215,
-                216,
-                217,
-                218,
-                219,
-                220,
-                221,
-                222,
-                223,
-                224,
-                225,
-                226,
-                227,
-                228,
-                229,
-                230,
-                231,
-                232,
-                233,
-                234,
-                235,
-                236,
-                237,
-                238,
-                239,
-                240,
-                241,
-                242,
-                243,
-                244,
-                245,
-                246,
-                247,
-                248,
-                249,
-                250,
-                251,
-                252,
-                253,
-                254,
-                255,
-                256,
-                257,
-                258,
-                259,
-                260,
-                261,
-                262,
-                263,
-                264,
-                265,
-                266,
-                267,
-                268,
-                269,
-                270,
-                271,
-                272,
-                273,
-                274,
-                275,
-                276,
-                277,
-                278,
-                279,
-                280,
-                281,
-                282,
-                283,
-                284,
-                285,
-                286,
-                287,
-                288,
-                289,
-                290,
-                291,
-                292,
-                293,
-                294,
-                295,
-                296,
-                297,
-                298,
-                299,
-                300,
-                301
+              "order_items": [
+                {
+                  "id": 2866997,
+                  "item_codes": [
+                    "OIID-01"
+                  ],
+                  "item_quantity": 2,
+                  "reason": "BuyerCanceled"
+                }
               ]
             }
           },
           "headersSize": -1,
-          "bodySize": 1412
+          "bodySize": 108
         },
         "response": {
           "status": 200,
@@ -542,33 +403,2187 @@
             }
           ],
           "content": {
-            "size": 252,
+            "size": 585,
             "mimeType": "application/json",
-            "text": "{\"action_name\": \"bulk_cancellation_check\", \"status\": true, \"total_records\": 3, \"request_processed_at\": \"2025-01-30T10:00:00Z\", \"orders\": [{\"id\": 1234, \"success\": true, \"order_number\": \"ORD123\", \"status\": \"pending\", \"error_message\": \"Order Not Found\"}]}",
+            "text": "{\"order_id\": 90114455, \"order_number\": \"TT-90210-A\", \"state\": \"CANCELLED\", \"status\": \"Cancelled\", \"created_at\": \"2026-08-15T10:22:35Z\", \"updated_at\": \"2026-08-15T14:11:07Z\", \"order_date\": \"2026-08-15T10:22:31Z\", \"marketplace_seller_id\": \"SELLER-8891\", \"line_items\": [{\"id\": 55510011, \"sku\": \"SKU-RED-M\", \"quantity\": 2, \"status\": \"Cancelled\", \"mp_item_codes\": [\"IC-90210-1\", \"IC-90210-2\"], \"mp_tracking_numbers\": [], \"shipment_number\": \"SHP-77120\"}, {\"id\": 55510012, \"sku\": \"SKU-BLU-L\", \"quantity\": 1, \"status\": \"Cancelled\", \"mp_item_codes\": [\"IC-90210-3\"], \"mp_tracking_numbers\": []}]}",
             "_json": {
-              "action_name": "bulk_cancellation_check",
-              "status": true,
-              "total_records": 3,
-              "request_processed_at": "2025-01-30T10:00:00Z",
-              "orders": [
+              "order_id": 90114455,
+              "order_number": "TT-90210-A",
+              "state": "CANCELLED",
+              "status": "Cancelled",
+              "created_at": "2026-08-15T10:22:35Z",
+              "updated_at": "2026-08-15T14:11:07Z",
+              "order_date": "2026-08-15T10:22:31Z",
+              "marketplace_seller_id": "SELLER-8891",
+              "line_items": [
                 {
-                  "id": 1234,
-                  "success": true,
-                  "order_number": "ORD123",
-                  "status": "pending",
-                  "error_message": "Order Not Found"
+                  "id": 55510011,
+                  "sku": "SKU-RED-M",
+                  "quantity": 2,
+                  "status": "Cancelled",
+                  "mp_item_codes": [
+                    "IC-90210-1",
+                    "IC-90210-2"
+                  ],
+                  "mp_tracking_numbers": [],
+                  "shipment_number": "SHP-77120"
+                },
+                {
+                  "id": 55510012,
+                  "sku": "SKU-BLU-L",
+                  "quantity": 1,
+                  "status": "Cancelled",
+                  "mp_item_codes": [
+                    "IC-90210-3"
+                  ],
+                  "mp_tracking_numbers": []
                 }
               ]
             }
           },
           "redirectURL": "",
           "headersSize": -1,
-          "bodySize": 252
+          "bodySize": 585
         },
         "cache": {},
         "timings": {
           "send": 0,
-          "wait": 0.083,
+          "wait": 1297.945,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:38.076Z",
+        "time": 1305.046,
+        "_seq": 4,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Clothing\", \"code\": \"CLOTHING\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "209"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Clothing\", \"code\": \"CLOTHING\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Clothing",
+                "code": "CLOTHING",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 209
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1305.046,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:39.384Z",
+        "time": 1427.229,
+        "_seq": 5,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Electronics\", \"code\": \"ELECTRONICS\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "215"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Electronics\", \"code\": \"ELECTRONICS\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Electronics",
+                "code": "ELECTRONICS",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 215
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1427.229,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:40.814Z",
+        "time": 1937.033,
+        "_seq": 6,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Toys and Games\", \"code\": \"TOYS_AND_GAMES\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "221"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Toys and Games\", \"code\": \"TOYS_AND_GAMES\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Toys and Games",
+                "code": "TOYS_AND_GAMES",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 221
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1937.033,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:42.771Z",
+        "time": 2003.862,
+        "_seq": 7,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000DE' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000DE\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_de\", \"active\": true, \"children\": [], \"store_code\": \"SS0000DE\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000DE",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000DE"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000DE\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_de\", \"active\": true, \"children\": [], \"store_code\": \"SS0000DE\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000DE",
+              "category": {
+                "name": "Product",
+                "code": "PRODUCT",
+                "marketplace_code": "amazon_sp_de",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000DE",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 207
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2003.862,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:44.785Z",
+        "time": 1779.358,
+        "_seq": 8,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000ES' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000ES\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_es\", \"active\": true, \"children\": [], \"store_code\": \"SS0000ES\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000ES",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000ES"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000ES\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_es\", \"active\": true, \"children\": [], \"store_code\": \"SS0000ES\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000ES",
+              "category": {
+                "name": "Product",
+                "code": "PRODUCT",
+                "marketplace_code": "amazon_sp_es",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000ES",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 207
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1779.358,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:46.578Z",
+        "time": 2604.398,
+        "_seq": 9,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000FR' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000FR\", \"category\": {\"name\": \"Shoes\", \"code\": \"SHOES\", \"marketplace_code\": \"amazon_sp_fr\", \"active\": true, \"children\": [], \"store_code\": \"SS0000FR\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000FR",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "203"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000FR"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000FR\", \"category\": {\"name\": \"Shoes\", \"code\": \"SHOES\", \"marketplace_code\": \"amazon_sp_fr\", \"active\": true, \"children\": [], \"store_code\": \"SS0000FR\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000FR",
+              "category": {
+                "name": "Shoes",
+                "code": "SHOES",
+                "marketplace_code": "amazon_sp_fr",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000FR",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 203
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2604.398,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:29:49.218Z",
+        "time": 3638.657,
+        "_seq": 10,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000AU' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000AU\", \"category\": {\"name\": \"Auto Part\", \"code\": \"AUTO_PART\", \"marketplace_code\": \"amazon_sp_au\", \"active\": true, \"children\": [], \"store_code\": \"SS0000AU\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000AU",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "211"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000AU"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000AU\", \"category\": {\"name\": \"Auto Part\", \"code\": \"AUTO_PART\", \"marketplace_code\": \"amazon_sp_au\", \"active\": true, \"children\": [], \"store_code\": \"SS0000AU\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000AU",
+              "category": {
+                "name": "Auto Part",
+                "code": "AUTO_PART",
+                "marketplace_code": "amazon_sp_au",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000AU",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 211
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 3638.657,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:31:59.196Z",
+        "time": 0.612,
+        "_seq": 11,
+        "_rule": "no marker -- 200, one order",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23001/rest/v1/orders/1' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23001/rest/v1/orders/1",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2619,
+            "mimeType": "application/json",
+            "text": "{\"order_id\": 90114455, \"order_number\": \"TT-90210-A\", \"market_place_order_number\": \"90210\", \"parent_order_number\": null, \"marketplace_code\": \"tiktok\", \"marketplace_name\": \"TikTok Shop\", \"store_code\": \"TIKTOK_ID_01\", \"store_name\": \"TikTok Indonesia\", \"country_code\": \"ID\", \"seller_currency\": \"IDR\", \"payment_method\": \"cash on delivery\", \"is_cod\": true, \"price\": 262000.0, \"item_total\": 250000.0, \"payment_total\": 262000.0, \"shipping_amount\": \"12000.0\", \"items_count\": 1, \"status\": \"PACKED\", \"state\": \"PACKED\", \"statuses\": [\"New\", \"Paid\", \"Packed\"], \"order_date\": \"2026-08-15T10:22:31Z\", \"order_date_in_smp_timezone\": \"2026-08-15 17:22:31\", \"created_at\": \"2026-08-15T10:22:35Z\", \"updated_at\": \"2026-08-15T12:41:09Z\", \"marketplace_seller_id\": \"SELLER-8891\", \"warehouse_code\": \"ID-WH-01\", \"branch_code\": \"JKT-01\", \"tax_code\": \"PPN11\", \"company\": \"Anchanto Retail\", \"is_full_tax\": false, \"customer_id\": 771102, \"customer_email\": \"buyer@example.com\", \"customer_first_name\": \"Budi\", \"customer_last_name\": \"Santoso\", \"remarks\": \"Fragile\", \"delivery_info\": \"Leave at guard house\", \"gift_option\": false, \"gift_message\": \"\", \"fulfilment_by_marketplace\": false, \"order_origin\": \"MARKETPLACE\", \"shipping_address\": {\"first_name\": \"Budi\", \"last_name\": \"Santoso\", \"address_line1\": \"Jl. Sudirman No. 12\", \"address_line2\": \"Blok B\", \"city\": \"Jakarta\", \"state\": \"DKI Jakarta\", \"postcode\": \"10220\", \"country_code\": \"ID\", \"email\": \"buyer@example.com\", \"primary_phone\": \"+628123456789\"}, \"billing_address\": {\"first_name\": \"Budi\", \"last_name\": \"Santoso\", \"address_line1\": \"Jl. Sudirman No. 12\", \"city\": \"Jakarta\", \"postcode\": \"10220\", \"country_code\": \"ID\"}, \"pickup_address\": {\"address_line1\": \"Warehouse 1, Cakung\", \"city\": \"Jakarta\", \"postcode\": \"13910\", \"country_code\": \"ID\"}, \"seller_address\": {\"address_line1\": \"Menara Anchanto\", \"city\": \"Jakarta\", \"postcode\": \"12190\", \"country_code\": \"ID\"}, \"shipping_method\": {\"id\": 4411, \"name\": \"Standard\", \"code\": \"STD\"}, \"order_items\": [{\"order_item_id\": 55510011, \"line_item_id\": \"TT-90210-A-1\", \"sku\": \"SKU-RED-M\", \"inventory_sku\": \"INV-RED-M\", \"name\": \"Red T-Shirt M\", \"quantity\": 2, \"status\": \"PACKED\", \"item_price\": \"125000.0\", \"paid_price\": 250000.0, \"currency\": \"IDR\", \"shipping_amount\": \"12000.0\", \"tax_amount\": 25000.0, \"seller_discount\": 0.0, \"channel_discount\": 0.0, \"courier_code\": \"JNE\", \"shipment_provider\": \"JNE\", \"shipping_type\": \"DROPSHIP\", \"tracking_code\": \"JNE0099887766\", \"mp_tracking_numbers\": [\"JNE0099887766\"], \"item_codes\": [\"IC-90210-1\", \"IC-90210-2\"], \"shipment_number\": \"SHP-77120\", \"warehouse_code\": \"ID-WH-01\"}], \"statuses_changed_at\": null, \"generic_order_tables\": []}",
+            "_json": {
+              "order_id": 90114455,
+              "order_number": "TT-90210-A",
+              "market_place_order_number": "90210",
+              "parent_order_number": null,
+              "marketplace_code": "tiktok",
+              "marketplace_name": "TikTok Shop",
+              "store_code": "TIKTOK_ID_01",
+              "store_name": "TikTok Indonesia",
+              "country_code": "ID",
+              "seller_currency": "IDR",
+              "payment_method": "cash on delivery",
+              "is_cod": true,
+              "price": 262000.0,
+              "item_total": 250000.0,
+              "payment_total": 262000.0,
+              "shipping_amount": "12000.0",
+              "items_count": 1,
+              "status": "PACKED",
+              "state": "PACKED",
+              "statuses": [
+                "New",
+                "Paid",
+                "Packed"
+              ],
+              "order_date": "2026-08-15T10:22:31Z",
+              "order_date_in_smp_timezone": "2026-08-15 17:22:31",
+              "created_at": "2026-08-15T10:22:35Z",
+              "updated_at": "2026-08-15T12:41:09Z",
+              "marketplace_seller_id": "SELLER-8891",
+              "warehouse_code": "ID-WH-01",
+              "branch_code": "JKT-01",
+              "tax_code": "PPN11",
+              "company": "Anchanto Retail",
+              "is_full_tax": false,
+              "customer_id": 771102,
+              "customer_email": "buyer@example.com",
+              "customer_first_name": "Budi",
+              "customer_last_name": "Santoso",
+              "remarks": "Fragile",
+              "delivery_info": "Leave at guard house",
+              "gift_option": false,
+              "gift_message": "",
+              "fulfilment_by_marketplace": false,
+              "order_origin": "MARKETPLACE",
+              "shipping_address": {
+                "first_name": "Budi",
+                "last_name": "Santoso",
+                "address_line1": "Jl. Sudirman No. 12",
+                "address_line2": "Blok B",
+                "city": "Jakarta",
+                "state": "DKI Jakarta",
+                "postcode": "10220",
+                "country_code": "ID",
+                "email": "buyer@example.com",
+                "primary_phone": "+628123456789"
+              },
+              "billing_address": {
+                "first_name": "Budi",
+                "last_name": "Santoso",
+                "address_line1": "Jl. Sudirman No. 12",
+                "city": "Jakarta",
+                "postcode": "10220",
+                "country_code": "ID"
+              },
+              "pickup_address": {
+                "address_line1": "Warehouse 1, Cakung",
+                "city": "Jakarta",
+                "postcode": "13910",
+                "country_code": "ID"
+              },
+              "seller_address": {
+                "address_line1": "Menara Anchanto",
+                "city": "Jakarta",
+                "postcode": "12190",
+                "country_code": "ID"
+              },
+              "shipping_method": {
+                "id": 4411,
+                "name": "Standard",
+                "code": "STD"
+              },
+              "order_items": [
+                {
+                  "order_item_id": 55510011,
+                  "line_item_id": "TT-90210-A-1",
+                  "sku": "SKU-RED-M",
+                  "inventory_sku": "INV-RED-M",
+                  "name": "Red T-Shirt M",
+                  "quantity": 2,
+                  "status": "PACKED",
+                  "item_price": "125000.0",
+                  "paid_price": 250000.0,
+                  "currency": "IDR",
+                  "shipping_amount": "12000.0",
+                  "tax_amount": 25000.0,
+                  "seller_discount": 0.0,
+                  "channel_discount": 0.0,
+                  "courier_code": "JNE",
+                  "shipment_provider": "JNE",
+                  "shipping_type": "DROPSHIP",
+                  "tracking_code": "JNE0099887766",
+                  "mp_tracking_numbers": [
+                    "JNE0099887766"
+                  ],
+                  "item_codes": [
+                    "IC-90210-1",
+                    "IC-90210-2"
+                  ],
+                  "shipment_number": "SHP-77120",
+                  "warehouse_code": "ID-WH-01"
+                }
+              ],
+              "statuses_changed_at": null,
+              "generic_order_tables": []
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2619
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.612,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:31:59.202Z",
+        "time": 1354.133,
+        "_seq": 12,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Luggage\", \"code\": \"LUGGAGE\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Luggage\", \"code\": \"LUGGAGE\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Luggage",
+                "code": "LUGGAGE",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 207
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1354.133,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:00.559Z",
+        "time": 1449.635,
+        "_seq": 13,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Clothing\", \"code\": \"CLOTHING\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "209"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Clothing\", \"code\": \"CLOTHING\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Clothing",
+                "code": "CLOTHING",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 209
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1449.635,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:02.011Z",
+        "time": 1314.639,
+        "_seq": 14,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Electronics\", \"code\": \"ELECTRONICS\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "215"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Electronics\", \"code\": \"ELECTRONICS\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Electronics",
+                "code": "ELECTRONICS",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 215
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1314.639,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:03.329Z",
+        "time": 1303.409,
+        "_seq": 15,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Toys and Games\", \"code\": \"TOYS_AND_GAMES\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000US",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "221"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000US"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000US\", \"category\": {\"name\": \"Toys and Games\", \"code\": \"TOYS_AND_GAMES\", \"marketplace_code\": \"amazon_sp_us\", \"active\": true, \"children\": [], \"store_code\": \"SS0000US\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000US",
+              "category": {
+                "name": "Toys and Games",
+                "code": "TOYS_AND_GAMES",
+                "marketplace_code": "amazon_sp_us",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000US",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 221
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1303.409,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:04.644Z",
+        "time": 1459.273,
+        "_seq": 16,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000DE' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000DE\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_de\", \"active\": true, \"children\": [], \"store_code\": \"SS0000DE\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000DE",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000DE"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000DE\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_de\", \"active\": true, \"children\": [], \"store_code\": \"SS0000DE\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000DE",
+              "category": {
+                "name": "Product",
+                "code": "PRODUCT",
+                "marketplace_code": "amazon_sp_de",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000DE",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 207
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1459.273,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:06.113Z",
+        "time": 1562.505,
+        "_seq": 17,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000ES' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000ES\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_es\", \"active\": true, \"children\": [], \"store_code\": \"SS0000ES\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000ES",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "207"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000ES"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000ES\", \"category\": {\"name\": \"Product\", \"code\": \"PRODUCT\", \"marketplace_code\": \"amazon_sp_es\", \"active\": true, \"children\": [], \"store_code\": \"SS0000ES\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000ES",
+              "category": {
+                "name": "Product",
+                "code": "PRODUCT",
+                "marketplace_code": "amazon_sp_es",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000ES",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 207
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1562.505,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:07.688Z",
+        "time": 1330.057,
+        "_seq": 18,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000FR' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000FR\", \"category\": {\"name\": \"Shoes\", \"code\": \"SHOES\", \"marketplace_code\": \"amazon_sp_fr\", \"active\": true, \"children\": [], \"store_code\": \"SS0000FR\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000FR",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "203"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000FR"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000FR\", \"category\": {\"name\": \"Shoes\", \"code\": \"SHOES\", \"marketplace_code\": \"amazon_sp_fr\", \"active\": true, \"children\": [], \"store_code\": \"SS0000FR\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000FR",
+              "category": {
+                "name": "Shoes",
+                "code": "SHOES",
+                "marketplace_code": "amazon_sp_fr",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000FR",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 203
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1330.057,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:32:09.026Z",
+        "time": 1351.986,
+        "_seq": 19,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000AU' -H 'Content-Type: application/json' -H 'Authorization: ***redacted***' --data-raw '{\"store_code\": \"SS0000AU\", \"category\": {\"name\": \"Auto Part\", \"code\": \"AUTO_PART\", \"marketplace_code\": \"amazon_sp_au\", \"active\": true, \"children\": [], \"store_code\": \"SS0000AU\", \"position\": 0, \"variation\": false}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=SS0000AU",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "211"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "SS0000AU"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"store_code\": \"SS0000AU\", \"category\": {\"name\": \"Auto Part\", \"code\": \"AUTO_PART\", \"marketplace_code\": \"amazon_sp_au\", \"active\": true, \"children\": [], \"store_code\": \"SS0000AU\", \"position\": 0, \"variation\": false}}",
+            "_json": {
+              "store_code": "SS0000AU",
+              "category": {
+                "name": "Auto Part",
+                "code": "AUTO_PART",
+                "marketplace_code": "amazon_sp_au",
+                "active": true,
+                "children": [],
+                "store_code": "SS0000AU",
+                "position": 0,
+                "variation": false
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 211
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1351.986,
           "receive": 0
         }
       }

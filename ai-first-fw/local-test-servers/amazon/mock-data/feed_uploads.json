@@ -13,5 +13,10 @@
     "feedDocumentId": "feed-doc-100001",
     "contentType": "application/json",
     "body": "\"<AmazonEnvelope><Message><MessageID>1</MessageID><OrderFulfillment><AmazonOrderID>902-1845936-5435065</AmazonOrderID></OrderFulfillment></Message></AmazonEnvelope>\""
+  },
+  {
+    "feedDocumentId": "feed-doc-100001",
+    "contentType": "application/json",
+    "body": "\"<AmazonEnvelope><Message><MessageID>1</MessageID><OrderFulfillment><AmazonOrderID>902-1845936-5435065</AmazonOrderID></OrderFulfillment></Message></AmazonEnvelope>\""
   }
 ]

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eton Orders Monitoring</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="../../local-theme/theme.css">
+  <link rel="stylesheet" href="./theme.css">
+  <style>
+    :root {
+      --canvas: #020617;
+      --panel: #0b0f19;
+      --surface: #0f172a;
+      --surface-2: #1e293b;
+      --surface-3: #243047;
+      --ink: #f8fafc;
+      --ink-2: #cbd5e1;
+      --muted: #94a3b8;
+      --line: #1e293b;
+      --line-2: #334155;
+      --pass-bg: rgba(16, 185, 129, 0.15);
+      --pass-fg: #34d399;
+      --fail-bg: rgba(239, 68, 68, 0.18);
+      --fail-fg: #f87171;
+      --run-bg: rgba(59, 130, 246, 0.15);
+      --run-fg: #60a5fa;
+      --warn-bg: rgba(245, 158, 11, 0.15);
+      --warn-fg: #fbbf24;
+      --alarm-bg: rgba(220, 38, 38, 0.28);
+      --alarm-fg: #fca5a5;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1680px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Top Sticky Header */
+    .top-header {
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--line-2);
+    }
+
+    .health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .health-pill.clear {
+      background: var(--pass-bg);
+      color: var(--pass-fg);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+
+    .health-pill.attention {
+      background: var(--fail-bg);
+      color: var(--fail-fg);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      animation: pulseAttention 2s infinite;
+    }
+
+    @keyframes pulseAttention {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--line-2);
+      background: var(--surface);
+      color: var(--ink-2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .btn:hover {
+      background: var(--surface-2);
+      color: #fff;
+      border-color: #475569;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    /* Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card.accent-alarm {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, var(--surface) 100%);
+    }
+
+    .metric-card.accent-warn {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .metric-card.accent-pass {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-family: var(--font-mono);
+    }
+
+    /* Sync Panel */
+    .panel-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .sync-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .sync-status-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sync-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .sync-indicator.syncing {
+      background: #3b82f6;
+      box-shadow: 0 0 10px #3b82f6;
+      animation: blink 1s infinite alternate;
+    }
+
+    @keyframes blink {
+      from { opacity: 0.3; }
+      to { opacity: 1.0; }
+    }
+
+    .sync-text {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+
+    .sync-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .input-field {
+      background: var(--canvas);
+      border: 1px solid var(--line-2);
+      color: var(--ink);
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: #3b82f6;
+    }
+
+    /* Filters Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chips {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      background: var(--canvas);
+      border: 1px solid var(--line-2);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-chip:hover {
+      color: #fff;
+      border-color: #64748b;
+    }
+
+    .filter-chip.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+
+    .filter-chip.active.alarm {
+      background: var(--fail-bg);
+      border-color: #ef4444;
+      color: #f87171;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+
+    .search-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--surface);
+      border: 1px solid var(--line-2);
+      border-radius: 6px;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 12px 8px 34px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    /* Orders Table */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow-x: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    table.orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    table.orders-table th {
+      background: #0b1120;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    table.orders-table th.sortable {
+      cursor: pointer;
+    }
+
+    table.orders-table th.sortable:hover {
+      color: #fff;
+    }
+
+    table.orders-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    table.orders-table tbody tr {
+      transition: background 0.1s;
+    }
+
+    table.orders-table tbody tr:hover {
+      background: rgba(30, 41, 59, 0.6);
+    }
+
+    table.orders-table tr.alert-row {
+      background: rgba(239, 68, 68, 0.06);
+    }
+
+    table.orders-table tr.alert-row:hover {
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .font-code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .copyable {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .copyable:hover {
+      color: #60a5fa;
+    }
+
+    .copy-btn {
+      opacity: 0.4;
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .copyable:hover .copy-btn {
+      opacity: 1;
+    }
+
+    /* Soft badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-pass { background: var(--pass-bg); color: var(--pass-fg); border: 1px solid rgba(52, 211, 153, 0.3); }
+    .badge-fail { background: var(--fail-bg); color: var(--fail-fg); border: 1px solid rgba(248, 113, 113, 0.3); }
+    .badge-alarm { background: var(--alarm-bg); color: var(--alarm-fg); border: 1px solid rgba(239, 68, 68, 0.5); font-weight: 700; }
+    .badge-warn { background: var(--warn-bg); color: var(--warn-fg); border: 1px solid rgba(251, 191, 36, 0.3); }
+    .badge-mute { background: rgba(51, 65, 85, 0.4); color: var(--ink-2); border: 1px solid var(--line-2); }
+    .badge-blue { background: var(--run-bg); color: var(--run-fg); border: 1px solid rgba(96, 165, 250, 0.3); }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-info {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .page-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Modal / Inspector Drawer */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      background: #0b1120;
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stage-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+    }
+
+    .stage-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    pre.code-block {
+      background: #020617;
+      border: 1px solid var(--line-2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #94a3b8;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      overflow-x: auto;
+      margin: 0;
+    }
+
+    .empty-state {
+      padding: 48px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="header-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span>Eton Orders Monitoring</span>
+        <span class="header-badge">v1.0.0</span>
+      </div>
+      <div id="healthBadge" class="health-pill clear">
+        <span id="healthIcon">●</span>
+        <span id="healthText">Loading...</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnOpenDirectAudit" class="btn btn-primary btn-sm" title="Audit specific order numbers in ELK">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        Audit Specific Orders
+      </button>
+      <a href="http://localhost:24000" target="_blank" class="btn btn-sm" title="Central Reports Portal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Portal :24000
+      </a>
+      <button id="btnExportCsv" class="btn btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Export CSV
+      </button>
+      <a href="/export" class="btn btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        Offline Export
+      </a>
+      <button id="btnResetDb" class="btn btn-sm" title="Clear and reset local database" style="color: var(--status-error); border-color: rgba(239, 68, 68, 0.35);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        Reset DB
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- KPI Funnel Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Stage 1 Orders Pushed</div>
+        <div id="metricTotal" class="metric-value">-</div>
+        <div class="metric-sub">Distinct order_creation</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Stage 2 Reached</div>
+        <div id="metricStage2" class="metric-value">-</div>
+        <div id="metricStage2Pct" class="metric-sub">-</div>
+      </div>
+      <div class="metric-card accent-pass">
+        <div class="metric-label">Fresh Created OK</div>
+        <div id="metricCreatedOk" class="metric-value text-emerald-400">-</div>
+        <div class="metric-sub">New orders created (OK)</div>
+      </div>
+      <div class="metric-card accent-pass">
+        <div class="metric-label">BESO05 Expected</div>
+        <div id="metricBeso" class="metric-value text-emerald-400">-</div>
+        <div class="metric-sub">Replay duplicate (OK)</div>
+      </div>
+      <div class="metric-card accent-alarm">
+        <div class="metric-label" style="color: #f87171;">Duplicates Created</div>
+        <div id="metricDuplicate" class="metric-value" style="color: #fca5a5;">-</div>
+        <div class="metric-sub" style="color: #f87171;">ALARM: Multiple creations!</div>
+      </div>
+      <div class="metric-card accent-pass">
+        <div class="metric-label">Stage 3 Price OK</div>
+        <div id="metricPriceOk" class="metric-value text-emerald-400">-</div>
+        <div class="metric-sub">pushPriceDetail OK</div>
+      </div>
+      <div class="metric-card accent-warn">
+        <div class="metric-label">Creation Errors</div>
+        <div id="metricCreationErrors" class="metric-value text-amber-400">-</div>
+        <div class="metric-sub">Failed API / Missing Stage 2</div>
+      </div>
+      <div class="metric-card accent-warn">
+        <div class="metric-label">Pricing Errors</div>
+        <div id="metricPricingErrors" class="metric-value text-amber-400">-</div>
+        <div class="metric-sub">Price Push Failed / Missing</div>
+      </div>
+    </div>
+
+    <!-- Incremental Sync Control Panel -->
+    <div class="panel-box">
+      <div class="sync-row">
+        <div class="sync-status-group">
+          <div id="syncIndicator" class="sync-indicator"></div>
+          <div>
+            <div id="syncStatusText" class="sync-text font-bold">Engine Ready</div>
+            <div id="checkpointText" class="text-xs text-slate-400 font-mono mt-0.5">High-water checkpoints active. Only new orders will be queried.</div>
+          </div>
+        </div>
+        <div class="sync-controls">
+          <select id="timePreset" class="input-field">
+            <option value="auto">Auto (from checkpoint)</option>
+            <option value="2026-09-03">Replay Run: Sep 03, 2026</option>
+            <option value="2026-08-20">Original Run: Aug 20, 2026</option>
+            <option value="now-2h">Last 2 Hours</option>
+            <option value="now-24h">Last 24 Hours</option>
+            <option value="2026-08-01">Since Aug 1, 2026</option>
+          </select>
+          <input type="text" id="sinceInput" class="input-field" placeholder="Since (e.g. 2026-08-01)" style="width: 130px; display: none;" />
+          <button id="btnSync" class="btn btn-primary btn-sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Sync Batches (100/req)
+          </button>
+          <button id="btnStopSync" class="btn btn-danger btn-sm" style="display: none;">Stop</button>
+          <label class="text-xs text-slate-400 font-mono inline-flex items-center gap-1.5 ml-2 cursor-pointer">
+            <input type="checkbox" id="autoRefreshToggle" checked /> Auto-refresh (10s)
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Bar -->
+    <div class="filter-bar">
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="">All Orders (<span id="chipAll">0</span>)</button>
+        <button class="filter-chip alarm" data-filter="duplicates_created">Duplicates Created (<span id="chipDup">0</span>)</button>
+        <button class="filter-chip" data-filter="created_ok">Fresh Created OK (<span id="chipCreatedOk">0</span>)</button>
+        <button class="filter-chip" data-filter="beso05">BESO05 Expected (<span id="chipBeso">0</span>)</button>
+        <button class="filter-chip" data-filter="price_ok">Price OK (<span id="chipPriceOk">0</span>)</button>
+        <button class="filter-chip alarm" data-filter="creation_errors">Creation Errors (<span id="chipCreationErrors">0</span>)</button>
+        <button class="filter-chip alarm" data-filter="pricing_errors">Pricing Errors (<span id="chipPricingErrors">0</span>)</button>
+      </div>
+      <div class="search-box">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search order number, WMS ID, error code..." />
+      </div>
+    </div>
+
+    <!-- Orders Table (Mandatory user columns) -->
+    <div class="table-container">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="timestamp">Timestamp (UTC) ↕</th>
+            <th class="sortable" data-sort="created_at">Created At ↕</th>
+            <th class="sortable" data-sort="order_number">Order Number ↕</th>
+            <th class="sortable" data-sort="wms_order_id">WMS Order ID ↕</th>
+            <th class="sortable" data-sort="create_status">Response of Creation (Stage 2) ↕</th>
+            <th class="sortable" data-sort="price_status">Response of Push Price (Stage 3) ↕</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="ordersTbody">
+          <tr>
+            <td colspan="7" class="empty-state">Loading Eton orders...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-bar">
+      <div class="page-info">
+        Showing <span id="pageRange">0 - 0</span> of <span id="pageTotal">0</span> orders
+      </div>
+      <div class="page-buttons">
+        <select id="limitSelect" class="input-field" style="padding: 4px 8px; font-size: 12px;">
+          <option value="25">25 / page</option>
+          <option value="50" selected>50 / page</option>
+          <option value="100">100 / page</option>
+          <option value="250">250 / page</option>
+          <option value="500">500 / page</option>
+        </select>
+        <button id="btnPrevPage" class="btn btn-sm">Prev</button>
+        <span id="pageIndicator" class="text-xs font-mono text-slate-300 px-2">Page 1 of 1</span>
+        <button id="btnNextPage" class="btn btn-sm">Next</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div id="orderModal" class="modal-backdrop">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div style="font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+          <span>Order Detail:</span>
+          <span id="modalOrderNumber" class="font-code text-blue-400"></span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button id="btnRefreshOrderElk" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 3px 8px;" title="Re-query ELK directly for latest events">⚡ Live ELK Refresh</button>
+          <button id="btnCloseModal" class="btn btn-sm">✕ Close</button>
+        </div>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Direct Order Audit Modal -->
+  <div id="directAuditModal" class="modal-backdrop">
+    <div class="modal-panel" style="max-width: 1100px;">
+      <div class="modal-header">
+        <div style="font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+          <span>🔍 Direct Order Audit (Step 1 CreateOrder → Step 2 PushPrice)</span>
+        </div>
+        <button id="btnCloseAuditModal" class="btn btn-sm">✕ Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="panel-box" style="margin-bottom: 0;">
+          <label class="text-xs font-mono text-slate-300 font-bold block mb-2">Order Numbers to query in ELK:</label>
+          <textarea id="auditOrderInput" class="input-field" style="width: 100%; height: 75px; box-sizing: border-box; resize: vertical;" placeholder="260821UFJRY671, 260821UFK6AWM5, 585645694951982207, 260821UFT6EG5B, 260821UFU31Y9A">260821UFJRY671, 260821UFK6AWM5, 585645694951982207, 260821UFT6EG5B, 260821UFU31Y9A</textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <span class="text-xs text-slate-400 font-mono">Executes: Step 1 (executeEtonCreateOrderApi response → extract Code) → Step 2 (pushPriceDetail response for Code).</span>
+            <button id="btnRunAudit" class="btn btn-primary btn-sm">
+              ▶ Run 2-Step ELK Audit
+            </button>
+          </div>
+        </div>
+
+        <div id="auditResultsContainer" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Injected via JavaScript with tables for Attempt 1 and Attempt 2 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      page: 1,
+      limit: 50,
+      search: '',
+      filter: '',
+      sortBy: 'timestamp',
+      sortOrder: 'desc',
+      totalPages: 1,
+      totalOrders: 0,
+      isSyncing: false,
+      autoRefreshTimer: null
+    };
+
+    // Helper: copy to clipboard
+    window.copyText = function(text, event) {
+      if (event) event.stopPropagation();
+      navigator.clipboard.writeText(text);
+      const btn = event.currentTarget;
+      const orig = btn.innerText;
+      btn.innerText = 'Copied!';
+      setTimeout(() => { btn.innerText = orig; }, 1200);
+    };
+
+    // Format ISO timestamp
+    function formatTs(iso) {
+      if (!iso) return '-';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        return d.toISOString().replace('T', ' ').replace(/\..+/, '') + ' UTC';
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    // Render badge for Stage 2 Creation Response
+    function renderCreationBadge(order) {
+      const cat = order.stage2_category;
+      const ec = order.create_error_code;
+      const st = order.create_status || '';
+
+      if (cat === 'BESO05') {
+        return `<span class="badge badge-pass">BESO05 (Expected Replay)</span>`;
+      } else if (cat === 'CREATED_OK') {
+        if (ec && ec.includes('2300')) {
+          return `<span class="badge badge-pass" title="Order created & priced successfully; parallel duplicate was blocked by Eton dedup 2300">Created OK <span style="font-size: 10px; color: #fbbf24; font-weight: 700; margin-left: 3px;">(Dedup: 2300)</span></span>`;
+        }
+        return `<span class="badge badge-pass">Created OK (${st || 'OK'})</span>`;
+      } else if (cat === 'DUPLICATE_CREATED') {
+        return `<span class="badge badge-alarm">⚠️ DUPLICATE CREATED (${st || 'OK'})</span>`;
+      } else if (cat === 'OTHER_ERROR') {
+        return `<span class="badge badge-fail">Error: ${ec || st || 'Failed'}</span>`;
+      } else if (cat === 'MISSING') {
+        return `<span class="badge badge-warn">Missing Stage 2 (Silent Drop)</span>`;
+      }
+      return `<span class="badge badge-mute">${st || '-'}</span>`;
+    }
+
+    // Render badge for Stage 3 Push Price Response
+    function renderPriceBadge(order) {
+      const cat = order.stage3_category;
+      const ec = order.price_error_code;
+      const st = order.price_status || '';
+
+      if (cat === 'PRICE_OK') {
+        return `<span class="badge badge-pass">OK (${st})</span>`;
+      } else if (cat === 'PRICE_FAILED') {
+        return `<span class="badge badge-fail">Failed: ${ec || st || 'Error'}</span>`;
+      } else if (cat === 'NEVER_PRICED') {
+        return `<span class="badge badge-warn">Never Priced / Missing</span>`;
+      } else if (cat === 'NO_WMS_ID') {
+        return `<span class="badge badge-mute">N/A (No WMS ID)</span>`;
+      }
+      return `<span class="badge badge-mute">${st || '-'}</span>`;
+    }
+
+    // Fetch and render Stats / Funnel
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        if (!res.ok) return;
+        const s = await res.json();
+
+        document.getElementById('metricTotal').innerText = (s.total_orders || 0).toLocaleString();
+        document.getElementById('metricStage2').innerText = (s.stage2_reached || 0).toLocaleString();
+        const s2Pct = s.total_orders ? ((s.stage2_reached / s.total_orders) * 100).toFixed(1) + '%' : '-';
+        document.getElementById('metricStage2Pct').innerText = `${s2Pct} reached`;
+
+        if (document.getElementById('metricCreatedOk')) document.getElementById('metricCreatedOk').innerText = (s.created_ok_count || 0).toLocaleString();
+        if (document.getElementById('metricBeso')) document.getElementById('metricBeso').innerText = (s.beso05_count || 0).toLocaleString();
+        if (document.getElementById('metricDuplicate')) document.getElementById('metricDuplicate').innerText = (s.duplicate_created_count || 0).toLocaleString();
+        if (document.getElementById('metricPriceOk')) document.getElementById('metricPriceOk').innerText = (s.price_ok_count || 0).toLocaleString();
+        if (document.getElementById('metricCreationErrors')) document.getElementById('metricCreationErrors').innerText = (s.creation_errors_count || 0).toLocaleString();
+        if (document.getElementById('metricPricingErrors')) document.getElementById('metricPricingErrors').innerText = (s.pricing_errors_count || 0).toLocaleString();
+
+        // Populate all filter button numbers (<number>)
+        if (document.getElementById('chipAll')) document.getElementById('chipAll').innerText = (s.total_orders || 0).toLocaleString();
+        if (document.getElementById('chipDup')) document.getElementById('chipDup').innerText = (s.duplicate_created_count || 0).toLocaleString();
+        if (document.getElementById('chipCreatedOk')) document.getElementById('chipCreatedOk').innerText = (s.created_ok_count || 0).toLocaleString();
+        if (document.getElementById('chipBeso')) document.getElementById('chipBeso').innerText = (s.beso05_count || 0).toLocaleString();
+        if (document.getElementById('chipPriceOk')) document.getElementById('chipPriceOk').innerText = (s.price_ok_count || 0).toLocaleString();
+        if (document.getElementById('chipCreationErrors')) document.getElementById('chipCreationErrors').innerText = (s.creation_errors_count || 0).toLocaleString();
+        if (document.getElementById('chipPricingErrors')) document.getElementById('chipPricingErrors').innerText = (s.pricing_errors_count || 0).toLocaleString();
+
+        const healthBadge = document.getElementById('healthBadge');
+        const healthText = document.getElementById('healthText');
+        if (s.all_clear) {
+          healthBadge.className = 'health-pill clear';
+          healthText.innerText = 'ALL CLEAR';
+        } else {
+          healthBadge.className = 'health-pill attention';
+          healthText.innerText = 'ATTENTION NEEDED';
+        }
+
+        // Checkpoint info
+        if (s.checkpoints) {
+          const cpLines = Object.entries(s.checkpoints)
+            .map(([k, v]) => `${k}: ${v.last_timestamp ? formatTs(v.last_timestamp) : 'none'} (${v.total_synced || 0} synced)`)
+            .join(' | ');
+          if (cpLines) {
+            document.getElementById('checkpointText').innerText = `High-water marks: ${cpLines}`;
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load stats:', e);
+      }
+    }
+
+    // Fetch and render Orders Table
+    async function loadOrders() {
+      const params = new URLSearchParams({
+        page: state.page,
+        limit: state.limit,
+        search: state.search,
+        filter: state.filter,
+        sort_by: state.sortBy,
+        sort_order: state.sortOrder
+      });
+
+      try {
+        const res = await fetch(`/api/orders?${params.toString()}`);
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+
+        state.totalPages = data.pagination.totalPages;
+        state.totalOrders = data.pagination.total;
+
+        renderOrdersTable(data.orders, data.pagination);
+      } catch (e) {
+        document.getElementById('ordersTbody').innerHTML = `
+          <tr><td colspan="7" class="empty-state text-red-400">Failed to load orders: ${e.message}</td></tr>
+        `;
+      }
+    }
+
+    function renderOrdersTable(orders, pagination) {
+      const tbody = document.getElementById('ordersTbody');
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No orders matching the current filter.</td></tr>`;
+      } else {
+        let html = '';
+        orders.forEach(o => {
+          const isAlert = !o.is_healthy;
+          const trClass = isAlert ? 'alert-row' : '';
+          const ts = formatTs(o.s1_timestamp || o.s2_timestamp || o.last_updated);
+          const createdAt = formatTs(o.created_at || o.order_date);
+          const ordNum = o.order_number || '-';
+          const wmsId = o.wms_order_id || '-';
+
+          html += `
+            <tr class="${trClass}">
+              <td class="font-code text-slate-300" title="${o.s1_timestamp || o.s2_timestamp || ''}">${ts}</td>
+              <td class="font-code text-slate-300" title="${o.created_at || o.order_date || ''}">${createdAt}</td>
+              <td>
+                <span class="copyable font-code font-bold text-slate-100" onclick="copyText('${ordNum}', event)">
+                  ${ordNum}
+                  <button class="copy-btn" title="Copy order number">📋</button>
+                </span>
+              </td>
+              <td>
+                ${wmsId !== '-' ? `
+                  <span class="copyable font-code text-blue-300" onclick="copyText('${wmsId}', event)">
+                    ${wmsId}
+                    <button class="copy-btn" title="Copy WMS order ID">📋</button>
+                  </span>
+                ` : '<span class="text-slate-500">-</span>'}
+              </td>
+              <td>${renderCreationBadge(o)}</td>
+              <td>${renderPriceBadge(o)}</td>
+              <td style="text-align: right;">
+                <button class="btn btn-sm" onclick="inspectOrder('${ordNum}')">Inspect</button>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      // Update pagination info
+      const startIdx = state.totalOrders === 0 ? 0 : (state.page - 1) * state.limit + 1;
+      const endIdx = Math.min(state.page * state.limit, state.totalOrders);
+      document.getElementById('pageRange').innerText = `${startIdx.toLocaleString()} - ${endIdx.toLocaleString()}`;
+      document.getElementById('pageTotal').innerText = state.totalOrders.toLocaleString();
+      document.getElementById('pageIndicator').innerText = `Page ${state.page} of ${Math.max(1, state.totalPages)}`;
+
+      document.getElementById('btnPrevPage').disabled = state.page <= 1;
+      document.getElementById('btnNextPage').disabled = state.page >= state.totalPages;
+    }
+
+    // Inspect Single Order Modal
+    window.inspectOrder = async function(orderNumber, forceRefresh = false) {
+      const modal = document.getElementById('orderModal');
+      const modalOrderNum = document.getElementById('modalOrderNumber');
+      const modalBody = document.getElementById('modalBody');
+
+      modalOrderNum.innerText = orderNumber;
+      modalBody.innerHTML = `<div class="empty-state">${forceRefresh ? 'Querying ELK live for latest events...' : 'Loading timeline and payloads (with live ELK fallback)...'}</div>`;
+      modal.classList.add('open');
+
+      try {
+        const res = await fetch(`/api/order?id=${encodeURIComponent(orderNumber)}${forceRefresh ? '&refresh=1' : ''}`);
+        if (!res.ok) throw new Error('Order not found');
+        const d = await res.json();
+
+        let bodyHtml = `
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+            <div class="header-badge">WMS ID: <b>${d.wms_order_id || 'None'}</b></div>
+            <div class="header-badge">Created At: <b style="color: #60a5fa;">${d.created_at || d.order_date || '-'}</b></div>
+            <div class="header-badge">Order Date: <b>${d.order_date || '-'}</b></div>
+            <div class="header-badge">Stage 2: <b>${d.stage2_category}</b></div>
+            <div class="header-badge">Stage 3: <b>${d.stage3_category}</b></div>
+          </div>
+        `;
+
+        // Stage 1
+        const s1Events = d.stage1_events || [];
+        bodyHtml += `
+          <div class="stage-box">
+            <div class="stage-title">
+              <span>Stage 1: order_creation (warehouse_code=eton) ${s1Events.length > 1 ? `<span class="badge badge-info" style="margin-left: 6px;">${s1Events.length} logs found</span>` : ''}</span>
+              <span class="font-code text-xs text-slate-400">${d.s1_timestamp || d.created_at || 'No log'}</span>
+            </div>
+            ${s1Events.length > 0 ? `
+              <pre class="code-block">${JSON.stringify(JSON.parse(s1Events[0].raw_json || '{}'), null, 2)}</pre>
+              ${s1Events.length > 1 ? `
+                <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-dim); background: var(--color-surface-subtle); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--color-border-subtle);">
+                  <b style="color: var(--color-text);">All Replay Event Timestamps (${s1Events.length}):</b>
+                  <div style="margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+                    ${s1Events.map((ev, i) => `<span>#${i + 1}: <code class="font-code" style="color: var(--color-primary-text);">${ev.timestamp}</code> (order_date: ${ev.order_date || '-'}, created_at: ${ev.created_at || '-'})</span>`).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            ` : '<div class="text-xs text-slate-500 font-mono">No Stage 1 event logs recorded in ELK.</div>'}
+          </div>
+        `;
+
+        // Stage 2
+        const s2Events = d.stage2_events || [];
+        const primaryS2 = s2Events.find(e => (e.status || '').toUpperCase() === 'OK') || s2Events[0];
+        const has2300 = (s2Events.some(e => String(e.error_code || '').includes('2300')) || String(d.create_error_code || '').includes('2300'));
+        bodyHtml += `
+          <div class="stage-box">
+            <div class="stage-title">
+              <span>Stage 2: EtonWmsService.executeEtonCreateOrderApi response ${s2Events.length > 1 ? `<span class="badge badge-warning" style="margin-left: 6px;">${s2Events.length} responses</span>` : ''}</span>
+              <span class="font-code text-xs text-slate-400">${d.s2_timestamp || 'No log'}</span>
+            </div>
+            ${s2Events.length > 0 ? `
+              <pre class="code-block">${JSON.stringify(JSON.parse(primaryS2.raw_json || '{}'), null, 2)}</pre>
+              ${has2300 ? `
+                <div style="margin-top: 8px; font-size: 11px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; padding: 6px 10px; color: #fbbf24;">
+                  <b>⚠️ Eton Concurrency Dedup Mechanism (2300):</b> Eton rejected a parallel duplicate creation request to prevent duplication. The primary order (<code>${d.wms_order_id || primaryS2.wms_order_id || '-'}</code>) was successfully created and priced.
+                </div>
+              ` : ''}
+              ${s2Events.length > 1 ? `
+                <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-dim); background: var(--color-surface-subtle); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--color-border-subtle);">
+                  <b style="color: #fbbf24;">Multiple Create Responses Detected (${s2Events.length}):</b>
+                  <div style="margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+                    ${s2Events.map((ev, i) => `<span>#${i + 1}: <code class="font-code">${ev.timestamp}</code> | status: <b>${ev.status}</b> | error: <b>${ev.error_code || 'None'}</b> | WMS ID: <code>${ev.wms_order_id || '-'}</code></span>`).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            ` : '<div class="text-xs text-amber-400 font-mono">Missing Stage 2 log. The order may have suffered a silent drop or is still pending.</div>'}
+          </div>
+        `;
+
+        // Stage 3
+        const s3Events = d.stage3_events || [];
+        bodyHtml += `
+          <div class="stage-box">
+            <div class="stage-title">
+              <span>Stage 3: EtonUtils.pushPriceDetail response ${s3Events.length > 1 ? `<span class="badge badge-info" style="margin-left: 6px;">${s3Events.length} logs</span>` : ''}</span>
+              <span class="font-code text-xs text-slate-400">${d.s3_timestamp || 'No log'}</span>
+            </div>
+            ${s3Events.length > 0 ? `
+              <pre class="code-block">${JSON.stringify(JSON.parse(s3Events[0].raw_json || '{}'), null, 2)}</pre>
+            ` : `<div class="text-xs ${d.wms_order_id ? 'text-amber-400' : 'text-slate-500'} font-mono">${d.wms_order_id ? 'No Stage 3 price push recorded for this WMS Order ID.' : 'N/A (No WMS order ID created).'}</div>`}
+          </div>
+        `;
+
+        modalBody.innerHTML = bodyHtml;
+      } catch (e) {
+        modalBody.innerHTML = `<div class="empty-state text-red-400">${e.message}</div>`;
+      }
+    };
+
+    document.getElementById('btnRefreshOrderElk').onclick = () => {
+      const ord = document.getElementById('modalOrderNumber').innerText.trim();
+      if (ord) inspectOrder(ord, true);
+    };
+
+    document.getElementById('btnCloseModal').onclick = () => {
+      document.getElementById('orderModal').classList.remove('open');
+    };
+    document.getElementById('orderModal').onclick = (e) => {
+      if (e.target.id === 'orderModal') {
+        document.getElementById('orderModal').classList.remove('open');
+      }
+    };
+
+    // Filter Chips click handlers
+    document.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.filter = btn.getAttribute('data-filter');
+        state.page = 1;
+        loadOrders();
+      });
+    });
+
+    // Search input with debounce
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        state.search = e.target.value.trim();
+        state.page = 1;
+        loadOrders();
+      }, 250);
+    });
+
+    // Table sorting
+    document.querySelectorAll('th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const sortCol = th.getAttribute('data-sort');
+        if (state.sortBy === sortCol) {
+          state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+          state.sortBy = sortCol;
+          state.sortOrder = 'desc';
+        }
+        loadOrders();
+      });
+    });
+
+    // Pagination handlers
+    document.getElementById('btnPrevPage').onclick = () => {
+      if (state.page > 1) {
+        state.page--;
+        loadOrders();
+      }
+    };
+    document.getElementById('btnNextPage').onclick = () => {
+      if (state.page < state.totalPages) {
+        state.page++;
+        loadOrders();
+      }
+    };
+    document.getElementById('limitSelect').onchange = (e) => {
+      state.limit = parseInt(e.target.value, 10);
+      state.page = 1;
+      loadOrders();
+    };
+
+    // Export CSV
+    document.getElementById('btnExportCsv').onclick = () => {
+      const params = new URLSearchParams({
+        search: state.search,
+        filter: state.filter
+      });
+      window.location.href = `/api/export/csv?${params.toString()}`;
+    };
+
+    // Reset Database
+    const btnResetDb = document.getElementById('btnResetDb');
+    if (btnResetDb) {
+      btnResetDb.onclick = async () => {
+        if (!confirm('Are you sure you want to reset the database?\n\nThis will clear all synced batches, checkpoints, and cached orders so you can start a fresh sync.')) {
+          return;
+        }
+        btnResetDb.disabled = true;
+        btnResetDb.textContent = 'Resetting...';
+        try {
+          const res = await fetch('/api/reset-db', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ keep_audited: false })
+          });
+          const data = await res.json();
+          alert(data.message || 'Database reset successfully!');
+          state.page = 1;
+          await loadStats();
+          await loadOrders();
+        } catch (err) {
+          alert('Failed to reset database: ' + err.message);
+        } finally {
+          btnResetDb.disabled = false;
+          btnResetDb.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Reset DB`;
+        }
+      };
+    }
+
+    // Sync Management
+    async function checkSyncStatus() {
+      try {
+        const res = await fetch('/api/sync/status');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        state.isSyncing = data.is_running;
+        const ind = document.getElementById('syncIndicator');
+        const stText = document.getElementById('syncStatusText');
+        const btnSync = document.getElementById('btnSync');
+        const btnStop = document.getElementById('btnStopSync');
+
+        if (data.is_running) {
+          ind.className = 'sync-indicator syncing';
+          stText.innerText = data.status_message || 'Syncing in batches of 100...';
+          btnSync.disabled = true;
+          btnStop.style.display = 'inline-flex';
+        } else {
+          ind.className = 'sync-indicator';
+          stText.innerText = data.status_message || 'Engine Ready';
+          btnSync.disabled = false;
+          btnStop.style.display = 'none';
+        }
+      } catch (e) {
+        console.error('Failed to check sync status:', e);
+      }
+    }
+
+    document.getElementById('btnSync').onclick = async () => {
+      const preset = document.getElementById('timePreset').value;
+      let since = null;
+      if (preset !== 'auto') {
+        since = preset;
+      }
+      try {
+        await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ since: since, max_batches: 500 })
+        });
+        checkSyncStatus();
+      } catch (e) {
+        alert('Failed to trigger sync: ' + e.message);
+      }
+    };
+
+    document.getElementById('btnStopSync').onclick = async () => {
+      try {
+        await fetch('/api/sync/stop', { method: 'POST' });
+        checkSyncStatus();
+      } catch (e) {
+        alert('Failed to stop sync: ' + e.message);
+      }
+    };
+
+    // Direct Audit Functions
+    document.getElementById('btnOpenDirectAudit').onclick = () => {
+      document.getElementById('directAuditModal').classList.add('open');
+      loadSavedAuditAttempts();
+    };
+    document.getElementById('btnCloseAuditModal').onclick = () => {
+      document.getElementById('directAuditModal').classList.remove('open');
+    };
+
+    function renderAttemptGroupTable(label, attempts) {
+      if (!attempts || attempts.length === 0) return '';
+      let rows = '';
+      attempts.forEach(a => {
+        const ord = a.order_number;
+        const wms = a.wms_order_id || '-';
+        const ct = a.attempt_time || '-';
+        const cs = a.create_status || 'Unknown';
+        const ce = a.create_error_code || 'null';
+        const pt = a.price_time || '-';
+        const ps = a.price_status || '-';
+        const pe = a.price_error_code || 'null';
+
+        rows += `
+          <tr>
+            <td class="font-code font-bold text-slate-100">${ord}</td>
+            <td class="font-code text-blue-300">${wms}</td>
+            <td class="font-code">${ct} · ${cs} · ErrorCode ${ce}</td>
+            <td class="font-code">${pt} · ${ps} · ErrorCode ${pe}</td>
+          </tr>
+        `;
+      });
+
+      return `
+        <div>
+          <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--ink); display: flex; align-items: center; gap: 8px;">
+            <span>${label}</span>
+            <span class="header-badge">${attempts.length} orders</span>
+          </div>
+          <div class="table-container">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>orderNumber</th>
+                  <th>wmsOrderId</th>
+                  <th>create order response</th>
+                  <th>push price detail response</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function loadSavedAuditAttempts() {
+      try {
+        const res = await fetch('/api/order-attempts');
+        if (!res.ok) return;
+        const attempts = await res.json();
+        if (attempts && attempts.length > 0) {
+          const grouped = {};
+          attempts.forEach(a => {
+            const d = a.attempt_date;
+            let lbl = `Attempt — ${d}`;
+            if (d === '2026-08-20') lbl = 'Attempt 1 — 2026-08-20 (original)';
+            else if (d === '2026-09-03') lbl = 'Attempt 2 — 2026-09-03 (retry)';
+            if (!grouped[lbl]) grouped[lbl] = [];
+            grouped[lbl].push(a);
+          });
+          let html = '';
+          for (const [lbl, list] of Object.entries(grouped)) {
+            html += renderAttemptGroupTable(lbl, list);
+          }
+          document.getElementById('auditResultsContainer').innerHTML = html;
+        }
+      } catch (e) {
+        console.error('Failed to load saved attempts:', e);
+      }
+    }
+
+    document.getElementById('btnRunAudit').onclick = async () => {
+      const input = document.getElementById('auditOrderInput').value.trim();
+      if (!input) {
+        alert('Please enter at least one order number.');
+        return;
+      }
+      const container = document.getElementById('auditResultsContainer');
+      container.innerHTML = '<div class="empty-state">Querying ELK (Step 1: create order response → Step 2: push price response)...</div>';
+      
+      const btn = document.getElementById('btnRunAudit');
+      btn.disabled = true;
+      btn.innerText = 'Querying ELK...';
+
+      try {
+        const res = await fetch('/api/query-orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_numbers: input })
+        });
+        if (!res.ok) throw new Error('Query failed');
+        const data = await res.json();
+
+        if (data.grouped && Object.keys(data.grouped).length > 0) {
+          let html = '';
+          for (const [lbl, list] of Object.entries(data.grouped)) {
+            html += renderAttemptGroupTable(lbl, list);
+          }
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = '<div class="empty-state text-amber-400">No log entries found in ELK for the specified order numbers.</div>';
+        }
+        await loadStats();
+        await loadOrders();
+      } catch (e) {
+        container.innerHTML = `<div class="empty-state text-red-400">Error: ${e.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '▶ Run 2-Step ELK Audit';
+      }
+    };
+
+    // Initial load & periodic polling
+    async function init() {
+      await loadStats();
+      await loadOrders();
+      await checkSyncStatus();
+
+      setInterval(() => {
+        checkSyncStatus();
+        if (document.getElementById('autoRefreshToggle').checked) {
+          loadStats();
+          loadOrders();
+        }
+      }, 10000);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

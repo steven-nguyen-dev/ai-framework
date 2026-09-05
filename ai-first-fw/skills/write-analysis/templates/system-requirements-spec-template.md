@@ -22,9 +22,9 @@ endpoint. It tells that reader what changes on that endpoint.
 
 - Group by endpoint. One `###` section per endpoint or flow, headed by the method and path. Its
   change rows and its payload diff sit together in that section, stated once.
-- Fence every payload diff as `jsonc`, and annotate every line of it with a trailing comment
-  carrying that property's status, its `L-n`, and one clause. A `REUSE` line carries `// [REUSE]`
-  and nothing more. The comments replace a prose note after the fence; do not write both.
+- Every payload diff is the endpoint's whole request body, fenced `jsonc`. Every line carries a
+  trailing comment: `// [REUSE]` alone, or `// [ADD]` / `// [UPDATE]` / `// [REMOVE]` with an `L-n`
+  and one clause. Shorten a long value; keep every line. The comments are the note.
 - Align the trailing comments of one diff on the same column, so the statuses read as a column.
 - Every property carries one change status: `ADD`, `UPDATE`, `REMOVE` or `REUSE`. Settle it against
   the target system's data model before you write the row.
@@ -43,12 +43,12 @@ endpoint. It tells that reader what changes on that endpoint.
 This specification states the schema, payload, migration and validation changes `[TARGET_SYSTEM]`
 makes to support `[FEATURE_NAME]`.
 
-| Status | Count | Engineering action |
-| :--- | :-: | :--- |
-| ADD | [n] | New property, column and migration |
-| UPDATE | [n] | Validation, type or mapping change on an existing property |
-| REMOVE / DEPRECATE | [n] | Phase out a legacy property, endpoint or flow |
-| REUSE | [n] | No work; the property already carries this meaning |
+| Status | On an endpoint (§2) | On no endpoint (§3) | Engineering action |
+| :--- | :-: | :-: | :--- |
+| ADD | [n] | [n] | New property, column and migration |
+| UPDATE | [n] | [n] | Validation, type or mapping change on an existing property |
+| REMOVE / DEPRECATE | [n] | [n] | Phase out a legacy property, endpoint or flow |
+| REUSE | [n] | [n] | No work; the property already carries this meaning |
 
 **Endpoints this ticket changes**
 
@@ -136,12 +136,13 @@ makes to support `[FEATURE_NAME]`.
 
 ---
 
-## 3. Flows and assumptions this ticket retires
+## 3. Changes that land on no endpoint
 
-Changes that land on no single endpoint.
+Flows, components and assumptions this ticket adds, changes or retires. Same four statuses as §2.
 
 | Workflow, component or assumption | Status | Action | Claim |
 | :--- | :---: | :--- | :--- |
+| `[Token mint / counter / sequencing gate]` | ADD | [Verb-led statement of the capability to build.] | `L-n` |
 | `[Legacy manual file upload]` | REMOVE | Retire the upload screen and its worker; `[endpoint]` replaces it. | `L-n` |
 | `[Single-tenant assumption]` | REMOVE | Scope every record operation by the tenant key. | `L-n` |
 | `[Unused legacy endpoint]` | DEPRECATE | Return a `Sunset` header, and remove after `[release]`. | `L-n` |

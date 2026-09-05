@@ -24,6 +24,7 @@ python3 portal.py
 | **JPluger PR Stats** | `24002` | [`jpluger-pr-stats/`](jpluger-pr-stats) | GitHub pull request backlog, review coverage, and velocity dashboard |
 | **AI Skills & Plugins** | `24003` | [`ai-skills-report/`](ai-skills-report) | Claude & Antigravity skills, plugins, and extensions registry |
 | **ELK AI Log Explorer** | `24004` | [`elk-log-explorer/`](elk-log-explorer) | Interactive ELK & Kibana log explorer with Claude & AGY Gemini AI agents |
+| **Eton Orders Monitoring** | `24005` | [`eton-orders-monitoring/`](eton-orders-monitoring) | Eton replay and live orders audit, funnel drop-off tracker, and error diagnostics |
 | **Local Theme** | *Shared* | [`../local-theme/`](../local-theme) | Reusable Dark Report Theme CSS/JS toolkit & tokens |
 
 ---
@@ -61,6 +62,9 @@ python3 ai-skills-report/server.py --port 24003
 
 # ELK AI Log Explorer Server
 python3 elk-log-explorer/server.py --port 24004
+
+# Eton Orders Monitoring Server
+python3 eton-orders-monitoring/server.py --port 24005
 ```
 
 ---
@@ -75,4 +79,5 @@ Every server is fully packaged according to **[`SHAREABLE_SERVER_STANDARD.md`](S
 | **JPluger PR Stats** | [`jpluger-pr-stats-1.0.0.zip`](jpluger-pr-stats/jpluger-pr-stats-1.0.0.zip) | `24002` | `Install.command`, `Start.command`, `install_app.sh` |
 | **AI Skills & Plugins** | [`ai-skills-report-1.0.0.zip`](ai-skills-report/ai-skills-report-1.0.0.zip) | `24003` | `Install.command`, `Start.command`, `install_app.sh` |
 | **ELK AI Log Explorer** | [`elk-log-explorer-1.0.0.zip`](elk-log-explorer/elk-log-explorer-1.0.0.zip) | `24004` | `Install.command`, `Start.command`, `install_app.sh` |
+| **Eton Orders Monitoring** | [`eton-orders-monitoring-1.0.0.zip`](eton-orders-monitoring/eton-orders-monitoring-1.0.0.zip) | `24005` | `Install.command`, `Start.command`, `install_app.sh` |
 

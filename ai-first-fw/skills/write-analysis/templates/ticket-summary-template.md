@@ -24,6 +24,8 @@ reader decides scope from, and points to the specs for every detail.
 - Use the terms the repository's context file gives. Where that file names a thing, use its word.
 - Section 2 is a changelog. Every item starts with a verb — Add, Remove, Send, Replace, Implement,
   Audit, Keep, Reject, Read — and names the system it lands in.
+- `C-n` and `CR-n` are permanent, like `L-n`. Group items by the function they land in and let the
+  numbers run out of order. A split item takes a letter — `C-6a`, `C-6b`.
 - Keep each item at the level of the logic that changes. The property rows live in the mapping
   spec; the columns and validations live in the requirements spec.
 - Put an action in 2.1 or 2.2, and a fact in 2.3. Each thing appears once.
@@ -107,7 +109,18 @@ holds a known gap in view is worth more than one that reads clean.]
 
 ---
 
-## 3. Open questions
+## 3. Definition of done
+
+*(Four lines at most. Each names a gate and points at where it is checked.)*
+
+- Every check in `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` §4 passes.
+- [The acceptance the ticket itself sets, in its own words.] `L-n`
+- [What must not regress, and where its existing tests live.] `L-n`
+- Every question in §4 is answered, or is recorded as accepted risk with its owner.
+
+---
+
+## 4. Open questions
 
 Each question names what would answer it.
 
@@ -122,7 +135,7 @@ denied", say so — that differs from "no".]
 
 ---
 
-## 4. Notes
+## 5. Notes
 
 *(One line each. Delete a line this ticket does not carry.)*
 

@@ -66,6 +66,14 @@ KNOWN_SERVERS = {
         "folder": "elk-log-explorer",
         "script": "server.py",
     },
+    "eton-orders-monitoring": {
+        "key": "eton-orders-monitoring",
+        "name": "Eton Orders Monitoring",
+        "description": "Eton replay and live orders audit, funnel drop-off tracker, and error diagnostics",
+        "port": 24005,
+        "folder": "eton-orders-monitoring",
+        "script": "server.py",
+    },
 }
 
 

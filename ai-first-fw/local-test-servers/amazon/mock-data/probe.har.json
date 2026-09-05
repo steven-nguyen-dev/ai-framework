@@ -1,0 +1,505 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "Amazon",
+      "version": "1.0"
+    },
+    "entries": [
+      {
+        "startedDateTime": "2026-09-03T22:12:06.406Z",
+        "time": 0.489,
+        "_seq": 1,
+        "_rule": null,
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23199/orders/2026-01-01/orders/403-1234567-1234567?includedData=CANCELLATION' -H 'X-Amz-Access-Token: ***redacted***' -H 'Content-Type: application/json'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23199/orders/2026-01-01/orders/403-1234567-1234567?includedData=CANCELLATION",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23199"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "includedData",
+              "value": "CANCELLATION"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 4014,
+            "mimeType": "application/json",
+            "text": "{\"order\": {\"orderId\": \"202-1234567-8901234\", \"orderAliases\": [{\"aliasId\": \"UK-MERCHANT-ORDER-2024-001\", \"aliasType\": \"SELLER_ORDER_ID\"}], \"createdTime\": \"2024-12-25T09:15:00Z\", \"lastUpdatedTime\": \"2024-12-25T16:30:00Z\", \"programs\": [\"PRIME\"], \"salesChannel\": {\"channelName\": \"AMAZON\", \"marketplaceId\": \"A1F83G8C2ARO7P\", \"marketplaceName\": \"Amazon.co.uk\"}, \"buyer\": {\"buyerName\": \"James Wilson\", \"buyerEmail\": \"buyer-email@marketplace.amazon.co.uk\"}, \"recipient\": {\"deliveryAddress\": {\"name\": \"James Wilson\", \"companyName\": \"Wilson Electronics Ltd\", \"addressLine1\": \"123 High Street\", \"addressLine2\": \"Unit 4B\", \"addressLine3\": \"\", \"city\": \"Manchester\", \"districtOrCounty\": \"Greater Manchester\", \"stateOrRegion\": \"England\", \"municipality\": \"\", \"postalCode\": \"M1 2AB\", \"countryCode\": \"GB\", \"phone\": \"+44 161 123 4567\", \"addressType\": \"COMMERCIAL\"}}, \"proceeds\": {\"grandTotal\": {\"amount\": \"103.97\", \"currencyCode\": \"GBP\"}, \"breakdowns\": [{\"type\": \"ITEM\", \"subtotal\": {\"amount\": \"89.97\", \"currencyCode\": \"GBP\"}}, {\"type\": \"SHIPPING\", \"subtotal\": {\"amount\": \"10.00\", \"currencyCode\": \"GBP\"}}, {\"type\": \"TAX\", \"subtotal\": {\"amount\": \"4.00\", \"currencyCode\": \"GBP\"}}]}, \"fulfillment\": {\"fulfillmentStatus\": \"SHIPPED\", \"fulfilledBy\": \"MERCHANT\", \"fulfillmentServiceLevel\": \"STANDARD\", \"shipByWindow\": {\"earliestDateTime\": \"2024-12-25T00:00:00Z\", \"latestDateTime\": \"2024-12-26T23:59:59Z\"}, \"deliverByWindow\": {\"earliestDateTime\": \"2024-12-27T00:00:00Z\", \"latestDateTime\": \"2024-12-30T23:59:59Z\"}}, \"orderItems\": [{\"orderItemId\": \"20212345678901\", \"quantityOrdered\": 3, \"programs\": [\"TRANSPARENCY\"], \"product\": {\"asin\": \"B08DFPV54V\", \"title\": \"Echo Dot (4th Gen) | Smart speaker with Alexa | Charcoal\", \"sellerSku\": \"ECHO-DOT-4-UK-CHARCOAL-3PACK\", \"condition\": {\"conditionType\": \"NEW\", \"conditionSubtype\": \"NEW\", \"conditionNote\": \"Brand new, sealed in original packaging\"}, \"price\": {\"unitPrice\": {\"amount\": \"29.99\", \"currencyCode\": \"GBP\"}, \"priceDesignation\": \"BUSINESS_PRICE\"}, \"serialNumbers\": [\"ED4UK-2024-ABC123456789\", \"ED4UK-2024-DEF987654321\", \"ED4UK-2024-GHI456789123\"], \"customization\": {\"customizedUrl\": \"\"}}, \"proceeds\": {\"proceedsTotal\": {\"amount\": \"103.97\", \"currencyCode\": \"GBP\"}, \"breakdowns\": [{\"type\": \"ITEM\", \"subtotal\": {\"amount\": \"89.97\", \"currencyCode\": \"GBP\"}}, {\"type\": \"SHIPPING\", \"subtotal\": {\"amount\": \"10.00\", \"currencyCode\": \"GBP\"}}, {\"type\": \"TAX\", \"subtotal\": {\"amount\": \"4.00\", \"currencyCode\": \"GBP\"}, \"detailedBreakdowns\": [{\"subtype\": \"ITEM\", \"value\": {\"amount\": \"3.00\", \"currencyCode\": \"GBP\"}}, {\"subtype\": \"SHIPPING\", \"value\": {\"amount\": \"1.00\", \"currencyCode\": \"GBP\"}}]}]}, \"promotion\": {\"breakdowns\": [{\"promotionId\": \"UK-BOXING-DAY-2024\"}]}, \"fulfillment\": {\"quantityFulfilled\": 3, \"quantityUnfulfilled\": 0, \"packing\": {\"giftOption\": {\"giftMessage\": \"Happy Christmas! Hope you enjoy your new smart speakers.\", \"giftWrapLevel\": \"PREMIUM\"}}, \"shipping\": {\"scheduledDeliveryWindow\": {\"earliestDateTime\": \"2024-12-27T09:00:00Z\", \"latestDateTime\": \"2024-12-27T17:00:00Z\"}, \"shippingConstraints\": {\"signatureConfirmation\": \"MANDATORY\", \"recipientIdentityVerification\": \"MANDATORY\"}, \"internationalShipping\": {\"iossNumber\": \"IM1234567890\"}}}}], \"packages\": [{\"packageReferenceId\": \"UK-PKG-2024-001\", \"createdTime\": \"2024-12-25T16:45:00Z\", \"packageStatus\": {\"status\": \"IN_TRANSIT\", \"detailedStatus\": \"OUT_FOR_DELIVERY\"}, \"carrier\": \"Royal Mail\", \"shipTime\": \"2024-12-26T14:00:00Z\", \"shippingService\": \"Royal Mail Tracked 48\", \"trackingNumber\": \"RR123456789GB\", \"shipFromAddress\": {\"name\": \"TechGear UK Warehouse\", \"addressLine1\": \"Industrial Estate Unit 15\", \"addressLine2\": \"Riverside Business Park\", \"addressLine3\": \"\", \"city\": \"Birmingham\", \"districtOrCounty\": \"West Midlands\", \"stateOrRegion\": \"England\", \"municipality\": \"\", \"postalCode\": \"B12 0XY\", \"countryCode\": \"GB\"}, \"packageItems\": [{\"orderItemId\": \"20212345678901\", \"quantity\": 3, \"transparencyCodes\": [\"T12345ABCDE67890UK\", \"T12346ABCDF67891UK\", \"T12347ABCDG67892UK\"]}]}], \"fulfillmentOrders\": [{\"fulfillmentOrderId\": \"LdDv2jxM4\"}]}}",
+            "_json": {
+              "order": {
+                "orderId": "202-1234567-8901234",
+                "orderAliases": [
+                  {
+                    "aliasId": "UK-MERCHANT-ORDER-2024-001",
+                    "aliasType": "SELLER_ORDER_ID"
+                  }
+                ],
+                "createdTime": "2024-12-25T09:15:00Z",
+                "lastUpdatedTime": "2024-12-25T16:30:00Z",
+                "programs": [
+                  "PRIME"
+                ],
+                "salesChannel": {
+                  "channelName": "AMAZON",
+                  "marketplaceId": "A1F83G8C2ARO7P",
+                  "marketplaceName": "Amazon.co.uk"
+                },
+                "buyer": {
+                  "buyerName": "James Wilson",
+                  "buyerEmail": "buyer-email@marketplace.amazon.co.uk"
+                },
+                "recipient": {
+                  "deliveryAddress": {
+                    "name": "James Wilson",
+                    "companyName": "Wilson Electronics Ltd",
+                    "addressLine1": "123 High Street",
+                    "addressLine2": "Unit 4B",
+                    "addressLine3": "",
+                    "city": "Manchester",
+                    "districtOrCounty": "Greater Manchester",
+                    "stateOrRegion": "England",
+                    "municipality": "",
+                    "postalCode": "M1 2AB",
+                    "countryCode": "GB",
+                    "phone": "+44 161 123 4567",
+                    "addressType": "COMMERCIAL"
+                  }
+                },
+                "proceeds": {
+                  "grandTotal": {
+                    "amount": "103.97",
+                    "currencyCode": "GBP"
+                  },
+                  "breakdowns": [
+                    {
+                      "type": "ITEM",
+                      "subtotal": {
+                        "amount": "89.97",
+                        "currencyCode": "GBP"
+                      }
+                    },
+                    {
+                      "type": "SHIPPING",
+                      "subtotal": {
+                        "amount": "10.00",
+                        "currencyCode": "GBP"
+                      }
+                    },
+                    {
+                      "type": "TAX",
+                      "subtotal": {
+                        "amount": "4.00",
+                        "currencyCode": "GBP"
+                      }
+                    }
+                  ]
+                },
+                "fulfillment": {
+                  "fulfillmentStatus": "SHIPPED",
+                  "fulfilledBy": "MERCHANT",
+                  "fulfillmentServiceLevel": "STANDARD",
+                  "shipByWindow": {
+                    "earliestDateTime": "2024-12-25T00:00:00Z",
+                    "latestDateTime": "2024-12-26T23:59:59Z"
+                  },
+                  "deliverByWindow": {
+                    "earliestDateTime": "2024-12-27T00:00:00Z",
+                    "latestDateTime": "2024-12-30T23:59:59Z"
+                  }
+                },
+                "orderItems": [
+                  {
+                    "orderItemId": "20212345678901",
+                    "quantityOrdered": 3,
+                    "programs": [
+                      "TRANSPARENCY"
+                    ],
+                    "product": {
+                      "asin": "B08DFPV54V",
+                      "title": "Echo Dot (4th Gen) | Smart speaker with Alexa | Charcoal",
+                      "sellerSku": "ECHO-DOT-4-UK-CHARCOAL-3PACK",
+                      "condition": {
+                        "conditionType": "NEW",
+                        "conditionSubtype": "NEW",
+                        "conditionNote": "Brand new, sealed in original packaging"
+                      },
+                      "price": {
+                        "unitPrice": {
+                          "amount": "29.99",
+                          "currencyCode": "GBP"
+                        },
+                        "priceDesignation": "BUSINESS_PRICE"
+                      },
+                      "serialNumbers": [
+                        "ED4UK-2024-ABC123456789",
+                        "ED4UK-2024-DEF987654321",
+                        "ED4UK-2024-GHI456789123"
+                      ],
+                      "customization": {
+                        "customizedUrl": ""
+                      }
+                    },
+                    "proceeds": {
+                      "proceedsTotal": {
+                        "amount": "103.97",
+                        "currencyCode": "GBP"
+                      },
+                      "breakdowns": [
+                        {
+                          "type": "ITEM",
+                          "subtotal": {
+                            "amount": "89.97",
+                            "currencyCode": "GBP"
+                          }
+                        },
+                        {
+                          "type": "SHIPPING",
+                          "subtotal": {
+                            "amount": "10.00",
+                            "currencyCode": "GBP"
+                          }
+                        },
+                        {
+                          "type": "TAX",
+                          "subtotal": {
+                            "amount": "4.00",
+                            "currencyCode": "GBP"
+                          },
+                          "detailedBreakdowns": [
+                            {
+                              "subtype": "ITEM",
+                              "value": {
+                                "amount": "3.00",
+                                "currencyCode": "GBP"
+                              }
+                            },
+                            {
+                              "subtype": "SHIPPING",
+                              "value": {
+                                "amount": "1.00",
+                                "currencyCode": "GBP"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "promotion": {
+                      "breakdowns": [
+                        {
+                          "promotionId": "UK-BOXING-DAY-2024"
+                        }
+                      ]
+                    },
+                    "fulfillment": {
+                      "quantityFulfilled": 3,
+                      "quantityUnfulfilled": 0,
+                      "packing": {
+                        "giftOption": {
+                          "giftMessage": "Happy Christmas! Hope you enjoy your new smart speakers.",
+                          "giftWrapLevel": "PREMIUM"
+                        }
+                      },
+                      "shipping": {
+                        "scheduledDeliveryWindow": {
+                          "earliestDateTime": "2024-12-27T09:00:00Z",
+                          "latestDateTime": "2024-12-27T17:00:00Z"
+                        },
+                        "shippingConstraints": {
+                          "signatureConfirmation": "MANDATORY",
+                          "recipientIdentityVerification": "MANDATORY"
+                        },
+                        "internationalShipping": {
+                          "iossNumber": "IM1234567890"
+                        }
+                      }
+                    }
+                  }
+                ],
+                "packages": [
+                  {
+                    "packageReferenceId": "UK-PKG-2024-001",
+                    "createdTime": "2024-12-25T16:45:00Z",
+                    "packageStatus": {
+                      "status": "IN_TRANSIT",
+                      "detailedStatus": "OUT_FOR_DELIVERY"
+                    },
+                    "carrier": "Royal Mail",
+                    "shipTime": "2024-12-26T14:00:00Z",
+                    "shippingService": "Royal Mail Tracked 48",
+                    "trackingNumber": "RR123456789GB",
+                    "shipFromAddress": {
+                      "name": "TechGear UK Warehouse",
+                      "addressLine1": "Industrial Estate Unit 15",
+                      "addressLine2": "Riverside Business Park",
+                      "addressLine3": "",
+                      "city": "Birmingham",
+                      "districtOrCounty": "West Midlands",
+                      "stateOrRegion": "England",
+                      "municipality": "",
+                      "postalCode": "B12 0XY",
+                      "countryCode": "GB"
+                    },
+                    "packageItems": [
+                      {
+                        "orderItemId": "20212345678901",
+                        "quantity": 3,
+                        "transparencyCodes": [
+                          "T12345ABCDE67890UK",
+                          "T12346ABCDF67891UK",
+                          "T12347ABCDG67892UK"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "fulfillmentOrders": [
+                  {
+                    "fulfillmentOrderId": "LdDv2jxM4"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 4014
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.489,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:12:06.408Z",
+        "time": 0.076,
+        "_seq": 2,
+        "_rule": "official sandbox TEST_CASE_200 / default -- 200 order items",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23199/orders/v0/orders/403-1234567-1234567/orderItems' -H 'X-Amz-Access-Token: ***redacted***' -H 'Content-Type: application/json'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23199/orders/v0/orders/403-1234567-1234567/orderItems",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23199"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 487,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"AmazonOrderId\": \"403-1234567-1234567\", \"OrderItems\": [{\"ASIN\": \"B00005N5PF\", \"SellerSKU\": \"SKU-AMZN-PROD-001\", \"OrderItemId\": \"65432109876543\", \"Title\": \"Amazon Basics Wireless Bluetooth Speaker - Black\", \"QuantityOrdered\": 1, \"QuantityShipped\": 0, \"ItemPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": \"35.00\"}, \"ShippingPrice\": {\"CurrencyCode\": \"USD\", \"Amount\": \"7.50\"}, \"ItemTax\": {\"CurrencyCode\": \"USD\", \"Amount\": \"2.80\"}, \"ConditionId\": \"New\", \"ConditionSubtypeId\": \"New\"}]}}",
+            "_json": {
+              "payload": {
+                "AmazonOrderId": "403-1234567-1234567",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-AMZN-PROD-001",
+                    "OrderItemId": "65432109876543",
+                    "Title": "Amazon Basics Wireless Bluetooth Speaker - Black",
+                    "QuantityOrdered": 1,
+                    "QuantityShipped": 0,
+                    "ItemPrice": {
+                      "CurrencyCode": "USD",
+                      "Amount": "35.00"
+                    },
+                    "ShippingPrice": {
+                      "CurrencyCode": "USD",
+                      "Amount": "7.50"
+                    },
+                    "ItemTax": {
+                      "CurrencyCode": "USD",
+                      "Amount": "2.80"
+                    },
+                    "ConditionId": "New",
+                    "ConditionSubtypeId": "New"
+                  }
+                ]
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 487
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.076,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-03T22:12:06.410Z",
+        "time": 0.059,
+        "_seq": 3,
+        "_rule": null,
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23199/notifications/v1/subscriptions/ORDER_CHANGE' -H 'X-Amz-Access-Token: ***redacted***' -H 'Content-Type: application/json' --data-raw '{\"payloadVersion\": \"1.0\", \"destinationId\": \"d1\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23199/notifications/v1/subscriptions/ORDER_CHANGE",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept-Encoding",
+              "value": "identity"
+            },
+            {
+              "name": "Content-Length",
+              "value": "48"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23199"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Python-urllib/3.14"
+            },
+            {
+              "name": "X-Amz-Access-Token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Connection",
+              "value": "close"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"payloadVersion\": \"1.0\", \"destinationId\": \"d1\"}",
+            "_json": {
+              "payloadVersion": "1.0",
+              "destinationId": "d1"
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 48
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 138,
+            "mimeType": "application/json",
+            "text": "{\"payload\": {\"subscriptionId\": \"TEST_CASE_200_SUBSCRIPTION_ID\", \"payloadVersion\": \"1.0\", \"destinationId\": \"TEST_CASE_200_DESTINATION_ID\"}}",
+            "_json": {
+              "payload": {
+                "subscriptionId": "TEST_CASE_200_SUBSCRIPTION_ID",
+                "payloadVersion": "1.0",
+                "destinationId": "TEST_CASE_200_DESTINATION_ID"
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 138
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.059,
+          "receive": 0
+        }
+      }
+    ]
+  }
+}

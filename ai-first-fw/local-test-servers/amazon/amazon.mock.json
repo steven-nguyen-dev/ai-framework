@@ -32,13 +32,13 @@
       ]
     },
     {
-      "id": "taxonomy",
-      "name": "Marketplace Taxonomy Sync (IA-5105)",
+      "id": "IA-5105-US1-taxonomy",
+      "name": "IA-5105-US1: Marketplace Taxonomy Sync",
       "description": "Product Type Definitions discovery per market (US, DE, ES, FR, AU) and the POST /rest/v1/bulk_categories payload it produces, judged against the IA-5105 requirements at the Anchanto OMS mock (:23001)",
       "estimate": "~10s",
       "command": [
         "python3",
-        "./suite-taxonomy.py"
+        "./suite-IA-5105-US1-taxonomy.py"
       ],
       "options": [
         {
@@ -48,23 +48,181 @@
       ]
     },
     {
-      "id": "connect-us",
-      "name": "Connect to US Market (E2E Flow)",
+      "id": "IA-5105-US1-connect-us",
+      "name": "IA-5105-US1: Connect to US Market (E2E Flow)",
       "description": "End-to-End store connect and taxonomy synchronization for Amazon US (ATVPDKIKX0DER) -> Amazon Mock (:23103) -> Transformation -> Anchanto OMS (:23001)",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-connect-us.py"
+        "./suite-IA-5105-US1-connect-us.py"
       ]
     },
     {
-      "id": "connect-non-us",
-      "name": "Connect to non-US Markets (E2E Flow)",
+      "id": "IA-5105-US1-connect-non-us",
+      "name": "IA-5105-US1: Connect to non-US Markets (E2E Flow)",
       "description": "End-to-End store connect and taxonomy synchronization for non-US markets (FR, DE, ES, AU) -> Amazon Mock (:23103) -> Transformation -> Anchanto OMS (:23001) with marketplace isolation",
       "estimate": "~5s",
       "command": [
         "python3",
-        "./suite-connect-non-us.py"
+        "./suite-IA-5105-US1-connect-non-us.py"
+      ]
+    },
+    {
+      "id": "IA-5105-US1-all",
+      "name": "IA-5105-US1: Master Test Suite (All 87 Cases)",
+      "description": "Consolidated execution of all 87 test cases covering marketplace taxonomy discovery, US store connect, and multi-marketplace synchronization",
+      "estimate": "~15s",
+      "command": [
+        "python3",
+        "./suite-IA-5105-US1.py"
+      ]
+    },
+    {
+      "id": "suite-IA-5109-US3-confirmation",
+      "name": "IA-5109-US3: Parcel Confirmation & Core Flows",
+      "description": "Validation of Amazon Orders v0 confirmShipment, multi-parcel grouping (Rule N-1), monotonic packageReferenceId (Rule N-2), quantity ledger & atomic pre-submit guard (Rule N-3), and exception matrix (Rule N-4) across 23 cases",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./suite-IA-5109-US3-parcel-confirmation.py"
+      ],
+      "options": [
+        {
+          "flag": "--keep-state",
+          "label": "Keep state -- do not empty mock stores"
+        }
+      ]
+    },
+    {
+      "id": "suite-IA-5109-US3-oms-contracts",
+      "name": "IA-5109-US3: OMS Schemas, DTOs & Contracts",
+      "description": "Validation of OMS contract changes CR-0 to CR-5: RTSDataDTO webhook diff, quantity spelling alias, shipping_details write-back, update_status body, order item quantity ledger, and database durability across 14 cases",
+      "estimate": "~2s",
+      "command": [
+        "python3",
+        "./suite-IA-5109-US3-oms-contracts.py"
+      ]
+    },
+    {
+      "id": "suite-IA-5109-US3-multi-market",
+      "name": "IA-5109-US3: Multi-Marketplace & Carrier/Customs",
+      "description": "Validation of multi-marketplace isolation (FR, DE, JP, US), Japan-only COD DirectPayment injection, carrier code mappings, and carrier IOSS/customs boundaries (Rule N-5 / CR-6) across 15 cases",
+      "estimate": "~2s",
+      "command": [
+        "python3",
+        "./suite-IA-5109-US3-multi-market.py"
+      ]
+    },
+    {
+      "id": "suite-IA-5109-US3",
+      "name": "IA-5109-US3: Master Test Suite (All 52 Cases)",
+      "description": "Consolidated execution of all 52 test cases covering parcel confirmation, OMS contracts, multi-marketplace isolation, carrier mapping, and customs boundaries",
+      "estimate": "~5s",
+      "command": [
+        "python3",
+        "./suite-IA-5109-US3.py"
+      ]
+    },
+    {
+      "id": "IA-5112-US5-sync",
+      "name": "IA-5112-US5: Seller-Fulfilled Returns Sync",
+      "description": "Validation of Amazon SP-API reports synchronization (GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE), wide static 60-day window, 31-column TSV parsing by header, date parsing, rate limits, and 4-marketplace isolation (FR, DE, JP, US) across 12 cases",
+      "estimate": "~2s",
+      "command": [
+        "python3",
+        "./suite-IA-5112-US5-sync.py"
+      ],
+      "options": [
+        {
+          "flag": "--keep-state",
+          "label": "Keep state -- do not empty mock stores"
+        }
+      ]
+    },
+    {
+      "id": "IA-5112-US5-lifecycle",
+      "name": "IA-5112-US5: End-to-End Returns Lifecycle",
+      "description": "Validation of return reconstruction on primary/fallback keys, item resolution, POST /rest/v1/orders/return (20 ADD + 10 REUSE fields), status updates (new_status=RETURN), 4 completion paths, 30-day ageing, 2 WMS3 conditions, and authority split across 20 cases",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./suite-IA-5112-US5-lifecycle.py"
+      ]
+    },
+    {
+      "id": "IA-5112-US5-exceptions",
+      "name": "IA-5112-US5: Exceptions, Edge Cases & Residuals",
+      "description": "Validation of all 23 exception matrix scenarios, regulated returns, unmatched arrivals, quantity mismatches, cumulative limits, ambiguous key collisions, and the 4 residual probes across 28 cases",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./suite-IA-5112-US5-exceptions.py"
+      ]
+    },
+    {
+      "id": "IA-5112-US5-all",
+      "name": "IA-5112-US5: Master Test Suite (All 60 Cases)",
+      "description": "Consolidated execution of all 60 test cases covering seller-fulfilled returns report sync, end-to-end lifecycle progression, exception matrix, and technical residual probes",
+      "estimate": "~5s",
+      "command": [
+        "python3",
+        "./suite-IA-5112-US5.py"
+      ]
+    },
+    {
+      "id": "IA-5106-US4-hold",
+      "name": "IA-5106-US4: Inbound Buyer Cancellation Request & Order Hold",
+      "description": "Validation of buyer cancellation request detection, ORDER_CHANGE notification ingress, 2026-01-01 detail read, string flag parsing (N-2), CR-1 hold payload on OMS, write-once snapshot, and stock preservation across 12 cases",
+      "estimate": "~2s",
+      "command": [
+        "python3",
+        "./suite-IA-5106-US4-hold.py"
+      ],
+      "options": [
+        {
+          "flag": "--keep-state",
+          "label": "Keep state -- do not empty mock stores"
+        }
+      ]
+    },
+    {
+      "id": "IA-5106-US4-cancel",
+      "name": "IA-5106-US4: Confirmed Cancellation & Stock Release",
+      "description": "Validation of scheduled cancellation sweep on v0, sync marker, defect fixes C-13/C-14/C-15, all three cancelledBy executors (AMAZON, MERCHANT, BUYER), CR-6 ledger, whole-line cancellation rule N-1, stock return to ATP, and partial vs full status across 17 cases",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./suite-IA-5106-US4-cancel.py"
+      ]
+    },
+    {
+      "id": "IA-5106-US4-restore",
+      "name": "IA-5106-US4: Rejection, Expiry & Status Restoration",
+      "description": "Validation of absence-rule detection over two consecutive reads (L-76), handling REJECTED/WITHDRAWN/EXPIRED, CR-3 restore payload on OMS, status restoration, reservation state revalidation, routing stock lapse to out-of-stock problem order, and audit retention across 11 cases",
+      "estimate": "~2s",
+      "command": [
+        "python3",
+        "./suite-IA-5106-US4-restore.py"
+      ]
+    },
+    {
+      "id": "IA-5106-US4-gate",
+      "name": "IA-5106-US4: Pre-Ready-To-Ship Gate, Race Conditions & Resilience",
+      "description": "Validation of pre-ready-to-ship validation gate, bulk cancellation check batching up to 300, post-RTS cancellation problem reason, out-of-order event resolution, cutover date filtering, store credentials isolation across 4 markets (FR, DE, JP, US), and poll failure resilience across 16 cases",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./suite-IA-5106-US4-gate.py"
+      ]
+    },
+    {
+      "id": "IA-5106-US4-all",
+      "name": "IA-5106-US4: Master Test Suite (All 56 Cases)",
+      "description": "Consolidated execution of all 56 test cases covering inbound hold, confirmed cancellation, rejection/restoration, pre-RTS gating, race conditions, and marketplace isolation",
+      "estimate": "~5s",
+      "command": [
+        "python3",
+        "./suite-IA-5106-US4.py"
       ]
     }
   ],

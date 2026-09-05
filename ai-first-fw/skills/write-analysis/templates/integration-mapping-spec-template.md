@@ -20,8 +20,9 @@ and why that property needs it.
 
 **Writing rules.**
 
-- Group by endpoint. One `###` section per endpoint that carries data, headed by the method and
-  path, in the order the flow calls them. A property row sits under the endpoint that carries it.
+- Group by endpoint. One `###` section per endpoint that carries data, in the order the flow calls
+  them, headed `[in]` or `[out]` then the method and path — `in` reaches the source system, `out`
+  reaches the target. A property row sits under the endpoint that carries it.
 - **Transformation** states the operation on the value: direct map, cast, parse, enum lookup,
   concatenate, inject from context.
 - **Reason** is one clause naming why the target property needs that value. Keep it under about
@@ -79,8 +80,9 @@ of §4.
 
 ## 4. Field mapping, by endpoint
 
-### 4.1 `[POST /rest/v1/target_endpoint]`
+### 4.1 `[out]` `[POST /rest/v1/target_endpoint]`
 
+* **Spec:** `[KEY]` → `[operationId or json.pointer.path]`
 * **Called by:** Flow 1, step 2 · Flow 2, step 2
 * **Source object:** `[source_payload.header_object]`
 * **Target DTO:** `[TARGET_SYSTEM] / [TargetModelDTO]`
@@ -101,8 +103,9 @@ of §4.
 | 6 | `$.line_items[*].item_id` | `line_item_code` | `string` | Direct map | Identifies the line within the parent | No | `"LINE_01"` | `L-6` |
 | 7 | `$.line_items[*].quantity` | `qty` | `integer` | Parse integer, default 0 | Target deducts stock on this number | No | `5` | `L-7` |
 
-### 4.2 `[POST /rest/v1/other_endpoint]`
+### 4.2 `[out]` `[POST /rest/v1/other_endpoint]`
 
+* **Spec:** `[KEY]` → `[operationId or json.pointer.path]`
 * **Called by:** Flow 2, step 1
 * **Source object:** `[source_payload.custom_attributes]`
 * **Target DTO:** `[AttributeListDTO]`
