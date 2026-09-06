@@ -1,7 +1,7 @@
 ---
 name: write-analysis
 description: Write the four-document contract — claim library, mapping spec, requirements spec and summary — that implementation follows for one requirement, from its Jira issue or brief, every party's documentation, and the repository's own code and context files. Use on "write the analysis", "analyse this ticket", "write the mapping spec", "write the requirements spec", "write the definition of done", "amend the contract", or when a requirement needs its contract before implementation.
-version: 1.1.0
+version: 1.2.0
 disable-model-invocation: false
 ---
 
@@ -98,15 +98,18 @@ row is covered by an `A-n`.
 
 ## Step 5 — Write the summary
 
-Conclusions, at the level a reader settles scope from. Every item starts with a verb, names the
-system it lands in, and carries that system's tier. An `integration` or `internal` gap is an item
-this codebase builds, and the `internal` item names the item on this side that is reachable first.
-An `external` limit is a precondition.
+Conclusions, at the level a reader settles scope from. Group the changes by the team that builds it,
+then by endpoint, flow or domain inside each team, using the same units in the same order the
+mapping spec and the requirements spec use. Every item starts with a verb and names the system it
+lands in; each team section carries its tier. An `integration` or `internal` gap is an item this
+codebase builds, and the `internal` item names the item on this side that is reachable first. An
+`external` limit is a precondition.
 
-**Completion:** every changes item starts with a verb, names its system and tier, carries an `L-n`,
-and states a conclusion the specs hold the rows for; every `internal` item names the item on this
-side that precedes it; every precondition row names an `external` limit or a decision a named person
-settles.
+**Completion:** every changes item sits under one team and one endpoint, flow or domain, in the
+order the specs use; every item starts with a verb, names its system, carries an `L-n`, and states a
+conclusion the specs hold the rows for; every team section carries its tier; every `internal` item
+names the item on this side that precedes it; every precondition row names an `external` limit or a
+decision a named person settles.
 
 ## Step 6 — Write the definition of done
 
@@ -231,5 +234,9 @@ The published contract states one thing: what holds now.
 **Summary**
 
 - Every changes item starts with a verb and names the system it lands in.
+- Every changes item sits under one team, then under one endpoint, flow or domain; every team
+  section carries its tier.
+- Every inner group is headed by the same unit, in the same order, that the mapping spec and the
+  requirements spec use.
 - The summary states conclusions and points to the specs for detail.
 

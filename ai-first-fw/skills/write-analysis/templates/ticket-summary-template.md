@@ -26,8 +26,10 @@ all four documents, and it points to the specs for every detail.
   name the context file that owns a term two files share.
 - Write every line in the present tense, as the state that holds when the work is done.
 - Section 2 states the changes the contract requires. Every item starts with a verb — Add, Remove,
-  Send, Replace, Implement, Audit, Keep, Reject, Read — and names the system it lands in with that
-  system's tier: `integration`, `internal` or `external`.
+  Send, Replace, Implement, Audit, Keep, Reject, Read — and names the system it lands in.
+- Group section 2 by the team that builds it, then by endpoint, flow or domain inside each team. Head
+  each inner group with the same unit, in the same order, that mapping spec section 4 and
+  requirements spec sections 2 and 3 use. Each team section carries its tier in its heading.
 - An `integration` or `internal` gap is an item this codebase builds, in 2.1 with its `C-n`. An
   `external` limit is a precondition in section 4.
 - `C-n` and `CR-n` are permanent, like `L-n`. Group items by the function they land in and let the
@@ -86,25 +88,42 @@ and the tier that settles it.] `L-n`
 
 ## 2. Changes
 
-Each line is an action. The `L-n` names its row in the claim library.
+Grouped by the team that builds it, then by endpoint, flow or domain inside each team — the same
+units, in the same order, as mapping spec section 4 and requirements spec sections 2 and 3. Each
+line is an action, and its `L-n` names its row in the claim library.
 
 ### 2.1 [THIS_CODEBASE] work — `integration`
 
 *(What this team builds. Start each item with a verb. Where a value crosses an `internal` contract,
 this side widens its ingress and becomes reachable here first; 2.2 carries the request that follows.)*
 
+#### `[POST /path/to/endpoint_a]`
+
 - **C-1** [Action.] `L-1`
 - **C-2** [Action.] `L-2` `L-3`
+
+#### `[POST /path/to/endpoint_b]`
+
 - **C-3** [Action.] `L-4`
+
+#### Changes that land on no endpoint
+
+*(Flows, components and assumptions, matching requirements spec section 3.)*
+
+- **C-4** [Action.] `L-n`
 
 ### 2.2 [OTHER_SYSTEM] changes to request — `internal`
 
-*(What another internal team builds. Give each item a priority, name the endpoint it lands on — the
-requirements spec holds the rows — and name the `C-n` in 2.1 that makes this side reachable before
-that team builds.)*
+*(What another internal team builds. Give each item a priority, and name the `C-n` in 2.1 that makes
+this side reachable before that team builds. The requirements spec holds the rows.)*
 
-- **CR-1** [Action] on `[POST /path/to/endpoint]` — [priority] · this side: **C-n** `L-5`
-- **CR-2** [Action] on `[POST /path/to/endpoint]` — [priority] · this side: **C-n** `L-6`
+#### `[POST /path/to/endpoint_a]`
+
+- **CR-1** [Action.] — [priority] · this side: **C-1** `L-5`
+
+#### `[POST /path/to/endpoint_b]`
+
+- **CR-2** [Action.] — [priority] · this side: **C-3** `L-6`
 
 **[CR-n] carries the most weight.** [One or two sentences. Reserve this for the change whose absence
 removes the feature.]
