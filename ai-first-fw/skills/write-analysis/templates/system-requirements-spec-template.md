@@ -16,7 +16,7 @@
 *(Delete this whole section before you publish the document.)*
 
 This is the **requirements spec**. Its reader owns `[TARGET_SYSTEM]` and arrives holding one
-endpoint. It states what changes on that endpoint, and what holds once the change is built.
+endpoint. It tells that reader what changes on that endpoint.
 
 **Writing rules.**
 
@@ -29,9 +29,7 @@ endpoint. It states what changes on that endpoint, and what holds once the chang
 - Every property carries one change status: `ADD`, `UPDATE`, `REMOVE` or `REUSE`. Settle it against
   the target system's data model before you write the row.
 - Reuse first. Before you write `ADD`, check whether a property already in the model carries the
-  same business meaning, and record the result as a `REUSE` row, or as a claim stating the absence.
-- Section 4 carries one `A-n` per condition that holds when the work is built. Every §2 and §3 row
-  is covered by an `A-n`, and the summary's definition of done cites them.
+  same business meaning, and record the check as a `REUSE` row or a stopped search.
 - Write each `ADD` and `UPDATE` requirement in the receiving team's own terms: the property, the
   column, the validation. Start it with a verb.
 - Every row carries an `L-n`. The claim library states the citation rule and holds every locator.
@@ -151,20 +149,24 @@ Flows, components and assumptions this ticket adds, changes or retires. Same fou
 
 ---
 
-## 4. Acceptance
+## 4. Verification gate
 
-Each line states what holds on `[TARGET_SYSTEM]` when the work is built. The summary's definition of
-done cites these lines by `A-n`. Keep the lines whose rows this ticket carries and delete the rest.
+Each line below checks a row of section 2. Delete a line whose rows this ticket does not carry.
 
-| # | Holds when | Covers |
-| :-- | :--- | :--- |
-| A-1 | A migration exists and has run for every `ADD` column. | §2 ADD rows |
-| A-2 | Every column the tables mark indexed carries its index. | §2 ADD rows |
-| A-3 | Every `ADD` and `UPDATE` property carries its serialisation annotation on the DTO. | §2 ADD, UPDATE rows |
-| A-4 | Validators enforce the rule each `UPDATE` row states. | §2 UPDATE rows |
-| A-5 | A repeated payload updates the existing record, and the record count stays the same. | §2, mapping §6 |
-| A-6 | Records absent from a full sync hold the state the mapping spec §6 names. | mapping §6 |
-| A-7 | Every endpoint operating on a `REUSE` property passes its existing tests unchanged. | §2 REUSE rows |
-| A-8 | Every `DEPRECATE` parameter returns its response, with the `Sunset` header. | §2 DEPRECATE rows |
-| A-9 | Every new mapper and validation class carries tests at the coverage this repository requires. | §2, §3 |
-| A-10 | [The capability §3 adds behaves as §3 states, checked at [where].] | §3 rows |
+**Schema**
+
+- [ ] Migration script written and run for every `ADD` column.
+- [ ] Index created on every column the tables mark indexed.
+- [ ] DTO classes updated with serialisation annotations for every `ADD` and `UPDATE` property.
+
+**Logic**
+
+- [ ] Validators enforce the rule stated in every `UPDATE` row.
+- [ ] A repeated payload updates the existing record and creates no duplicate.
+- [ ] Records absent from a full sync take the state section 6 of the mapping spec names.
+
+**Compatibility**
+
+- [ ] Every endpoint operating on a `REUSE` property passes its existing tests unchanged.
+- [ ] Every `DEPRECATE` parameter still returns a response, with its `Sunset` header.
+- [ ] New mapper and validation classes carry tests at the coverage this repository requires.

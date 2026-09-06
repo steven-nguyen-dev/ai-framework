@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """Amazon Partial & Multi-Parcel Shipments Master Test Suite (IA-5109-US3).
 
-Consolidated runner for all 52 test cases across three suites. Every case crosses an HTTP boundary:
-the Amazon SP-API mock for the confirmation and marketplace suites, the Anchanto OMS mock for the
-contracts suite. Each child suite brings up the server it needs.
-
-  - IA-5109-US3-CONFIRM (27 cases): confirmShipment itself -- grouping by tracking number (N-1), the
-                                   package reference and its edit semantics (N-2), the quantity guard
-                                   read from Amazon's own QuantityShipped (N-3), the exception matrix
-                                   and the pre-submit gate (N-4), and the six C-17 defect sites.
-  - IA-5109-US3-MKT     (16 cases): the four marketplace ids, Japan's codCollectionMethod as a
-                                   sibling of packageDetail, carrier resolution on the live payload
-                                   shape, and Rule N-5's Amazon half.
-  - IA-5109-US3-OMS      (9 cases): the per-parcel write-back of mapping 4.5 against the OMS mock,
-                                   the C-13 item subset, and the ledger read.
+Consolidated runner for all 52 test cases across:
+  - IA-5109-US3-CONFIRM (23 cases): Amazon SP-API Orders v0 confirmShipment, grouping (Rule N-1),
+                                   monotonic packageReferenceId (Rule N-2), quantity ledger (Rule N-3),
+                                   and exception matrix (Rule N-4).
+  - IA-5109-US3-OMS     (14 cases): Anchanto OMS contracts CR-0 to CR-5, RTS webhook diff,
+                                   quantity alias, shipping_details write-back, and database durability.
+  - IA-5109-US3-MKT     (15 cases): Multi-marketplace isolation (FR, DE, JP, US), Japan-only COD
+                                   DirectPayment, carrier mapping, and customs/IOSS boundary.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5109-US3/run-<stamp>/results.json.
@@ -54,7 +49,7 @@ mod_mkt = _load_module("suite_mkt", os.path.join(HERE, "suite-IA-5109-US3-multi-
 
 BASE = os.environ.get("BASE", "http://127.0.0.1:23103").rstrip("/")
 SUITE_ID = "IA-5109-US3"
-SUITE_NAME = "IA-5109-US3: Master Test Suite"
+SUITE_NAME = "IA-5109-US3: Master Test Suite (All 52 Cases)"
 KEEP = "--keep-state" in sys.argv
 LIST_ONLY = "--list" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
@@ -148,11 +143,7 @@ def main():
             print(f"  [{c['id']}] {c['name']}")
         return
 
-    # Each child suite owns its own server: the Amazon mock on its configured port, the OMS mock on
-    # an OS-assigned one against run-scoped state.
     mod_confirm.preflight()
-    mod_mkt.preflight()
-    mod_oms.preflight()
 
     to_run = [c for c in ALL_CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
     print(f"\nRunning {len(to_run)} cases across all 3 suites...")
@@ -165,7 +156,6 @@ def main():
 
     EVIDENCE["status"] = "complete"
     mod_confirm.capture()
-    mod_oms.capture()
     publish()
 
     done = [RESULTS[c["id"]] for c in to_run if c["id"] in RESULTS]

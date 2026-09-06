@@ -121,14 +121,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -158,14 +156,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -195,14 +191,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -326,14 +320,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -363,14 +355,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -400,14 +390,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -473,26 +461,22 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.status": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -532,26 +516,22 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.status": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -591,26 +571,22 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.status": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -725,14 +701,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -762,14 +736,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -799,14 +771,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -836,14 +806,12 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -1021,9 +989,7 @@
               "marketplace_code": "${body.order.marketplace_code}",
               "order_total": "${body.order.order_total}",
               "is_historical_order": "${body.order.is_historical_order|<absent>}",
-              "items": "${body.order.order_items}",
-              "has_regulated_items": "${body.order.has_regulated_items}",
-              "fulfillment_supply_source_id": "${body.order.fulfillment_supply_source_id}"
+              "items": "${body.order.order_items}"
             }
           }
         }
@@ -1050,14 +1016,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -1087,14 +1051,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -1124,14 +1086,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -1161,14 +1121,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -1198,14 +1156,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -1376,20 +1332,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -1424,20 +1377,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -1472,20 +1422,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -1520,20 +1467,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -1619,14 +1563,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -1656,14 +1598,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -1693,14 +1633,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -1730,14 +1668,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -1770,14 +1706,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -1865,14 +1799,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -1902,14 +1834,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -1939,14 +1869,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -1976,14 +1904,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -2014,14 +1940,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -2085,14 +2009,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -2122,14 +2044,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -2159,14 +2079,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -2196,14 +2114,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -2233,14 +2149,12 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -2366,14 +2280,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -2403,14 +2315,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -2440,14 +2350,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -2477,14 +2385,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -2517,14 +2423,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -2588,10 +2492,7 @@
               "tracking_number": "${body.shipping_details.tracking_number}",
               "status": "${body.shipping_details.status}",
               "shipping_lable_source": "${body.shipping_details.shipping_lable.document_source|<absent>}",
-              "update_invoice_only": "${body.shipping_details.update_invoice_only|<absent>}",
-              "package_id": "${body.shipping_details.package_id}",
-              "failure_reason": "${body.shipping_details.failure_reason}",
-              "order_items": "${body.shipping_details.order_items}"
+              "update_invoice_only": "${body.shipping_details.update_invoice_only|<absent>}"
             }
           }
         }
@@ -2618,14 +2519,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -2655,14 +2554,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -2692,14 +2589,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -2729,14 +2624,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -2767,14 +2660,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -2856,14 +2747,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -2893,14 +2782,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -2930,14 +2817,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -2967,14 +2852,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -3131,14 +3014,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -3168,14 +3049,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -3205,14 +3084,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -3242,14 +3119,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -3344,26 +3219,22 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.cancellation_reason": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -3403,26 +3274,22 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.cancellation_reason": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -3462,26 +3329,22 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.cancellation_reason": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -3521,26 +3384,22 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.cancellation_reason": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -3580,26 +3439,22 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "query.cancellation_reason": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -3688,14 +3543,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -3725,14 +3578,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -3762,14 +3613,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -3799,14 +3648,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -3882,14 +3729,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -3919,14 +3764,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -3956,14 +3799,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -3993,14 +3834,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -4093,20 +3932,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -4141,20 +3977,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -4189,20 +4022,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -4237,20 +4067,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -4285,20 +4112,17 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -4400,14 +4224,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -4437,14 +4259,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -4474,14 +4294,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -4511,14 +4329,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -4584,14 +4400,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -4621,14 +4435,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -4658,14 +4470,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -4695,14 +4505,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -4788,14 +4596,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -4825,14 +4631,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -4862,14 +4666,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -4899,14 +4701,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -4937,14 +4737,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -5013,14 +4811,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -5050,14 +4846,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -5087,14 +4881,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -5124,14 +4916,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -5220,20 +5010,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.new_status": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -5268,20 +5055,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.new_status": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -5316,20 +5100,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.new_status": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -5364,20 +5145,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.new_status": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -5412,20 +5190,17 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "query.new_status": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -5508,8 +5283,7 @@
               "new_status": "${query.new_status}",
               "wms_status": "${body.wms_status|<absent>}",
               "tracking_number": "${body.tracking_number|<absent>}",
-              "return_type": "${body.return_type|<absent>}",
-              "order_items": "${body.order_items}"
+              "return_type": "${body.return_type|<absent>}"
             }
           }
         }
@@ -5541,20 +5315,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.isku": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -5592,20 +5363,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.isku": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -5643,20 +5411,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.isku": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -5694,20 +5459,17 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.isku": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -5804,14 +5566,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -5844,14 +5604,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -5884,14 +5642,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -5924,14 +5680,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -6033,14 +5787,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -6073,14 +5825,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -6113,14 +5863,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -6249,14 +5997,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -6289,14 +6035,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -6329,14 +6073,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -6434,14 +6176,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -6471,14 +6211,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -6508,14 +6246,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -6580,14 +6316,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -6643,14 +6377,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -6683,14 +6415,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -6723,14 +6453,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -6825,14 +6553,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -6865,14 +6591,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -6905,14 +6629,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -6987,14 +6709,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -7054,14 +6774,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -7094,14 +6812,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -7134,14 +6850,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -7214,14 +6928,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -7282,14 +6994,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -7322,14 +7032,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -7362,14 +7070,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -7442,14 +7148,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -7508,14 +7212,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -7548,14 +7250,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -7588,14 +7288,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -7628,14 +7326,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -7697,14 +7393,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -7737,14 +7431,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -7777,14 +7469,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -7817,14 +7507,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -7899,14 +7587,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -7939,14 +7625,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -7979,14 +7663,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -8019,14 +7701,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -8098,14 +7778,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -8138,14 +7816,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -8178,14 +7854,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -8218,14 +7892,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -8258,14 +7930,12 @@
               },
               {
                 "url": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "CONFLICT",
-                  "case_sensitive": true
+                  "contains": "CONFLICT"
                 }
               }
             ]
@@ -8342,20 +8012,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -8393,20 +8060,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -8444,20 +8108,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -8495,20 +8156,17 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -8638,26 +8296,22 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.sku": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -8700,26 +8354,22 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.sku": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -8762,26 +8412,22 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.sku": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -8824,26 +8470,22 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.sku": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -9069,14 +8711,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -9109,14 +8749,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -9149,14 +8787,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -9189,14 +8825,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -9300,20 +8934,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -9351,20 +8982,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -9402,20 +9030,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -9552,20 +9177,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -9603,20 +9225,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -9654,20 +9273,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -9705,20 +9321,17 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -9807,20 +9420,17 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -9904,14 +9514,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -9944,14 +9552,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -9984,14 +9590,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -10024,14 +9628,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -10065,14 +9667,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -10146,14 +9746,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -10186,14 +9784,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -10226,14 +9822,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -10266,14 +9860,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -10341,20 +9933,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -10392,20 +9981,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -10443,20 +10029,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -10494,20 +10077,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -10608,20 +10188,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -10659,20 +10236,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -10710,20 +10284,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -10761,20 +10332,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -10815,20 +10383,17 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -10961,14 +10526,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -10998,14 +10561,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -11035,14 +10596,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -11072,14 +10631,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -11148,20 +10705,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -11199,20 +10753,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -11250,20 +10801,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -11301,20 +10849,17 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -11355,20 +10900,17 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -11525,26 +11067,22 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -11587,26 +11125,22 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -11649,26 +11183,22 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -11711,8 +11241,7 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
@@ -11723,14 +11252,12 @@
               },
               {
                 "query.store_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -11776,26 +11303,22 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -12012,20 +11535,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -12060,20 +11580,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -12108,20 +11625,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -12207,14 +11721,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -12247,14 +11759,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -12287,14 +11797,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -12327,14 +11835,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -12438,20 +11944,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -12486,20 +11989,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -12534,20 +12034,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -12582,20 +12079,17 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -12691,14 +12185,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -12728,14 +12220,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -12765,14 +12255,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -12802,14 +12290,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -12874,14 +12360,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -12914,14 +12398,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -12954,14 +12436,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -12994,14 +12474,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -13141,14 +12619,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -13178,14 +12654,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -13215,14 +12689,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -13252,14 +12724,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -13355,32 +12825,27 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.country": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -13425,32 +12890,27 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.country": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -13495,32 +12955,27 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.store_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.country": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -13617,14 +13072,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -13654,14 +13107,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -13691,14 +13142,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -13728,14 +13177,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -13803,14 +13250,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -13843,14 +13288,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -13883,14 +13326,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -13923,14 +13364,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -14015,14 +13454,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -14052,14 +13489,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -14089,14 +13524,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -14126,14 +13559,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -14200,14 +13631,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -14237,14 +13666,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -14274,14 +13701,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -14374,14 +13799,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -14411,14 +13834,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -14448,14 +13869,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -14485,14 +13904,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -14563,20 +13980,17 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.inventory_product_id": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -14611,20 +14025,17 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.inventory_product_id": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -14659,20 +14070,17 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.inventory_product_id": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -14707,20 +14115,17 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "query.inventory_product_id": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -14796,14 +14201,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -14833,14 +14236,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -14870,14 +14271,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -14965,32 +14364,27 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.shipping_type": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.country_name": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -15038,32 +14432,27 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.shipping_type": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.country_name": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -15111,32 +14500,27 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.shipping_type": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.country_name": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -15184,32 +14568,27 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.shipping_type": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.marketplace_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.country_name": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -15319,14 +14698,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -15356,14 +14733,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -15393,14 +14768,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -15430,14 +14803,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -15497,14 +14868,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -15534,14 +14903,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -15571,14 +14938,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -15653,32 +15018,27 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.shipping_method": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.logistics_partner_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -15726,32 +15086,27 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.shipping_method": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.logistics_partner_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -15799,32 +15154,27 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.shipping_method": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.logistics_partner_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -15872,32 +15222,27 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.shipping_method": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.logistics_partner_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "query.ss_code": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -16000,14 +15345,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -16037,14 +15380,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -16074,14 +15415,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -16111,14 +15450,12 @@
               },
               {
                 "url": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOTFOUND",
-                  "case_sensitive": true
+                  "contains": "NOTFOUND"
                 }
               }
             ]
@@ -16190,14 +15527,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -16230,14 +15565,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -16270,14 +15603,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -16310,14 +15641,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -16353,14 +15682,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -16452,14 +15779,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -16492,14 +15817,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -16532,14 +15855,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -16572,14 +15893,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -16615,14 +15934,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -16716,14 +16033,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -16756,14 +16071,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -16796,14 +16109,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -16836,14 +16147,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -16879,14 +16188,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -16944,14 +16251,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -16984,14 +16289,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -17024,14 +16327,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -17064,14 +16365,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -17107,14 +16406,12 @@
               },
               {
                 "url": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "BIZERR",
-                  "case_sensitive": true
+                  "contains": "BIZERR"
                 }
               }
             ]
@@ -17200,14 +16497,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -17240,14 +16535,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -17280,14 +16573,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -17320,14 +16611,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -17418,14 +16707,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -17458,14 +16745,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -17498,14 +16783,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -17536,14 +16819,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -17626,14 +16907,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -17666,14 +16945,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -17706,14 +16983,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -17744,14 +17019,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]
@@ -17829,14 +17102,12 @@
               },
               {
                 "url": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "SERVERERROR",
-                  "case_sensitive": true
+                  "contains": "SERVERERROR"
                 }
               }
             ]
@@ -17869,14 +17140,12 @@
               },
               {
                 "url": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "RATELIMIT",
-                  "case_sensitive": true
+                  "contains": "RATELIMIT"
                 }
               }
             ]
@@ -17909,14 +17178,12 @@
               },
               {
                 "url": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "NOAUTH",
-                  "case_sensitive": true
+                  "contains": "NOAUTH"
                 }
               }
             ]
@@ -17947,14 +17214,12 @@
               },
               {
                 "url": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               },
               {
                 "raw_body": {
-                  "contains": "INVALID",
-                  "case_sensitive": true
+                  "contains": "INVALID"
                 }
               }
             ]

@@ -14,27 +14,24 @@
 *(Delete this whole section before you publish the document.)*
 
 This is the **library**. One per ticket. It is opened first and appended to as each of the three
-documents is written. It resolves any claim in any of the three documents to the material behind it,
-so a reader checks the contract against its sources in one action.
+documents is written. Its reader is the next agent session on this ticket: it exists so that session
+resolves any claim in any of the three documents to the material behind it, and spends its searches
+on ground this session left uncovered.
 
 **The citation rule.** The mapping spec, the requirements spec and the summary follow it. Every
 claim in those documents carries an `L-n` that resolves to a row of §3 here. Those documents cite;
-this document holds the locator and the words.
+this document holds the locator, the quote and the searches that stopped.
 
 **Writing rules.**
 
 - One row per claim. A claim used by two documents keeps one row and one `L-n`.
-- `L-n` is permanent. A superseded claim keeps its number, and its row carries the locator and the
-  words that hold now.
-- Write the locator so a reader opens the material in one action, with no search: a path a file tool
-  reads, a URL a fetch tool loads, a Jira key and field, or a named person.
+- `L-n` is permanent. A superseded claim keeps its number and moves to §4 with what replaced it.
+- Write the locator so the next session opens the material in one action, with no search:
+  a path a file tool reads, a URL a fetch tool loads, a Jira key and field, or a named person.
 - `Says` carries the material's own words, quoted, up to about 25 of them. Where a quote does not
-  carry it, write the tight paraphrase a reader acts on. Keep your reasoning in the document that
-  cites the row.
-- An absence is a claim. Give it a row whose locator names the file and the term, and whose `Says`
-  records the count as `0 occurrences`.
-- Give every item of the ticket's definition of done its own row, in the ticket's words, used in
-  `summary 3`.
+  carry it, write the tight paraphrase the next session acts on. Keep your reasoning in the
+  document that cites the row.
+- A search that found nothing is a claim. Record it in §4, so the next session searches new ground.
 - `Used in` names the document and its `##` section only — `mapping §4`, `requirements §2`,
   `summary 2`. Subsection numbers move while this library is open; top-level numbers do not.
 - Every kind is one of `code`, `url`, `doc`, `jira`, `user`. §2 states the locator form for each.
@@ -65,7 +62,7 @@ The form each kind takes. A row whose locator does not match its form is not yet
 
 | Kind | Locator form | Example |
 | :--- | :--- | :--- |
-| `code` | `path/to/File.ext:START-END` for a range, `path/to/File.ext#memberName` for a class or method, `path — [term], [n] occurrences` for an absence | `src/main/java/com/x/ProductSync.java:118-146` |
+| `code` | `path/to/File.ext:START-END` for a range, `path/to/File.ext#memberName` for a class or method | `src/main/java/com/x/ProductSync.java:118-146` |
 | `url` | Full URL, then `(fetched YYYY-MM-DD)` — the page moves and the date says which version you read | `https://partner.dev/docs/catalog#status (fetched 2026-08-26)` |
 | `doc` | `document.md` §N, or `[KEY]` → `[json.pointer.path]` for a specification file | `[KEY_A]` → `components.schemas.Product.properties.status` |
 | `jira` | `KEY` + the field: `description`, `comment by [author] YYYY-MM-DD`, or `attachment [filename]` | `IA-5105 comment by J. Tan 2026-08-20` |
@@ -84,5 +81,24 @@ Every claim behind the three documents. Append as you write, and keep every numb
 | L-3 | [The claim.] | `url` | `[https://…]` (fetched `[YYYY-MM-DD]`) | "[quote]" | summary 2 |
 | L-4 | [The claim.] | `jira` | `[KEY] comment by [author] [YYYY-MM-DD]` | "[quote]" | summary 2 |
 | L-5 | [The decision.] | `user` | `[name]`, `[YYYY-MM-DD]` | "[their words]" | summary 2 |
-| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | An absence. The file is where a reader re-checks it. | requirements §4 |
-| L-7 | The ticket's definition of done, item [n]. | `jira` | `[KEY]` description — definition of done | "[the item, in the ticket's words]" | summary 3 |
+| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | An absence. The file is where the next session re-checks it. | requirements §4 |
+
+---
+
+## 4. Searches that stopped
+
+What this session looked for and did not find, and where the looking stopped. A row here saves the
+next session the same search.
+
+| # | Looked for | Where | Result |
+| :-- | :--- | :--- | :--- |
+| S-1 | [What you were trying to establish.] | [The files, endpoints or pages searched, and the query.] | not found by this search — [what would answer it] |
+| S-2 | [What you were trying to establish.] | [Where.] | found, superseded by `L-n` — [what replaced it] |
+
+---
+
+## 5. Open at the time of writing
+
+Claims the three documents rest on that no source settles yet. Each names what would settle it.
+
+- **L-[n]** — [the claim] rests on [assumption]. *To settle: [ask X / read Y / audit Z].*

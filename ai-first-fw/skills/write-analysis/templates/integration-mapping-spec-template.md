@@ -15,8 +15,8 @@
 
 *(Delete this whole section before you publish the document.)*
 
-This is the **mapping spec**. It states one thing per property: what value reaches the target, and
-why that property needs it. Implementation builds what these rows state.
+This is the **mapping spec**. It answers one question per property: what value reaches the target,
+and why that property needs it.
 
 **Writing rules.**
 
@@ -132,8 +132,8 @@ One row per source value. State the fallback where the source can send a value t
 
 ## 6. Uniqueness and ordering
 
-State what this integration settles. A line still open carries the decision to make and its owner,
-and the summary's preconditions carry the same decision.
+State what this integration settles. Where the answer is not settled, name it in the summary's open
+questions instead of writing a default here.
 
 * **Composite key:** `[TENANT_ID or CHANNEL_CODE] + [PRIMARY_ENTITY_CODE]` `L-n`
 * **Repeat delivery:** [What a second copy of the same payload does to the stored record.] `L-n`
