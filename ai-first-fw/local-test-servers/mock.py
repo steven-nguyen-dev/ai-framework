@@ -382,6 +382,30 @@ class State:
             existing.append(entry)
             self._save(name, existing)
 
+    def upsert(self, name, entry, keys):
+        """Replaces the first entry matching every key field, or appends when none matches.
+
+        Models a partner that treats a resubmission carrying an identifier it already holds as an
+        edit of that record rather than as a new one. An entry whose key value is {@code None} for
+        any key field never matches, so a payload that omits the identifier always appends.
+
+        @param name store name, non-null
+        @param entry the record to store, non-null
+        @param keys field names compared to decide identity, non-empty
+        @return {@code True} when an existing entry was replaced, {@code False} when appended
+        """
+        with _FILE_LOCK:
+            existing = self._load(name)
+            if all(entry.get(k) is not None for k in keys):
+                for index, held in enumerate(existing):
+                    if all(held.get(k) == entry.get(k) for k in keys):
+                        existing[index] = entry
+                        self._save(name, existing)
+                        return True
+            existing.append(entry)
+            self._save(name, existing)
+            return False
+
     def reset(self, name):
         with _FILE_LOCK:
             self._save(name, [])
@@ -396,6 +420,10 @@ def run_actions(actions, ctx, state):
         elif "append" in action:
             spec_obj = action["append"]
             state.append(spec_obj["store"], render(spec_obj.get("entry"), ctx))
+        elif "upsert" in action:
+            spec_obj = action["upsert"]
+            state.upsert(spec_obj["store"], render(spec_obj.get("entry"), ctx),
+                         spec_obj.get("key") or [])
         elif "log" in action:
             print("  · %s" % render(action["log"], ctx), flush=True)
 

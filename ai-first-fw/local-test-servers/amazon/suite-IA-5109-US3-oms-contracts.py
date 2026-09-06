@@ -5,21 +5,42 @@ Judges the Anchanto OMS contract modifications, webhook payloads, write-backs,
 and internal storage models for User Story 3: Support Partial and Multi-Parcel
 Amazon Seller-Fulfilled Shipments (IA-5109).
 
+Every case crosses the HTTP boundary against the local Anchanto OMS mock, which the suite starts
+itself when nothing is already listening. What OMS recorded is the observable.
+
 Covers:
-  - CR-0: IA-5111 import fields (has_regulated_items, amazon_fulfillment_supply_source_id) (L-20, L-21)
-  - CR-1: Event:OrderStatusupdate RTSDataDTO webhook payload diff & quantity alias (L-11, L-17, L-24, L-56, L-81, L-86)
-  - CR-2: POST /rest/v1/orders/shipping_details write-back & failure_reason width (L-23, L-33, L-38, L-82)
-  - CR-3: POST /rest/v1/orders/{id}/update_status body resolution & integer quantity (L-24, L-70, L-84)
-  - CR-4: Ledger queries (order_items, awb_details, order level mp_fulfilment_state) (L-25, L-89, L-90, L-98, L-99)
-  - CR-5: Database durability, unique constraint & indexing requirements (L-18, L-54, L-88)
+  - CR-0: the IA-5111 import fields on order create (L-20, L-134)
+  - Mapping 4.5: the per-parcel write-back, row for row -- package_id, tracking_number, status,
+    failure_reason, and the per-line id, quantity and item_codes[] (L-23, L-89, L-113, L-119)
+  - Mapping 5.4 and 6: one message per parcel, and a rejection never reversing an acceptance (L-90)
+  - C-17's second site: the order number never written back as a tracking number (L-66)
+  - C-13: the SHIPPED item subset, which is how OMS reaches Partial (L-47, L-114, L-46)
+  - Mapping 4.3: the OMS line read the quantity ledger is built from, and what happens when it fails
+
+Not here, and why. The ready-to-ship event is a message we consume rather than an endpoint we call,
+so C-8's quantity alias and CR-1's webhook diff have no HTTP surface in this harness; the alias is
+pinned by RTSLineItemQuantityAliasTest and the box list by CartonDetailsWireShapeTest. awb_details is
+not a configured route on the OMS mock. The order-level mp_fulfilment_state the prior revision
+asserted is withdrawn by mapping 5.2 (L-138), and the database durability and unique-constraint cases
+asserted Python literals against themselves; the behaviour they gestured at -- the same package
+reference being an edit -- is now REF-TRACKING-CORRECTION against the Amazon mock.
+
+Three of mapping 4.5's rows are absent from the OMS contract today (L-23). Under the working
+principle they are a change to request and not a blocker: we agree the shape, build against it and
+test against this mock, while the ask travels in parallel as CR-2 (L-39).
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5109-US3-oms-contracts/run-<stamp>/results.json.
 
+The suite starts its own Anchanto OMS mock on an OS-assigned port, against a run-scoped state
+directory under the run folder. It never attaches to a server already holding the OMS port: that
+server loaded its config at its own start, so a stale route would answer and the suite would report
+on a contract that is not the one on disk.
+
 Usage:
-  python3 amazon/IA-5109-US3-suite-oms-contracts.py
-  python3 amazon/IA-5109-US3-suite-oms-contracts.py --list
-  BASE_OMS=http://127.0.0.1:23001 python3 amazon/IA-5109-US3-suite-oms-contracts.py
+  python3 amazon/suite-IA-5109-US3-oms-contracts.py
+  python3 amazon/suite-IA-5109-US3-oms-contracts.py --list
+  python3 amazon/suite-IA-5109-US3-oms-contracts.py IA-5109-US3-CR2-WRITEBACK-ACCEPTED
 """
 
 import atexit
@@ -28,7 +49,9 @@ import json
 import os
 import shutil
 import sys
+import threading
 import time
+from http.server import ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
@@ -36,7 +59,11 @@ if HERE not in sys.path:
 
 import ia5109_us3_requirements as R
 
-BASE_OMS = os.environ.get("BASE_OMS", "http://127.0.0.1:23001").rstrip("/")
+# The suite always runs its own OMS mock, on an OS-assigned port and against a run-scoped state
+# directory. Attaching to whatever already holds the OMS port would read a config that server loaded
+# at its own start -- a stale route answers the call and the suite reports on the wrong contract --
+# and would write into the state the portal's own server is keeping.
+BASE_OMS = ""
 SUITE_ID = "IA-5109-US3-oms-contracts"
 SUITE_NAME = "IA-5109-US3: OMS Schemas, DTOs & Contracts Suite"
 KEEP = "--keep-state" in sys.argv
@@ -46,6 +73,73 @@ WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 MOCK_DIR = HERE
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 RUN_DIR = os.path.join(MOCK_DIR, "test-results", SUITE_ID, "run-" + STAMP)
+
+SERVERS_DIR = os.path.dirname(MOCK_DIR)
+OMS_DIR = os.path.join(SERVERS_DIR, "anchanto-oms")
+OMS_DATA_DIR = os.path.join(RUN_DIR, "oms-state")
+OMS_LOG_FILE = "api-calls.har.json"
+
+# The stores the write-back and the status update land in. Emptied per run so a case can assert on
+# what this run recorded rather than on what some earlier run left behind.
+OMS_STORES = ["created_orders", "order_pushes", "shipping_pushes"]
+
+_EPHEMERAL_SERVER = None
+_EPHEMERAL_THREAD = None
+
+
+def _start_ephemeral_oms():
+    """Starts the Anchanto OMS mock in-process on a free port, and returns its base URL."""
+    global _EPHEMERAL_SERVER, _EPHEMERAL_THREAD
+    if SERVERS_DIR not in sys.path:
+        sys.path.insert(0, SERVERS_DIR)
+    import mock
+
+    with open(os.path.join(OMS_DIR, "anchanto-oms.mock.json"), "r", encoding="utf-8") as f:
+        config = json.load(f)
+
+    os.makedirs(OMS_DATA_DIR, exist_ok=True)
+    routes, spec = mock.build_routes(config, OMS_DIR)
+    state = mock.State(config.get("stores"), OMS_DATA_DIR)
+    api_log = mock.ApiLog(os.path.join(OMS_DATA_DIR, OMS_LOG_FILE), "har",
+                          config.get("log_redact_headers"), "Anchanto OMS")
+    handler_cls = mock.make_handler(
+        config, routes, state, api_log, os.path.join(OMS_DIR, "test-results"),
+        [], mock.SuiteRunner(), OMS_DIR)
+
+    host = config.get("host") or "127.0.0.1"
+    _EPHEMERAL_SERVER = ThreadingHTTPServer((host, 0), handler_cls)
+    _EPHEMERAL_THREAD = threading.Thread(target=_EPHEMERAL_SERVER.serve_forever, daemon=True)
+    _EPHEMERAL_THREAD.start()
+    time.sleep(0.3)
+    return "http://%s:%d" % (host, _EPHEMERAL_SERVER.server_address[1])
+
+
+def _stop_ephemeral_oms():
+    global _EPHEMERAL_SERVER
+    if _EPHEMERAL_SERVER:
+        try:
+            _EPHEMERAL_SERVER.shutdown()
+            _EPHEMERAL_SERVER.server_close()
+        except Exception:
+            pass
+        _EPHEMERAL_SERVER = None
+
+
+atexit.register(_stop_ephemeral_oms)
+
+
+def call_oms(method, path, body=None, token="mock_oms_access_token"):
+    return R.http_json(method, BASE_OMS + path, body=body, token=token)
+
+
+def store(name):
+    """Reads one of the OMS mock's stores back, which is where the OMS-side observable lives."""
+    path = os.path.join(OMS_DATA_DIR, name + ".json")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 CASES, RESULTS = [], {}
 EVIDENCE = {
@@ -161,355 +255,401 @@ def run_case(c):
 
 
 # ===================================================================== Test Cases Definitions
+#
+# Every case crosses the HTTP boundary against the local Anchanto OMS mock. What OMS recorded is the
+# observable; a case that asserted a literal dictionary against itself would pass whatever OMS did.
+#
+# Three of mapping 4.5's rows -- package_id, order_items[].quantity and order_items[].item_codes[] --
+# are absent from the OMS contract today (L-23). Under the working principle that is a change to
+# request and not a blocker: we agree the shape, build against it, and test against this mock, while
+# the ask travels in parallel as CR-2 (L-39). The mock records them because we asked it to; that is
+# the agreed shape under test, not evidence that OMS ships it.
+
+OMS_ORDER_ID = 41277
+OMS_ORDER_NUMBER = "AMZFR-902-1845936-5435065"
+ITEM_1001 = "05015851154158"
+ITEM_2002 = "05015851154159"
+SECOND_TRACKING = "CJ-5581200347"
+MASTER_TRACKING = "MT-7734829901"
+READY_TO_SHIP_AT = "2026-08-22T14:05:00Z"
+
+
+def shipping_pushes_for(tracking_number):
+    return [p for p in store("shipping_pushes") if p.get("tracking_number") == tracking_number]
+
+
+def order_pushes_of(kind, order_id):
+    return [p for p in store("order_pushes")
+            if p.get("kind") == kind and str(p.get("order_id")) == str(order_id)]
+
+
+def parcel(reference, tracking, items):
+    return R.Parcel(reference, tracking, carrier_code="DHL", carrier_name="DHL Express",
+                    ship_date=READY_TO_SHIP_AT, order_items=items)
+
+
+def post_writeback(ch, calls, payload, label, expect=200):
+    status, body = call_oms("POST", "/rest/v1/orders/shipping_details", payload)
+    calls.append("POST /rest/v1/orders/shipping_details (%s) -> %s" % (label, status))
+    ch.add("OMS accepted the %s write-back" % label, "the connector posts it; we never call OMS directly (L-120)",
+           expect, status)
+    return body
+
+
+# --------------------------------------------------------------------- CR-0, the import fields
 
 def test_cr0_import_fields(ch, calls, detail):
-    # CR-0: has_regulated_items and amazon_fulfillment_supply_source_id from IA-5111 on POST /rest/v1/orders (L-20, L-21)
-    sample_order = {
-        "id": 41277,
-        "market_place_order_number": "902-1845936-5435065",
+    # CR-0: has_regulated_items and fulfillment_supply_source_id carried through from IA-5111 (L-20, L-134)
+    order_number = "AMZFR-902-CR0-000001"
+    payload = {"order": {
+        "order_number": order_number,
+        "store_code": "SS0000051211",
+        "marketplace_code": "amazon_sp_fr",
+        "order_total": "142.50",
         "has_regulated_items": False,
-        "amazon_fulfillment_supply_source_id": "057d3fcc-b750-419f-bbcd-4d340c60c430",
-        "order_items": [
-            {
-                "line_item_id": "05015851154158",
-                "item_codes": ["05015851154158"]
-            }
-        ]
-    }
-    ch.truthy("has_regulated_items present", "order header regulated flag", sample_order.get("has_regulated_items") is not None)
-    ch.add("has_regulated_items type", "boolean flag", True, isinstance(sample_order.get("has_regulated_items"), bool))
-    ch.add("supply source id populated", "assigned fulfillment supply source", "057d3fcc-b750-419f-bbcd-4d340c60c430", sample_order.get("amazon_fulfillment_supply_source_id"))
-    ch.add("item code resolution path", "item_codes carries Amazon OrderItemId", ["05015851154158"], sample_order["order_items"][0]["item_codes"])
+        "fulfillment_supply_source_id": "057d3fcc-b750-419f-bbcd-4d340c60c430",
+        "order_items": [{"line_item_id": "0", "item_codes": [ITEM_1001], "sku": "SKU-1001", "quantity": 5}],
+    }}
+    status, _ = call_oms("POST", "/rest/v1/orders", payload)
+    calls.append("POST /rest/v1/orders (%s) -> %s" % (order_number, status))
+    ch.add("OMS accepted the order", "the import path OMS already serves", 200, status)
+
+    rows = [p for p in store("order_pushes")
+            if p.get("kind") == "order_create" and p.get("order_number") == order_number]
+    ch.add("one order recorded", "the import landed", 1, len(rows))
+
+    row = rows[0]
+    ch.add("regulated flag carried", "a header-level flag, no amazon_ prefix, first-class column",
+           False, row.get("has_regulated_items"))
+    ch.add("supply source carried", "Amazon attributes the dispatch to the source it assigned",
+           "057d3fcc-b750-419f-bbcd-4d340c60c430", row.get("fulfillment_supply_source_id"))
+    ch.add("amazon id is on item_codes", "import moves it there and blanks line_item_id to \"0\" (L-119)",
+           [ITEM_1001], (row.get("items") or [{}])[0].get("item_codes"))
+    ch.add("line_item_id cannot serve", "blanked at six sites, deliberately",
+           "0", (row.get("items") or [{}])[0].get("line_item_id"))
 
 
-def test_cr1_webhook_diff(ch, calls, detail):
-    # CR-1: Event:OrderStatusupdate RTSDataDTO webhook payload diff (L-17, L-24, L-86, L-88)
-    rts_payload = {
-        "id": 41277,
-        "number": "SHP-41277-1",
-        "marketplace_order_number": "902-1845936-5435065",
-        "order_date": "2026-08-20T09:12:03Z",
-        "updated_at": "2026-08-22T14:05:00Z",
-        "ship_date": "2026-08-22T14:05:00Z",
-        "shipping_method": {"marketplace_carrier_code": "DHL", "logistic_partner_name": "DHL Express"},
-        "line_items": [
-            {"id": 811, "sku": "SKU-1001", "quantity": 2, "mp_item_codes": ["05015851154158"]}
-        ],
-        "carton_details": [
-            {
-                "carton_number": "SHP-41277-1-C1",
-                "tracking_number": "MT-7734829901",
-                "is_master_tracking": True,
-                "ship_date": "2026-08-22T14:05:00Z",
-                "package_reference_id": "1",
-                "carton_items": [
-                    {"line_item_id": 811, "mp_item_code": "05015851154158", "quantity": 1, "inventory_sku": "SKU-1001"}
-                ]
-            }
-        ]
-    }
+# --------------------------------------------------------------------- CR-2, the per-parcel write-back
 
-    ch.truthy("ship_date present", "dispatch timestamp on shipment root", rts_payload.get("ship_date"))
-    ch.truthy("carton_details array present", "box level details", rts_payload.get("carton_details"))
-    box = rts_payload["carton_details"][0]
-    ch.add("carton_number present", "box identifier", "SHP-41277-1-C1", box.get("carton_number"))
-    ch.add("tracking_number present", "per-box tracking number", "MT-7734829901", box.get("tracking_number"))
-    ch.add("is_master_tracking flag", "master tracking indicator", True, box.get("is_master_tracking"))
-    ch.add("package_reference_id digits", "monotonic integer counter string", "1", box.get("package_reference_id"))
-    ch.add("mp_item_code present", "Amazon order-item id on box line", "05015851154158", box["carton_items"][0].get("mp_item_code"))
+def test_cr2_writeback_accepted(ch, calls, detail):
+    # Mapping 4.5 rows 1, 2, 3, 5, 6 and 7 on an accepted parcel (L-23, L-88, L-89, L-113, L-119)
+    accepted = parcel("1", MASTER_TRACKING,
+                      [R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 2),
+                       R.OrderItemAllocation(812, ITEM_2002, "SKU-2002", 1)])
+    payload = R.build_oms_shipping_details_writeback(
+        accepted, R.WRITEBACK_STATUS_SUCCESS, oms_order_id=OMS_ORDER_ID)
+    post_writeback(ch, calls, payload, "accepted parcel 1")
+
+    rows = shipping_pushes_for(MASTER_TRACKING)
+    ch.add("one message recorded", "one message per parcel", 1, len(rows))
+
+    row = rows[0]
+    ch.add("row 1, status", "an accepted parcel is a success to OMS", "success", row.get("status"))
+    ch.add("row 2, package_id", "reuse OMS's own name; without it a result cannot be attributed (L-113)",
+           "1", row.get("package_id"))
+    ch.add("row 3, tracking_number", "the number the box actually shipped under",
+           MASTER_TRACKING, row.get("tracking_number"))
+
+    items = row.get("order_items") or []
+    ch.add("both lines closed", "the parcel drew on both lines", 2, len(items))
+    ch.add("row 5, the OMS line id", "OMS closes the line the parcel drew from", 811, items[0].get("id"))
+    ch.add("row 6, the quantity", "OMS cannot otherwise tell which quantity succeeded (L-89)",
+           2, items[0].get("quantity"))
+    ch.add("row 7, item_codes", "holds Amazon's id; line_item_id cannot serve (L-119)",
+           [ITEM_1001], items[0].get("item_codes"))
+    ch.add("no failure reason on a success", "failure_reason is the failure channel only",
+           None, row.get("failure_reason"))
 
 
-def test_cr1_alias_quantity(ch, calls, detail):
-    # CR-1 / C-8: quantity accepted as alias next to quanity (L-11, L-56, L-81)
-    legacy_payload = {"id": 811, "sku": "SKU-1", "quanity": 5}
-    modern_payload = {"id": 811, "sku": "SKU-1", "quantity": 5}
+def test_cr2_writeback_rejected(ch, calls, detail):
+    # Mapping 4.5 row 4 and 5.4, Appendix A.5: Amazon's own code and message reach OMS (L-38, L-127)
+    rejected = parcel("2", SECOND_TRACKING, [R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 3)])
+    payload = R.build_oms_shipping_details_writeback(
+        rejected, R.WRITEBACK_STATUS_FAILURE, error_code="InvalidInput",
+        error_message="Tracking number %s is not valid for carrier code Other." % SECOND_TRACKING,
+        oms_order_id=OMS_ORDER_ID)
+    post_writeback(ch, calls, payload, "rejected parcel 2")
 
-    def parse_quantity(item_dict):
-        # Deserializer alias pattern: check quantity first, fallback to misspelled quanity
-        if "quantity" in item_dict:
-            return item_dict["quantity"]
-        return item_dict.get("quanity")
+    row = shipping_pushes_for(SECOND_TRACKING)[0]
+    ch.add("row 1, status", "a rejected parcel is a failure to OMS", "failure", row.get("status"))
+    ch.add("row 2, package_id", "which parcel failed", "2", row.get("package_id"))
 
-    ch.add("legacy quanity deserialized", "accepts misspelled key", 5, parse_quantity(legacy_payload))
-    ch.add("modern quantity deserialized", "accepts correctly spelled key", 5, parse_quantity(modern_payload))
-
-
-def test_cr1_omit_unconfirmed(ch, calls, detail):
-    # CR-1 note: confirmation status/results must NOT be on ready-to-ship webhook (L-34)
-    rts_payload = {
-        "id": 41277,
-        "carton_details": [
-            {"carton_number": "C1", "tracking_number": "T1", "package_reference_id": "1"}
-        ]
-    }
-    box = rts_payload["carton_details"][0]
-    forbidden_at_rts = ["mp_confirmation_status", "mp_confirmation_reference", "mp_confirmed_at", "mp_error_code", "mp_error_message"]
-    found_forbidden = [k for k in forbidden_at_rts if k in box]
-    ch.add("no confirmation state on RTS webhook", "fires before Amazon call exists", [], found_forbidden)
+    reason = row.get("failure_reason") or ""
+    ch.add("row 4 carries the code", "the code operations searches on", True, "InvalidInput" in reason)
+    ch.add("row 4 carries the message", "operations retries from this text alone", True,
+           SECOND_TRACKING in reason)
+    ch.add("row 4 carries the package reference", "failure_reason is the only channel a marketplace "
+           "integration has (L-127)", True, "parcel 2" in reason)
+    ch.add("row 6, the quantity that failed", "the quantity this parcel carried", 3,
+           (row.get("order_items") or [{}])[0].get("quantity"))
 
 
-def test_cr2_shipping_details_diff(ch, calls, detail):
-    # CR-2: POST /rest/v1/orders/shipping_details payload diff (L-23, L-88, L-89)
-    parcel = R.Parcel("2", "CJ-5581200347", carrier_code="Other", carrier_name="CJ Logistics",
-                      order_items=[R.OrderItemAllocation(811, "05015851154158", "SKU-1001", 3)])
-    wb = R.build_oms_shipping_details_writeback(parcel, R.WRITEBACK_STATUS_FAILURE,
-                                                error_code="InvalidInput",
-                                                error_message="Tracking number CJ-5581200347 is not valid for carrier code Other.")
+def test_cr2_writeback_per_parcel(ch, calls, detail):
+    # 5.4 and 6: one message per parcel, and a rejection never reverses an acceptance (L-90)
+    good = parcel("1", "MT-PERPARCEL-OK", [R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 2)])
+    bad = parcel("2", "CJ-PERPARCEL-BAD", [R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 3)])
 
-    sd = wb["shipping_details"]
-    ch.add("package_reference_id present", "parcel reference attributed", "2", sd.get("package_reference_id"))
-    ch.add("tracking_number present", "actual tracking number", "CJ-5581200347", sd.get("tracking_number"))
-    ch.add("order item line id", "OMS line ID 811", 811, sd["order_items"][0]["id"])
-    ch.add("order item mp_item_code", "Amazon OrderItemId 05015851154158", "05015851154158", sd["order_items"][0]["mp_item_code"])
-    ch.add("order item quantity", "confirmed/rejected quantity 3", 3, sd["order_items"][0]["quantity"])
+    post_writeback(ch, calls, R.build_oms_shipping_details_writeback(
+        good, R.WRITEBACK_STATUS_SUCCESS, oms_order_id=OMS_ORDER_ID), "parcel 1 success")
+    post_writeback(ch, calls, R.build_oms_shipping_details_writeback(
+        bad, R.WRITEBACK_STATUS_FAILURE, error_code="InvalidInput", error_message="rejected",
+        oms_order_id=OMS_ORDER_ID), "parcel 2 failure")
 
+    ok_rows = shipping_pushes_for("MT-PERPARCEL-OK")
+    bad_rows = shipping_pushes_for("CJ-PERPARCEL-BAD")
+    ch.add("two messages, not one", "collapsing them loses which parcel failed",
+           [1, 1], [len(ok_rows), len(bad_rows)])
+    ch.add("each attributable to its own parcel", "the package reference is what attributes it",
+           ["1", "2"], [ok_rows[0].get("package_id"), bad_rows[0].get("package_id")])
+    ch.add("the acceptance stands", "a rejected parcel never reverses an accepted one (L-90)",
+           "success", ok_rows[0].get("status"))
+    ch.add("the rejection is its own", "the order shows Partial with the failed parcel's state on its box row",
+           "failure", bad_rows[0].get("status"))
 
-def test_cr2_no_enum_migration(ch, calls, detail):
-    # CR-2 / L-82: status is a plain string without enum constraint on /orders/shipping_details
-    valid_statuses = ["success", "failure"]
-    for st in valid_statuses:
-        ch.add(f"status string {st} accepted", "plain string without enum migration", True, isinstance(st, str))
+    good.status = R.ParcelConfirmationStatus.ACCEPTED
+    bad.status = R.ParcelConfirmationStatus.REJECTED
+    ch.add("order-level row", "R-MAP 5.2; no marketplace-level status is set (L-130, L-138)",
+           "some accepted some failed", R.order_level_outcome([good, bad]))
 
 
 def test_cr2_failure_reason_width(ch, calls, detail):
-    # CR-2 / L-38: failure_reason column/payload accepts at least 500 characters
-    parcel = R.Parcel("1", "TRK-ERR", carrier_code="Other")
-    long_msg = "A" * 550
-    wb = R.build_oms_shipping_details_writeback(parcel, R.WRITEBACK_STATUS_FAILURE, error_code="DetailedError", error_message=long_msg)
-    reason = wb["shipping_details"]["failure_reason"]
-    ch.truthy("failure_reason generated", "contains error details", reason)
-    ch.add("capacity at least 500 chars", "handles >= 500 characters", True, len(reason) >= 500)
+    # Mapping 4.5 row 4: failure_reason must carry at least 500 characters (L-38, L-33)
+    long_message = "Tracking number is not valid for carrier code Other. " * 12
+    rejected = parcel("3", "TRK-LONGREASON-1", [R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 1)])
+    payload = R.build_oms_shipping_details_writeback(
+        rejected, R.WRITEBACK_STATUS_FAILURE, error_code="InvalidInput",
+        error_message=long_message, oms_order_id=OMS_ORDER_ID)
+    sent = payload["shipping_details"]["failure_reason"]
+    ch.add("the reason sent is over 500 characters", "the width the row asks for",
+           True, len(sent) >= R.MIN_FAILURE_REASON_LENGTH)
+
+    post_writeback(ch, calls, payload, "long failure reason")
+
+    row = shipping_pushes_for("TRK-LONGREASON-1")[0]
+    held = row.get("failure_reason") or ""
+    ch.add("OMS held it whole", "a truncated reason is a reason operations cannot act on",
+           len(sent), len(held))
+    ch.add("character for character", "the message survives the round trip unaltered", sent, held)
 
 
-def test_cr3_update_status_body(ch, calls, detail):
-    # CR-3 / L-24 / L-70: return_order_attributes carton_items line_item_id and integer quantity
-    update_body = {
-        "return_order_attributes": {
-            "carton_details": [
-                {
-                    "carton_number": "SHP-41277-1-C1",
-                    "tracking_number": "MT-7734829901",
-                    "status": "packed",
-                    "carton_items": [
-                        {"line_item_id": 811, "quantity": 2, "inventory_sku": "SKU-1001"}
-                    ]
-                }
-            ]
-        }
-    }
-    box = update_body["return_order_attributes"]["carton_details"][0]
-    item = box["carton_items"][0]
-    ch.add("line_item_id present on array variant", "OMS order-item id", 811, item.get("line_item_id"))
-    ch.add("quantity is integer", "whole units, not fractional float", True, isinstance(item.get("quantity"), int))
+def test_cr2_blocked_never_order_number(ch, calls, detail):
+    # C-17's second site: the order number is never written back as a tracking number (L-66)
+    #
+    # And what that costs, on the contract as it stands. shipping_details declares tracking_number
+    # required (mapping 4.5 row 3, nullable No), so a parcel blocked for having no tracking number
+    # cannot be reported through this endpoint at all -- and failure_reason is the only structured
+    # failure channel a marketplace integration has (L-127). Substituting the order number would
+    # make the call pass and is exactly the defect C-17 removes, so the call is left to fail.
+    blocked = R.BlockedParcel(
+        R.EParcelBlockReason.MISSING_TRACKING_NUMBER,
+        "the carrier returned no tracking number for shipment SHP-41277-1",
+        tracking_number=None)
+    payload = R.build_oms_blocked_writeback(blocked, oms_order_id=OMS_ORDER_ID)
+    sent = payload["shipping_details"]
+    ch.add("no tracking number is sent", "publishRtsDetails falls back to getOrderNumber() today (L-66)",
+           None, sent.get("tracking_number"))
+    ch.add("the order number is not substituted", "the order number is not a tracking number",
+           False, sent.get("tracking_number") == OMS_ORDER_NUMBER)
+
+    post_writeback(ch, calls, payload, "blocked parcel with no tracking number", expect=422)
+    ch.add("OMS holds no row under the order number", "recording a shipment under a number that is "
+           "not a tracking number is the defect", 0, len(shipping_pushes_for(OMS_ORDER_NUMBER)))
+
+    # The block that does have a number reaches OMS, which is where the reason can travel today.
+    numbered = R.BlockedParcel(
+        R.EParcelBlockReason.MISSING_CARRIER_MAPPING,
+        "no carrier identity resolves for shipment SHP-41277-2",
+        tracking_number="TRK-BLOCKED-CARRIER")
+    post_writeback(ch, calls, R.build_oms_blocked_writeback(numbered, oms_order_id=OMS_ORDER_ID),
+                   "blocked parcel carrying its tracking number")
+
+    row = shipping_pushes_for("TRK-BLOCKED-CARRIER")[0]
+    ch.add("it is a failure to OMS", "a blocked parcel never reads as a shipment", "failure", row.get("status"))
+    ch.add("the block reason reached OMS", "the only structured failure channel a marketplace "
+           "integration has (L-127)", True,
+           R.EParcelBlockReason.MISSING_CARRIER_MAPPING in (row.get("failure_reason") or ""))
 
 
-def test_cr3_retire_object_body(ch, calls, detail):
-    # CR-3 / L-24 / L-84: object variant of carton_details body with 9 typos retired
-    target_body_root = "return_order_attributes"
-    ch.add("chosen body root", "return_order_attributes selected", "return_order_attributes", target_body_root)
+# --------------------------------------------------------------------- C-13, how OMS reaches Partial
+
+def test_c13_update_status_item_subset(ch, calls, detail):
+    # C-13: a SHIPPED update carrying fewer items than the order holds is how OMS reaches Partial (L-47, L-114)
+    subset = [{"id": 811, "item_codes": [ITEM_1001], "quantity": 2}]
+    status, _ = call_oms("POST", "/rest/v1/orders/%d/update_status?new_status=SHIPPED" % OMS_ORDER_ID,
+                         {"order_items": subset, "tracking_number": MASTER_TRACKING})
+    calls.append("POST /rest/v1/orders/%d/update_status?new_status=SHIPPED -> %s" % (OMS_ORDER_ID, status))
+    ch.add("OMS accepted the update", "the marketplace path may now carry a body on SHIPPED", 200, status)
+
+    rows = order_pushes_of("update_status", OMS_ORDER_ID)
+    ch.add("one update recorded", "the status update landed", 1, len(rows))
+
+    row = rows[0]
+    ch.add("the status is SHIPPED", "requireBody holds RETURN, EXCHANGE, FAILED_DELIVERY and now SHIPPED (L-47)",
+           "SHIPPED", row.get("new_status"))
+    ch.add("the item subset reached OMS", "without it the subset is stripped and Partial is unreachable",
+           1, len(row.get("order_items") or []))
+    ch.add("the subset names the line", "OMS splits the excluded items into a separate shipment (L-114)",
+           811, (row.get("order_items") or [{}])[0].get("id"))
+    ch.add("and the quantity that shipped", "fewer items than the order holds is what triggers the split",
+           2, (row.get("order_items") or [{}])[0].get("quantity"))
 
 
-def test_cr4_order_items_ledger(ch, calls, detail):
-    # CR-4 / L-89 / L-99: GET /rest/v1/orders/{id}/order_items response exposes all 6 ledger fields
-    sample_response = {
-        "payload": [
-            {
-                "order_item_id": 811,
-                "sku": "SKU-1001",
-                "line_item_id": "05015851154158",
-                "quantity": 5,
-                "cancelled_quantity": 0,
-                "allocated_quantity": 2,
-                "internally_shipped_quantity": 2,
-                "mp_confirmed_quantity": 2,
-                "mp_remaining_quantity": 3,
-                "package_allocation": [
-                    {"package_reference_id": "1", "quantity": 2, "mp_confirmation_status": "ACCEPTED"},
-                    {"package_reference_id": "2", "quantity": 3, "mp_confirmation_status": "REJECTED"}
-                ]
-            }
-        ]
-    }
-    line = sample_response["payload"][0]
-    ch.add("cancelled_quantity", "0", 0, line.get("cancelled_quantity"))
-    ch.add("allocated_quantity", "2", 2, line.get("allocated_quantity"))
-    ch.add("internally_shipped_quantity", "2", 2, line.get("internally_shipped_quantity"))
-    ch.add("mp_confirmed_quantity", "2", 2, line.get("mp_confirmed_quantity"))
-    ch.add("mp_remaining_quantity", "3", 3, line.get("mp_remaining_quantity"))
-    ch.add("package_allocation count", "2 allocations", 2, len(line.get("package_allocation", [])))
+# --------------------------------------------------------------------- CR-4, the ledger read
+
+def test_cr4_order_items_read(ch, calls, detail):
+    # Mapping 4.3 and rule N-3: the OMS line read the quantity ledger is built from (L-89, L-99)
+    status, body = call_oms("GET", "/rest/v1/orders/%d/order_items" % OMS_ORDER_ID)
+    calls.append("GET /rest/v1/orders/%d/order_items -> %s" % (OMS_ORDER_ID, status))
+    ch.add("OMS answered", "a configured route the ledger reads", 200, status)
+
+    lines = body.get("payload") or []
+    ch.add("lines returned", "the order's own items", True, len(lines) > 0)
+
+    line = lines[0]
+    ch.truthy("the OMS line id", "the id the write-back closes", line.get("order_item_id"))
+    ch.truthy("the quantity", "the allocated half of the ledger", line.get("quantity"))
+    ch.add("item_codes is an array", "Amazon's id lives here, never on line_item_id (L-119)",
+           True, isinstance(line.get("item_codes"), list))
+
+    # The remaining quantity is never computed from this read alone: Amazon's QuantityShipped, re-read
+    # immediately before each submit, is the authority (L-9, L-10). This case pins the OMS half only.
+    ch.add("no marketplace confirmed count here", "our own accepted count is never trusted over Amazon's",
+           None, line.get("mp_confirmed_quantity"))
 
 
-def test_cr4_awb_details_parcel(ch, calls, detail):
-    # CR-4 / L-25 / L-90 / L-99: GET /rest/v1/orders/{id}/awb_details?shipment_number= exposes parcel fields
-    sample_awb = {
-        "payload": {
-            "shipment_number": "SHP-41277-1",
-            "carton_details": [
-                {
-                    "carton_number": "SHP-41277-1-C1",
-                    "tracking_number": "MT-7734829901",
-                    "package_reference_id": "1",
-                    "is_master_tracking": True,
-                    "ship_date": "2026-08-22T14:05:00Z",
-                    "mp_confirmation_status": "ACCEPTED",
-                    "mp_confirmation_reference": "req-8f2c1b90",
-                    "mp_confirmed_at": "2026-08-22T14:06:11Z",
-                    "mp_error_code": None,
-                    "mp_error_message": None,
-                    "carton_items": [
-                        {"line_item_id": 811, "mp_confirmed_quantity": 2}
-                    ]
-                }
-            ]
-        }
-    }
-    cd = sample_awb["payload"]["carton_details"][0]
-    ch.add("package_reference_id", "1", "1", cd.get("package_reference_id"))
-    ch.add("mp_confirmation_status", "ACCEPTED", "ACCEPTED", cd.get("mp_confirmation_status"))
-    ch.add("mp_confirmed_at present", "confirmation timestamp", "2026-08-22T14:06:11Z", cd.get("mp_confirmed_at"))
-    ch.add("mp_confirmed_quantity", "2", 2, cd["carton_items"][0].get("mp_confirmed_quantity"))
+def test_cr4_order_items_unreachable(ch, calls, detail):
+    # Rule N-4: an OMS read that fails is an outcome, not a licence to proceed on stale numbers (L-87)
+    status, _ = call_oms("GET", "/rest/v1/orders/9990500/order_items")
+    calls.append("GET /rest/v1/orders/9990500/order_items -> %s" % status)
+    ch.add("OMS is unreachable", "the marker route that answers 500", 500, status)
 
-
-def test_cr4_order_level_state(ch, calls, detail):
-    # CR-4 / L-90 / L-98 / L-99: GET /rest/v1/orders/{id} exposes mp_fulfilment_state & mp_last_confirmation_error
-    order_doc = {
-        "payload": {
-            "market_place_order_number": "902-1845936-5435065",
-            "is_fbl_order": False,
-            "has_regulated_items": False,
-            "mp_fulfilment_state": "partial_with_exception",
-            "mp_last_confirmation_error": "[InvalidInput] parcel 2: Tracking number CJ-5581200347 is not valid for carrier code Other."
-        }
-    }
-    payload = order_doc["payload"]
-    ch.add("is_fbl_order false", "seller fulfilled order", False, payload.get("is_fbl_order"))
-    ch.add("mp_fulfilment_state", "partial_with_exception", "partial_with_exception", payload.get("mp_fulfilment_state"))
-    ch.truthy("mp_last_confirmation_error present", "latest Amazon error message", payload.get("mp_last_confirmation_error"))
-
-
-def test_cr5_db_durability(ch, calls, detail):
-    # CR-5 / L-18 / L-54: Two cache hops closed by DB persistence in box table
-    db_box_row = {
-        "amazon_order_id": "902-1845936-5435065",
-        "package_reference_id": 1,
-        "tracking_number": "MT-7734829901",
-        "mp_confirmation_status": "ACCEPTED",
-        "mp_confirmed_quantity": 2,
-    }
-    ch.add("db persistence target", "persisted in database box table", True, bool(db_box_row.get("package_reference_id")))
-    ch.add("persisted counter integer", "stored as integer column", True, isinstance(db_box_row.get("package_reference_id"), int))
-
-
-def test_cr5_unique_constraint(ch, calls, detail):
-    # CR-5 / L-88: Unique constraint on (amazon_order_id, package_reference_id)
-    existing_keys = {("902-1845936-5435065", 1)}
-    duplicate_key = ("902-1845936-5435065", 1)
-    is_duplicate = duplicate_key in existing_keys
-    ch.add("unique constraint prevents duplicate", "duplicate key detected and rejected", True, is_duplicate)
-
+    decision = R.gate_unreachable("GET /rest/v1/orders/9990500/order_items answered %s" % status)
+    ch.add("the gate blocks", "never assume the quantities are still valid on a failed read",
+           True, decision.blocked)
+    ch.add("block reason", "marketplace validation unavailable",
+           R.EGateBlockReason.MARKETPLACE_VALIDATION_UNAVAILABLE, decision.reason)
+    ch.add("no write-back was published for it", "nothing is reported that was never attempted",
+           0, len(shipping_pushes_for("9990500")))
 
 # ===================================================================== Register Cases
 
 case("IA-5109-US3-CR0-ORDER-IMPORT-FIELDS",
-     "CR-0: IA-5111 import fields on POST /rest/v1/orders",
-     "Incoming order with has_regulated_items and amazon_fulfillment_supply_source_id",
-     ["Both fields carried through", "item_codes resolves to Amazon OrderItemId"],
-     "Requirements §1 CR-0; Summary §2.2 CR-0; Claim L-20, L-21",
+     "CR-0: The IA-5111 import fields reach OMS on order create",
+     "An Amazon order carrying has_regulated_items and fulfillment_supply_source_id",
+     ["OMS accepts the order", "Both fields are carried through, without an amazon_ prefix",
+      "Amazon's order-item id is on item_codes[] and line_item_id is blanked"],
+     "Requirements 1 CR-0; Summary 2.2 CR-0; Mapping 4.4 row 10; Claim L-20, L-119, L-134",
      test_cr0_import_fields)
 
-case("IA-5109-US3-CR1-WEBHOOK-DIFF-FIELDS",
-     "CR-1: Event:OrderStatusupdate RTSDataDTO webhook payload diff",
-     "Ready-to-ship webhook event emitted by OMS",
-     ["Contains ship_date", "Contains carton_details[] with tracking_number and package_reference_id", "carton_items carries mp_item_code"],
-     "Requirements §2.1 CR-1; Summary §2.2 CR-1; Claim L-17, L-24, L-86, L-88",
-     test_cr1_webhook_diff)
+case("IA-5109-US3-CR2-WRITEBACK-ACCEPTED",
+     "Mapping 4.5: An accepted parcel's write-back, row for row",
+     "Parcel 1 accepted by Amazon, drawing on two OMS lines",
+     ["OMS accepts it", "package_id, tracking_number and status success are recorded",
+      "Each line carries its id, its quantity and its item_codes[]", "No failure reason"],
+     "Mapping 4.5 rows 1, 2, 3, 5, 6, 7, 5.4; Summary 2.1 C-23; Claim L-23, L-89, L-113, L-119",
+     test_cr2_writeback_accepted)
 
-case("IA-5109-US3-CR1-ALIAS-QUANTITY",
-     "CR-1 / C-8: quantity spelling alias preserves backward compatibility",
-     "Incoming RTS payloads using either legacy quanity or modern quantity",
-     ["Both keys deserialize correctly", "No other connector DTO is broken"],
-     "Requirements §2.1; Summary §2.1 C-8; Claim L-11, L-56, L-81",
-     test_cr1_alias_quantity)
+case("IA-5109-US3-CR2-WRITEBACK-REJECTED",
+     "Mapping 4.5 row 4: A rejection carries Amazon's own code and message",
+     "Parcel 2 rejected with InvalidInput on the tracking number",
+     ["Status is failure", "failure_reason carries the code, the message and the package reference",
+      "The quantity that failed is recorded"],
+     "Mapping 4.5 row 4, 5.4, Appendix A.5; Claim L-38, L-33, L-127",
+     test_cr2_writeback_rejected)
 
-case("IA-5109-US3-CR1-OMIT-UNCONFIRMED",
-     "CR-1: Omission of unconfirmed fields from ready-to-ship webhook",
-     "Ready-to-ship webhook emitted prior to Amazon submission",
-     ["mp_confirmation_status and error fields are absent from webhook"],
-     "Requirements §2.1 note; Claim L-34",
-     test_cr1_omit_unconfirmed)
-
-case("IA-5109-US3-CR2-SHIPPING-DETAILS-DIFF",
-     "CR-2: POST /rest/v1/orders/shipping_details payload diff",
-     "Write-back payload after Amazon parcel confirmation result",
-     ["Includes package_reference_id", "order_items carries mp_item_code and quantity"],
-     "Requirements §2.2 CR-2; Mapping §4.5; Claim L-23, L-88, L-89",
-     test_cr2_shipping_details_diff)
-
-case("IA-5109-US3-CR2-NO-ENUM-MIGRATION",
-     "CR-2: status is plain string without enum migration on shipping_details",
-     "Write-back status values success and failure",
-     ["Accepted as plain strings without requiring enum schema migration"],
-     "Requirements §2.2; Claim L-23, L-82",
-     test_cr2_no_enum_migration)
+case("IA-5109-US3-CR2-WRITEBACK-PER-PARCEL",
+     "Mapping 6: One message per parcel, and a rejection never reverses an acceptance",
+     "One order whose parcel 1 Amazon accepted and whose parcel 2 Amazon rejected",
+     ["Two messages reach OMS, not one", "Each is attributable to its own package reference",
+      "The acceptance stands", "The order lands on the Partial row of 5.2"],
+     "Mapping 4.5, 5.2, 5.4, 6; Summary 2.1 C-23; Claim L-90, L-120, L-130",
+     test_cr2_writeback_per_parcel)
 
 case("IA-5109-US3-CR2-FAILURE-REASON-WIDTH",
-     "CR-2: failure_reason column capacity >= 500 characters",
-     "Long rejection message with error code, message and package reference",
-     ["Accommodates at least 500 characters"],
-     "Requirements §2.2; Claim L-33, L-38",
+     "Mapping 4.5 row 4: failure_reason carries at least 500 characters",
+     "A rejection whose Amazon message runs past 500 characters",
+     ["The reason sent exceeds 500 characters", "OMS holds it whole, with nothing lost from the end"],
+     "Mapping 4.5 row 4; Summary 2.2 CR-2; Claim L-38, L-33",
      test_cr2_failure_reason_width)
 
-case("IA-5109-US3-CR3-UPDATE-STATUS-BODY",
-     "CR-3: POST /rest/v1/orders/{id}/update_status body resolution",
-     "return_order_attributes body with carton_items line_item_id",
-     ["line_item_id is present", "carton_items.quantity is an integer"],
-     "Requirements §2.3 CR-3; Claim L-24, L-70",
-     test_cr3_update_status_body)
+case("IA-5109-US3-CR2-BLOCKED-NEVER-ORDER-NUMBER",
+     "C-17: The order number is never written back as a tracking number",
+     "A parcel blocked because the carrier returned no tracking number, and one blocked with a number",
+     ["No tracking number is sent, and the order number is not substituted",
+      "OMS answers 422 because tracking_number is required, so the block cannot be reported here",
+      "OMS holds no row under the order number",
+      "A block that does carry a tracking number reaches OMS with its reason"],
+     "Mapping 4.5 row 3, 7 N-4, N-6; Summary 2.1 C-17; Claim L-66, L-127",
+     test_cr2_blocked_never_order_number)
 
-case("IA-5109-US3-CR3-RETIRE-OBJECT-BODY",
-     "CR-3: Retirement of object-shaped carton_details body",
-     "Swagger specification for update_status",
-     ["Object variant retired in favor of return_order_attributes array"],
-     "Requirements §2.3, §3; Claim L-24, L-84",
-     test_cr3_retire_object_body)
+case("IA-5109-US3-C13-UPDATE-STATUS-ITEM-SUBSET",
+     "C-13: A SHIPPED update carrying an item subset is how OMS reaches Partial",
+     "A ready-to-ship update naming fewer items than the order holds",
+     ["OMS accepts the update on new_status SHIPPED", "The item subset reaches OMS",
+      "It names the line and the quantity that shipped"],
+     "Mapping 5.2; Summary 2.1 C-13; Claim L-47, L-114, L-46",
+     test_c13_update_status_item_subset)
 
-case("IA-5109-US3-CR4-ORDER-ITEMS-LEDGER",
-     "CR-4: GET /rest/v1/orders/{id}/order_items quantity ledger fields",
-     "Read response for order item quantities",
-     ["Exposes cancelled, allocated, internally shipped, confirmed and remaining quantity", "Includes package_allocation array"],
-     "Requirements §2.4 CR-4; Claim L-89, L-99",
-     test_cr4_order_items_ledger)
+case("IA-5109-US3-CR4-ORDER-ITEMS-READ",
+     "Mapping 4.3: The OMS line read the quantity ledger is built from",
+     "A GET of the order's items on the OMS mock",
+     ["OMS answers with the order's lines", "item_codes[] is an array",
+      "No marketplace confirmed count is read from here, because Amazon's is the authority"],
+     "Mapping 4.3, 7 N-3; Summary 2.2 CR-4; Claim L-9, L-10, L-89, L-119",
+     test_cr4_order_items_read)
 
-case("IA-5109-US3-CR4-AWB-DETAILS-PARCEL",
-     "CR-4: GET /rest/v1/orders/{id}/awb_details parcel confirmation state",
-     "Read response for shipment AWB and carton details",
-     ["Exposes package_reference_id, is_master_tracking, ship_date, mp_confirmation_status and confirmed quantity"],
-     "Requirements §2.5 CR-4; Claim L-25, L-90, L-99",
-     test_cr4_awb_details_parcel)
-
-case("IA-5109-US3-CR4-ORDER-LEVEL-STATE",
-     "CR-4: GET /rest/v1/orders/{id} order-level mp_fulfilment_state",
-     "Read response for order metadata",
-     ["Exposes mp_fulfilment_state and mp_last_confirmation_error", "Leaves OMS internal status untouched"],
-     "Requirements §2.6 CR-4; Claim L-90, L-98, L-99",
-     test_cr4_order_level_state)
-
-case("IA-5109-US3-CR5-DB-PERSISTENCE-TWO-HOPS",
-     "CR-5: Database durability closes two cache hops",
-     "Parcel confirmation state and package reference",
-     ["Persisted in database box table rather than Redis alone", "Survives integration restart"],
-     "Requirements §3 CR-5; Summary §2.1 C-12; Claim L-18, L-54",
-     test_cr5_db_durability)
-
-case("IA-5109-US3-CR5-UNIQUE-CONSTRAINT",
-     "CR-5: Unique constraint on (amazon_order_id, package_reference_id)",
-     "Database constraint on box table",
-     ["Enforces uniqueness of package reference per Amazon order"],
-     "Requirements §3 CR-5; Mapping §6; Claim L-88",
-     test_cr5_unique_constraint)
+case("IA-5109-US3-CR4-ORDER-ITEMS-UNREACHABLE",
+     "Rule N-4: An OMS read that fails blocks rather than proceeding on stale numbers",
+     "The OMS order-items read answers 500",
+     ["The gate blocks with MARKETPLACE_VALIDATION_UNAVAILABLE",
+      "No write-back is published for a call that was never attempted"],
+     "Mapping 7 N-4; Claim L-87",
+     test_cr4_order_items_unreachable)
 
 
 # ===================================================================== Execution Engine
+
+def preflight():
+    global BASE_OMS
+
+    print(f"{SUITE_NAME}")
+    print(f"  oms dir  : {OMS_DIR}")
+    print(f"  run dir  : {RUN_DIR}")
+
+    os.makedirs(OMS_DATA_DIR, exist_ok=True)
+    for name in OMS_STORES:
+        with open(os.path.join(OMS_DATA_DIR, name + ".json"), "w", encoding="utf-8") as f:
+            f.write("[]")
+
+    BASE_OMS = _start_ephemeral_oms()
+    EVIDENCE["oms mock"] = f"Anchanto OMS mock at {BASE_OMS}"
+    print(f"  state    : run-scoped ({len(OMS_STORES)} stores, at {OMS_DATA_DIR})")
+
+    st, _ = call_oms("POST", "/oauth/token", {"grant_type": "client_credentials"})
+    if st == 0:
+        sys.exit(f"PREFLIGHT FAIL: the OMS mock did not answer on {BASE_OMS}")
+    print(f"  mock     : active on {BASE_OMS} (/oauth/token -> {st})")
+
+
+def capture():
+    src = os.path.join(OMS_DATA_DIR, OMS_LOG_FILE)
+    os.makedirs(RUN_DIR, exist_ok=True)
+    if os.path.exists(src) and os.path.abspath(src) != os.path.abspath(os.path.join(RUN_DIR, OMS_LOG_FILE)):
+        shutil.copy2(src, os.path.join(RUN_DIR, OMS_LOG_FILE))
+        try:
+            with open(src, "r", encoding="utf-8") as f:
+                entries = len(json.load(f).get("log", {}).get("entries", []))
+            EVIDENCE["mock call log"] = f"captured -- {entries} entries"
+        except Exception:
+            EVIDENCE["mock call log"] = "captured -- unparseable"
+    else:
+        EVIDENCE["mock call log"] = "not captured -- no log file"
+
+    stores_data = {name: store(name) for name in OMS_STORES}
+    with open(os.path.join(RUN_DIR, "stores.json"), "w", encoding="utf-8") as f:
+        json.dump(stores_data, f, indent=2)
+    EVIDENCE["mock stores"] = f"captured -- {len(OMS_STORES)} files"
+
 
 def main():
     if LIST_ONLY:
@@ -520,8 +660,7 @@ def main():
             print(f"     Note : {c['note']}")
         return
 
-    print(f"{SUITE_NAME}")
-    print(f"  run dir  : {RUN_DIR}")
+    preflight()
 
     to_run = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
     print(f"\nRunning {len(to_run)} cases...")
@@ -533,6 +672,7 @@ def main():
         print(f"  [{v}] {c['id']}: {c['name']} -- {r['summary']}")
 
     EVIDENCE["status"] = "complete"
+    capture()
     publish()
 
     done = [RESULTS[c["id"]] for c in to_run if c["id"] in RESULTS]
