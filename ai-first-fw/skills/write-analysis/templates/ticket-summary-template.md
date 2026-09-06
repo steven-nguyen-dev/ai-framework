@@ -1,12 +1,12 @@
-# [TICKET_KEY] Summary — [Short Feature Title]
+# [KEY] Summary — [Short Feature Title]
 
-**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-summary.md` (e.g. `IA-5105-product-types-summary.md`)
-**Ticket:** `[JIRA_ISSUE_KEY]` — [user story N / feature name]
-**Related:** `[SIBLING_TICKET_KEY]` ([what it covers]) · `[SIBLING_TICKET_KEY]` ([what it covers])
-**Source documents:** `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` · `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md`
-**Claim library:** `[JIRA_ISSUE_KEY]-[TOPIC]-library.md` — every `L-n` in this document resolves there
+**Document Identifier:** `[KEY]-[TOPIC]-summary.md`
+**Requirement:** `[KEY]` — [user story N / feature name]
+**Related:** `[SIBLING_KEY]` ([what it covers]) · `[SIBLING_KEY]` ([what it covers])
+**Source documents:** `[KEY]-[TOPIC]-mapping-spec.md` · `[KEY]-[TARGET_SYSTEM]-[TOPIC]-requirements-spec.md`
+**Claim library:** `[KEY]-[TOPIC]-library.md` — every `L-n` in this document resolves there
 **Author / Team:** `[Author / Team Name]`
-**Written in:** Simplified Technical English, using the terms in the repository's context file.
+**Written in:** Simplified Technical English, using the terms the repository's context files give.
 
 ---
 
@@ -14,26 +14,30 @@
 
 *(Delete this whole section before you publish the document.)*
 
-This is the **summary**. It is written last and read first. It is the front door of the contract:
-it carries conclusions at the level a reader decides scope from, it carries the definition of done
-for all four documents, and it points to the specs for every detail.
+This is the **summary**. It is written last and read first. It is the front door of the contract: it
+carries conclusions at the level a reader settles scope from, it carries the definition of done for
+all four documents, and it points to the specs for every detail.
 
 **Writing rules.**
 
 - Write in ASD-STE100 Simplified Technical English. Short sentences. Active voice. One idea per
   sentence. Spell out every contraction.
-- Use the terms the repository's context file gives. Where that file names a thing, use its word.
+- Use the word the repository's context files give for every system, party, key and wire field, and
+  name the context file that owns a term two files share.
+- Write every line in the present tense, as the state that holds when the work is done.
 - Section 2 states the changes the contract requires. Every item starts with a verb — Add, Remove,
-  Send, Replace, Implement, Audit, Keep, Reject, Read — and names the system it lands in.
+  Send, Replace, Implement, Audit, Keep, Reject, Read — and names the system it lands in with that
+  system's tier: `integration`, `internal` or `external`.
+- An `integration` or `internal` gap is an item this codebase builds, in 2.1 with its `C-n`. An
+  `external` limit is a precondition in section 4.
 - `C-n` and `CR-n` are permanent, like `L-n`. Group items by the function they land in and let the
   numbers run out of order. A split item takes a letter — `C-6a`, `C-6b`.
-- Keep each item at the level of the logic that changes. The property rows live in the mapping
-  spec; the columns and validations live in the requirements spec.
+- Keep each item at the level of the logic that changes. The property rows live in the mapping spec;
+  the columns and validations live in the requirements spec.
 - Put an action in 2.1 or 2.2, and a fact in 2.3. Each thing appears once.
-- Section 3 is the definition of done. Give every item of the ticket's own definition of done a
-  `D-n` row in the ticket's words, and add a `D-n` for each thing this analysis settles that the
-  ticket leaves unstated. `D-n` is permanent, like `L-n`.
-- Write every line in the present tense, as the state that holds when the work is done.
+- Section 3 is the definition of done. Give every item of the requirement's stated definition of done
+  a `D-n` row in the requirement's words, and add a `D-n` for each state this analysis settles that
+  the requirement leaves unstated. `D-n` is permanent, like `L-n`.
 - Every claim carries an `L-n`. The claim library states the citation rule and holds every locator.
 - Use pure Markdown headings and links.
 - Use a bullet list from three items up.
@@ -42,10 +46,10 @@ for all four documents, and it points to the specs for every detail.
 
 ## 1. Context
 
-### What the ticket must do
+### What the requirement must do
 
-*(State the business situation in plain sentences. Name the actors with the terms the context file
-gives.)*
+*(State the business situation in plain sentences. Name the actors with the terms the context files
+give.)*
 
 [Two or three sentences that set the scene.]
 
@@ -54,12 +58,12 @@ gives.)*
 - [Fact 1] `L-n`
 - [Fact 2] `L-n`
 
-[Lead-in sentence for the rules the external system imposes:]
+[Lead-in sentence for the rules the external party imposes:]
 
 - [Rule 1] `L-n`
 - [Rule 2] `L-n`
 
-### What [OUR_SYSTEM] does today
+### What [THIS_CODEBASE] does today
 
 [What is sent, stored or supported today.] `L-n`
 
@@ -71,11 +75,12 @@ wrong — those are different results, and the difference sets the scope.]
 
 ### Ownership
 
-*(Include this section when the work touches an internal system. Delete it when it does not. Where
-the repository's context file states the team's ownership rule, cite that file and delete the rest.)*
+*(Include this section when the work crosses an `internal` contract. Delete it when it does not.
+Where the repository's context files state the team's ownership rule, cite that file and delete the
+rest.)*
 
-[Which contracts this team sets, and which are fixed. State what a missing field means in each
-case, and whether this team waits.] `L-n`
+[Which contracts this team sets, and which are fixed. State what a missing field means in each case,
+and the tier that settles it.] `L-n`
 
 ---
 
@@ -83,21 +88,23 @@ case, and whether this team waits.] `L-n`
 
 Each line is an action. The `L-n` names its row in the claim library.
 
-### 2.1 [OUR_SYSTEM] work
+### 2.1 [THIS_CODEBASE] work — `integration`
 
-*(What this team builds. Start each item with a verb.)*
+*(What this team builds. Start each item with a verb. Where a value crosses an `internal` contract,
+this side widens its ingress and becomes reachable here first; 2.2 carries the request that follows.)*
 
 - **C-1** [Action.] `L-1`
 - **C-2** [Action.] `L-2` `L-3`
 - **C-3** [Action.] `L-4`
 
-### 2.2 [INTERNAL_SYSTEM] changes to request
+### 2.2 [OTHER_SYSTEM] changes to request — `internal`
 
-*(What another internal team builds. Give each item a priority, and name the endpoint it lands on —
-the requirements spec holds the rows.)*
+*(What another internal team builds. Give each item a priority, name the endpoint it lands on — the
+requirements spec holds the rows — and name the `C-n` in 2.1 that makes this side reachable before
+that team builds.)*
 
-- **CR-1** [Action] on `[POST /rest/v1/endpoint]` — [priority] `L-5`
-- **CR-2** [Action] on `[POST /rest/v1/endpoint]` — [priority] `L-6`
+- **CR-1** [Action] on `[POST /path/to/endpoint]` — [priority] · this side: **C-n** `L-5`
+- **CR-2** [Action] on `[POST /path/to/endpoint]` — [priority] · this side: **C-n** `L-6`
 
 **[CR-n] carries the most weight.** [One or two sentences. Reserve this for the change whose absence
 removes the feature.]
@@ -113,28 +120,30 @@ removes the feature.]
 
 ## 3. Definition of done
 
-The work is done when every line below holds. Rows marked `ticket` carry the ticket's own definition
-of done, in the ticket's words. Rows marked `analysis` are what this analysis settles on top of it.
+The work is done when every line below holds. Rows marked `stated` carry the requirement's own
+definition of done, in the requirement's words. Rows marked `settled` are what this analysis adds.
 
-| # | Done when | From | Checked at | Claim |
-| :-- | :--- | :--- | :--- | :--- |
-| D-1 | [The ticket's first definition-of-done item, in the ticket's own words.] | ticket | `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` A-1 | `L-n` |
-| D-2 | [The ticket's next item, in the ticket's own words.] | ticket | `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` §5 | `L-n` |
-| D-3 | [The state this analysis settles that the ticket leaves unstated.] | analysis | `...requirements-spec.md` A-4 | `L-n` |
-| D-4 | [What keeps working, stated as the state that holds.] | analysis | `[path/to/existing/tests]` | `L-n` |
+| # | Done when | Tier | From | Checked at | Claim |
+| :-- | :--- | :---: | :--- | :--- | :--- |
+| D-1 | [The requirement's first definition-of-done item, in its own words.] | integration | stated | `[KEY]-[TARGET_SYSTEM]-[TOPIC]-requirements-spec.md` A-1 | `L-n` |
+| D-2 | [The requirement's next item, in its own words.] | internal | stated | `[KEY]-[TOPIC]-mapping-spec.md` section 5 | `L-n` |
+| D-3 | [The state this analysis settles that the requirement leaves unstated.] | integration | settled | `...requirements-spec.md` A-4 | `L-n` |
+| D-4 | [What keeps working, stated as the state that holds.] | integration | settled | `[path/to/existing/tests]` | `L-n` |
+| D-5 | `[this side's endpoint or operation]` is callable and documented, and `[consumer]` reaches it. | integration | settled | `[path/to/api/doc or contract test]` | `L-n` |
+| D-6 | Every flow in `[KEY]-[TOPIC]-mapping-spec.md` section 3 runs end to end against the mocks. | integration | settled | `[path/to/mock/suite]` | `L-n` |
 
-**Coverage.** [n] of the [n] items in the ticket's definition of done carry a `D-n` row. `L-n` holds
-the ticket's list.
+**Coverage.** [n] of the [n] items in the requirement's stated definition of done carry a `D-n` row.
+`L-n` holds the requirement's list.
 
 ---
 
 ## 4. Preconditions
 
-*(Delete this section when the contract needs no decision. Each row names one decision the contract
-rests on, the person or team who settles it, and the section that follows from it. Settle a row and
-fold the answer into the section it gates, then delete the row.)*
+*(Delete this section when the contract needs no decision. A row here names an `external` contract
+limit, or a decision a named person settles. An `integration` or `internal` gap belongs in section 2
+as work. Settle a row and fold the answer into the section it gates, then delete the row.)*
 
-| # | Decision to settle | Owner | Gates | Settled by |
-| :-- | :--- | :--- | :--- | :--- |
-| P-1 | [The decision, as a question with a stated default.] | `[name / team]` | §2.2 CR-1 · requirements §2.1 | [ask X / read Y / audit Z] |
-| P-2 | [The decision.] | `[name / team]` | mapping §6 | [what settles it] |
+| # | Decision to settle | Tier | Owner | Gates | Settled by |
+| :-- | :--- | :---: | :--- | :--- | :--- |
+| P-1 | [The limit the party's published contract sets, as a question with a stated default.] | external | `[party / name]` | mapping 4.2 · requirements 2.1 | [read their published page / ask their support] |
+| P-2 | [The decision a named person settles.] | integration | `[name]` | mapping section 6 | [what settles it] |

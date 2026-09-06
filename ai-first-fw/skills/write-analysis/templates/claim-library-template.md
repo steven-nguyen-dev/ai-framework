@@ -1,11 +1,11 @@
-# [TICKET_KEY] Claim Library — [Short Feature Title]
+# [KEY] Claim Library — [Short Feature Title]
 
-**Document Identifier:** `[JIRA_ISSUE_KEY]-[TOPIC]-library.md` (e.g. `IA-5105-product-types-library.md`)
-**Ticket:** `[JIRA_ISSUE_KEY]` — *[Feature / Initiative Title]*
-**Covers:** `[JIRA_ISSUE_KEY]-[TOPIC]-mapping-spec.md` · `[JIRA_ISSUE_KEY]-[TARGET_SYSTEM_LOWER]-[TOPIC]-requirements-spec.md` · `[JIRA_ISSUE_KEY]-[TOPIC]-summary.md`
+**Document Identifier:** `[KEY]-[TOPIC]-library.md`
+**Requirement:** `[KEY]` — *[Feature / Initiative Title]*
+**Covers:** `[KEY]-[TOPIC]-mapping-spec.md` · `[KEY]-[TARGET_SYSTEM]-[TOPIC]-requirements-spec.md` · `[KEY]-[TOPIC]-summary.md`
 **Repository:** `[repository-name]` @ `[branch]` — commit `[short-sha]`
 **Author / Team:** `[Author / Team Name]`
-**Last appended:** `[YYYY-MM-DD]`
+**Date:** `[YYYY-MM-DD]`
 
 ---
 
@@ -13,31 +13,38 @@
 
 *(Delete this whole section before you publish the document.)*
 
-This is the **library**. One per ticket. It is opened first and appended to as each of the three
+This is the **library**. One per requirement. It is opened first and appended to as each of the three
 documents is written. It resolves any claim in any of the three documents to the material behind it,
 so a reader checks the contract against its sources in one action.
 
-**The citation rule.** The mapping spec, the requirements spec and the summary follow it. Every
-claim in those documents carries an `L-n` that resolves to a row of §3 here. Those documents cite;
+**The citation rule.** The mapping spec, the requirements spec and the summary follow it. Every claim
+in those documents carries an `L-n` that resolves to a row of section 3 here. Those documents cite;
 this document holds the locator and the words.
 
 **Writing rules.**
 
+- The document opens on its metadata block and runs straight to section 1. Every word in it sits in
+  a table row.
+- **One row, one atomic fact.** `Claim` is a single declarative sentence of 25 words or fewer. Design
+  rationale, deduction and synthesis live in the mapping spec and the summary, which cite this row.
+- **One row, one locator.** `Locator` names exactly one target, in the form its kind states. Where a
+  fact rests on two places, write two rows, each with its own number and its own target.
+- **One row, one verbatim quote.** `Says` carries the source's own words inside `"` quotes, 25 words
+  or fewer: the exact line for `code`, the exact sentence for `doc`, `jira`, `url` and `user`. An
+  absence carries `0 occurrences of [term]`.
 - One row per claim. A claim used by two documents keeps one row and one `L-n`.
-- `L-n` is permanent. A superseded claim keeps its number, and its row carries the locator and the
-  words that hold now.
-- Write the locator so a reader opens the material in one action, with no search: a path a file tool
-  reads, a URL a fetch tool loads, a Jira key and field, or a named person.
-- `Says` carries the material's own words, quoted, up to about 25 of them. Where a quote does not
-  carry it, write the tight paraphrase a reader acts on. Keep your reasoning in the document that
-  cites the row.
-- An absence is a claim. Give it a row whose locator names the file and the term, and whose `Says`
-  records the count as `0 occurrences`.
-- Give every item of the ticket's definition of done its own row, in the ticket's words, used in
-  `summary 3`.
-- `Used in` names the document and its `##` section only — `mapping §4`, `requirements §2`,
-  `summary 2`. Subsection numbers move while this library is open; top-level numbers do not.
-- Every kind is one of `code`, `url`, `doc`, `jira`, `user`. §2 states the locator form for each.
+- `L-n` is permanent. A superseded claim keeps its number, and its row is written over with the
+  claim, locator and quote that hold now — the row states the current fact and its source.
+- A claim about this codebase's behaviour carries kind `code`. A claim about a party outside the
+  organisation carries kind `url` or `doc`, citing that party's own published page.
+- Where the code states one thing and a document another, the code's locator and quote go into the
+  row, and the document is corrected to match.
+- Give every item of the requirement's stated definition of done its own row, in the requirement's
+  words, used in `summary 3`.
+- `Used in` names the document and its `##` section only — `mapping 4`, `requirements 2`,
+  `summary 2`. Subsection numbers move while this library is open; top-level numbers hold.
+- Every kind is one of `code`, `url`, `doc`, `jira`, `user`. Section 2 states the locator form for
+  each.
 - Use pure Markdown headings and links.
 
 ---
@@ -50,9 +57,10 @@ Short keys stand in for long paths. Expand each one here, once. Every expansion 
 | Key | Expands to |
 | :--- | :--- |
 | `K-REPO` | `[/absolute/path/to/repository-root]` |
-| `[KEY_A]` | `[/absolute/path/to/partner-openapi.json]` |
-| `[KEY_B]` | `[K-REPO]/[path/to/target-system-swagger.json]` |
-| `[KEY_C]` | `[K-REPO]/[path/to/requirements-doc.md]` |
+| `K-REQ` | `[the requirement's key or the brief's path]` |
+| `[KEY_A]` | `[/absolute/path/to/party-openapi.json]` |
+| `[KEY_B]` | `[K-REPO]/[path/to/target-system-spec.json]` |
+| `[KEY_C]` | `[K-REPO]/[path/to/context-file.md]` |
 
 All other paths are relative to `[K-REPO]`. Class names are given without their package where the
 name is unique in the repository.
@@ -61,15 +69,16 @@ name is unique in the repository.
 
 ## 2. Locator forms
 
-The form each kind takes. A row whose locator does not match its form is not yet a citation.
+The form each kind takes. Every row's locator names one target in the form its kind states, so a
+reader opens it in one action with no search.
 
 | Kind | Locator form | Example |
 | :--- | :--- | :--- |
-| `code` | `path/to/File.ext:START-END` for a range, `path/to/File.ext#memberName` for a class or method, `path — [term], [n] occurrences` for an absence | `src/main/java/com/x/ProductSync.java:118-146` |
-| `url` | Full URL, then `(fetched YYYY-MM-DD)` — the page moves and the date says which version you read | `https://partner.dev/docs/catalog#status (fetched 2026-08-26)` |
-| `doc` | `document.md` §N, or `[KEY]` → `[json.pointer.path]` for a specification file | `[KEY_A]` → `components.schemas.Product.properties.status` |
-| `jira` | `KEY` + the field: `description`, `comment by [author] YYYY-MM-DD`, or `attachment [filename]` | `IA-5105 comment by J. Tan 2026-08-20` |
-| `user` | `[name]`, `[YYYY-MM-DD]` — Says carries the decision in their words | `Steve, 2026-08-25` |
+| `code` | `[K-REPO]/path/to/File.ext:START-END` for a range, `[K-REPO]/path/to/File.ext#memberName` for a class or method, `[K-REPO]/path/to/File.ext — [term], 0 occurrences` for an absence | `[K-REPO]/[path]/[File].[ext]:118-146` |
+| `url` | Full URL with its anchor, then `(fetched YYYY-MM-DD)` — the page moves and the date says which version you read | `https://[party]/docs/[page]#[anchor] (fetched YYYY-MM-DD)` |
+| `doc` | `[KEY]` → `[json.pointer.path]` for a specification file, or `[KEY]` section N for prose | `[KEY_A]` → `components.schemas.[Entity].properties.[field]` |
+| `jira` | `K-REQ` + the exact place: section N paired with its requirement key, `comment by [author] YYYY-MM-DD`, or `attachment [filename]` | `K-REQ` section 15 (`FR-22`) |
+| `user` | `[name]`, `[YYYY-MM-DD]` — Says carries the decision in their words | `[name], [YYYY-MM-DD]` |
 
 ---
 
@@ -79,10 +88,11 @@ Every claim behind the three documents. Append as you write, and keep every numb
 
 | # | Claim | Kind | Locator | Says | Used in |
 | :-- | :--- | :--- | :--- | :--- | :--- |
-| L-1 | [The claim, in one sentence.] | `code` | `[path/to/File.ext:START-END]` | "[what the material says]" | mapping §5 |
-| L-2 | [The claim.] | `doc` | `[KEY_A]` → `[json.pointer.path]` | [tight paraphrase] | mapping §6 · requirements §3 |
-| L-3 | [The claim.] | `url` | `[https://…]` (fetched `[YYYY-MM-DD]`) | "[quote]" | summary 2 |
-| L-4 | [The claim.] | `jira` | `[KEY] comment by [author] [YYYY-MM-DD]` | "[quote]" | summary 2 |
-| L-5 | [The decision.] | `user` | `[name]`, `[YYYY-MM-DD]` | "[their words]" | summary 2 |
-| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | An absence. The file is where a reader re-checks it. | requirements §4 |
-| L-7 | The ticket's definition of done, item [n]. | `jira` | `[KEY]` description — definition of done | "[the item, in the ticket's words]" | summary 3 |
+| L-1 | The line item quantity serialises under the wire key `[wire_key]`. | `code` | `[K-REPO]/[path]/[Entity]DTO.[ext]:23` | `"@JsonProperty(\"[wire_key]\") private Integer [field];"` | mapping 4 |
+| L-2 | `[field]` is mandatory before `[operation]` is called. | `jira` | `K-REQ` section 15 (`FR-22`) | `"[the requirement's exact sentence]"` | requirements 2 |
+| L-3 | `[operation]` returns HTTP 204 with no content. | `doc` | `[KEY_A]` → `paths./[path].post.responses` | `"204": { "description": "Success." }` | mapping 1 |
+| L-4 | `[the party's rule]`. | `url` | `https://[party]/docs/[page]#[anchor]` (fetched `[YYYY-MM-DD]`) | `"[the page's exact sentence]"` | summary 2 |
+| L-5 | `[the decision]`. | `user` | `[name]`, `[YYYY-MM-DD]` | `"[their exact words]"` | summary 2 |
+| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | `0 occurrences of [field_name]` | requirements 4 |
+| L-7 | The requirement's stated definition of done, item [n]. | `jira` | `K-REQ` description — definition of done, item [n] | `"[the item's exact words]"` | summary 3 |
+| L-8 | `[term]` names `[what it resolves to]` in this contract. | `doc` | `[KEY_C]` → `[term]` | `"[the context file's exact definition]"` | mapping 1 |
