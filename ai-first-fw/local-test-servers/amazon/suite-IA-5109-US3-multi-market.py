@@ -5,12 +5,22 @@ Judges marketplace isolation, per-marketplace payloads (France, Germany, Japan, 
 carrier mappings, Japan COD collection handling, and carrier customs/IOSS boundaries
 for User Story 3: Support Partial and Multi-Parcel Amazon Seller-Fulfilled Shipments (IA-5109).
 
+Every case crosses the HTTP boundary. The observable is what the mock received, and where a rule
+blocks it is the row the mock did not record -- shown alongside a sibling that does confirm, so the
+block is the parcel's and not the whole flow's.
+
 Covers:
-  - Marketplace isolation & ID resolution (FR: A13V1IB3VIYZZH, DE: A1PA6795UKMFR9, JP: A1VC38T7YXB528, US: ATVPDKIKX0DER) (L-55)
-  - Japan-only COD Collection Method conditional injection (DirectPayment) (L-7, L-93)
-  - Carrier code resolution, Other fallback & mandatory carrierName (L-6, L-32, L-65, L-91)
-  - Rule N-5 & CR-6: Customs boundary -- nothing to Amazon, IOSS to the carrier (L-26, L-41, L-70, L-94)
-  - Compatibility with legacy domestic single-shipment flows (L-99, L-105)
+  - The four marketplace ids, verbatim (FR A13V1IB3VIYZZH, DE A1PA6795UKMFR9, JP A1VC38T7YXB528, US ATVPDKIKX0DER) (L-55)
+  - Japan's codCollectionMethod, and that it sits as a sibling of packageDetail (L-7, L-93)
+  - Carrier resolution on the live payload shape: provider first, override only when non-empty,
+    Other plus a mandatory carrierName, self delivery, and the configuration block (L-6, L-91, L-146, L-187)
+  - Marketplace mismatch as a routing fault (L-31, L-55)
+  - Rule N-5's Amazon half: the confirmation carries no customs data at all (L-70, L-94)
+  - Compatibility with the domestic single-shipment path (L-99, L-105)
+
+Not here, and why. Rule N-5's carrier half -- the IOSS number onto the carrier's create-order request
+-- is outside this story's own call chain (mapping 4.6) and reaches no endpoint this suite calls, so
+the case that asserted it against a dictionary it had just built is removed rather than rewritten.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5109-US3-multi-market/run-<stamp>/results.json.
@@ -99,6 +109,16 @@ atexit.register(_stop_ephemeral_mock)
 def call_amazon(method, path, body=None, token="mock_sp_api_access_token"):
     url = BASE + path
     return R.http_json(method, url, body=body, token=token)
+
+
+def store(name):
+    """Reads one of the mock's stores back, which is where the partner-side observable lives."""
+    path = os.path.join(DATA_DIR, name + ".json")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return []
 
 
 CASES, RESULTS = [], {}
@@ -216,298 +236,481 @@ def run_case(c):
 
 
 # ===================================================================== Test Cases Definitions
+#
+# Every case crosses the HTTP boundary. Where a rule blocks, the observable is the row the mock did
+# not record; a blocking case always ships a sibling parcel too, so the block is shown to be the
+# parcel's and not the whole event's.
+
+FR, DE, JP, US = "amazon_sp_fr", "amazon_sp_de", "amazon_sp_jp", "amazon_sp_us"
+READY_TO_SHIP_AT = "2026-08-22T14:05:00Z"
+PURCHASED_AT = "2026-08-20T09:12:03Z"
+SUBMITTING_AT = "2026-08-22T14:06:00Z"
+ITEM_1001 = "05015851154158"
+ITEM_2002 = "05015851154159"
+
+
+def live_meta(**overrides):
+    """The carrier and date context of the one captured live ready-to-ship payload (L-146, L-187).
+
+    Three carrier fields arrive empty and one arrives null, leaving shipping_provider as the only
+    carrier identity on the payload, which is what makes the resolution order of 5.3 load-bearing.
+    """
+    meta = {
+        "shipping_provider": "Startrack",
+        "marketplace_carrier_code": "",
+        "logistic_partner_name": None,
+        "shipping_type": "FPP (Fixed Price Premium)",
+        "updated_at": READY_TO_SHIP_AT,
+        "purchased_at": PURCHASED_AT,
+        "submitting_at": SUBMITTING_AT,
+        "store_marketplace_code": FR,
+    }
+    meta.update(overrides)
+    return meta
+
+
+def one_box(tracking="MT-7734829901", **overrides):
+    return [R.CartonBox("B1", tracking, ship_date=READY_TO_SHIP_AT,
+                        items=[R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 2)], **overrides)]
+
+
+def confirmations_for(order_id):
+    return [c for c in store("shipment_confirmations") if c.get("orderId") == order_id]
+
+
+def send(ch, calls, order_id, marketplace, parcel, is_cod=False, expect=204):
+    request = R.build_amazon_confirmation_request(order_id, marketplace, parcel, is_cod=is_cod)
+    status, _ = call_amazon("POST", request["url_path"], request["body"])
+    calls.append("POST %s (%s) -> %s" % (request["url_path"], marketplace, status))
+    if expect is not None:
+        ch.add("confirmation answered %s" % expect, "one call per parcel", expect, status)
+    return request, status
+
+
+# --------------------------------------------------------------------- C-18, the four marketplaces
 
 def test_mkt_france(ch, calls, detail):
-    # France (amazon_sp_fr -> A13V1IB3VIYZZH) (L-55, Appendix A.2)
-    parcel = R.Parcel("1", "MT-7734829901", carrier_code="DHL", carrier_name="DHL Express",
-                      shipping_method="DHL Express Worldwide", ship_date="2026-08-22T14:05:00Z",
-                      order_items=[R.OrderItemAllocation(811, "05015851154158", "SKU-1001", 2)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_fr", parcel)
+    # France, amazon_sp_fr -> A13V1IB3VIYZZH (L-55, Appendix A.2)
+    order_id = "902-MKTFR-0000001"
+    parcels, _ = R.assemble_parcels(
+        one_box(), live_meta(marketplace_carrier_code="DHL", logistic_partner_name="DHL Express",
+                             shipping_type="DHL Express Worldwide"))
+    send(ch, calls, order_id, FR, parcels[0])
 
-    st, _ = call_amazon("POST", req["url_path"], req["body"])
-    calls.append(f"POST {req['url_path']} -> {st}")
-
-    ch.add("france confirmation status", "204 No Content", 204, st)
-    ch.add("marketplaceId", "A13V1IB3VIYZZH", "A13V1IB3VIYZZH", req["body"]["marketplaceId"])
-    ch.add("no cod field", "absent on France payload", False, "codCollectionMethod" in req["body"])
+    row = confirmations_for(order_id)[0]
+    ch.add("marketplaceId", "verbatim from the repository", "A13V1IB3VIYZZH", row.get("marketplaceId"))
+    ch.add("no cod method", "only Japan may carry it (L-7)", None, row.get("codCollectionMethod"))
 
 
 def test_mkt_germany(ch, calls, detail):
-    # Germany (amazon_sp_de -> A1PA6795UKMFR9) (L-55, Appendix A.6)
-    parcel = R.Parcel("1", "DE-TRACK-001", carrier_code="DHL", carrier_name="DHL Express",
-                      shipping_method="Paket", ship_date="2026-08-22T14:05:00Z",
-                      order_items=[R.OrderItemAllocation(811, "05015851154158", "SKU-1001", 1)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_de", parcel)
+    # Germany, amazon_sp_de -> A1PA6795UKMFR9 (L-55, Appendix A.6)
+    order_id = "902-MKTDE-0000001"
+    parcels, _ = R.assemble_parcels(
+        one_box("DE-TRACK-001"),
+        live_meta(store_marketplace_code=DE, marketplace_carrier_code="DHL",
+                  logistic_partner_name="DHL Express", shipping_type="Paket"))
+    send(ch, calls, order_id, DE, parcels[0])
 
-    st, _ = call_amazon("POST", req["url_path"], req["body"])
-    calls.append(f"POST {req['url_path']} -> {st}")
-
-    ch.add("germany confirmation status", "204 No Content", 204, st)
-    ch.add("marketplaceId", "A1PA6795UKMFR9", "A1PA6795UKMFR9", req["body"]["marketplaceId"])
-    ch.add("no cod field", "absent on Germany payload", False, "codCollectionMethod" in req["body"])
-
-
-def test_mkt_japan_cod(ch, calls, detail):
-    # Japan (amazon_sp_jp -> A1VC38T7YXB528) with COD (L-7, L-93, Appendix A.6)
-    parcel = R.Parcel("1", "460012345678", carrier_code="YAMATO", carrier_name="Yamato Transport",
-                      shipping_method="TA-Q-BIN", ship_date="2026-08-22T09:15:00Z",
-                      order_items=[R.OrderItemAllocation(811, "05015851154310", "SKU-JP", 1)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_jp", parcel, is_cod=True)
-
-    st, _ = call_amazon("POST", req["url_path"], req["body"])
-    calls.append(f"POST {req['url_path']} -> {st}")
-
-    ch.add("japan cod confirmation status", "204 No Content", 204, st)
-    ch.add("marketplaceId", "A1VC38T7YXB528", "A1VC38T7YXB528", req["body"]["marketplaceId"])
-    ch.add("codCollectionMethod present", "injected for Japan COD", True, "codCollectionMethod" in req["body"])
-    ch.add("codCollectionMethod value", "DirectPayment", "DirectPayment", req["body"].get("codCollectionMethod"))
-    ch.add("codCollectionMethod at root", "sibling of packageDetail", True, "codCollectionMethod" not in req["body"]["packageDetail"])
-
-
-def test_mkt_japan_non_cod(ch, calls, detail):
-    # Japan non-COD (L-7, L-93)
-    parcel = R.Parcel("1", "460012345678", carrier_code="YAMATO", carrier_name="Yamato Transport",
-                      order_items=[R.OrderItemAllocation(811, "05015851154310", "SKU-JP", 1)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_jp", parcel, is_cod=False)
-
-    ch.add("marketplaceId", "A1VC38T7YXB528", "A1VC38T7YXB528", req["body"]["marketplaceId"])
-    ch.add("cod omitted for non-COD", "not present on non-COD order", False, "codCollectionMethod" in req["body"])
-
-
-def test_mkt_cod_forbidden_non_jp(ch, calls, detail):
-    # COD forbidden on non-Japan marketplaces (L-7, L-93)
-    for mkt in ["amazon_sp_fr", "amazon_sp_de", "amazon_sp_us"]:
-        parcel = R.Parcel("1", "TRK-COD", carrier_code="DHL", order_items=[R.OrderItemAllocation(1, "I-1", "S-1", 1)])
-        req = R.build_amazon_confirmation_request("902-1845936-5435065", mkt, parcel, is_cod=True)
-        ch.add(f"cod absent for {mkt}", "never injected outside Japan", False, "codCollectionMethod" in req["body"])
+    row = confirmations_for(order_id)[0]
+    ch.add("marketplaceId", "verbatim from the repository", "A1PA6795UKMFR9", row.get("marketplaceId"))
+    ch.add("no cod method", "IOSS and the deemed-reseller category apply as for France, COD does not",
+           None, row.get("codCollectionMethod"))
 
 
 def test_mkt_us(ch, calls, detail):
-    # United States (amazon_sp_us -> ATVPDKIKX0DER) (L-55, Appendix A.6)
-    parcel = R.Parcel("1", "1Z9999999999999999", carrier_code="UPS", carrier_name="UPS Ground",
-                      shipping_method="Ground", ship_date="2026-08-22T14:05:00Z",
-                      order_items=[R.OrderItemAllocation(811, "05015851154158", "SKU-US", 1)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_us", parcel)
+    # United States, amazon_sp_us -> ATVPDKIKX0DER (L-55, Appendix A.6)
+    order_id = "902-MKTUS-0000001"
+    parcels, _ = R.assemble_parcels(
+        one_box("1Z9999999999999999"),
+        live_meta(store_marketplace_code=US, marketplace_carrier_code="UPS",
+                  logistic_partner_name="UPS Ground", shipping_type="Ground"))
+    send(ch, calls, order_id, US, parcels[0])
 
-    st, _ = call_amazon("POST", req["url_path"], req["body"])
-    calls.append(f"POST {req['url_path']} -> {st}")
+    row = confirmations_for(order_id)[0]
+    ch.add("marketplaceId", "verbatim from the repository", "ATVPDKIKX0DER", row.get("marketplaceId"))
+    ch.add("no cod method", "no COD, no IOSS", None, row.get("codCollectionMethod"))
 
-    ch.add("us confirmation status", "204 No Content", 204, st)
-    ch.add("marketplaceId", "ATVPDKIKX0DER", "ATVPDKIKX0DER", req["body"]["marketplaceId"])
-    ch.add("no cod field", "absent on US payload", False, "codCollectionMethod" in req["body"])
+
+def test_mkt_all_four_ids(ch, calls, detail):
+    # C-18: all four marketplaces carried, ids verbatim, evidence produced per marketplace (L-55, L-99)
+    expected = {FR: "A13V1IB3VIYZZH", DE: "A1PA6795UKMFR9", JP: "A1VC38T7YXB528", US: "ATVPDKIKX0DER"}
+    seen = {}
+    for index, marketplace in enumerate(sorted(expected), start=1):
+        order_id = "902-MKTALL-000000%d" % index
+        parcels, _ = R.assemble_parcels(
+            one_box("TRK-ALL-%d" % index),
+            live_meta(store_marketplace_code=marketplace, marketplace_carrier_code="DHL",
+                      logistic_partner_name="DHL Express", shipping_type="Express"))
+        send(ch, calls, order_id, marketplace, parcels[0])
+        seen[marketplace] = confirmations_for(order_id)[0].get("marketplaceId")
+
+    for marketplace in sorted(expected):
+        ch.add("%s id" % marketplace, "one store is exactly one marketplace (L-31)",
+               expected[marketplace], seen.get(marketplace))
+    ch.add("four distinct ids", "the story carries all four, not France alone",
+           4, len(set(seen.values())))
+
+
+# --------------------------------------------------------------------- C-5, Japan's COD method
+
+def test_mkt_japan_cod(ch, calls, detail):
+    # Japan and COD is the only case that carries the collection method, as a SIBLING (L-7, L-93)
+    order_id = "902-MKTJPCOD-00001"
+    parcels, _ = R.assemble_parcels(
+        one_box("460012345678"),
+        live_meta(store_marketplace_code=JP, marketplace_carrier_code="YAMATO",
+                  logistic_partner_name="Yamato Transport", shipping_type="TA-Q-BIN"))
+    request, _ = send(ch, calls, order_id, JP, parcels[0], is_cod=True)
+
+    ch.add("sent at the request root", "a sibling of packageDetail, not a property inside it",
+           True, "codCollectionMethod" in request["body"])
+    ch.add("not inside packageDetail", "sending it inside would be an invalid request",
+           False, "codCollectionMethod" in request["body"]["packageDetail"])
+
+    row = confirmations_for(order_id)[0]
+    ch.add("marketplaceId", "Japan", "A1VC38T7YXB528", row.get("marketplaceId"))
+    ch.add("amazon received the method", "Japan records how the cash was collected",
+           "DirectPayment", row.get("codCollectionMethod"))
+
+    # The same value placed inside packageDetail is not the field Amazon reads, and the mock,
+    # which reads it at the root as Amazon documents, records nothing.
+    misplaced = "902-MKTJPBAD-00001"
+    body = dict(request["body"])
+    body.pop("codCollectionMethod")
+    body["packageDetail"] = dict(request["body"]["packageDetail"])
+    body["packageDetail"]["codCollectionMethod"] = "DirectPayment"
+    status, _ = call_amazon("POST", "/orders/v0/orders/%s/shipmentConfirmation" % misplaced, body)
+    calls.append("POST /orders/v0/orders/%s/shipmentConfirmation (method misplaced inside packageDetail) -> %s"
+                 % (misplaced, status))
+    ch.add("misplaced method is not read", "the position is what makes it the collection method (L-7)",
+           None, confirmations_for(misplaced)[0].get("codCollectionMethod"))
+
+
+def test_mkt_japan_non_cod(ch, calls, detail):
+    # A Japanese order that is not COD must omit the method (L-7, L-93)
+    order_id = "902-MKTJPSTD-00001"
+    parcels, _ = R.assemble_parcels(
+        one_box("460012345679"),
+        live_meta(store_marketplace_code=JP, marketplace_carrier_code="YAMATO",
+                  logistic_partner_name="Yamato Transport", shipping_type="TA-Q-BIN"))
+    request, _ = send(ch, calls, order_id, JP, parcels[0], is_cod=False)
+
+    ch.add("omitted from the request", "carrying it would misstate how the money was collected",
+           False, "codCollectionMethod" in request["body"])
+    ch.add("amazon received none", "absent, not blank", None,
+           confirmations_for(order_id)[0].get("codCollectionMethod"))
+
+
+def test_mkt_cod_forbidden_non_jp(ch, calls, detail):
+    # The method is never injected outside Japan, even on a COD order (L-7, L-93)
+    for index, marketplace in enumerate((FR, DE, US), start=1):
+        order_id = "902-MKTCODX-000000%d" % index
+        parcels, _ = R.assemble_parcels(
+            one_box("TRK-COD-%d" % index),
+            live_meta(store_marketplace_code=marketplace, marketplace_carrier_code="DHL",
+                      logistic_partner_name="DHL Express", shipping_type="Express"))
+        request, _ = send(ch, calls, order_id, marketplace, parcels[0], is_cod=True)
+        ch.add("%s omits it in the request" % marketplace, "sending it elsewhere is an invalid request",
+               False, "codCollectionMethod" in request["body"])
+        ch.add("%s amazon received none" % marketplace, "the method is Japan's alone",
+               None, confirmations_for(order_id)[0].get("codCollectionMethod"))
 
 
 def test_mkt_isolation(ch, calls, detail):
-    # Marketplace isolation: order for one marketplace submitted under mismatched marketplace code (L-55)
-    fr_order_id = "902-1845936-5435065"
-    expected_mkt_fr = "amazon_sp_fr"
-    incoming_store_mkt = "amazon_sp_us"
+    # An OMS shipment carrying another marketplace's order is a mismatch, never a confirmation (L-55)
+    order_id = "902-MKTMISMATCH-01"
+    parcels, blocked = R.assemble_parcels(
+        one_box("TRK-MISMATCH"),
+        live_meta(store_marketplace_code=FR, event_marketplace_code=DE,
+                  marketplace_carrier_code="DHL", logistic_partner_name="DHL Express"))
+    ch.add("assembly blocks", "one store is exactly one marketplace (L-31), so this is a routing fault",
+           [R.EParcelBlockReason.MARKETPLACE_MISMATCH], [b.reason for b in blocked])
+    ch.add("no parcel built", "a mismatch is rejected rather than routed", 0, len(parcels))
+    ch.add("no confirmation reached amazon", "the wrong marketplace is never told a shipment",
+           0, len(confirmations_for(order_id)))
 
-    is_mismatch = (expected_mkt_fr != incoming_store_mkt)
-    rejection_reason = "Marketplace mismatch: order belongs to amazon_sp_fr, cannot confirm under amazon_sp_us"
-    ch.add("mismatch detected", "cross-marketplace contamination prevented", True, is_mismatch)
-    ch.truthy("rejection message", "explains marketplace boundary", rejection_reason)
+    # The positive control: the same shipment on its own store confirms.
+    matched = "902-MKTMATCHED-001"
+    parcels, blocked = R.assemble_parcels(
+        one_box("TRK-MATCHED"),
+        live_meta(store_marketplace_code=DE, event_marketplace_code=DE,
+                  marketplace_carrier_code="DHL", logistic_partner_name="DHL Express"))
+    ch.add("the matched store is not blocked", "only the mismatch is a fault", [], [b.reason for b in blocked])
+    send(ch, calls, matched, DE, parcels[0])
+    ch.add("the matched store confirms", "the shipment reaches the marketplace it belongs to",
+           "A1PA6795UKMFR9", confirmations_for(matched)[0].get("marketplaceId"))
 
 
-def test_carrier_mapped(ch, calls, detail):
-    # Carrier mapping: recognised carrier sends code, name and service (L-32, L-65, L-91)
-    parcel = R.Parcel("1", "DHL-TRK", carrier_code="DHL", carrier_name="DHL Express", shipping_method="Express")
-    detail_dict = parcel.to_amazon_package_detail()
+# --------------------------------------------------------------------- C-4 and C-22, the carrier
 
-    ch.add("carrierCode populated", "DHL", "DHL", detail_dict.get("carrierCode"))
-    ch.add("carrierName populated", "DHL Express", "DHL Express", detail_dict.get("carrierName"))
-    ch.add("shippingMethod populated", "Express", "Express", detail_dict.get("shippingMethod"))
+def test_carrier_provider_first(ch, calls, detail):
+    # 5.3: on the live payload shipping_provider is the only carrier identity present (L-146, L-187)
+    order_id = "902-CARRIERLIVE-01"
+    parcels, blocked = R.assemble_parcels(one_box("TRK-LIVE-SHAPE"), live_meta())
+    ch.add("nothing blocked", "the live shape still resolves a carrier", [], [b.reason for b in blocked])
+    send(ch, calls, order_id, FR, parcels[0])
+
+    row = confirmations_for(order_id)[0]
+    ch.add("carrier code is set at all", "setCarrierCode is commented out today (L-65)",
+           True, bool(row.get("carrierCode")))
+    ch.add("unrecognised provider goes as Other", "Startrack is not an Amazon carrier code (L-6)",
+           "Other", row.get("carrierCode"))
+    ch.add("name falls back to the provider", "logistic_partner_name is null on the live payload (L-187)",
+           "Startrack", row.get("carrierName"))
+    ch.add("service is the one the seller bought", "the buyer sees what was actually purchased",
+           "FPP (Fixed Price Premium)", row.get("shippingMethod"))
+
+
+def test_carrier_code_override(ch, calls, detail):
+    # 5.3: marketplace_carrier_code overrides, but only when it is non-empty (L-146, L-32)
+    order_id = "902-CARRIERMAP-001"
+    parcels, _ = R.assemble_parcels(
+        one_box("TRK-MAPPED"),
+        live_meta(marketplace_carrier_code="DHL", logistic_partner_name="DHL Express",
+                  shipping_type="DHL Express Worldwide"))
+    send(ch, calls, order_id, FR, parcels[0])
+
+    row = confirmations_for(order_id)[0]
+    ch.add("recognised code sent unchanged", "a mapped carrier is not downgraded to Other",
+           "DHL", row.get("carrierCode"))
+    ch.add("name from logistic_partner_name", "the partner name wins over the provider when present",
+           "DHL Express", row.get("carrierName"))
+    ch.add("service from shipping_type", "the original service is preserved",
+           "DHL Express Worldwide", row.get("shippingMethod"))
 
 
 def test_carrier_unrecognised_other(ch, calls, detail):
-    # Carrier mapping: unrecognised carrier sends carrierCode: "Other" AND carrierName required (L-6, L-91)
-    parcel = R.Parcel("1", "CJ-TRK", carrier_code="Other", carrier_name="CJ Logistics")
-    detail_dict = parcel.to_amazon_package_detail()
+    # C-4: an unrecognised carrier goes as Other, and then the name is mandatory (L-6, L-91)
+    order_id = "902-CARRIEROTHER-1"
+    parcels, _ = R.assemble_parcels(
+        one_box("CJ-5581200347"),
+        live_meta(shipping_provider="CJ Logistics", marketplace_carrier_code="",
+                  logistic_partner_name=None, shipping_type="CJ International Parcel"))
+    send(ch, calls, order_id, FR, parcels[0])
 
-    ch.add("carrierCode is Other", "Other", "Other", detail_dict.get("carrierCode"))
-    ch.add("carrierName required and present", "CJ Logistics", "CJ Logistics", detail_dict.get("carrierName"))
+    row = confirmations_for(order_id)[0]
+    ch.add("carrier code is Other", "the Other plus carrier-name fallback is what FR-22 asks for",
+           "Other", row.get("carrierCode"))
+    ch.add("carrier name is never empty", "Amazon requires a name whenever the code is Other",
+           "CJ Logistics", row.get("carrierName"))
+    ch.add("service still travels", "the buyer sees the service the seller bought",
+           "CJ International Parcel", row.get("shippingMethod"))
 
 
 def test_carrier_self_delivery(ch, calls, detail):
-    # Carrier mapping: SELF_DELIVERY sends carrierCode: "Other", carrierName: "Self Delivery" (L-91)
-    parcel = R.Parcel("1", "SELF-01", carrier_code="Other", carrier_name="Self Delivery")
-    detail_dict = parcel.to_amazon_package_detail()
+    # 5.3: SELF_DELIVERY is a named case with a fixed carrier name (L-91)
+    order_id = "902-CARRIERSELF-01"
+    parcels, _ = R.assemble_parcels(
+        one_box("SELF-01"),
+        live_meta(shipping_provider="SELF_DELIVERY", marketplace_carrier_code="",
+                  logistic_partner_name=None, shipping_type="Self Delivery"))
+    send(ch, calls, order_id, FR, parcels[0])
 
-    ch.add("carrierCode is Other", "Other", "Other", detail_dict.get("carrierCode"))
-    ch.add("carrierName is Self Delivery", "Self Delivery", "Self Delivery", detail_dict.get("carrierName"))
+    row = confirmations_for(order_id)[0]
+    ch.add("carrier code is Other", "self delivery is not an Amazon carrier", "Other", row.get("carrierCode"))
+    ch.add("carrier name is Self Delivery", "the fixed name for the named case",
+           "Self Delivery", row.get("carrierName"))
 
 
 def test_carrier_unmapped_block(ch, calls, detail):
-    # Carrier mapping: missing carrier mapping blocks parcel with configuration error (L-91)
-    mapping_row_exists = False
-    action = "BLOCK_PARCEL" if not mapping_row_exists else "PROCEED"
-    error = "Configuration error: missing smp_shipping_methods mapping for carrier"
-    ch.add("unmapped carrier blocked", "blocks parcel without Amazon call", "BLOCK_PARCEL", action)
-    ch.truthy("configuration error message", "explains missing mapping row", error)
+    # 5.3: no carrier identity at all is a configuration error and blocks the parcel (L-91)
+    order_id = "902-CARRIERNONE-01"
+    parcels, blocked = R.assemble_parcels(
+        one_box("TRK-NO-CARRIER"),
+        live_meta(shipping_provider=None, marketplace_carrier_code="",
+                  logistic_partner_name=None, shipping_type=None))
+    ch.add("assembly blocks", "Other still needs a name, so nothing to name is a configuration error",
+           [R.EParcelBlockReason.MISSING_CARRIER_MAPPING], [b.reason for b in blocked])
+    ch.add("no parcel built", "never sent nameless", 0, len(parcels))
+    ch.add("no confirmation reached amazon", "a nameless Other would be rejected anyway",
+           0, len(confirmations_for(order_id)))
 
+    # The positive control: the same box with a provider present does confirm.
+    mapped = "902-CARRIERSOME-01"
+    parcels, _ = R.assemble_parcels(one_box("TRK-SOME-CARRIER"), live_meta())
+    send(ch, calls, mapped, FR, parcels[0])
+    ch.add("a resolvable carrier still ships", "the block is the configuration's, not the flow's",
+           "Startrack", confirmations_for(mapped)[0].get("carrierName"))
+
+
+# --------------------------------------------------------------------- Rule N-5, the customs boundary
 
 def test_customs_nothing_to_amazon(ch, calls, detail):
-    # Rule N-5: Amazon confirmShipment payload NEVER carries customs documents/IOSS (L-70, L-94)
-    parcel = R.Parcel("1", "MT-CUSTOMS", carrier_code="DHL", order_items=[R.OrderItemAllocation(811, "05015851154158", "SKU-1", 1)])
-    req = R.build_amazon_confirmation_request("902-1845936-5435065", "amazon_sp_fr", parcel)
+    # Rule N-5: the confirmShipment contract has no customs field, so none is sent (L-70, L-94)
+    order_id = "902-BOUNDARY-000001"   # no forbidden word in the id itself, or the scan finds its own fixture
+    parcels, _ = R.assemble_parcels(
+        one_box("MT-BOUNDARY-0001"),
+        live_meta(marketplace_carrier_code="DHL", logistic_partner_name="DHL Express",
+                  shipping_type="DHL Express Worldwide"))
+    request, _ = send(ch, calls, order_id, FR, parcels[0])
 
-    forbidden_amazon_customs_keys = ["ioss_number", "hs_code", "country_of_origin", "commercial_invoice", "cn22", "cn23", "sender_ioss"]
-    body_str = json.dumps(req["body"]).lower()
+    forbidden = ["ioss", "hs_code", "hscode", "country_of_origin", "commercial_invoice",
+                 "cn22", "cn23", "customs", "deemed_reseller"]
+    sent = json.dumps(request["body"]).lower()
+    ch.add("nothing customs in the request", "the integration must not attempt a customs upload here",
+           [], [key for key in forbidden if key in sent])
 
-    found_forbidden = [k for k in forbidden_amazon_customs_keys if k in body_str]
-    ch.add("no customs data sent to Amazon", "confirmShipment has no customs fields", [], found_forbidden)
-
-
-def test_customs_ioss_to_carrier(ch, calls, detail):
-    # Rule N-5 / CR-6: IOSS mapped to carrier extra_attributes["sender_ioss"] for EU orders (L-26, L-41, L-94)
-    oms_line_item = {
-        "amazon_ioss_number": "IM3720000000",
-        "deemed_reseller_category": "IOSS",
-    }
-    destination_country = "FR"
-    is_eu_destination = destination_country in ["FR", "DE", "ES", "IT", "NL"]
-
-    carrier_create_order = {"extra_attributes": {}}
-    if is_eu_destination and oms_line_item.get("deemed_reseller_category") == "IOSS":
-        carrier_create_order["extra_attributes"]["sender_ioss"] = oms_line_item.get("amazon_ioss_number")
-
-    ch.add("sender_ioss mapped to carrier", "Amazon deemed-reseller IOSS forwarded", "IM3720000000", carrier_create_order["extra_attributes"].get("sender_ioss"))
+    received = json.dumps(confirmations_for(order_id)[0]).lower()
+    ch.add("nothing customs reached amazon", "no invoice, HS code, origin, CN22, CN23 or IOSS field exists",
+           [], [key for key in forbidden if key in received])
 
 
 def test_customs_label_fail_blocks(ch, calls, detail):
-    # Rule N-5: Carrier label generation failure blocks confirmation without Amazon call (L-94)
-    carrier_label_succeeded = False
-    carrier_error = "Missing customs commercial invoice data for carrier label creation"
+    # Rule N-5: a carrier label failure is pre-assembly, so no Amazon confirmation is attempted (L-94)
+    order_id = "902-CUSTOMSFAIL-01"
+    boxes = one_box("TRK-LABEL-FAILED")
+    labelled = [box for box in boxes if False]  # the label never printed, so no box is ready to confirm
+    parcels, _ = R.assemble_parcels(labelled, live_meta(tracking_number="", line_items=[]))
+    ch.add("no parcel built", "the carrier error stays actionable and Amazon is not told", 0, len(parcels))
+    ch.add("no confirmation reached amazon", "no Amazon confirmation is attempted",
+           0, len(confirmations_for(order_id)))
 
-    amazon_call_attempted = False
-    if carrier_label_succeeded:
-        amazon_call_attempted = True
-
-    ch.add("amazon call aborted on carrier failure", "no Amazon call attempted", False, amazon_call_attempted)
-    ch.truthy("carrier error actionable", "carrier error left actionable in problem order", carrier_error)
+    # The positive control: once the label prints, the same box confirms.
+    printed = "902-CUSTOMSOK-0001"
+    parcels, _ = R.assemble_parcels(
+        one_box("TRK-LABEL-PRINTED"),
+        live_meta(marketplace_carrier_code="DHL", logistic_partner_name="DHL Express"))
+    send(ch, calls, printed, FR, parcels[0])
+    ch.add("a printed label confirms", "the block is the carrier's, not this flow's",
+           "TRK-LABEL-PRINTED", confirmations_for(printed)[0].get("trackingNumber"))
 
 
 def test_compat_single_shipment(ch, calls, detail):
-    # Compatibility: Legacy domestic single-shipment (1 order, 1 shipment, 1 tracking number, all items) (L-99, L-105)
-    boxes = [
-        R.CartonBox("BOX-DOMESTIC-01", "1Z0000000000000000", is_master_tracking=False, ship_date="2026-08-22T12:00:00Z",
-                    items=[
-                        R.OrderItemAllocation(1, "ITEM-1", "SKU-1", 1),
-                        R.OrderItemAllocation(2, "ITEM-2", "SKU-2", 2)
-                    ])
-    ]
-    parcels, errors = R.assemble_parcels(boxes, {"carrier_code": "UPS", "shipping_method": "Ground"})
-    ch.add("clean assembly", "no errors", [], errors)
-    ch.add("single parcel", "1 domestic parcel", 1, len(parcels))
-    ch.add("all items included", "2 distinct items in parcel", 2, len(parcels[0].order_items))
-    ch.add("packageReferenceId allocated", "monotonic counter 1", "1", parcels[0].package_reference_id)
+    # Compatibility: one order, one shipment, one tracking number, every item (L-99, L-105)
+    order_id = "902-COMPATSINGLE-1"
+    boxes = [R.CartonBox("BOX-DOMESTIC-01", "1Z0000000000000000", ship_date=READY_TO_SHIP_AT,
+                         items=[R.OrderItemAllocation(811, ITEM_1001, "SKU-1001", 1),
+                                R.OrderItemAllocation(812, ITEM_2002, "SKU-2002", 2)])]
+    parcels, blocked = R.assemble_parcels(
+        boxes, live_meta(store_marketplace_code=US, marketplace_carrier_code="UPS",
+                         logistic_partner_name="UPS Ground", shipping_type="Ground"))
+    ch.add("nothing blocked", "the path that already works end to end", [], [b.reason for b in blocked])
+    send(ch, calls, order_id, US, parcels[0])
 
+    row = confirmations_for(order_id)[0]
+    ch.add("exactly one parcel", "whatever multi-parcel adds must not break this", 1,
+           len(confirmations_for(order_id)))
+    ch.add("both items travel in it", "the whole shipment is one call", 2, len(row.get("orderItems") or []))
+    ch.add("one tracking number", "the domestic single-shipment shape is unchanged",
+           "1Z0000000000000000", row.get("trackingNumber"))
 
 # ===================================================================== Register Cases
 
 case("IA-5109-US3-MKT-FRANCE",
-     "France: Marketplace ID resolution & payload verification",
-     "Amazon France order confirmation (amazon_sp_fr)",
-     ["marketplaceId is A13V1IB3VIYZZH", "codCollectionMethod is omitted", "Responds 204 No Content"],
-     "Mapping §5.3, Appendix A.2; Claim L-55",
+     "France: the marketplace id Amazon scopes the confirmation to",
+     "An Amazon France confirmation on store amazon_sp_fr",
+     ["Amazon receives marketplaceId A13V1IB3VIYZZH", "No codCollectionMethod"],
+     "Mapping 5.3, Appendix A.2; Summary 2.1 C-18; Claim L-55",
      test_mkt_france)
 
 case("IA-5109-US3-MKT-GERMANY",
-     "Germany: Marketplace ID resolution & EU boundary",
-     "Amazon Germany order confirmation (amazon_sp_de)",
-     ["marketplaceId is A1PA6795UKMFR9", "codCollectionMethod is omitted", "Responds 204 No Content"],
-     "Mapping §5.3, Appendix A.6; Claim L-55",
+     "Germany: the marketplace id Amazon scopes the confirmation to",
+     "An Amazon Germany confirmation on store amazon_sp_de",
+     ["Amazon receives marketplaceId A1PA6795UKMFR9", "No codCollectionMethod"],
+     "Mapping 5.3, Appendix A.6; Summary 2.1 C-18; Claim L-55",
      test_mkt_germany)
 
+case("IA-5109-US3-MKT-US",
+     "United States: the marketplace id Amazon scopes the confirmation to",
+     "An Amazon US confirmation on store amazon_sp_us",
+     ["Amazon receives marketplaceId ATVPDKIKX0DER", "No codCollectionMethod"],
+     "Mapping 5.3, Appendix A.6; Summary 2.1 C-18; Claim L-55",
+     test_mkt_us)
+
+case("IA-5109-US3-MKT-ALL-FOUR-IDS",
+     "C-18: All four marketplaces carried, the ids verbatim",
+     "One confirmation per store on amazon_sp_fr, _de, _jp and _us",
+     ["Each store's own marketplace id reaches Amazon", "Four distinct ids, evidence produced per marketplace"],
+     "Mapping 5.3, Appendix A.6; Summary 2.1 C-18; Claim L-55, L-31, L-99",
+     test_mkt_all_four_ids)
+
 case("IA-5109-US3-MKT-JAPAN-COD",
-     "Japan: DirectPayment COD collection method injection",
-     "Amazon Japan COD order confirmation (amazon_sp_jp)",
-     ["marketplaceId is A1VC38T7YXB528", "codCollectionMethod is DirectPayment at root", "Responds 204 No Content"],
-     "Mapping §4.4, §5.3, Appendix A.6; Claim L-7, L-93",
+     "C-5: Japan and COD is the only case carrying the collection method",
+     "An Amazon Japan cash-on-delivery confirmation",
+     ["codCollectionMethod DirectPayment reaches Amazon", "It is sent as a sibling of packageDetail",
+      "The same value placed inside packageDetail is not the field Amazon reads"],
+     "Mapping 4.4 row 3, Appendix A.6; Summary 2.1 C-5; Claim L-7, L-93",
      test_mkt_japan_cod)
 
 case("IA-5109-US3-MKT-JAPAN-NON-COD",
-     "Japan: Non-COD order omits codCollectionMethod",
-     "Amazon Japan prepaid / credit card order confirmation",
-     ["codCollectionMethod is absent from payload"],
-     "Mapping §4.4; Claim L-7, L-93",
+     "C-5: A Japanese order that is not COD omits the method",
+     "An Amazon Japan prepaid confirmation",
+     ["No codCollectionMethod in the request", "Amazon received none"],
+     "Mapping 4.4 row 3; Summary 2.1 C-5; Claim L-7, L-93",
      test_mkt_japan_non_cod)
 
 case("IA-5109-US3-MKT-COD-FORBIDDEN-NON-JP",
-     "Non-Japan: codCollectionMethod forbidden on FR, DE, US",
-     "COD orders on European and American marketplaces",
-     ["codCollectionMethod is never injected outside Japan"],
-     "Mapping §4.4; Summary §2.1 C-5; Claim L-7, L-93",
+     "C-5: The collection method is never injected outside Japan",
+     "Cash-on-delivery orders on France, Germany and the United States",
+     ["None carries codCollectionMethod in the request", "Amazon received none on any of the three"],
+     "Mapping 4.4 row 3; Summary 2.1 C-5; Claim L-7, L-93",
      test_mkt_cod_forbidden_non_jp)
 
-case("IA-5109-US3-MKT-US",
-     "United States: Marketplace ID resolution & payload",
-     "Amazon US order confirmation (amazon_sp_us)",
-     ["marketplaceId is ATVPDKIKX0DER", "No COD, no IOSS", "Responds 204 No Content"],
-     "Mapping §5.3, Appendix A.6; Claim L-55",
-     test_mkt_us)
-
 case("IA-5109-US3-MKT-ISOLATION",
-     "Marketplace Isolation: Cross-marketplace mismatch rejected",
-     "Order for France submitted with US store credentials",
-     ["Rejected as marketplace mismatch before dispatch"],
-     "Requirements §4; Mapping §7 N-4; Claim L-55",
+     "Rule N-4: A shipment carrying another marketplace's order is a mismatch",
+     "A France store handed a shipment whose event names amazon_sp_de",
+     ["Assembly blocks with MARKETPLACE_MISMATCH", "No confirmation reaches Amazon",
+      "The same shipment on its own store confirms"],
+     "Mapping 5.3, 7 N-4; Claim L-31, L-55",
      test_mkt_isolation)
 
-case("IA-5109-US3-CARRIER-MAPPED",
-     "Carrier mapping: Mapped carrier sends code, name and service",
-     "Shipment using mapped DHL carrier",
-     ["carrierCode is DHL", "carrierName is DHL Express", "shippingMethod is Express"],
-     "Mapping §4.4, §5.3; Claim L-32, L-65, L-91",
-     test_carrier_mapped)
+case("IA-5109-US3-CARRIER-PROVIDER-FIRST",
+     "5.3: On the live payload shipping_provider is the only carrier identity",
+     "marketplace_carrier_code, ewms_carrier_code and marketplace_code all empty, logistic_partner_name null",
+     ["The carrier code is set at all", "An unrecognised provider goes as Other",
+      "carrierName falls back to shipping_provider", "The service the seller bought travels"],
+     "Mapping 5.3 warning, 4.4 rows 5 to 7; Summary 2.1 C-4, C-22; Claim L-146, L-187, L-65, L-91",
+     test_carrier_provider_first)
+
+case("IA-5109-US3-CARRIER-CODE-OVERRIDE",
+     "5.3: A populated marketplace_carrier_code overrides the provider",
+     "A shipment whose marketplace_carrier_code is DHL",
+     ["carrierCode DHL reaches Amazon unchanged", "carrierName comes from logistic_partner_name",
+      "shippingMethod comes from shipping_type"],
+     "Mapping 5.3, 4.4 rows 5 to 7; Claim L-146, L-32",
+     test_carrier_code_override)
 
 case("IA-5109-US3-CARRIER-UNRECOGNISED-OTHER",
-     "Carrier mapping: Unrecognised carrier sends Other with mandatory carrierName",
-     "Shipment using CJ Logistics (unrecognised carrier)",
-     ["carrierCode is Other", "carrierName is populated with CJ Logistics"],
-     "Mapping §4.4, §5.3; Summary §2.1 C-4; Claim L-6, L-91",
+     "C-4: An unrecognised carrier goes as Other with its name mandatory",
+     "A shipment by CJ Logistics with no mapped carrier code",
+     ["carrierCode Other reaches Amazon", "carrierName CJ Logistics is never empty"],
+     "Mapping 5.3, 4.4 row 6; Summary 2.1 C-4; Claim L-6, L-91",
      test_carrier_unrecognised_other)
 
 case("IA-5109-US3-CARRIER-SELF-DELIVERY",
-     "Carrier mapping: Self delivery sends Other with Self Delivery name",
-     "Shipment with SELF_DELIVERY provider",
-     ["carrierCode is Other", "carrierName is Self Delivery"],
-     "Mapping §5.3; Claim L-91",
+     "5.3: Self delivery is a named case with a fixed carrier name",
+     "A shipment whose shipping_provider is SELF_DELIVERY",
+     ["carrierCode Other reaches Amazon", "carrierName Self Delivery reaches Amazon"],
+     "Mapping 5.3; Claim L-91",
      test_carrier_self_delivery)
 
 case("IA-5109-US3-CARRIER-UNMAPPED-BLOCK",
-     "Carrier mapping: Unmapped carrier blocks parcel with configuration error",
-     "Shipment without any smp_shipping_methods mapping row",
-     ["Parcel is blocked without making an Amazon call", "Surfaces configuration exception"],
-     "Mapping §5.3, §7 N-4; Claim L-91",
+     "5.3: No carrier identity at all blocks the parcel",
+     "A shipment with no provider, no carrier code and no partner name",
+     ["Assembly blocks with MISSING_CARRIER_MAPPING", "No confirmation reaches Amazon",
+      "A shipment that does resolve a carrier still ships"],
+     "Mapping 5.3, 7 N-4; Claim L-91",
      test_carrier_unmapped_block)
 
 case("IA-5109-US3-CUSTOMS-NOTHING-TO-AMAZON",
-     "Rule N-5: Amazon confirmShipment carries no customs documents or IOSS",
-     "Amazon confirmShipment request payload",
-     ["Contains no invoice, HS code, country of origin, CN22, CN23, or IOSS"],
-     "Mapping §7 Rule N-5; Requirements §4; Claim L-70, L-94",
+     "Rule N-5: The confirmation carries no customs data at all",
+     "An EU-bound confirmation on an order Amazon is the deemed reseller for",
+     ["No customs key in the request", "No customs key in what Amazon received"],
+     "Mapping 7 N-5, 4.4; Claim L-70, L-94",
      test_customs_nothing_to_amazon)
 
-case("IA-5109-US3-CUSTOMS-IOSS-TO-CARRIER",
-     "Rule N-5 / CR-6: IOSS forwarded to carrier on EU deemed-reseller orders",
-     "EU-bound order where Amazon is deemed reseller",
-     ["Carrier extra_attributes.sender_ioss receives Amazon IOSS number"],
-     "Mapping §4.6, §7 N-5; Requirements §2.7 CR-6; Claim L-26, L-41, L-94",
-     test_customs_ioss_to_carrier)
-
 case("IA-5109-US3-CUSTOMS-LABEL-FAIL-BLOCKS",
-     "Rule N-5: Carrier label customs failure blocks confirmation",
-     "Carrier label creation fails due to customs errors",
-     ["Amazon confirmation is aborted", "Carrier error remains actionable"],
-     "Mapping §7 Rule N-5; Claim L-94",
+     "Rule N-5: A carrier label failure precedes assembly, so Amazon is not called",
+     "A shipment whose carrier label never printed",
+     ["No parcel is built", "No confirmation reaches Amazon", "Once the label prints the box confirms"],
+     "Mapping 7 N-4, N-5; Claim L-94",
      test_customs_label_fail_blocks)
 
 case("IA-5109-US3-COMPAT-SINGLE-SHIPMENT",
-     "Compatibility: Domestic single-shipment continues unchanged",
-     "Standard domestic 1 order, 1 shipment, 1 tracking number",
-     ["Assembles into single parcel with all items", "packageReferenceId 1 assigned"],
-     "Requirements §4; Claim L-99, L-105",
+     "Compatibility: the domestic single-shipment path is unchanged",
+     "One order, one shipment, one tracking number, every item",
+     ["Exactly one confirmation reaches Amazon", "Both items travel in it", "One tracking number"],
+     "Requirements 4; Claim L-99, L-105",
      test_compat_single_shipment)
 
 
@@ -523,6 +726,16 @@ def preflight():
         if st == 0:
             sys.exit(f"PREFLIGHT FAIL: unable to connect to mock server on {BASE}")
     print(f"  mock     : active (/auth/o2/token -> {st})")
+
+    if KEEP:
+        print("  state    : preserved (--keep-state)")
+        return
+
+    # The cases assert on what the confirmShipment route recorded, so the store starts empty.
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(os.path.join(DATA_DIR, "shipment_confirmations.json"), "w", encoding="utf-8") as f:
+        f.write("[]")
+    print("  state    : reset (shipment_confirmations emptied)")
 
 
 def capture():

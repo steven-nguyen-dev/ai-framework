@@ -53,16 +53,25 @@ They share [`ia5112_us5_requirements.py`](ia5112_us5_requirements.py), which pin
 ## The IA-5109 User Story 3 Suites
 
 The IA-5109 suites validate partial and multi-parcel seller-fulfilled Amazon shipment confirmations,
-the OMS contracts, multi-marketplace routing, and customs boundaries across **52 automated test cases**.
-They share [`ia5109_us3_requirements.py`](ia5109_us3_requirements.py), which pins every expected value,
-schema shape, and error behavior against the ticket specifications.
+the OMS write-back, multi-marketplace routing and the customs boundary across **52 automated test
+cases**. They share [`ia5109_us3_requirements.py`](ia5109_us3_requirements.py), which pins every
+expected value, shape and block reason against the ticket specifications.
+
+**Every case crosses an HTTP boundary.** The observable is what the mock received -- the rows the
+`confirmShipment` route recorded, or, for a rule that blocks, the rows it did not, always shown
+beside a sibling that does confirm. A case asserting our own encoded rule through a pure function
+would pass whatever the partner did, so there are none.
 
 | Suite | Focus | Cases | Needs |
 |---|---|---|---|
-| `suite-IA-5109-US3-parcel-confirmation.py` | Amazon Orders v0 `confirmShipment`, grouping rules (Rule N-1), monotonic package reference (Rule N-2), quantity ledger & atomic pre-submit guard (Rule N-3), and exception matrix (Rule N-4) | 23 | Amazon mock |
-| `suite-IA-5109-US3-oms-contracts.py` | OMS contracts CR-0 to CR-5: `Event:OrderStatusupdate` RTS payload diff, quantity alias, `shipping_details` write-back, `update_status` body resolution, order items ledger, and database durability | 14 | Mocks / contracts |
-| `suite-IA-5109-US3-multi-market.py` | Multi-marketplace isolation (FR, DE, JP, US), Japan-only COD DirectPayment injection, carrier mappings (`smp_shipping_methods`), and carrier IOSS/customs boundaries (Rule N-5 / CR-6) | 15 | Amazon mock |
-| `suite-IA-5109-US3.py` | Master suite consolidating and executing all 52 cases across all three sub-suites | 52 | Amazon mock |
+| `suite-IA-5109-US3-parcel-confirmation.py` | Amazon Orders v0 `confirmShipment`: grouping by tracking number (N-1), the package reference and its edit semantics (N-2), the quantity guard read from Amazon's own `QuantityShipped` (N-3), the exception matrix and pre-submit gate (N-4), and the six C-17 defect sites | 27 | Amazon mock (started by the suite) |
+| `suite-IA-5109-US3-multi-market.py` | The four marketplace ids, Japan's `codCollectionMethod` as a sibling of `packageDetail`, carrier resolution on the live payload shape, marketplace mismatch, and Rule N-5's Amazon half | 16 | Amazon mock (started by the suite) |
+| `suite-IA-5109-US3-oms-contracts.py` | The per-parcel write-back of mapping 4.5 row for row, the C-13 `SHIPPED` item subset, and the ledger read | 9 | OMS mock (started by the suite, on an OS-assigned port) |
+| `suite-IA-5109-US3.py` | Master suite consolidating all three sub-suites | 52 | Both mocks (started by the sub-suites) |
+
+The OMS suite never attaches to a server already holding port 23001: that server loaded its config
+when it started, so a stale route would answer and the suite would report on a contract that is not
+the one on disk. It brings up its own on a free port, against run-scoped state under its run folder.
 
 
 
@@ -207,7 +216,7 @@ The mock tracks mutations in small, inspectable JSON files located in `mock-data
 
 - **`lwa_tokens.json`**: Records OAuth token grants and client IDs.
 - **`created_orders.json`**: Active Amazon Order IDs.
-- **`shipment_confirmations.json`**: Dispatched shipment confirmations (orderId, trackingNumber, carrierCode, shipDate).
+- **`shipment_confirmations.json`**: Dispatched shipment confirmations (orderId, packageReferenceId, marketplaceId, trackingNumber, carrierCode, carrierName, shipDate, orderItems). Keyed on `(orderId, packageReferenceId)` and **upserted**: a resubmission carrying the same package reference replaces the held row, modelling Amazon's documented edit, while a different reference appends a second parcel. A payload omitting the reference always appends, because Amazon assigns one server-side in that case. This models the documented behaviour so an integration's handling can be tested against it; it is not evidence of what Amazon does.
 - **`order_acknowledgements.json`**: Order acknowledgement payloads.
 - **`feeds.json` & `feed_documents.json`**: Feed submissions and document upload endpoints.
 - **`reports.json`**: Requested asynchronous reports.

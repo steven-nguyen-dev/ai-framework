@@ -738,6 +738,207 @@
       "method": "GET",
       "rules": [
         {
+          "name": "200 -- CANCELED marker, the order Amazon has cancelled",
+          "when": {
+            "path.orderId": {
+              "contains": "CANCELED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Canceled",
+                "FulfillmentChannel": "MFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "42.50"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 0,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "DefaultShipFromLocationAddress": {
+                  "Name": "MFNIntegrationTestMerchant",
+                  "AddressLine1": "2201 WESTLAKE AVE",
+                  "City": "SEATTLE",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98121-2778",
+                  "CountryCode": "US",
+                  "Phone": "+1 480-386-0930 ext. 73824",
+                  "AddressType": "Commercial"
+                },
+                "FulfillmentInstruction": {
+                  "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                },
+                "IsISPU": false,
+                "IsAccessPointOrder": false,
+                "AutomatedShippingSettings": {
+                  "HasAutomatedShippingSettings": false
+                },
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired",
+                "HasRegulatedItems": false
+              }
+            }
+          }
+        },
+        {
+          "name": "200 -- REGULATED marker, HasRegulatedItems at header level only",
+          "when": {
+            "path.orderId": {
+              "contains": "REGULATED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Unshipped",
+                "FulfillmentChannel": "MFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "42.50"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 1,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "DefaultShipFromLocationAddress": {
+                  "Name": "MFNIntegrationTestMerchant",
+                  "AddressLine1": "2201 WESTLAKE AVE",
+                  "City": "SEATTLE",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98121-2778",
+                  "CountryCode": "US",
+                  "Phone": "+1 480-386-0930 ext. 73824",
+                  "AddressType": "Commercial"
+                },
+                "FulfillmentInstruction": {
+                  "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                },
+                "IsISPU": false,
+                "IsAccessPointOrder": false,
+                "AutomatedShippingSettings": {
+                  "HasAutomatedShippingSettings": false
+                },
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired",
+                "HasRegulatedItems": true
+              }
+            }
+          }
+        },
+        {
+          "name": "200 -- AFNCHANNEL marker, an order Amazon fulfils itself",
+          "when": {
+            "path.orderId": {
+              "contains": "AFNCHANNEL"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "PurchaseDate": "1970-01-19T03:58:30Z",
+                "LastUpdateDate": "1970-01-19T03:58:32Z",
+                "OrderStatus": "Unshipped",
+                "FulfillmentChannel": "AFN",
+                "SalesChannel": "Amazon.com",
+                "ShipServiceLevel": "Std US D2D Dom",
+                "OrderTotal": {
+                  "CurrencyCode": "USD",
+                  "Amount": "42.50"
+                },
+                "NumberOfItemsShipped": 0,
+                "NumberOfItemsUnshipped": 1,
+                "PaymentMethod": "Other",
+                "PaymentMethodDetails": [
+                  "Standard"
+                ],
+                "IsReplacementOrder": false,
+                "MarketplaceId": "ATVPDKIKX0DER",
+                "ShipmentServiceLevelCategory": "Standard",
+                "OrderType": "StandardOrder",
+                "EarliestShipDate": "1970-01-19T03:59:27Z",
+                "LatestShipDate": "1970-01-19T04:05:13Z",
+                "EarliestDeliveryDate": "1970-01-19T04:06:39Z",
+                "LatestDeliveryDate": "1970-01-19T04:15:17Z",
+                "IsBusinessOrder": false,
+                "IsPrime": false,
+                "IsGlobalExpressEnabled": false,
+                "IsPremiumOrder": false,
+                "IsSoldByAB": false,
+                "IsIBA": false,
+                "DefaultShipFromLocationAddress": {
+                  "Name": "MFNIntegrationTestMerchant",
+                  "AddressLine1": "2201 WESTLAKE AVE",
+                  "City": "SEATTLE",
+                  "StateOrRegion": "WA",
+                  "PostalCode": "98121-2778",
+                  "CountryCode": "US",
+                  "Phone": "+1 480-386-0930 ext. 73824",
+                  "AddressType": "Commercial"
+                },
+                "FulfillmentInstruction": {
+                  "FulfillmentSupplySourceId": "sampleSupplySourceId"
+                },
+                "IsISPU": false,
+                "IsAccessPointOrder": false,
+                "AutomatedShippingSettings": {
+                  "HasAutomatedShippingSettings": false
+                },
+                "EasyShipShipmentStatus": "PendingPickUp",
+                "ElectronicInvoiceStatus": "NotRequired",
+                "HasRegulatedItems": false
+              }
+            }
+          }
+        },
+        {
           "name": "500 -- server error marker",
           "when": {
             "path.orderId": {
@@ -890,7 +1091,8 @@
               "HasAutomatedShippingSettings": false
             },
             "EasyShipShipmentStatus": "PendingPickUp",
-            "ElectronicInvoiceStatus": "NotRequired"
+            "ElectronicInvoiceStatus": "NotRequired",
+            "HasRegulatedItems": false
           }
         }
       }
@@ -899,6 +1101,180 @@
       "path": "/orders/v0/orders/{orderId}/orderItems",
       "method": "GET",
       "rules": [
+        {
+          "name": "200 -- PARTIALSHIPPED marker, Appendix A.3: ordered 5, Amazon says 2 shipped",
+          "when": {
+            "path.orderId": {
+              "contains": "PARTIALSHIPPED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-1001",
+                    "OrderItemId": "05015851154158",
+                    "Title": "Appendix A worked line SKU-1001",
+                    "QuantityOrdered": 5,
+                    "QuantityShipped": 2,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  },
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-2002",
+                    "OrderItemId": "05015851154159",
+                    "Title": "Appendix A worked line SKU-2002",
+                    "QuantityOrdered": 1,
+                    "QuantityShipped": 1,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "200 -- FULLYSHIPPED marker, nothing remains on either line",
+          "when": {
+            "path.orderId": {
+              "contains": "FULLYSHIPPED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-1001",
+                    "OrderItemId": "05015851154158",
+                    "Title": "Appendix A worked line SKU-1001",
+                    "QuantityOrdered": 5,
+                    "QuantityShipped": 5,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  },
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-2002",
+                    "OrderItemId": "05015851154159",
+                    "Title": "Appendix A worked line SKU-2002",
+                    "QuantityOrdered": 1,
+                    "QuantityShipped": 1,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "200 -- BUYERCANCEL marker, a buyer cancellation still pending on the line",
+          "when": {
+            "path.orderId": {
+              "contains": "BUYERCANCEL"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-1001",
+                    "OrderItemId": "05015851154158",
+                    "Title": "Appendix A worked line SKU-1001",
+                    "QuantityOrdered": 5,
+                    "QuantityShipped": 0,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false,
+                    "BuyerRequestedCancel": {
+                      "IsBuyerRequestedCancel": "true",
+                      "BuyerCancelReason": "Ordered by mistake"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "200 -- UNSHIPPED marker, Appendix A.1: nothing shipped yet",
+          "when": {
+            "path.orderId": {
+              "contains": "UNSHIPPED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "payload": {
+                "AmazonOrderId": "${path.orderId}",
+                "OrderItems": [
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-1001",
+                    "OrderItemId": "05015851154158",
+                    "Title": "Appendix A worked line SKU-1001",
+                    "QuantityOrdered": 5,
+                    "QuantityShipped": 0,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  },
+                  {
+                    "ASIN": "B00005N5PF",
+                    "SellerSKU": "SKU-2002",
+                    "OrderItemId": "05015851154159",
+                    "Title": "Appendix A worked line SKU-2002",
+                    "QuantityOrdered": 1,
+                    "QuantityShipped": 0,
+                    "ItemPrice": {
+                      "CurrencyCode": "EUR",
+                      "Amount": "35.00"
+                    },
+                    "ConditionId": "New",
+                    "IsTransparency": false
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "name": "404 -- order items not found",
           "when": {
@@ -1193,14 +1569,25 @@
       ],
       "then": [
         {
-          "append": {
+          "upsert": {
             "store": "shipment_confirmations",
+            "key": [
+              "orderId",
+              "packageReferenceId"
+            ],
+            "_comment": "Amazon documents a resubmission carrying the same packageReferenceId as an EDIT of that parcel, and a different one as an ADDED parcel. Keying on (orderId, packageReferenceId) models both: same reference replaces the held row, different reference appends. A payload omitting the reference always appends, because Amazon assigns one server-side in that case. This models the documented behaviour so our handling can be tested against it -- it is not evidence of what Amazon does.",
             "entry": {
               "orderId": "${path.orderId}",
+              "packageReferenceId": "${body.packageDetail.packageReferenceId}",
               "marketplaceId": "${body.marketplaceId|ATVPDKIKX0DER}",
               "trackingNumber": "${body.packageDetail.trackingNumber|TRACK12345}",
               "carrierCode": "${body.packageDetail.carrierCode|UPS}",
-              "shipDate": "${body.packageDetail.shipDate|2026-08-26T00:00:00Z}"
+              "carrierName": "${body.packageDetail.carrierName|}",
+              "shipDate": "${body.packageDetail.shipDate|2026-08-26T00:00:00Z}",
+              "orderItems": "${body.packageDetail.orderItems}",
+              "shippingMethod": "${body.packageDetail.shippingMethod}",
+              "shipFromSupplySourceId": "${body.packageDetail.shipFromSupplySourceId}",
+              "codCollectionMethod": "${body.codCollectionMethod}"
             }
           }
         }

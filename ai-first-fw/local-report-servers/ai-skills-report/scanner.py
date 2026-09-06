@@ -363,9 +363,9 @@ def scan_claude_app_cowork() -> tuple[list[PluginItem], list[SkillItem], dict[st
 
                     # Read plugin manifest
                     p_manifest = {}
-                    p_json_file = p_dir / ".claude-plugin/plugin.json"
+                    p_json_file = p_dir / "plugin.json"
                     if not p_json_file.is_file():
-                        p_json_file = p_dir / "plugin.json"
+                        p_json_file = p_dir / ".claude-plugin/plugin.json"
                     if p_json_file.is_file():
                         try:
                             p_manifest = json.loads(p_json_file.read_text(encoding="utf-8"))
@@ -1602,6 +1602,7 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
                     mp_loc / "marketplace.json",
                 ]
                 plugin_rel_source = None
+                mp_plugin_version = None
                 for cand in mp_manifest_candidates:
                     if cand.is_file():
                         try:
@@ -1609,6 +1610,7 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
                             for p in m_json.get("plugins", []):
                                 if p.get("name") == p_name:
                                     plugin_rel_source = p.get("source", "")
+                                    mp_plugin_version = p.get("version")
                                     break
                         except Exception:
                             pass
@@ -1638,17 +1640,19 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
                     else:
                         continue
 
-                new_ver = "1.0.0"
+                new_ver = mp_plugin_version or "1.0.0"
                 p_meta_candidates = [
-                    plugin_src_dir / ".claude-plugin/plugin.json",
                     plugin_src_dir / "plugin.json",
+                    plugin_src_dir / ".claude-plugin/plugin.json",
                 ]
                 for p_cand in p_meta_candidates:
                     if p_cand.is_file():
                         try:
                             p_json = json.loads(p_cand.read_text(encoding="utf-8"))
-                            new_ver = p_json.get("version", new_ver)
-                            break
+                            cand_ver = p_json.get("version")
+                            if cand_ver:
+                                new_ver = cand_ver
+                                break
                         except Exception:
                             pass
 
@@ -1663,7 +1667,34 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
 
                 if dest_cache.exists():
                     shutil.rmtree(dest_cache)
-                shutil.copytree(plugin_src_dir, dest_cache)
+                shutil.copytree(plugin_src_dir, dest_cache, symlinks=True)
+
+                # Ensure destination cache has synchronized plugin manifests
+                c_plugin_json = dest_cache / "plugin.json"
+                c_dot_plugin_json = dest_cache / ".claude-plugin/plugin.json"
+                if c_plugin_json.is_file() and not c_plugin_json.is_symlink():
+                    try:
+                        p_data = json.loads(c_plugin_json.read_text(encoding="utf-8"))
+                        if p_data.get("version") != new_ver:
+                            p_data["version"] = new_ver
+                            c_plugin_json.write_text(json.dumps(p_data, indent=2), encoding="utf-8")
+                    except Exception:
+                        pass
+
+                if c_dot_plugin_json.is_file() and not c_dot_plugin_json.is_symlink():
+                    try:
+                        p_data = json.loads(c_dot_plugin_json.read_text(encoding="utf-8"))
+                        if p_data.get("version") != new_ver:
+                            p_data["version"] = new_ver
+                            c_dot_plugin_json.write_text(json.dumps(p_data, indent=2), encoding="utf-8")
+                    except Exception:
+                        pass
+                elif not c_dot_plugin_json.exists() and c_plugin_json.is_file():
+                    (dest_cache / ".claude-plugin").mkdir(parents=True, exist_ok=True)
+                    try:
+                        shutil.copy2(c_plugin_json, c_dot_plugin_json)
+                    except Exception:
+                        pass
 
                 new_skills_list = []
                 for s_dir in dest_cache.rglob("SKILL.md"):
