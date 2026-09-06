@@ -2,7 +2,7 @@
 
 **Document Identifier:** `[KEY]-[TOPIC]-library.md`
 **Requirement:** `[KEY]` — *[Feature / Initiative Title]*
-**Covers:** `[KEY]-[TOPIC]-mapping-spec.md` · `[KEY]-[TARGET_SYSTEM]-[TOPIC]-requirements-spec.md` · `[KEY]-[TOPIC]-summary.md`
+**Covers:** `[KEY]-[TOPIC]-mapping.md` · `[KEY]-[TOPIC]-specs.md`
 **Repository:** `[repository-name]` @ `[branch]` — commit `[short-sha]`
 **Author / Team:** `[Author / Team Name]`
 **Date:** `[YYYY-MM-DD]`
@@ -13,25 +13,31 @@
 
 *(Delete this whole section before you publish the document.)*
 
-This is the **library**. One per requirement. It is opened first and appended to as each of the three
-documents is written. It resolves any claim in any of the three documents to the material behind it,
+This is the **library**. One per requirement. It is opened first and appended to as the mapping
+and the specs are written. It resolves any claim in those two documents to the material behind it,
 so a reader checks the contract against its sources in one action.
 
-**The citation rule.** The mapping spec, the requirements spec and the summary follow it. Every claim
-in those documents carries an `L-n` that resolves to a row of section 3 here. Those documents cite;
-this document holds the locator and the words.
+The change requests cite nothing here. That document travels to the receiving team on its own, and
+each of its payload comments states its source in words, so it reads with this library absent. Every
+claim behind a change request row still takes a row here, because the analysis rests on it.
+
+**The citation rule.** The mapping and the specs follow it. Every claim in those two documents
+carries an `L-n` that resolves to a row of section 3 here. Those documents cite; this document holds
+the locator and the words.
 
 **Writing rules.**
 
+- `references/writing-limits.md` states the character, paragraph, list and column limits every unit
+  here holds.
 - The document opens on its metadata block and runs straight to section 1. Every word in it sits in
   a table row.
-- **One row, one atomic fact.** `Claim` is a single declarative sentence of 25 words or fewer. Design
-  rationale, deduction and synthesis live in the mapping spec and the summary, which cite this row.
+- **One row, one atomic fact.** `Claim` is a single declarative sentence. Design rationale, deduction
+  and synthesis live in the mapping and the specs, which cite this row.
 - **One row, one locator.** `Locator` names exactly one target, in the form its kind states. Where a
   fact rests on two places, write two rows, each with its own number and its own target.
-- **One row, one verbatim quote.** `Says` carries the source's own words inside `"` quotes, 25 words
-  or fewer: the exact line for `code`, the exact sentence for `doc`, `jira`, `url` and `user`. An
-  absence carries `0 occurrences of [term]`.
+- **One row, one verbatim quote.** `Says` carries the source's own words inside `"` quotes: the exact
+  line for `code`, the exact sentence for `doc`, `jira`, `url` and `user`. An absence carries
+  `0 occurrences of [term]`.
 - One row per claim. A claim used by two documents keeps one row and one `L-n`.
 - `L-n` is permanent. A superseded claim keeps its number, and its row is written over with the
   claim, locator and quote that hold now — the row states the current fact and its source.
@@ -40,9 +46,10 @@ this document holds the locator and the words.
 - Where the code states one thing and a document another, the code's locator and quote go into the
   row, and the document is corrected to match.
 - Give every item of the requirement's stated definition of done its own row, in the requirement's
-  words, used in `summary 3`.
-- `Used in` names the document and its `##` section only — `mapping 4`, `requirements 2`,
-  `summary 2`. Subsection numbers move while this library is open; top-level numbers hold.
+  words, used in `specs 4`.
+- `Used in` names the document and its `##` section only — `mapping 4`, `specs 3`. Subsection
+  numbers move while this library is open; top-level numbers hold. A claim the change requests rest
+  on carries `change requests` and its section, and that document carries no `L-n` in return.
 - Every kind is one of `code`, `url`, `doc`, `jira`, `user`. Section 2 states the locator form for
   each.
 - Use pure Markdown headings and links.
@@ -84,15 +91,15 @@ reader opens it in one action with no search.
 
 ## 3. Claims
 
-Every claim behind the three documents. Append as you write, and keep every number fixed.
+Every claim behind the mapping and the specs, and behind every change request row. Append as you write, and keep every number fixed.
 
 | # | Claim | Kind | Locator | Says | Used in |
 | :-- | :--- | :--- | :--- | :--- | :--- |
 | L-1 | The line item quantity serialises under the wire key `[wire_key]`. | `code` | `[K-REPO]/[path]/[Entity]DTO.[ext]:23` | `"@JsonProperty(\"[wire_key]\") private Integer [field];"` | mapping 4 |
-| L-2 | `[field]` is mandatory before `[operation]` is called. | `jira` | `K-REQ` section 15 (`FR-22`) | `"[the requirement's exact sentence]"` | requirements 2 |
+| L-2 | `[field]` is mandatory before `[operation]` is called. | `jira` | `K-REQ` section 15 (`FR-22`) | `"[the requirement's exact sentence]"` | change requests 2 |
 | L-3 | `[operation]` returns HTTP 204 with no content. | `doc` | `[KEY_A]` → `paths./[path].post.responses` | `"204": { "description": "Success." }` | mapping 1 |
-| L-4 | `[the party's rule]`. | `url` | `https://[party]/docs/[page]#[anchor]` (fetched `[YYYY-MM-DD]`) | `"[the page's exact sentence]"` | summary 2 |
-| L-5 | `[the decision]`. | `user` | `[name]`, `[YYYY-MM-DD]` | `"[their exact words]"` | summary 2 |
-| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | `0 occurrences of [field_name]` | requirements 4 |
-| L-7 | The requirement's stated definition of done, item [n]. | `jira` | `K-REQ` description — definition of done, item [n] | `"[the item's exact words]"` | summary 3 |
+| L-4 | `[the party's rule]`. | `url` | `https://[party]/docs/[page]#[anchor]` (fetched `[YYYY-MM-DD]`) | `"[the page's exact sentence]"` | specs 3 |
+| L-5 | `[the decision]`. | `user` | `[name]`, `[YYYY-MM-DD]` | `"[their exact words]"` | specs 3 |
+| L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | `0 occurrences of [field_name]` | change requests 2 |
+| L-7 | The requirement's stated definition of done, item [n]. | `jira` | `K-REQ` description — definition of done, item [n] | `"[the item's exact words]"` | specs 4 |
 | L-8 | `[term]` names `[what it resolves to]` in this contract. | `doc` | `[KEY_C]` → `[term]` | `"[the context file's exact definition]"` | mapping 1 |

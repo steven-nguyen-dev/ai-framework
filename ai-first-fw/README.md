@@ -28,7 +28,7 @@ ai-first-fw/
 
 ### 1. [`skills/`](skills) — Core Lifecycle Skills
 A set of specialized, composable skills that guide AI agents through a gated development lifecycle:
-- **`write-analysis`** (`v0.1.0`): Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
+- **`write-analysis`** (`v2.0.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
 - **`implementation-planner`** (`v0.8.0`): Orchestrates the multi-step lifecycle across approval gates (`G1` requirements approval, `G2` implementation plan approval).
 - **`specs-builder`** (`v0.10.0`): Analyzes API documentation and payload samples to produce mapping plans and integration specifications.
 - **`review-code`** (`v2.0.0`): Audits branch diffs against requirements, project conventions, and approved plans prior to gate approval across 3 isolated review passes.
@@ -88,7 +88,7 @@ To prevent accidental credential leaks and guarantee smooth onboarding for teamm
          │
          ▼
  ┌─────────────────────────┐
- │     write-analysis      │ ──► Mapping spec, requirements spec, ticket summary
+ │     write-analysis      │ ──► Mapping spec, change request spec, ticket summary
  └───────────┬─────────────┘
              ▼
  ┌─────────────────────────┐

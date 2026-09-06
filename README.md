@@ -13,7 +13,7 @@ The **AI-First Framework** standardizes the entire software development lifecycl
                │
                ▼
    ┌───────────────────────┐
-   │    write-analysis     │ ──► Mapping spec, requirements spec & ticket summary
+   │    write-analysis     │ ──► Mapping spec, change request spec & ticket summary
    └───────────┬───────────┘
                ▼
    ┌───────────────────────┐
@@ -58,7 +58,7 @@ ai-framework/
 
 ### 1. 🛡️ Lifecycle Skills (`ai-first-fw/skills/`)
 Gated AI skills that enforce engineering rigor before code is touched:
-* **`write-analysis`** (`v0.1.0`): Generates integration mapping spec, system requirements spec, and ticket summary for a requirement.
+* **`write-analysis`** (`v2.0.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
 * **`implementation-planner`** (`v0.8.0`): Master lifecycle orchestrator managing approval gates (`G1` requirements approval, `G2` technical plan approval).
 * **`specs-builder`** (`v0.10.0`): Fills integration spec folders and writes confidence-graded mapping plans against test harnesses.
 * **`review-code`** (`v2.0.0`): Cold pull request and branch diff reviewer auditing requirements compliance, codebase rules, and security across 3 isolated passes.
