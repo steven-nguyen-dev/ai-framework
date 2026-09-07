@@ -1,7 +1,7 @@
 ---
 name: write-analysis
-description: Write the four-document contract — claim library, mapping, change requests and specs — that implementation follows for one requirement, from its Jira issue or brief, every party's documentation, and the repository's own code and context files. Use on "write the analysis", "analyse this ticket", "write the mapping", "write the change requests", "write the specs", "write the definition of done", "amend the contract", or when a requirement needs its contract before implementation.
-version: 2.0.0
+description: Write the four-document contract — claim library, mapping, change requests and specs — that implementation follows for one requirement, from its Jira issue or brief, every party's documentation, and the repository's own code and context files. Use on "write the analysis", "analyse this ticket", "write the mapping", "write the change requests", "write the specs", "write the scope", "write the definition of done", "amend the contract", or when a requirement needs its contract before implementation.
+version: 2.1.0
 disable-model-invocation: false
 ---
 
@@ -16,7 +16,7 @@ contract's definition of done holds.
 | 0 | `<KEY>-<topic>-library.md` | `templates/claim-library-template.md` | Where every claim comes from |
 | 1 | `<KEY>-<topic>-mapping.md` | `templates/mapping-template.md` | Per endpoint, how each property transforms and why |
 | 2 | `<KEY>-<target-system>-<topic>-change-requests.md` | `templates/change-requests-template.md` | Per endpoint, what the receiving system changes, and what holds once it is built |
-| 3 | `<KEY>-<topic>-specs.md` | `templates/specs-template.md` | What logic changes, the definition of done, and the notes development starts with |
+| 3 | `<KEY>-<topic>-specs.md` | `templates/specs-template.md` | What the work covers, what logic changes, the definition of done, and the notes development starts with |
 
 Every line of the contract states what holds when the work is done. The specs carry the definition
 of done for all four, and the mapping and the change requests each carry the acceptance lines the
@@ -121,10 +121,24 @@ it, every term the document uses outside the receiving team's own vocabulary sit
 every change row is covered by an `A-n`, and the document holds no `L-n` and no reference to another
 document of the contract.
 
-## Step 5 — Write the specs
+## Step 5 — Write the scope
 
-Conclusions, at the level a reader settles scope from. Group the changes by the team that builds it,
-then by endpoint, flow or domain inside each team, using the same units in the same order the
+The specs' Scope section, which is the boundary of the work. In scope: one line per flow and per
+endpoint the mapping carries, in the mapping's order, each naming that flow or endpoint. Out of
+scope: one line per subject the requirement raises that this contract does not carry, each naming
+the requirement, document or team that carries it instead, or stating that none does.
+
+A line whose boundary comes from the requirement rather than the mapping carries its `L-n`.
+
+**Completion:** every flow and every endpoint of the mapping appears in one in-scope line naming it;
+every subject the requirement raises that no mapping row, change request row or precondition covers
+appears in one out-of-scope line naming where it lives instead or that no document carries it; and
+every line whose boundary comes from the requirement carries an `L-n`.
+
+## Step 6 — Write the specs
+
+Conclusions, at the level a reader settles the work from. Group the changes by the team that builds
+it, then by endpoint, flow or domain inside each team, using the same units in the same order the
 mapping and the change requests use. Every item starts with a verb and names the system it lands in;
 each team section carries its tier.
 
@@ -137,7 +151,7 @@ conclusion the specs hold the rows for; every team section carries its tier; eve
 names the item on this side that precedes it; every precondition row names an `external` limit or a
 decision a named person settles.
 
-## Step 6 — Draw the flows
+## Step 7 — Draw the flows
 
 The specs' Flows section. One Mermaid `sequenceDiagram` per flow of the mapping, in the mapping's
 order, under that flow's name and trigger. Give every participant a component a reader names, and
@@ -150,7 +164,7 @@ holds its participant count at or under the limit, every participant is a compon
 mapping or the change requests, every message carries the mapping's own operation for that hop, and
 every grouped boundary names what it holds.
 
-## Step 7 — Write the definition of done
+## Step 8 — Write the definition of done
 
 The specs' definition-of-done table. One `D-n` per item of the requirement's stated definition of
 done, in the requirement's words, cited to its library row. Add a `D-n` for each state this analysis
@@ -164,7 +178,7 @@ mapping names runs end to end against the repository's mocks.
 words with its `L-n`, every `D-n` carries a tier and names what checks it, and the reachable-surface
 and mock-run rows are present.
 
-## Step 8 — Write the notes
+## Step 9 — Write the notes
 
 The specs' Notes section, which is what development starts holding. One `N-n` per open question
 this analysis reached and could not close, per gap in the material it looked for and did not find,
@@ -177,7 +191,7 @@ assumption behind a row carries an `N-n` with its kind, the section it gates and
 every mapping row waiting on a decision names its `N-n`; and every note that blocks the start
 of development also carries a precondition row.
 
-## Step 9 — Self-check
+## Step 10 — Self-check
 
 Every bar line binds every instance. For each, write two counts: instances in the documents, and
 instances that satisfy it. Where the counts differ, edit the instances the gap names and count
@@ -313,6 +327,9 @@ The published contract states one thing: what holds now.
 
 **Specs**
 
+- Every flow and every endpoint of the mapping carries one in-scope line naming it.
+- Every out-of-scope line names the requirement, document or team that carries its subject instead,
+  or states that no document carries it.
 - Every changes item starts with a verb and names the system it lands in.
 - Every changes item sits under one team, then under one endpoint, flow or domain; every team
   section carries its tier.

@@ -1329,6 +1329,14 @@
         <div class="metric-val purple" id="metricAntigravity">0</div>
         <div class="metric-sub" id="metricAntigravitySub">CLI, App 2.0 &amp; IDE</div>
       </div>
+      <div class="metric-card" data-section="cursor" onclick="selectSection('cursor')">
+        <div class="metric-title">
+          <svg class="metric-svg-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;"><polygon points="5 3 19 12 12 14 8 21"/></svg>
+          CURSOR IDE
+        </div>
+        <div class="metric-val" id="metricCursor" style="color: #38bdf8;">0</div>
+        <div class="metric-sub" id="metricCursorSub">Skills, Rules &amp; MCP</div>
+      </div>
       <div class="metric-card" data-section="skills_index" onclick="selectSection('skills_index')">
         <div class="metric-title">
           <svg class="metric-svg-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #34d399;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
@@ -1551,6 +1559,10 @@
       const agySkills = (reportData.antigravity?.app?.skills || []);
       const agySkillsTotal = agyPlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0) + agySkills.length;
 
+      const cursorSkills = (reportData.cursor?.skills || []);
+      const cursorRules = (reportData.cursor?.rules || []);
+      const cursorSkillsTotal = cursorSkills.length + cursorRules.length;
+
       const marketplaces = (reportData.marketplaces || []);
       const uniqueSkillsCount = s.unique_skills_count || 50;
 
@@ -1558,7 +1570,7 @@
       const metricAll = document.getElementById('metricAll');
       const metricAllSub = document.getElementById('metricAllSub');
       if (metricAll) metricAll.textContent = `${s.total_plugins || 9} Plugins`;
-      if (metricAllSub) metricAllSub.textContent = `${s.total_skills || 97} Total Skills Across Surfaces`;
+      if (metricAllSub) metricAllSub.textContent = `${s.total_skills || 97} Total Across 4 Surfaces`;
 
       const metricClaudeCode = document.getElementById('metricClaudeCode');
       const metricClaudeCodeSub = document.getElementById('metricClaudeCodeSub');
@@ -1575,6 +1587,11 @@
       if (metricAntigravity) metricAntigravity.textContent = `${agyPlugins.length} Plugins`;
       if (metricAntigravitySub) metricAntigravitySub.textContent = `${agySkillsTotal} Skills • Unified Engine`;
 
+      const metricCursor = document.getElementById('metricCursor');
+      const metricCursorSub = document.getElementById('metricCursorSub');
+      if (metricCursor) metricCursor.textContent = `${cursorSkillsTotal} Items`;
+      if (metricCursorSub) metricCursorSub.textContent = `${cursorSkills.length} Skills • ${cursorRules.length} Rules`;
+
       const metricRegistry = document.getElementById('metricRegistry');
       const metricRegistrySub = document.getElementById('metricRegistrySub');
       if (metricRegistry) metricRegistry.textContent = `${marketplaces.length} Catalogs`;
@@ -1585,7 +1602,8 @@
       const configuredTotal = mcpServers.filter(m => 
         m.ecosystems?.antigravity?.configured || 
         m.ecosystems?.claude_desktop?.configured || 
-        m.ecosystems?.claude_code?.configured
+        m.ecosystems?.claude_code?.configured ||
+        m.ecosystems?.cursor?.configured
       ).length;
 
       const metricMcp = document.getElementById('metricMcp');
@@ -1602,6 +1620,8 @@
       if (countClaudeCowork) countClaudeCowork.textContent = coworkPlugins.length;
       const countAntigravity = document.getElementById('countAntigravity');
       if (countAntigravity) countAntigravity.textContent = agyPlugins.length + agySkills.length;
+      const countCursor = document.getElementById('countCursor');
+      if (countCursor) countCursor.textContent = cursorSkillsTotal;
       const countUniqueSkills = document.getElementById('countUniqueSkills');
       if (countUniqueSkills) countUniqueSkills.textContent = marketplaces.length;
     }
@@ -1987,6 +2007,7 @@
         const agy = m.ecosystems?.antigravity || {};
         const code = m.ecosystems?.claude_code || {};
         const desk = m.ecosystems?.claude_desktop || {};
+        const cursor = m.ecosystems?.cursor || {};
         const icon = m.name === 'kibana' ? '📊' : m.name === 'jira' ? '📋' : m.name === 'idea' ? '💡' : '🔌';
 
         return `
@@ -2073,6 +2094,27 @@
                   `}
                 </div>
               </div>
+
+              <!-- Cursor IDE -->
+              <div class="mcp-eco-row">
+                <div class="mcp-eco-label">
+                  <span>✨ Cursor IDE</span>
+                  <span class="mcp-status-pill ${cursor.configured ? 'active' : 'inactive'}">
+                    ${cursor.configured ? 'Active' : 'Not Added'}
+                  </span>
+                </div>
+                <div class="mcp-eco-actions">
+                  ${cursor.configured ? `
+                    <button class="btn btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg);" onclick="triggerToggleMcp('${m.id}', 'cursor', false)">
+                      Disable
+                    </button>
+                  ` : `
+                    <button class="btn btn-sm btn-action-install" style="font-size: 10px; padding: 2px 8px;" onclick="triggerToggleMcp('${m.id}', 'cursor', true)">
+                      ➕ Add to Cursor
+                    </button>
+                  `}
+                </div>
+              </div>
             </div>
 
             <!-- Exposed Tools Button (Expandable) -->
@@ -2106,13 +2148,15 @@
         `;
       }
 
+      const cursorCount = mcpServers.filter(m => m.ecosystems?.cursor?.configured).length;
+
       return `
         <!-- Ecosystem Summary Row -->
         <div class="subsection-container" style="margin-bottom: 20px; padding: 14px 18px;">
           <div style="font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;">
             Target Agent Ecosystems &bull; Active Integrations
           </div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
             <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
               <div style="font-size: 11px; color: var(--muted); font-weight: 600;">🚀 Antigravity (Global)</div>
               <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--purple); margin-top: 2px;">
@@ -2135,6 +2179,14 @@
                 ${claudeDesktopCount} / ${mcpServers.length} Active
               </div>
               <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">claude_desktop_config.json</div>
+            </div>
+
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
+              <div style="font-size: 11px; color: var(--muted); font-weight: 600;">✨ Cursor IDE</div>
+              <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #38bdf8; margin-top: 2px;">
+                ${cursorCount} / ${mcpServers.length} Active
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">~/.cursor/mcp.json</div>
             </div>
           </div>
         </div>
@@ -2309,6 +2361,45 @@
                   <div class="category-header skills-cat">⚡ Built-in Core Skills (${agySkills.length})</div>
                   <div class="items-grid">
                     ${agySkills.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      }
+
+      // 4. Card: Cursor IDE
+      if (activeSection === 'all' || activeSection === 'cursor') {
+        const cursorSkills = (reportData.cursor?.skills || []).filter(filterMatches);
+        const cursorRules = (reportData.cursor?.rules || []).filter(filterMatches);
+        const meta = reportData.cursor?.metadata || {};
+
+        if (cursorSkills.length > 0 || cursorRules.length > 0 || meta.installed) {
+          html += `
+            <div class="subsection-container" style="margin-bottom: 24px;">
+              <div class="subsection-title">
+                <svg class="metric-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;"><polygon points="5 3 19 12 12 14 8 21"/></svg>
+                <span>Cursor IDE Ecosystem</span>
+              </div>
+              <div class="path-row" style="margin-bottom: 14px;">
+                <span>✨ Native AI Code Editor &bull; Global Skills: <code>~/.cursor/skills-cursor/</code> &bull; Rules: <code>.cursor/rules/*.mdc</code> &bull; MCP: <code>.cursor/mcp.json</code></span>
+              </div>
+
+              ${cursorRules.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header" style="color: #38bdf8;">📜 Cursor Rules &amp; Guidelines (${cursorRules.length})</div>
+                  <div class="items-grid">
+                    ${cursorRules.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${cursorSkills.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header skills-cat">⚡ Cursor Agent Skills (${cursorSkills.length})</div>
+                  <div class="items-grid">
+                    ${cursorSkills.map(renderSkillCard).join('')}
                   </div>
                 </div>
               ` : ''}

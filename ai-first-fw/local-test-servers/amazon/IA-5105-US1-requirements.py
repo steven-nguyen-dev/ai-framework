@@ -7,11 +7,9 @@ Nothing in this file was derived by reading the JPluger Amazon integration. Ever
 carries the document and section it comes from, so a failing check can be argued about against the
 requirement rather than against the code. The four sources, and nothing else:
 
-  R-PLAN   jira-workspace/amazon-cross-border/IA-5105/IA-5105-browse-node-and-listing-plan.md
-           the current amendment -- D-1..D-3, section 4 (browse-node source), section 6 (payloads),
-           section 7 (gates). Amends the mapping spec section 1.1 and the summary.
-  R-REQ    .../IA-5105-oms-taxonomy-requirements-spec.md            the FRs, the ACs, section 2.1/2.2
-  R-MAP    .../IA-5105-product-types-mapping-spec.md                the field mapping, section 4/5/6
+  R-REQ    .../IA-5105-oms-taxonomy-change-requests.md              the FRs, the ACs, section 2.1/2.2
+  R-MAP    .../IA-5105-product-types-mapping.md                     the field mapping, section 4/5/6
+  R-SPEC   .../IA-5105-product-types-specs.md                       flows, definition of done, notes
   C-OMS    anchanto-oms/anchanto-oms-swagger.json                   what OMS actually declares
   C-AMZ    amazon/schemas/product-types/*.json                      Amazon's own captured schemas
            amazon/amazon-sp-api-swagger.json

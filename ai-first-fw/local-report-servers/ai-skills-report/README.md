@@ -1,12 +1,12 @@
 # 🧩 AI Skills & Plugins Registry Dashboard
 
-Universal skills & plugins catalog, marketplace manager, and multi-agent environment inspector for **Claude Code**, **Claude Cowork**, **Antigravity 2.0**, and **Gemini** on macOS.
+Universal skills & plugins catalog, marketplace manager, and multi-agent environment inspector for **Claude Code**, **Claude Cowork**, **Antigravity 2.0**, **Gemini**, and **Cursor IDE** on macOS.
 
 ---
 
 ## 🚀 1-Step Installation & Launch
 
-Download **[`ai-skills-report-1.0.0.zip`](./ai-skills-report-1.0.0.zip)** into your **`~/Downloads`** folder, open **Terminal.app**, and copy & paste one of the two commands below:
+Download **[`ai-skills-report-1.1.0.zip`](./ai-skills-report-1.1.0.zip)** into your **`~/Downloads`** folder, open **Terminal.app**, and copy & paste one of the two commands below:
 
 ---
 
@@ -14,7 +14,7 @@ Download **[`ai-skills-report-1.0.0.zip`](./ai-skills-report-1.0.0.zip)** into y
 Unzips, runs environment verification, and installs **`AI Skills & Plugins Registry.app`** directly into your **`/Applications`** folder:
 
 ```bash
-unzip -o ~/Downloads/ai-skills-report-1.0.0.zip -d ~/Downloads/ai-skills-report && cd ~/Downloads/ai-skills-report && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
+unzip -o ~/Downloads/ai-skills-report-1.1.0.zip -d ~/Downloads/ai-skills-report && cd ~/Downloads/ai-skills-report && chmod +x *.sh *.command *.py && ./setup.sh && ./install_app.sh
 ```
 
 **How to open once installed:**
@@ -28,7 +28,7 @@ unzip -o ~/Downloads/ai-skills-report-1.0.0.zip -d ~/Downloads/ai-skills-report 
 Unzips, runs setup verification, and starts the server on **`http://localhost:24003`**:
 
 ```bash
-unzip -o ~/Downloads/ai-skills-report-1.0.0.zip -d ~/Downloads/ai-skills-report && cd ~/Downloads/ai-skills-report && chmod +x *.sh *.command *.py && ./setup.sh && ./start.sh
+unzip -o ~/Downloads/ai-skills-report-1.1.0.zip -d ~/Downloads/ai-skills-report && cd ~/Downloads/ai-skills-report && chmod +x *.sh *.command *.py && ./setup.sh && ./start.sh
 ```
 
 * Automatically opens your default web browser to the registry dashboard.

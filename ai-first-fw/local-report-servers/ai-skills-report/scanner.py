@@ -4,7 +4,8 @@
 Discovers and inspects all skills, plugins, and extensions across:
 1. Claude (CLI, Claude App Cowork, Claude App Code)
 2. Antigravity (CLI, App, IDE)
-3. Master Alphabetical Skills Registry & Installation Matrix
+3. Cursor (IDE, Skills, Rules, MCP)
+4. Master Alphabetical Skills Registry & Installation Matrix
 
 Provides install & uninstall management across target agent surfaces.
 """
@@ -52,8 +53,8 @@ class SkillItem:
     id: str
     name: str
     description: str
-    section: str  # "claude" | "antigravity"
-    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide"
+    section: str  # "claude" | "antigravity" | "cursor"
+    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide" | "skills" | "rules"
     source_type: str  # "local_repo_symlink" | "local_workspace" | "local_user" | "marketplace_github" | "builtin" | "desktop_extension"
     source_label: str  # e.g. "Local (Repo Symlink)", "Marketplace (claude-plugins-official)"
     path: str
@@ -72,8 +73,8 @@ class PluginItem:
     id: str
     name: str
     description: str
-    section: str  # "claude" | "antigravity"
-    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide"
+    section: str  # "claude" | "antigravity" | "cursor"
+    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide" | "extensions" | "plugins"
     source_type: str  # "marketplace_github" | "local" | "desktop_extension" | "builtin"
     source_label: str
     version: str | None
@@ -886,6 +887,142 @@ def scan_antigravity_ide_skills() -> list[SkillItem]:
 
 
 # ==============================================================================
+# 2.5. Cursor Scanners
+# ==============================================================================
+
+def scan_cursor_skills() -> list[SkillItem]:
+    """Scans Cursor skills across ~/.cursor/skills-cursor/, ~/.cursor/skills/, and workspace .cursor/skills/."""
+    skills: list[SkillItem] = []
+    seen_paths: set[str] = set()
+
+    sync_manifest = {}
+    manifest_file = HOME / ".cursor/skills-cursor/.sync-manifest.json"
+    if manifest_file.is_file():
+        try:
+            sync_manifest = json.loads(manifest_file.read_text(encoding="utf-8")).get("skills", {})
+        except Exception:
+            pass
+
+    search_dirs = [
+        HOME / ".cursor/skills-cursor",
+        HOME / ".cursor/skills",
+        HOME / "Library/Application Support/Cursor/User/skills",
+        WORKSPACE / ".cursor/skills",
+    ]
+
+    for s_dir in search_dirs:
+        if not s_dir.is_dir():
+            continue
+        for item in sorted(s_dir.iterdir()):
+            if item.name.startswith("."):
+                continue
+            skill_md = item / "SKILL.md" if item.is_dir() else (item if item.suffix == ".md" else None)
+            if skill_md and skill_md.is_file():
+                path_str = str(item)
+                if path_str in seen_paths:
+                    continue
+                seen_paths.add(path_str)
+                name, desc, fm = extract_skill_info_from_file(skill_md)
+                
+                # Identify parent plugin origin
+                p_origin = sync_manifest.get(item.name, {}).get("plugin")
+                src_type, src_label, resolved = determine_local_source_label(item)
+                if p_origin:
+                    src_label = f"Cursor Skill ({p_origin})"
+
+                skills.append(SkillItem(
+                    id=f"cursor:skill:{item.name}",
+                    name=name,
+                    description=desc,
+                    section="cursor",
+                    subsection="skills",
+                    source_type=src_type,
+                    source_label=src_label,
+                    version=fm.get("version"),
+                    category=fm.get("category", "Cursor Skill"),
+                    path=path_str,
+                    resolved_path=resolved,
+                    plugin_name=p_origin,
+                    metadata={"scope": "workspace" if str(WORKSPACE) in path_str else "global", "target_key": "cursor", "surface": "Cursor IDE", "plugin": p_origin, "frontmatter": fm},
+                ))
+    return skills
+
+
+def scan_cursor_rules() -> list[SkillItem]:
+    """Scans Cursor rules (.cursor/rules/*.mdc, .cursorrules) across workspace and user global config."""
+    rules: list[SkillItem] = []
+    seen_paths: set[str] = set()
+
+    rule_candidates = [
+        WORKSPACE / ".cursor/rules",
+        HOME / ".cursor/rules",
+    ]
+
+    for r_dir in rule_candidates:
+        if not r_dir.is_dir():
+            continue
+        for item in sorted(r_dir.iterdir()):
+            if item.name.startswith("."):
+                continue
+            if item.suffix in (".mdc", ".md"):
+                path_str = str(item)
+                if path_str in seen_paths:
+                    continue
+                seen_paths.add(path_str)
+                name, desc, fm = extract_skill_info_from_file(item)
+                globs = fm.get("globs", "")
+                always_apply = fm.get("alwaysApply", "")
+                src_type, src_label, resolved = determine_local_source_label(item)
+                rules.append(SkillItem(
+                    id=f"cursor:rule:{item.stem}",
+                    name=name or item.stem,
+                    description=desc or f"Cursor rule for {globs or 'workspace'}",
+                    section="cursor",
+                    subsection="rules",
+                    source_type=src_type,
+                    source_label=src_label,
+                    version=fm.get("version"),
+                    category="Cursor Rule (.mdc)",
+                    path=path_str,
+                    resolved_path=resolved,
+                    metadata={"scope": "workspace" if str(WORKSPACE) in path_str else "global", "target_key": "cursor", "globs": globs, "alwaysApply": always_apply, "frontmatter": fm},
+                ))
+
+    # Flat .cursorrules files
+    for cr_file in [WORKSPACE / ".cursorrules", HOME / ".cursorrules"]:
+        if cr_file.is_file():
+            path_str = str(cr_file)
+            if path_str not in seen_paths:
+                seen_paths.add(path_str)
+                try:
+                    content = cr_file.read_text(encoding="utf-8", errors="replace")
+                    first_line = next((l.strip().lstrip("#").strip() for l in content.splitlines() if l.strip()), "Workspace Cursor Rules")
+                except Exception:
+                    first_line = "Workspace Cursor Rules"
+                src_type, src_label, resolved = determine_local_source_label(cr_file)
+                rules.append(SkillItem(
+                    id=f"cursor:rule:cursorrules:{'ws' if str(WORKSPACE) in path_str else 'global'}",
+                    name=f".cursorrules ({'Workspace' if str(WORKSPACE) in path_str else 'Global'})",
+                    description=first_line,
+                    section="cursor",
+                    subsection="rules",
+                    source_type=src_type,
+                    source_label=src_label,
+                    category="Cursor Rules File",
+                    path=path_str,
+                    resolved_path=resolved,
+                    metadata={"scope": "workspace" if str(WORKSPACE) in path_str else "global", "target_key": "cursor"},
+                ))
+
+    return rules
+
+
+def scan_cursor_plugins() -> list[PluginItem]:
+    """Cursor delegates package distribution to parent framework plugins and executes skills directly."""
+    return []
+
+
+# ==============================================================================
 # 3. Master Alphabetical Skills Registry & Installation Matrix
 # ==============================================================================
 
@@ -896,21 +1033,39 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
     """
     skills_map: dict[str, dict[str, Any]] = {}
 
-    # Target keys for matrix: claude, agy, agy-ide, agy-cli
+    # Target keys for matrix: claude, agy, agy-ide, agy-cli, cursor
     active_target_defs = [
         {"key": "claude", "label": "Claude CLI", "skills_dir": HOME / ".claude/skills"},
         {"key": "agy", "label": "Antigravity App", "skills_dir": HOME / ".gemini/config/skills"},
         {"key": "agy-ide", "label": "Antigravity IDE", "skills_dir": HOME / ".gemini/antigravity/skills"},
         {"key": "agy-cli", "label": "Antigravity CLI", "skills_dir": HOME / ".gemini/antigravity-cli/skills"},
+        {"key": "cursor", "label": "Cursor IDE", "skills_dir": HOME / ".cursor/skills-cursor"},
     ]
 
-    # 1. Discovered from Installed Plugins (Claude Code, Cowork, Antigravity/Gemini)
+    # 1. Discovered from Installed Plugins (Claude Code, Cowork, Antigravity/Gemini, Cursor)
     all_plugins = [
         *scan_claude_cli_plugins(),
         *scan_antigravity_cli_plugins(),
+        *scan_cursor_plugins(),
     ]
     cowork_plugins, _, _ = scan_claude_app_cowork()
     all_plugins.extend(cowork_plugins)
+
+    # Include standalone Cursor skills
+    for s in scan_cursor_skills():
+        if s.name not in skills_map:
+            skills_map[s.name] = {
+                "name": s.name,
+                "description": s.description,
+                "source_group": "Cursor IDE",
+                "origin_path": s.path,
+                "repo_url": None,
+                "plugin_name": None,
+                "version": s.version or "1.0.0",
+                "can_install": False,
+                "category": s.category or "Cursor",
+                "targets": {},
+            }
 
     for p in all_plugins:
         repo_link = p.repo_url or (p.metadata.get("homepage") if p.metadata else None)
@@ -1528,8 +1683,89 @@ def sync_antigravity_plugins() -> list[str]:
     return synced
 
 
+def sync_cursor_plugins() -> list[str]:
+    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and cached marketplace plugins directly to Cursor global skills (~/.cursor/skills-cursor/)."""
+    synced = []
+    cursor_skills_dir = HOME / ".cursor/skills-cursor"
+    cursor_skills_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Clean up legacy ~/.cursor/plugins directory if present to avoid duplication
+    cursor_plugins_dir = HOME / ".cursor/plugins"
+    if cursor_plugins_dir.is_dir():
+        try:
+            shutil.rmtree(cursor_plugins_dir)
+        except Exception:
+            pass
+
+    workspace = WORKSPACE
+    now_ms = int(time.time() * 1000)
+
+    # 1. Read or initialize .sync-manifest.json in ~/.cursor/skills-cursor/
+    sync_manifest_file = cursor_skills_dir / ".sync-manifest.json"
+    sync_manifest = {"version": 1, "skills": {}, "lastInventoryAt": now_ms}
+    if sync_manifest_file.is_file():
+        try:
+            sync_manifest = json.loads(sync_manifest_file.read_text(encoding="utf-8"))
+            if "skills" not in sync_manifest:
+                sync_manifest["skills"] = {}
+        except Exception:
+            pass
+
+    # 2. Sync individual skills from ai-first-fw/skills and ai-first-fw/utilities
+    for p_name, src_group in [("ai-first-fw-skills", workspace / "ai-first-fw/skills"), ("ai-first-fw-utilities", workspace / "ai-first-fw/utilities")]:
+        if src_group.is_dir():
+            for item in src_group.iterdir():
+                if item.is_dir() and (item / "SKILL.md").is_file():
+                    dest_skill = cursor_skills_dir / item.name
+                    if dest_skill.exists():
+                        shutil.rmtree(dest_skill)
+                    shutil.copytree(item, dest_skill, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                    sync_manifest["skills"][item.name] = {
+                        "lastSyncedAt": now_ms,
+                        "plugin": p_name,
+                    }
+                    synced.append(f"skill:{item.name}")
+
+    # 3. Sync cached marketplace plugins (e.g. mattpocock-skills)
+    cache_root = HOME / ".claude/plugins/cache"
+    if cache_root.is_dir():
+        for mp_dir in cache_root.iterdir():
+            if not mp_dir.is_dir():
+                continue
+            for p_dir in mp_dir.iterdir():
+                if not p_dir.is_dir() or p_dir.name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+                    continue
+                v_dirs = [v for v in p_dir.iterdir() if v.is_dir()]
+                if not v_dirs:
+                    continue
+                latest_v = sorted(v_dirs, key=lambda d: d.name)[-1]
+
+                for root, _, files in os.walk(latest_v):
+                    if "SKILL.md" in files:
+                        s_folder = Path(root)
+                        s_name = s_folder.name
+                        dest_s = cursor_skills_dir / s_name
+                        if dest_s.exists():
+                            shutil.rmtree(dest_s)
+                        shutil.copytree(s_folder, dest_s, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+                        sync_manifest["skills"][s_name] = {
+                            "lastSyncedAt": now_ms,
+                            "plugin": p_dir.name,
+                        }
+                        synced.append(f"skill:{s_name}")
+
+    # 4. Write updated .sync-manifest.json
+    sync_manifest["lastInventoryAt"] = now_ms
+    sync_manifest_file.write_text(json.dumps(sync_manifest, indent=2) + "\n", encoding="utf-8")
+
+    return synced
+    sync_manifest_file.write_text(json.dumps(sync_manifest, indent=2) + "\n", encoding="utf-8")
+
+    return synced
+
+
 def pull_updates_from_marketplaces() -> dict[str, Any]:
-    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins across Claude, Claude-One, Claude Code clone, and Antigravity."""
+    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins across Claude, Claude-One, Claude Code clone, Antigravity, and Cursor."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
     installed_file = HOME / ".claude/plugins/installed_plugins.json"
 
@@ -1805,6 +2041,7 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
     cleaned_symlinks = clean_legacy_symlinks()
     cowork_synced = sync_cowork_plugins()
     antigravity_synced = sync_antigravity_plugins()
+    cursor_synced = sync_cursor_plugins()
 
     return {
         "success": True,
@@ -1813,6 +2050,7 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
         "cleaned_legacy_symlinks": len(cleaned_symlinks),
         "cowork_sessions_synced": len(cowork_synced),
         "antigravity_plugins_synced": len(antigravity_synced),
+        "cursor_items_synced": len(cursor_synced),
         "errors": errors,
     }
 
@@ -1827,11 +2065,13 @@ sync_and_update_all_marketplaces = pull_updates_from_marketplaces
 # ==============================================================================
 
 def scan_mcp_servers() -> list[dict[str, Any]]:
-    """Scans local workspace MCP servers and inspects their configuration across Claude & Antigravity."""
+    """Scans local workspace MCP servers and inspects their configuration across Claude, Antigravity, and Cursor."""
     agy_global_file = HOME / ".gemini/config/mcp_config.json"
     claude_desktop_file = HOME / "Library/Application Support/Claude/claude_desktop_config.json"
     claude_code_file = HOME / ".claude.json"
     workspace_mcp_file = WORKSPACE / ".mcp.json"
+    cursor_global_file = HOME / ".cursor/mcp.json"
+    cursor_workspace_file = WORKSPACE / ".cursor/mcp.json"
 
     agy_mcps = {}
     if agy_global_file.is_file():
@@ -1862,6 +2102,20 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         try:
             with open(workspace_mcp_file) as f:
                 workspace_mcps = json.load(f).get("mcpServers", {})
+        except Exception:
+            pass
+
+    cursor_mcps = {}
+    if cursor_global_file.is_file():
+        try:
+            with open(cursor_global_file) as f:
+                cursor_mcps.update(json.load(f).get("mcpServers", {}))
+        except Exception:
+            pass
+    if cursor_workspace_file.is_file():
+        try:
+            with open(cursor_workspace_file) as f:
+                cursor_mcps.update(json.load(f).get("mcpServers", {}))
         except Exception:
             pass
 
@@ -1951,6 +2205,11 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                             "config_path": str(claude_code_file),
                             "details": claude_code_mcps.get(d.name) or claude_code_mcps.get(f"{d.name}-local") or workspace_mcps.get(d.name)
                         },
+                        "cursor": {
+                            "configured": (d.name in cursor_mcps) or (f"{d.name}-local" in cursor_mcps) or any(d.name in k for k in cursor_mcps),
+                            "config_path": str(cursor_workspace_file if cursor_workspace_file.is_file() else cursor_global_file),
+                            "details": cursor_mcps.get(d.name) or cursor_mcps.get(f"{d.name}-local") or next((v for k, v in cursor_mcps.items() if d.name in k), None)
+                        },
                         "workspace": {
                             "configured": d.name in workspace_mcps,
                             "config_path": str(workspace_mcp_file),
@@ -1976,6 +2235,10 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         clean_name = name.replace("-local", "")
         if clean_name not in mcps:
             all_external.setdefault(clean_name, {})["workspace"] = cfg
+    for name, cfg in cursor_mcps.items():
+        clean_name = name.replace("-local", "")
+        if clean_name not in mcps:
+            all_external.setdefault(clean_name, {})["cursor"] = cfg
 
     for name, sources in all_external.items():
         if name.lower() == "idea":
@@ -2017,6 +2280,11 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                     "config_path": str(claude_code_file),
                     "details": sources.get("claude_code") or sources.get("workspace")
                 },
+                "cursor": {
+                    "configured": "cursor" in sources,
+                    "config_path": str(cursor_workspace_file if cursor_workspace_file.is_file() else cursor_global_file),
+                    "details": sources.get("cursor")
+                },
                 "workspace": {
                     "configured": "workspace" in sources,
                     "config_path": str(workspace_mcp_file),
@@ -2029,7 +2297,7 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
 
 
 def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, Any]:
-    """Toggles configuration of a local or external MCP server in Antigravity, Claude Desktop, or Claude Code."""
+    """Toggles configuration of a local or external MCP server in Antigravity, Claude Desktop, Claude Code, or Cursor."""
     local_mcps_dir = WORKSPACE / "ai-first-fw/local-mcps"
     server_dir = local_mcps_dir / server_id
     server_py = server_dir / "server.py"
@@ -2056,6 +2324,7 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
             "antigravity": {"url": "http://127.0.0.1:64342/stream"},
             "claude_desktop": {"url": "http://127.0.0.1:64342/stream", "type": "http"},
             "claude_code": {"url": "http://127.0.0.1:64342/stream", "type": "http"},
+            "cursor": {"url": "http://127.0.0.1:64342/stream"},
         }
     }
 
@@ -2167,6 +2436,37 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
                 ws_servers.pop(f"{server_id}-local", None)
             workspace_mcp_file.write_text(json.dumps(ws_cfg, indent=2) + "\n", encoding="utf-8")
 
+    elif target == "cursor":
+        cursor_cfg_files = [
+            HOME / ".cursor/mcp.json",
+            WORKSPACE / ".cursor/mcp.json",
+        ]
+        for cfg_file in cursor_cfg_files:
+            cfg_file.parent.mkdir(parents=True, exist_ok=True)
+            cfg = {}
+            if cfg_file.is_file():
+                try:
+                    with open(cfg_file) as f:
+                        cfg = json.load(f)
+                except Exception:
+                    pass
+            servers = cfg.setdefault("mcpServers", {})
+            if enable:
+                if is_local:
+                    servers[server_id] = {
+                        "command": cmd,
+                        "args": args
+                    }
+                else:
+                    servers[server_id] = known_external.get(server_id, {}).get("cursor", {"url": "http://127.0.0.1:64342/stream"})
+            else:
+                servers.pop(server_id, None)
+                servers.pop(f"{server_id}-local", None)
+                for k in list(servers.keys()):
+                    if k == server_id or k.startswith(f"{server_id}-"):
+                        servers.pop(k, None)
+            cfg_file.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+
     elif target == "workspace":
         if not is_local and enable:
             raise ValueError(f"External MCP server '{server_id}' cannot be added to workspace .mcp.json directly.")
@@ -2205,7 +2505,7 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
 # ==============================================================================
 
 def scan_all() -> dict[str, Any]:
-    """Runs a full scan across Claude and Antigravity ecosystems, master registry, and MCP servers."""
+    """Runs a full scan across Claude, Antigravity, and Cursor ecosystems, master registry, and MCP servers."""
     # 1. Claude
     claude_cli_skills = scan_claude_cli_skills()
     claude_cli_plugins = scan_claude_cli_plugins()
@@ -2219,24 +2519,30 @@ def scan_all() -> dict[str, Any]:
     agy_app_skills = scan_antigravity_app_skills()
     agy_ide_skills = scan_antigravity_ide_skills()
 
-    # 3. Master Alphabetical Registry
+    # 3. Cursor
+    cursor_skills = scan_cursor_skills()
+    cursor_rules = scan_cursor_rules()
+    cursor_plugins = scan_cursor_plugins()
+
+    # 4. Master Alphabetical Registry
     all_skills_alphabetical = scan_all_skills_alphabetical()
 
-    # 4. MCP Servers
+    # 5. MCP Servers
     mcp_servers = scan_mcp_servers()
 
     # Aggregate counts
     all_claude_skills = claude_cli_skills + claude_cowork_skills + [s for p in (claude_cli_plugins + claude_cowork_plugins) for s in p.skills]
     all_agy_skills = agy_cli_skills + agy_app_skills + agy_ide_skills + [s for p in agy_cli_plugins for s in p.skills]
+    all_cursor_items = cursor_skills + cursor_rules + [s for p in cursor_plugins for s in p.skills]
     
-    total_skills = len(all_claude_skills) + len(all_agy_skills)
-    total_plugins = len(claude_cli_plugins) + len(claude_cowork_plugins) + len(agy_cli_plugins)
+    total_skills = len(all_claude_skills) + len(all_agy_skills) + len(all_cursor_items)
+    total_plugins = len(claude_cli_plugins) + len(claude_cowork_plugins) + len(agy_cli_plugins) + len(cursor_plugins)
 
     local_count = 0
     marketplace_count = 0
     builtin_count = 0
 
-    for s in (all_claude_skills + all_agy_skills):
+    for s in (all_claude_skills + all_agy_skills + all_cursor_items):
         if "marketplace" in s.source_type or "github" in s.source_type or "desktop_extension" in s.source_type:
             marketplace_count += 1
         elif "builtin" in s.source_type:
@@ -2244,7 +2550,7 @@ def scan_all() -> dict[str, Any]:
         else:
             local_count += 1
 
-    for p in (claude_cli_plugins + claude_cowork_plugins + agy_cli_plugins):
+    for p in (claude_cli_plugins + claude_cowork_plugins + agy_cli_plugins + cursor_plugins):
         if "marketplace" in p.source_type or "github" in p.source_type or "desktop_extension" in p.source_type:
             marketplace_count += 1
         elif "builtin" in p.source_type:
@@ -2262,6 +2568,9 @@ def scan_all() -> dict[str, Any]:
             "claude_plugins_count": len(claude_cli_plugins) + len(claude_cowork_plugins),
             "antigravity_skills_count": len(all_agy_skills),
             "antigravity_plugins_count": len(agy_cli_plugins),
+            "cursor_skills_count": len(cursor_skills),
+            "cursor_rules_count": len(cursor_rules),
+            "cursor_plugins_count": len(cursor_plugins),
             "mcp_servers_count": len(mcp_servers),
             "local_count": local_count,
             "marketplace_count": marketplace_count,
@@ -2296,6 +2605,18 @@ def scan_all() -> dict[str, Any]:
                 "plugins": [asdict(p) for p in agy_cli_plugins],
                 "skills": [asdict(s) for s in agy_ide_skills],
             },
+        },
+        "cursor": {
+            "skills": [asdict(s) for s in cursor_skills],
+            "rules": [asdict(s) for s in cursor_rules],
+            "plugins": [asdict(p) for p in cursor_plugins],
+            "metadata": {
+                "installed": os.path.isdir("/Applications/Cursor.app") or (HOME / ".cursor").is_dir(),
+                "app_path": "/Applications/Cursor.app" if os.path.isdir("/Applications/Cursor.app") else None,
+                "config_path": str(HOME / ".cursor"),
+                "workspace_rules_path": str(WORKSPACE / ".cursor/rules") if (WORKSPACE / ".cursor/rules").is_dir() else None,
+                "workspace_mcp_path": str(WORKSPACE / ".cursor/mcp.json") if (WORKSPACE / ".cursor/mcp.json").is_file() else None,
+            }
         },
         "marketplaces": marketplaces,
     }

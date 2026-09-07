@@ -333,6 +333,8 @@ def main():
             print(f"  • Claude Cowork Sessions Updated: {res.get('cowork_sessions_synced')}")
         if "antigravity_plugins_synced" in res:
             print(f"  • Antigravity Plugins Updated: {res.get('antigravity_plugins_synced')}")
+        if "cursor_items_synced" in res:
+            print(f"  • Cursor Skills & Plugins Updated: {res.get('cursor_items_synced')}")
         if res.get("errors"):
             print("  • Errors encountered:")
             for err in res["errors"]:

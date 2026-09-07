@@ -4,9 +4,9 @@
 Covers:
   - User Story 3: Support Partial and Multi-Parcel Amazon Seller-Fulfilled Shipments (IA-5109)
   - Source Documents in jira-workspace/amazon-cross-border/IA-5109:
-      R-SUM    IA-5109-multi-parcel-shipments-summary.md
-      R-REQ    IA-5109-oms-parcel-confirmation-requirements-spec.md
-      R-MAP    IA-5109-parcel-confirmation-mapping-spec.md
+      R-SUM    IA-5109-multi-parcel-shipments-specs.md
+      R-REQ    IA-5109-oms-parcel-confirmation-change-requests.md
+      R-MAP    IA-5109-parcel-confirmation-mapping.md
       R-LIB    IA-5109-multi-parcel-shipments-library.md
       C-AMZ    amazon-sp-api-swagger.json (Orders v0 confirmShipment)
       C-OMS    anchanto-oms-swagger.json

@@ -46,8 +46,8 @@ the locator and the words.
 - Where the code states one thing and a document another, the code's locator and quote go into the
   row, and the document is corrected to match.
 - Give every item of the requirement's stated definition of done its own row, in the requirement's
-  words, used in `specs 4`.
-- `Used in` names the document and its `##` section only — `mapping 4`, `specs 3`. Subsection
+  words, used in `specs 5`.
+- `Used in` names the document and its `##` section only — `mapping 4`, `specs 4`. Subsection
   numbers move while this library is open; top-level numbers hold. A claim the change requests rest
   on carries `change requests` and its section, and that document carries no `L-n` in return.
 - Every kind is one of `code`, `url`, `doc`, `jira`, `user`. Section 2 states the locator form for
@@ -98,8 +98,8 @@ Every claim behind the mapping and the specs, and behind every change request ro
 | L-1 | The line item quantity serialises under the wire key `[wire_key]`. | `code` | `[K-REPO]/[path]/[Entity]DTO.[ext]:23` | `"@JsonProperty(\"[wire_key]\") private Integer [field];"` | mapping 4 |
 | L-2 | `[field]` is mandatory before `[operation]` is called. | `jira` | `K-REQ` section 15 (`FR-22`) | `"[the requirement's exact sentence]"` | change requests 2 |
 | L-3 | `[operation]` returns HTTP 204 with no content. | `doc` | `[KEY_A]` → `paths./[path].post.responses` | `"204": { "description": "Success." }` | mapping 1 |
-| L-4 | `[the party's rule]`. | `url` | `https://[party]/docs/[page]#[anchor]` (fetched `[YYYY-MM-DD]`) | `"[the page's exact sentence]"` | specs 3 |
-| L-5 | `[the decision]`. | `user` | `[name]`, `[YYYY-MM-DD]` | `"[their exact words]"` | specs 3 |
+| L-4 | `[the party's rule]`. | `url` | `https://[party]/docs/[page]#[anchor]` (fetched `[YYYY-MM-DD]`) | `"[the page's exact sentence]"` | specs 4 |
+| L-5 | `[the decision]`. | `user` | `[name]`, `[YYYY-MM-DD]` | `"[their exact words]"` | specs 4 |
 | L-6 | `[field_name]` appears nowhere in `[KEY_B]`. | `doc` | `[KEY_B]` — `[field_name]`, 0 occurrences | `0 occurrences of [field_name]` | change requests 2 |
-| L-7 | The requirement's stated definition of done, item [n]. | `jira` | `K-REQ` description — definition of done, item [n] | `"[the item's exact words]"` | specs 4 |
+| L-7 | The requirement's stated definition of done, item [n]. | `jira` | `K-REQ` description — definition of done, item [n] | `"[the item's exact words]"` | specs 5 |
 | L-8 | `[term]` names `[what it resolves to]` in this contract. | `doc` | `[KEY_C]` → `[term]` | `"[the context file's exact definition]"` | mapping 1 |
