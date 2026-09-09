@@ -1,0 +1,3418 @@
+{
+  "metadata": {
+    "title": "Anchanto WMS Sample Data & Payload Templates Library",
+    "description": "Extracted request/response examples, markdown copy-paste templates, and webhook event payloads.",
+    "total_paths": 265
+  },
+  "markdown_templates": {
+    "POST /rest/v2/customers/{customer_code}/products/stocks": [
+      {
+        "fetch": [
+          {
+            "sku": "SKU123"
+          },
+          {
+            "sku": "SKU456"
+          }
+        ]
+      }
+    ],
+    "POST /rest/v2/customers/{customer_code}/products/modify_image": [
+      {
+        "sku": "PROD-001",
+        "image_url": "https://example.com/images/product-001.jpg"
+      }
+    ],
+    "POST /rest/v2/customers/{customer_code}/products/update_stock_information": [
+      {
+        "product": {
+          "sku": "PROD-001",
+          "stock_info": {
+            "low_threshold": 10,
+            "buffer_stock": 5,
+            "min_no_of_units": 1,
+            "max_no_of_units": 1000,
+            "is_voos": false
+          }
+        }
+      }
+    ],
+    "POST /rest/v2/customers/{customer_code}/b2c_orders/{order_number}/update_order": [
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "sku": "SKU_NEW",
+              "quantity": 2,
+              "unit_price": 150,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "SKU_EXISTING",
+              "quantity": 5,
+              "item_udfs_attributes": {
+                "Color": "Blue",
+                "Size": "Medium",
+                "Material": "Polyester",
+                "Style": "Casual",
+                "Pattern": "Solid",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 2,
+              "sku": "SKU_TO_DELETE",
+              "delete_item": true
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "shipping_address_attributes": {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "address1": "456 New St",
+            "city": "New City",
+            "zipcode": "67890",
+            "country_iso": "US",
+            "phone": "0987654321"
+          }
+        }
+      },
+      {
+        "b2c_order": {
+          "order_vas": [
+            "Gift Wrapping"
+          ],
+          "order_gift_message": "Happy Birthday!",
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "SKU123",
+              "quantity": 2,
+              "sku_vas": [
+                "Engraving"
+              ],
+              "sku_gift_message": "To Mom",
+              "sku_etching_message": "Name: John"
+            }
+          ]
+        }
+      }
+    ],
+    "PUT /rest/v2/customers/{customer_code}/b2c_orders/{order_number}/carrier_error": [
+      {
+        "error_message": "Carrier pickup scan failed: package damaged",
+        "tracking_number": "TRACK123",
+        "error_label": true
+      },
+      {
+        "error_message": "Carrier pickup scan failed: package damaged"
+      }
+    ],
+    "POST Event:UpdateInventory": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "admin@seller.example.com",
+          "api_key": "your-api-key"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "inventory_threshold_value": 10,
+            "std_buffer_size": 5,
+            "quantity": 100,
+            "usable_qty": 120,
+            "inprocess_qty": 3,
+            "unusable_quantity": 2,
+            "unusable_inpicking_qty": 0,
+            "usable_inpicking_qty": 4
+          }
+        ]
+      }
+    ],
+    "POST Event:UpdateB2BShipmentStatus": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "warehouse_name": "Main DC",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "order_number": "SHIP-001",
+          "tracking_number": "TRACK123",
+          "old_state": "packed",
+          "new_state": "dispatched",
+          "event_on": "2026-05-05T12:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "carrier_awb_number": "AWB123456",
+          "carrier_tracking_id": 987654,
+          "carrier_tracking_url": "https://track.carrier.example/AWB123456",
+          "return_order": false,
+          "merchant_code": "SUPP01",
+          "parent_order_number": null,
+          "order_source": "Api",
+          "reference_number": "REF-1001",
+          "consignment_note_number": "AWB123456",
+          "carrier_name": "DHL Express",
+          "carrier_code": "DHL",
+          "logistic_partner_name": "DHL Partner",
+          "payment_collection": "online",
+          "handover_to_carrier_date": "2026-05-05T11:30:00.000+08:00",
+          "order_number_reference": "B2B-ORD-500"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "quantity": 10,
+            "uom": "Piece",
+            "uom_quantity": 10,
+            "picked_quantity": 10,
+            "batch": "BATCH-001",
+            "expiry_date": "2026-12-31",
+            "stock_condition": "usable",
+            "pick_location_code": "A-01-01",
+            "pick_location_name": "Pick Face A"
+          }
+        ]
+      }
+    ],
+    "POST Event:UpdateB2CShipmentStatus": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "order_number": "SHIP-B2C-001",
+          "tracking_number": "TRACK789",
+          "old_state": "packed",
+          "new_state": "dispatched",
+          "event_on": "2026-05-05T12:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "carrier_awb_number": "AWB789",
+          "carrier_tracking_id": "AWB789",
+          "carrier_tracking_url": "https://track.carrier.example/AWB789",
+          "lazada_rts_needed": false,
+          "is_ewms_integrated_carrier": true,
+          "fulflmnt_order_state": "dispatched",
+          "return_order": false,
+          "cs_error": false,
+          "company_code": "CUST001",
+          "parent_order_number": null,
+          "store_code": "STORE01",
+          "order_source": "Web",
+          "consignment_note_number": "AWB789",
+          "carrier_code": "CEXP",
+          "carrier_name": "Carrier Express",
+          "discount_details": {},
+          "channel_name": "Shopify",
+          "handover_to_carrier_date": "2026-05-05T11:45:00.000+08:00"
+        },
+        "products": [
+          {
+            "sku": "SKU999",
+            "paid_price": 29.99,
+            "retail_price": 32.0,
+            "quantity": 2,
+            "uom": "Piece",
+            "uom_quantity": 2,
+            "picked_quantity": 2,
+            "batch": "BN-01",
+            "expiry_date": "2027-06-30",
+            "stock_condition": "usable",
+            "adjustments": {},
+            "pick_location_code": "PF-02-A",
+            "pick_location_name": "Pick Face 2"
+          }
+        ]
+      }
+    ],
+    "POST Event:UpdateConsignmentStatus": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "oms-connected@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "consignment_type": "inbound",
+          "number": "CONS-10001",
+          "old_state": "partial",
+          "new_state": "completed",
+          "event_on": "2026-05-06T10:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "receiving_date": "2026-05-04"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "quantity": 100,
+            "received_product_qty": 100,
+            "batch": "BATCH-01",
+            "received_quantity": 100,
+            "expiry_date": "2027-06-30",
+            "usable_quantity": 98,
+            "unusable_quantity": 2,
+            "is_system_generated": false,
+            "base_line_number": "10",
+            "location_name": "Bulk A1",
+            "location_code": "BLK-A1"
+          }
+        ]
+      }
+    ],
+    "POST Event:UpdateGRNStatus": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "company@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "consignment_type": "grn",
+          "po_referance_number": "PO-REF-001",
+          "shipment_number": "GRN-SHIP-900",
+          "po_number": "CONS-500",
+          "do_number": "DO-100",
+          "old_state": "pending",
+          "new_state": "received",
+          "event_on": "2026-05-05T12:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "merchant_code": "SUPP01",
+          "order_type": "PO",
+          "receiving_date": "2026-05-05",
+          "consignment_state": "received"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "quantity": 48,
+            "received_qty": 48,
+            "batch": "BATCH-01",
+            "expiry_date": "2027-01-15",
+            "usable_quantity": 46,
+            "unusable_quantity": 2,
+            "quarantine_quantity": 0,
+            "is_system_generated": false,
+            "uom": "Piece",
+            "parent_sku": null,
+            "base_line_number": "1"
+          }
+        ]
+      }
+    ],
+    "POST Event:CreateGRN": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "company@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "consignment_type": "grn",
+          "shipment_number": "GRN-SHIP-001",
+          "do_number": "DO-100",
+          "tracking_number": "TRACK-900",
+          "import_number": "IMP-01",
+          "po_number": "CONS-500",
+          "expected_delivery_time": "2026-05-10T18:00:00.000+08:00",
+          "created_at": "2026-05-05T09:00:00.000+08:00",
+          "state": "pending",
+          "event_on": "2026-05-05T09:05:00.000+08:00",
+          "time_zone": "Singapore",
+          "receiving_date": "2026-05-08",
+          "consignment_state": "submitted"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "quantity": 24,
+            "uom": "Piece",
+            "received_qty": 0,
+            "batch": null,
+            "expiry_date": null,
+            "usable_quantity": 0,
+            "unusable_quantity": 0,
+            "quarantine_quantity": 0,
+            "is_system_generated": false,
+            "received_product_qty": 0,
+            "parent_sku": null
+          }
+        ]
+      }
+    ],
+    "POST Event:CreateSupplier": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "supplier": {
+          "name": "Acme Supplies Ltd",
+          "vat_tin": "VAT12345678",
+          "code": "SUPP01",
+          "email": "contact@acme.example.com",
+          "contact_number": "1234567890",
+          "contact_name": "Jane Doe",
+          "active": true,
+          "wms_code": "SUPP01",
+          "address": {
+            "address_line_1": "123 Industrial Road",
+            "address_line_2": "Floor 2",
+            "address_line_3": null,
+            "suburb": null,
+            "city": "Singapore",
+            "postal_code": "408564",
+            "state": "Singapore",
+            "country": "Singapore"
+          }
+        }
+      }
+    ],
+    "POST Event:CreateB2cManifest": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "order-creator@example.com",
+          "api_key": "your-api-key"
+        },
+        "tracking_numbers": [
+          "AWB123456789",
+          "TRACK-SECOND-SHIPMENT"
+        ],
+        "dispatch_number": "DISP-MNF-2026-001"
+      }
+    ],
+    "POST Event:POCreate": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "oms-connected@example.com",
+          "api_key": "your-api-key"
+        },
+        "consignment": {
+          "warehouse_code": "WH01",
+          "merchant_code": "SUPP01",
+          "customer_code": "CUST001",
+          "ship_date": "2026-05-01",
+          "receiving_date": "2026-05-12",
+          "number": "CONS-PO-9001",
+          "order_type": "PO",
+          "instruction": "Receiving dock A",
+          "consignment_products": [
+            {
+              "sku": "SKU123",
+              "quantity": 100,
+              "price": 12.5,
+              "expiry_date": "2027-03-31",
+              "uom": "PCS",
+              "batch": "BN-001",
+              "line_number": 1
+            }
+          ],
+          "consignment_vas": {
+            "price_tag": null,
+            "security_tag_check": false,
+            "shrink_wrapping": false
+          },
+          "fulflmnt_state": "submitted"
+        }
+      }
+    ],
+    "POST Event:StockAdjustmentStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "api_key": "your-api-key",
+          "warehouse_name": "Main DC"
+        },
+        "stock_adjustment": {
+          "stock_adjustment_type": "quantity",
+          "warehouse_code": "WH01",
+          "completion_date": "2026-05-07",
+          "stock_transfer_by": "John Doe",
+          "stock_adjustment_number": "SA-2026-001",
+          "adjustment_by": "location",
+          "sku": "SKU123",
+          "usable_quantity": 95,
+          "unusable_quantity": 5,
+          "original_quantity": 100,
+          "adjustment_quantity": -5,
+          "adjustment_state": "completed",
+          "adjustment_reason": "Damaged goods",
+          "batch_number": "BN-100",
+          "original_stock_type": "usable"
+        }
+      }
+    ],
+    "POST Event:StockTransferStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "api_key": "your-api-key"
+        },
+        "stock_transfer": {
+          "transfer_type": "sku",
+          "number": "ST-2026-500",
+          "company_name": "Acme Retail",
+          "state": "completed",
+          "sku": "SKU456",
+          "from_company": "Acme Retail",
+          "to_company": "Acme Wholesale",
+          "from_location": "",
+          "to_location": "",
+          "warehouse_code": "WH01",
+          "batch_number": "BN-200",
+          "transfer_quantity": 12,
+          "stock_condition": "usable",
+          "available_to_transfer_unit": 20,
+          "replenishment": false
+        }
+      }
+    ],
+    "POST Event:StockTakeStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "api_key": "your-api-key",
+          "warehouse_name": "Main DC"
+        },
+        "stock_take": {
+          "type": "product",
+          "warehouse_code": "WH01",
+          "completion_date": "2026-05-08",
+          "company_name": "Acme Retail",
+          "number": "STK-2026-100",
+          "name": "Cycle count aisle A",
+          "created_by": "Jane Smith",
+          "state": "completed",
+          "items": [
+            {
+              "sku": "SKU789",
+              "usable_quantity": 48,
+              "unusable_quantity": 2,
+              "original_quantity": 50,
+              "new_quantity": 48,
+              "discrepancy": -2,
+              "batch_number": "BN-300",
+              "location": "Pick Face A1",
+              "original_stock_type": "usable"
+            }
+          ]
+        }
+      }
+    ],
+    "POST Event:StockChangeWithExtraFields": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "api_key": "your-api-key"
+        },
+        "products": [
+          {
+            "Code": "Adjustment",
+            "Original_Quantity_Sign": "-",
+            "Original_Qty": 100,
+            "Update_Qty": 95,
+            "Dstamp": "20260507143052",
+            "Client_Id": "CUST001",
+            "Sku_Id": "SKU123",
+            "From_Loc_Id": "PICK-A1",
+            "To_Loc_Id": "",
+            "Final_Loc_Id": "",
+            "Reference_Id": "SA-2026-001",
+            "Condition_Id": "USABLE",
+            "Notes": "Cycle count correction",
+            "Reason_Id": "inventory_adjustment",
+            "Batch_Id": "BN-100",
+            "Expiry_Dstamp": "20270630120000",
+            "User_Id": "picker@example.com",
+            "Site_Id": "WH01",
+            "Owner_Id": "CUST001",
+            "Origin_Id": "SG",
+            "From_Site_Id": "WH01",
+            "To_Site_Id": "",
+            "Uploaded": "N"
+          }
+        ]
+      }
+    ],
+    "POST Event:OrderPickupList": [
+      {
+        "order_amount": 1,
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "order_pickup_list_code": "250507143012345",
+          "user_email": "robot-picker@example.com",
+          "out_order_code": "ORD-778899",
+          "owner_code": "CUST001",
+          "order_type": "normal",
+          "priority": 0,
+          "creation_date": "2026-05-07T10:00:00.000+08:00",
+          "expected_finish_date": "2026-05-09T18:00:00.000+08:00",
+          "carrier_type": "0",
+          "carrier_code": "NINJA",
+          "carrier_name": "Ninja Van",
+          "consignor_province": "Singapore",
+          "consignor_city": "Singapore",
+          "consignor_district": "Tampines",
+          "consignor_address": "1 Warehouse Rd",
+          "consignor_zip_code": "528000",
+          "consignor": "Main DC",
+          "consignor_phone": "6500000000",
+          "consignor_tel": "",
+          "consignment_company": "Acme Retail",
+          "consignor_remark": "Fragile",
+          "consignee_province": "Singapore",
+          "consignee_city": "Singapore",
+          "consignee_district": "Orchard",
+          "consignee_address": "99 Customer St",
+          "consignee_zip_code": "238801",
+          "consignee": "Alice Tan",
+          "consignee_phone": "6591234567",
+          "consignee_remark": "Leave at guardhouse"
+        },
+        "event": {
+          "shipment_number": "SHIP-X-001",
+          "event_on": "2026-05-07T10:05:00.000+08:00"
+        },
+        "products": [
+          {
+            "sku": "SKU123",
+            "owner_code": "CUST001",
+            "total_quantity": 4,
+            "batch": "BN-50",
+            "expiry_date": "2027-01-15",
+            "location_name": "Pick Face A1",
+            "location_code": "PF-A1",
+            "sku_level": 1
+          }
+        ]
+      }
+    ],
+    "POST Event:GRNPutawayPending": [
+      {
+        "receipt_amount": 1,
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "receipt_code": "CONS-900",
+          "user_email": "robot@example.com",
+          "order_type": "PO",
+          "pallet_code": "",
+          "orig_note": "Dock B receipts",
+          "creation_date": "2026-05-01T08:00:00.000+08:00",
+          "orig_plantform_code": ""
+        },
+        "event": {
+          "consignment_type": "grn",
+          "putaway_type": "SKU",
+          "shipment_number": "GRN-SHIP-500",
+          "po_number": "CONS-900",
+          "event_on": "2026-05-07T14:00:00.000+08:00"
+        },
+        "products": [
+          {
+            "sku_name": "Widget Pro",
+            "sku_code": "SKU123",
+            "owner_code": "CUST001",
+            "received_qty": 48,
+            "expiry_date": "2027-06-30",
+            "quantity": 46,
+            "quarantine_quantity": 2,
+            "uom": "Piece",
+            "sku_level": 0,
+            "production_date": null,
+            "expiration_date": null,
+            "out_batch_code": "BN-1",
+            "input_date": "2026-05-07"
+          },
+          {
+            "sku_name": "Widget Pro",
+            "sku_code": "SKU123",
+            "owner_code": "CUST001",
+            "received_qty": 48,
+            "expiry_date": "2027-06-30",
+            "quantity": 2,
+            "uom": "Piece",
+            "sku_level": 1,
+            "production_date": null,
+            "expiration_date": null,
+            "out_batch_code": "BN-1",
+            "input_date": "2026-05-07"
+          }
+        ]
+      }
+    ],
+    "POST Event:POdetailedStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "oms-connected@example.com",
+          "api_key": "your-api-key"
+        },
+        "consignment": {
+          "warehouse_code": "WH01",
+          "merchant_code": "SUPP01",
+          "customer_code": "CUST001",
+          "ship_date": "2026-05-01",
+          "receiving_date": "2026-05-12",
+          "number": "CONS-PO-9001",
+          "order_type": "PO",
+          "instruction": "Receiving dock A",
+          "consignment_products": [
+            {
+              "sku": "SKU123",
+              "quantity": 100,
+              "price": 12.5,
+              "expiry_date": "2027-03-31",
+              "uom": "PCS",
+              "batch": "BN-001",
+              "line_number": 1,
+              "putaway_location_details": {}
+            }
+          ],
+          "consignment_vas": {
+            "price_tag": null,
+            "security_tag_check": false,
+            "shrink_wrapping": false
+          },
+          "fulflmnt_state": "in_progress"
+        }
+      }
+    ],
+    "POST Event:PushProduct": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "product": {
+          "name": "Widget Pro",
+          "supplier_code": "SUPP01",
+          "brand_code": "BR01",
+          "category": {
+            "name": "Electronics",
+            "presentation": "Gadgets",
+            "description": null
+          },
+          "storage_type": "Ambient",
+          "sku": "SKU123",
+          "mfupc": "8900000000000",
+          "unique_serial_no": false,
+          "imei_number": false,
+          "batch_management": true,
+          "expiry_management": true,
+          "base_uom_code": "PCS",
+          "stock_take_cycle": false,
+          "stock_take_cycle_days": null,
+          "low_threshold": 10,
+          "buffer_stock": 5,
+          "min_no_of_units": "1",
+          "activated": true,
+          "updated_at": "2026-05-07T12:00:00.000+08:00",
+          "product_type": "product",
+          "country_of_origin": "SG",
+          "action": "updated"
+        },
+        "product_sales_informations_attributes": [
+          {
+            "currency_code": "SGD",
+            "selling_price": "19.99",
+            "retail_price": "24.99",
+            "cost_price": "10.0"
+          }
+        ],
+        "product_dimensions_attributes": [
+          {
+            "uom_code": "PCS",
+            "length_cm": "10.0",
+            "width_cm": "8.0",
+            "height_cm": "5.0",
+            "weight_gm": "250.0",
+            "no_of_units": 1
+          }
+        ],
+        "product_localizations_attributes": [
+          {
+            "country_iso": "SG",
+            "name": "Widget Pro",
+            "mark_as_default": true
+          }
+        ],
+        "hs_codes": [
+          {
+            "hs_code": "851712",
+            "is_default": true,
+            "country_iso": "SG"
+          }
+        ],
+        "product_shelf_life": {
+          "product_life": 365,
+          "inbound_life": 30,
+          "outbound_life": 180
+        },
+        "udfs": []
+      }
+    ],
+    "POST Event:KitProductCreate": [
+      {
+        "event_parameters": {
+          "event": "create",
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "customer_code": "CUST001",
+          "account_code": "ACC01",
+          "api_key": "your-api-key"
+        },
+        "kit_product": {
+          "id": 42,
+          "sku": "KIT-001",
+          "name": "Sample Kit",
+          "price": 100,
+          "status": "activated",
+          "parent_product": false,
+          "kit_coo": "SG",
+          "warehouse_code": "WH01",
+          "created_at": "2026-05-07T12:00:00.000+08:00",
+          "updated_at": "2026-05-07T12:00:00.000+08:00",
+          "subproducts": [
+            {
+              "sku": "COMP-001",
+              "units": 2,
+              "price": 50,
+              "coo": "SG"
+            }
+          ],
+          "hs_codes": [
+            {
+              "country_iso": "SG",
+              "hs_code": "851712",
+              "is_default": true
+            }
+          ]
+        }
+      }
+    ],
+    "POST Event:KitProductUpdate": [
+      {
+        "event_parameters": {
+          "event": "update",
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "customer_code": "CUST001",
+          "account_code": "ACC01",
+          "api_key": "your-api-key"
+        },
+        "kit_product": {
+          "id": 42,
+          "sku": "KIT-001",
+          "name": "Sample Kit",
+          "price": 100,
+          "status": "activated",
+          "parent_product": false,
+          "kit_coo": "SG",
+          "warehouse_code": "WH01",
+          "created_at": "2026-05-07T12:00:00.000+08:00",
+          "updated_at": "2026-05-07T14:00:00.000+08:00",
+          "subproducts": [
+            {
+              "sku": "COMP-001",
+              "units": 2,
+              "price": 50,
+              "coo": "SG"
+            }
+          ],
+          "hs_codes": [
+            {
+              "country_iso": "SG",
+              "hs_code": "851712",
+              "is_default": true
+            }
+          ]
+        }
+      }
+    ],
+    "POST Event:B2cOrderDetailStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "order_number": "SHIP-B2C-001",
+          "tracking_number": "TRACK-123",
+          "state": "PACKING",
+          "event_on": "2026-05-07T14:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "carrier_tracking_url": "https://example.com/track?id=AWB123",
+          "carrier_code": "NINJA",
+          "company": "Acme Retail",
+          "campaign_code": null,
+          "company_code": "CUST001",
+          "store_code": "STORE01",
+          "media_code": null,
+          "missing_label": false,
+          "label_error": "",
+          "awb": "AWB123",
+          "total_item_qty": 4,
+          "return_order": false,
+          "discount_details": {},
+          "order_items": [
+            {
+              "sku": "SKU123",
+              "quantity": 4,
+              "uom": "Piece",
+              "uom_quantity": 4,
+              "pick_location": "Pick Face A1",
+              "picked_quantity": 4,
+              "batch_number": "BN-50",
+              "expiry_date": "2027-01-15",
+              "stock_condition": "usable",
+              "adjustments": {}
+            }
+          ]
+        }
+      }
+    ],
+    "POST Event:B2bOrderDetailStatusChange": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "order_number": "SHIP-B2B-001",
+          "tracking_number": "TRACK-B2B",
+          "state": "PACKING",
+          "event_on": "2026-05-07T14:00:00.000+08:00",
+          "time_zone": "Singapore",
+          "carrier_tracking_url": "https://example.com/track?id=AWB999",
+          "carrier_code": "CARR01",
+          "company": "Acme Wholesale",
+          "campaign_code": null,
+          "company_code": "CUST001",
+          "media_code": null,
+          "missing_label": false,
+          "label_error": "",
+          "awb": "AWB999",
+          "total_item_qty": 10,
+          "return_order": false,
+          "destruction_reason": null,
+          "order_items": [
+            {
+              "sku": "SKU123",
+              "quantity": 10,
+              "uom": "Piece",
+              "uom_quantity": 10,
+              "pick_location": "Bulk A1",
+              "picked_quantity": 10,
+              "batch_number": "BN-1",
+              "expiry_date": "2027-06-01",
+              "stock_condition": "usable"
+            }
+          ]
+        }
+      }
+    ],
+    "POST Event:B2cPickPoolAfterPicked": [
+      {
+        "event_parameters": {
+          "warehouse_code": "WH01",
+          "seller_email": "seller@example.com",
+          "api_key": "your-api-key"
+        },
+        "event": {
+          "pick_pool_data": [
+            {
+              "order_number": "ORD-778899",
+              "pick_pool_number": "PP-20260507143052",
+              "company_code": "CUST001",
+              "pick_bins": [
+                "BIN-01",
+                "BIN-02"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "POST /rest/v2/customers/{customer_code}/b2b_orders/{order_number}/update_order": [
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "sku": "PROD-002",
+              "quantity": 5,
+              "unit_price": 60.0,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "PROD-001",
+              "quantity": 15,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "delete_item": true
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "shipping_address_attributes": {
+            "address1": "New Address Line 1",
+            "city": "New City",
+            "zipcode": "99999"
+          }
+        }
+      },
+      {
+        "b2b_order": {
+          "order_vas": [
+            "Gift Wrapping"
+          ],
+          "order_gift_message": "Happy Birthday!",
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "PROD-001",
+              "quantity": 10,
+              "sku_vas": [
+                "Engraving"
+              ],
+              "sku_gift_message": "To Mom",
+              "sku_etching_message": "Name: John"
+            }
+          ]
+        }
+      }
+    ],
+    "PUT /rest/v2/customers/{customer_code}/b2b_orders/{order_number}/carrier_error": [
+      {
+        "error_message": "Carrier pickup scan failed: package damaged",
+        "tracking_number": "TRACK123",
+        "error_label": true
+      },
+      {
+        "error_message": "Carrier pickup scan failed: package damaged"
+      }
+    ],
+    "POST /rest/v2/lpns": [
+      {
+        "lpn": [
+          {
+            "prefix": "string",
+            "number_of_lpns": 0,
+            "lpn_type": "inbound"
+          }
+        ]
+      },
+      {
+        "lpn": [
+          {
+            "lpn_type": "inbound",
+            "number": "string",
+            "lpn_container_code": "string"
+          }
+        ]
+      }
+    ],
+    "GET /rest/v2/vas/phase_options": [
+      {
+        "summary": {
+          "message": "Success",
+          "code": 200
+        },
+        "operational_logic": {
+          "inbound": {
+            "po": [
+              "create",
+              "complete"
+            ],
+            "grn": [
+              "receive",
+              "count_and_qc"
+            ]
+          },
+          "outbound": {
+            "order": [
+              "create",
+              "complete"
+            ],
+            "shipment": [
+              "after_picking",
+              "before_packing",
+              "before_manifest_create"
+            ]
+          },
+          "return": {
+            "order": [
+              "create",
+              "complete"
+            ],
+            "shipment": [
+              "received_at_warehouse",
+              "return_complete"
+            ]
+          }
+        }
+      }
+    ],
+    "POST /rest/v2/warehouses/{warehouse_code}/vas": [
+      {
+        "vas": {
+          "vas_service_code": "shrink_wrapping",
+          "code": "SW-OUTBOUND-001",
+          "name": "Shrink Wrapping - Outbound",
+          "instructions": "Apply shrink wrap to all items before packing",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": false,
+          "preselect_on_creation": true,
+          "acknowledgement_type": "user",
+          "start_date": "2026-03-01",
+          "end_date": "2026-12-31",
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ],
+          "evidences": {
+            "photo": true
+          },
+          "vas_custom_attributes_attributes": [
+            {
+              "input_type": "checkbox",
+              "label": "Wrap Type",
+              "is_mandatory": true,
+              "options": [
+                "Standard",
+                "Premium",
+                "Eco-Friendly"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "gift_message",
+          "code": "GM-ORDER-001",
+          "name": "Gift Message - Order Level",
+          "instructions": "Print gift message on order receipt",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "order",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "system",
+          "user_input_field": true,
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "etching",
+          "code": "ETCH-SKU-001",
+          "name": "Etching - SKU Level",
+          "instructions": "Engrave personalized text on product",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": true,
+          "acknowledgement_type": "user",
+          "user_input_field": true,
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "price_tagging",
+          "code": "PT-INBOUND-001",
+          "name": "Price Tagging - Inbound",
+          "instructions": "Attach price tag to each item during receiving",
+          "operational_phase": "inbound",
+          "operational_sub_phase": "receive",
+          "task_level": "grn",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "user",
+          "order_types": [
+            "po"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      }
+    ],
+    "PUT /rest/v2/warehouses/{warehouse_code}/vas/{code}": [
+      {
+        "vas": {
+          "name": "Updated Gift Wrapping",
+          "instructions": "Updated: Use eco-friendly wrapping paper",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "user",
+          "order_types": [
+            "b2c",
+            "b2b",
+            "sto"
+          ],
+          "company_codes": [
+            "COMP001",
+            "COMP002"
+          ],
+          "vas_custom_attributes_attributes": [
+            {
+              "input_type": "checkbox",
+              "label": "Wrapping Color",
+              "is_mandatory": true,
+              "options": [
+                "Red",
+                "Blue",
+                "Gold",
+                "Silver"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "vas": {
+          "instructions": "Updated: Use eco-friendly wrapping paper and recycled ribbon"
+        }
+      },
+      {
+        "vas": {
+          "instructions": "Updated instructions for paused VAS",
+          "company_codes": [
+            "COMP001",
+            "COMP003"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_custom_attributes_attributes": [
+            {
+              "label": "Old Field",
+              "delete_attribute": true
+            }
+          ]
+        }
+      }
+    ],
+    "POST /open_api/v2/consignment_item_putaway_lists/putaway_item": [
+      {
+        "consignment_item_putaway_list": [
+          {
+            "sku": "SKU123",
+            "quantity": 10,
+            "location_code": "LOC-A-01",
+            "batch_number": "BATCH001",
+            "expiry_date": "2024-12-31",
+            "usns": [
+              "USN001",
+              "USN002"
+            ]
+          }
+        ],
+        "sku": "SKU123",
+        "batch_number": "BATCH001",
+        "expiry_date": "2024-12-31",
+        "shipment_number": "SHP001",
+        "sku_level": 0
+      }
+    ],
+    "POST /open_api/v2/consignment_item_putaway_lists/putaway_lpn": [
+      {
+        "lpn_number": "LPN123456789",
+        "location_code": "LOC-B-02"
+      }
+    ],
+    "POST /rest/v1/b2b/orders/{order_number}/update_order": [
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "sku": "PROD-002",
+              "quantity": 5,
+              "unit_price": 60.0,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "PROD-001",
+              "quantity": 15,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "delete_item": true
+            }
+          ]
+        }
+      },
+      {
+        "b2b_order": {
+          "shipping_address_attributes": {
+            "address1": "New Address Line 1",
+            "city": "New City",
+            "zipcode": "99999"
+          }
+        }
+      },
+      {
+        "b2b_order": {
+          "order_vas": [
+            "Gift Wrapping"
+          ],
+          "order_gift_message": "Happy Birthday!",
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "PROD-001",
+              "quantity": 10,
+              "sku_vas": [
+                "Engraving"
+              ],
+              "sku_gift_message": "To Mom",
+              "sku_etching_message": "Name: John"
+            }
+          ]
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{order_number}/update_order": [
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "sku": "SKU_NEW",
+              "quantity": 2,
+              "unit_price": 150,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "SKU_EXISTING",
+              "quantity": 5,
+              "item_udfs_attributes": {
+                "Color": "Blue",
+                "Size": "Medium",
+                "Material": "Polyester",
+                "Style": "Casual",
+                "Pattern": "Solid",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "order_items_attributes": [
+            {
+              "line_number": 2,
+              "sku": "SKU_TO_DELETE",
+              "delete_item": true
+            }
+          ]
+        }
+      },
+      {
+        "b2c_order": {
+          "shipping_address_attributes": {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "address1": "456 New St",
+            "city": "New City",
+            "zipcode": "67890",
+            "country_iso": "US",
+            "phone": "0987654321"
+          }
+        }
+      },
+      {
+        "b2c_order": {
+          "order_vas": [
+            "Gift Wrapping"
+          ],
+          "order_gift_message": "Happy Birthday!",
+          "order_items_attributes": [
+            {
+              "line_number": 1,
+              "sku": "SKU123",
+              "quantity": 2,
+              "sku_vas": [
+                "Engraving"
+              ],
+              "sku_gift_message": "To Mom",
+              "sku_etching_message": "Name: John"
+            }
+          ]
+        }
+      }
+    ],
+    "PUT /open_api/v1/b2c_order_pickup_list/handover_to_packer": [
+      {
+        "packer_email": "packer@example.com",
+        "picking_started_at": "2023-10-27T10:00:00Z",
+        "order_items": [
+          {
+            "id": 12345,
+            "picked_quantity": 2,
+            "pick_bin_code": "A1-01-01",
+            "usns": [
+              "SN123",
+              "SN456"
+            ]
+          }
+        ]
+      }
+    ],
+    "POST /callback/webhook": [
+      {
+        "number": "ORDER123",
+        "status": "success",
+        "details": {
+          "response": "success",
+          "message": "Order created",
+          "id": 12345
+        }
+      },
+      {
+        "number": "ORDER123",
+        "status": "failure",
+        "error": "Validation failed"
+      }
+    ],
+    "POST /async/v2/customers/{customer_code}/b2c_orders": [
+      {
+        "request_id": "1a5b68a345f957f5e02ff083ff3ccb16",
+        "api_path": "/customers/{customer_code}/b2c_orders",
+        "results": [
+          {
+            "number": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Order successfully created",
+              "order_number": "ASYNC-BULK-0001",
+              "data": [],
+              "state": "draft",
+              "id": 10584
+            }
+          },
+          {
+            "number": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Number has already been taken"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/customers/{customer_code}/b2b_orders": [
+      {
+        "request_id": "1a5b68a345f957f5e02ff083ff3ccb16",
+        "api_path": "/customers/{customer_code}/b2b_orders",
+        "results": [
+          {
+            "number": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Order created",
+              "order_number": "ASYNC-BULK-0001",
+              "data": [],
+              "state": "draft",
+              "id": 10584
+            }
+          },
+          {
+            "number": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Number has already been taken"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/customers/{customer_code}/products": [
+      {
+        "request_id": "3b7536f4a6139efcb550f239e07959c2",
+        "api_path": "/customers/{customer_code}/products",
+        "results": [
+          {
+            "sku": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Product created",
+              "data": [
+                {
+                  "product_information_id": [
+                    192044
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "sku": "ASYNC-BULK-0003",
+            "status": "failure",
+            "error": "Uom no of units cannot be duplicate"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/customers/{customer_code}/products/modify_image": [
+      {
+        "request_id": "c7f13f23f9c0205630fe8f53f8b13d8f",
+        "api_path": "/customers/{customer_code}/products/modify_image",
+        "results": [
+          {
+            "sku": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Product Image Updated Successfully!",
+              "data": [
+                {
+                  "product_image_infos": 9354
+                }
+              ]
+            }
+          },
+          {
+            "sku": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Product not found!"
+          }
+        ]
+      }
+    ],
+    "POST /rest/v1/products": [
+      {
+        "product": {
+          "sku": "PROD-001",
+          "name": "Test Product",
+          "storage_type": "standard",
+          "base_uom_code": "PCS",
+          "product_type": "product",
+          "product_sales_informations_attributes": [
+            {
+              "currency_code": "USD",
+              "cost_price": 10.0,
+              "selling_price": 15.0,
+              "retail_price": 20.0
+            }
+          ],
+          "product_dimensions_attributes": [
+            {
+              "length_cm": 10,
+              "width_cm": 10,
+              "height_cm": 10,
+              "weight_gm": 100,
+              "no_of_units": 1,
+              "uom_code": "PCS"
+            }
+          ],
+          "product_localizations_attributes": [
+            {
+              "country_iso": "US",
+              "name": "Test Product US",
+              "mark_as_default": true
+            }
+          ]
+        }
+      }
+    ],
+    "PUT /rest/v1/products/{sku}": [
+      {
+        "product": {
+          "name": "Updated Product Name",
+          "storage_type": "temp_controlled",
+          "product_sales_informations_attributes": [
+            {
+              "currency_code": "USD",
+              "cost_price": 12.0,
+              "selling_price": 18.0,
+              "retail_price": 25.0
+            }
+          ]
+        }
+      }
+    ],
+    "POST /rest/v1/products/stocks": [
+      {
+        "fetch": [
+          {
+            "sku": "SKU123"
+          },
+          {
+            "sku": "SKU456"
+          }
+        ]
+      }
+    ],
+    "POST /rest/v1/products/fetch": [
+      {
+        "skus": [
+          "SKU123",
+          "SKU456"
+        ],
+        "Limit": 10,
+        "Offset": 0
+      }
+    ],
+    "GET /rest/v1/products/stock_movement_history/{sku}": [
+      {
+        "fetch": {
+          "id": "61"
+        },
+        "start_date": "1/1/2021",
+        "end_date": "10/7/2024",
+        "page": {
+          "number": 1,
+          "size": 10
+        }
+      }
+    ],
+    "POST /rest/v1/products/modify_image": [
+      {
+        "sku": "PROD-001",
+        "image_url": "https://example.com/images/product-001.jpg"
+      }
+    ],
+    "POST /rest/v1/products/update_stock_information": [
+      {
+        "product": {
+          "sku": "PROD-001",
+          "stock_info": {
+            "low_threshold": 10,
+            "buffer_stock": 5,
+            "min_no_of_units": 1,
+            "max_no_of_units": 1000,
+            "is_voos": false
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders": [
+      {
+        "b2c_order": {
+          "shipping_type": "standard_delivery",
+          "payment_collection_name": "online",
+          "currency_code": "USD",
+          "order_items_attributes": [
+            {
+              "sku": "SKU123",
+              "quantity": 1,
+              "unit_price": 100,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ],
+          "billing_address_attributes": {
+            "first_name": "John",
+            "address1": "123 Main St",
+            "city": "City",
+            "zipcode": "12345",
+            "country_iso": "US",
+            "state_abbreviation": "NY",
+            "phone": "1234567890"
+          },
+          "shipping_address_attributes": {
+            "first_name": "John",
+            "address1": "123 Main St",
+            "city": "City",
+            "zipcode": "12345",
+            "country_iso": "US",
+            "state_abbreviation": "NY",
+            "phone": "1234567890"
+          },
+          "carrier": {
+            "carrier_code": "DHL",
+            "carrier_name": "DHL Express"
+          }
+        }
+      },
+      {
+        "b2c_order": {
+          "shipping_type": "standard_delivery",
+          "payment_collection_name": "cod",
+          "currency_code": "INR",
+          "is_fbs_order": true,
+          "delivery_date": "2026-03-31",
+          "reference_number": "2026032600173401",
+          "serialized_inputs": true,
+          "carrier": {
+            "carrier_code": "18h",
+            "carrier_name": "SAMART LASTMILES DELIVERY",
+            "carrier_email": "",
+            "carrier_contact_number": ""
+          },
+          "additional_attribute_attributes": {
+            "extra_details": null,
+            "seller_store_code": null,
+            "do_number": "2026032600173401"
+          },
+          "adjustment_attributes": {
+            "sub_total": 3,
+            "discount": 0,
+            "shipping_cost": 0,
+            "tax_amount": 0,
+            "insurance_amount": 0
+          },
+          "order_items_attributes": [
+            {
+              "unit_price": 3,
+              "retail_price": 3,
+              "selling_price": 3,
+              "quantity": 1,
+              "serial_numbers": [
+                "Eaa00000040881"
+              ],
+              "sku": "IMEI-01ath"
+            }
+          ],
+          "billing_address_attributes": {
+            "first_name": "Chua",
+            "last_name": "",
+            "address1": "PJ Warehouse, 51 Seksyen 19",
+            "address2": "",
+            "address3": "",
+            "business_name": "TM SAP-B1",
+            "city": "Petaling Jaya",
+            "zipcode": "46200",
+            "country_iso": "MY",
+            "state_abbreviation": "SEL",
+            "phone": "0193718413"
+          },
+          "shipping_address_attributes": {
+            "first_name": "Chua",
+            "last_name": "",
+            "address1": "PJ Warehouse, 51 Seksyen 19",
+            "address2": "",
+            "address3": "",
+            "business_name": "TM SAP-B1",
+            "city": "Petaling Jaya",
+            "zipcode": "46200",
+            "country_iso": "MY",
+            "state_abbreviation": "SEL",
+            "phone": "0193718413"
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{order_number}/tracking": [
+      {
+        "tracking_number": "TRACK123",
+        "old_tracking_number": "OLD_TRACK123",
+        "carrier": {
+          "carrier_code": "DHL",
+          "carrier_name": "DHL Express",
+          "carrier_tracking_url": "https://example.com/TRACK123"
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{orig_order_number}/initiate_return": [
+      {
+        "order_items": [
+          {
+            "sku": "SKU123",
+            "quantity": 1
+          }
+        ],
+        "reason": "Item damaged"
+      }
+    ],
+    "POST /rest/v1/b2c/orders/flow_through_order/create": [
+      {
+        "sales_order": {
+          "shipping_type": "standard_delivery",
+          "payment_collection_name": "online",
+          "currency_code": "USD",
+          "carrier": {
+            "carrier_code": "DHL",
+            "carrier_name": "DHL Express"
+          },
+          "order_items_attributes": [
+            {
+              "sku": "SKU123",
+              "quantity": 10,
+              "unit_price": 50.0,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ],
+          "billing_address_attributes": {
+            "first_name": "John",
+            "city": "New York",
+            "country_iso": "US",
+            "phone": "1234567890"
+          },
+          "shipping_address_attributes": {
+            "first_name": "John",
+            "city": "New York",
+            "country_iso": "US",
+            "phone": "1234567890"
+          }
+        },
+        "purchase_order": {
+          "pos": [
+            {
+              "supplier_id": 1,
+              "receiving_date": "2023-12-31",
+              "consignment_items_attributes": [
+                {
+                  "sku": "SKU123",
+                  "quantity": 10,
+                  "unit_price": 40.0
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{order_number}/update_status/{type}": [
+      {
+        "reason": "Customer not available",
+        "tracking_number": "TRACK123"
+      },
+      {
+        "reason": "Package lost by carrier",
+        "tracking_number": "TRACK123"
+      },
+      {
+        "reason": "Customer request to hold"
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{order_number}/cancel_item": [
+      {
+        "reason": "Item damaged",
+        "sku_with_quantity": {
+          "SKU1": 1
+        }
+      }
+    ],
+    "POST /rest/v1/b2c/orders/{order_number}/force_complete": [
+      {
+        "tracking_number": "TRACK123"
+      }
+    ],
+    "PUT /rest/v1/b2c/orders/{order_number}/push_rts_error": [
+      {
+        "tracking_number": "TRACK123",
+        "error_message": "Label generation failed: Invalid address"
+      }
+    ],
+    "PUT /rest/v1/b2c/orders/{order_number}/carrier_error": [
+      {
+        "error_message": "Carrier pickup scan failed: package damaged",
+        "tracking_number": "TRACK123",
+        "error_label": true
+      },
+      {
+        "error_message": "Carrier pickup scan failed: package damaged"
+      }
+    ],
+    "POST /rest/v1/suppliers": [
+      {
+        "supplier": {
+          "name": "Tech Supplies Ltd",
+          "code": "SUP-001",
+          "email": "contact@techsupplies.com",
+          "contact_name": "John Doe",
+          "contact_number": "+1234567890",
+          "vat_tin": "VAT123456",
+          "active": true,
+          "address_attributes": {
+            "address1": "123 Tech Park",
+            "city": "Tech City",
+            "zipcode": "12345",
+            "country_iso": "US",
+            "state_abbreviation": "NY"
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/suppliers/update_supplier": [
+      {
+        "supplier": {
+          "code": "SUP-001",
+          "name": "Tech Supplies Ltd Updated",
+          "contact_name": "Jane Doe",
+          "contact_number": "+1987654321",
+          "email": "updated@techsupplies.com",
+          "address_attributes": {
+            "address1": "456 Tech Park",
+            "city": "Innovation City",
+            "country_iso": "US",
+            "state_abbreviation": "CA"
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/consignments": [
+      {
+        "consignment": {
+          "supplier_code": "SUP-001",
+          "number": "PO-2023-001",
+          "po_ref_number": "REF-001",
+          "instruction": "Handle with care",
+          "order_type": "PO",
+          "ship_date": "2023-10-27T10:00:00Z",
+          "receiving_date": "2023-10-30T10:00:00Z",
+          "consignment_items_attributes": [
+            {
+              "sku": "SKU123",
+              "quantity": 10,
+              "unit_price": 100.0,
+              "uom": "PCS",
+              "expiry_date": "2024-10-27",
+              "batch_number": "BATCH-001"
+            }
+          ],
+          "consignment_vas_attributes": {
+            "price_tag": "Tag123",
+            "price_tag_selected": true,
+            "security_tag_check": false,
+            "shrink_wrapping": true
+          }
+        }
+      },
+      {
+        "consignment": {
+          "supplier_code": "SUP-001",
+          "number": "PO-2023-002",
+          "order_type": "PO",
+          "ship_date": "2023-10-27T10:00:00Z",
+          "receiving_date": "2023-10-30T10:00:00Z",
+          "po_vas": [
+            "Quality Check",
+            "Labeling"
+          ],
+          "consignment_items_attributes": [
+            {
+              "sku": "SKU123",
+              "quantity": 10,
+              "item_vas": [
+                "Repackaging",
+                "Barcode Stickering"
+              ]
+            }
+          ],
+          "consignment_vas_attributes": {
+            "price_tag_selected": true
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/consignments/reject": [
+      {
+        "number": "PO-2023-001",
+        "cancel_reason": "Incorrect items ordered"
+      }
+    ],
+    "POST /rest/v1/consignments/mark_complete": [
+      {
+        "number": "PO-2023-001",
+        "location_code": "LOC-001",
+        "perform_auto_putaway": false
+      }
+    ],
+    "POST /rest/v1/b2b/orders": [
+      {
+        "b2b_order": {
+          "number": "B2B-ORD-001",
+          "company_code": "COMP123",
+          "shipping_type": "standard_delivery",
+          "payment_collection_name": "online",
+          "currency_code": "USD",
+          "supplier_code": "SUP123",
+          "delivery_date": "2023-12-31",
+          "billing_address_attributes": {
+            "first_name": "John",
+            "last_name": "Doe",
+            "address1": "123 Business Rd",
+            "city": "New York",
+            "zipcode": "10001",
+            "country_iso": "US",
+            "state_abbreviation": "NY",
+            "phone": "1234567890",
+            "email": "john@example.com"
+          },
+          "shipping_address_attributes": {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "address1": "456 Warehouse Ln",
+            "city": "Los Angeles",
+            "zipcode": "90001",
+            "country_iso": "US",
+            "state_abbreviation": "CA",
+            "phone": "0987654321",
+            "email": "jane@example.com"
+          },
+          "order_items_attributes": [
+            {
+              "sku": "PROD-001",
+              "quantity": 10,
+              "unit_price": 50.0,
+              "item_udfs_attributes": {
+                "Color": "Red",
+                "Size": "Large",
+                "Material": "Cotton",
+                "Style": "Casual",
+                "Pattern": "Striped",
+                "Design": "Flowers",
+                "Embroidery": "Yes"
+              }
+            }
+          ],
+          "carrier": {
+            "carrier_code": "DHL",
+            "carrier_name": "DHL Express"
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/b2b/orders/{order_number}/cancel_item": [
+      {
+        "reason": "Customer requested full cancellation",
+        "sku_with_quantity": {
+          "SKU123": 2,
+          "SKU456": 1
+        }
+      },
+      {
+        "reason": "Item out of stock",
+        "x_shipment_number": "CANCEL-123",
+        "sku_with_quantity": {
+          "SKU123": 1
+        }
+      }
+    ],
+    "PUT /open_api/v1/b2b_order_pickup_list/handover_to_packer": [
+      {
+        "packer_email": "packer@example.com",
+        "order_items": [
+          {
+            "id": 123,
+            "picked_quantity": 5,
+            "pick_bin_code": "A-01-01",
+            "usns": [
+              "SN123",
+              "SN124"
+            ]
+          }
+        ],
+        "picking_started_at": "2023-10-27T10:00:00Z"
+      }
+    ],
+    "POST /rest/v1/b2b/orders/split_order": [
+      {
+        "b2b_order_bucket": {
+          "order_id": "ORD-2023-001",
+          "shipment_id": [
+            {
+              "number": "SHIP-001",
+              "tracking_number": "TRACK123",
+              "carrier_code": "DHL",
+              "shipping_label": "https://example.com/label.pdf",
+              "invoice": "https://example.com/invoice.pdf",
+              "line_items": [
+                {
+                  "sku": "SKU123",
+                  "qty": 2
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "POST /rest/v1/b2b/orders/{order_number}/update_address": [
+      {
+        "b2b_order": {
+          "billing_address_attributes": {
+            "first_name": "John",
+            "last_name": "Doe",
+            "address1": "123 Main St",
+            "city": "New York",
+            "zipcode": "10001",
+            "country_iso": "US",
+            "state_abbreviation": "NY",
+            "phone": "1234567890",
+            "email": "john@example.com"
+          },
+          "shipping_address_attributes": {
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "address1": "456 Elm St",
+            "city": "Los Angeles",
+            "zipcode": "90001",
+            "country_iso": "US",
+            "state_abbreviation": "CA",
+            "phone": "0987654321",
+            "email": "jane@example.com"
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/b2b/orders/{orig_order_number}/initiate_return": [
+      {
+        "reason": "Damaged goods",
+        "pickup_date": "2023-11-01",
+        "order_items": [
+          {
+            "sku": "SKU123",
+            "quantity": 1
+          }
+        ]
+      }
+    ],
+    "POST /rest/v1/b2b/orders/{order_number}/shipping_docs": [
+      {
+        "url_type": "invoice",
+        "url": "https://example.com/invoice.pdf"
+      },
+      {
+        "url_type": "shipping_label",
+        "url": "https://example.com/label.pdf",
+        "tracking_number": "TRACK123"
+      }
+    ],
+    "PUT /rest/v1/b2b/orders/{order_number}/carrier_error": [
+      {
+        "error_message": "Carrier pickup scan failed: package damaged",
+        "tracking_number": "TRACK123",
+        "error_label": true
+      },
+      {
+        "error_message": "Carrier pickup scan failed: package damaged"
+      }
+    ],
+    "POST /open_api/v1/consignment_item_putaway_lists/putaway_item": [
+      {
+        "consignment_item_putaway_list": [
+          {
+            "sku": "SKU123",
+            "quantity": 10,
+            "location_code": "LOC-A-01",
+            "batch_number": "BATCH001",
+            "expiry_date": "2024-12-31",
+            "usns": [
+              "USN001",
+              "USN002"
+            ]
+          }
+        ],
+        "sku": "SKU123",
+        "batch_number": "BATCH001",
+        "expiry_date": "2024-12-31",
+        "shipment_number": "SHP001",
+        "sku_level": 0
+      }
+    ],
+    "POST /open_api/v1/consignment_item_putaway_lists/putaway_lpn": [
+      {
+        "lpn_number": "LPN123456789",
+        "location_code": "LOC-B-02"
+      }
+    ],
+    "POST /rest/v1/lpns": [
+      {
+        "lpn": [
+          {
+            "prefix": "string",
+            "number_of_lpns": 0,
+            "lpn_type": "inbound"
+          }
+        ]
+      },
+      {
+        "lpn": [
+          {
+            "lpn_type": "inbound",
+            "number": "string",
+            "lpn_container_code": "string"
+          }
+        ]
+      }
+    ],
+    "GET /rest/v1/vas/phase_options": [
+      {
+        "summary": {
+          "message": "Success",
+          "code": 200
+        },
+        "operational_logic": {
+          "inbound": {
+            "po": [
+              "create",
+              "complete"
+            ],
+            "grn": [
+              "receive",
+              "count_and_qc"
+            ]
+          },
+          "outbound": {
+            "order": [
+              "create",
+              "complete"
+            ],
+            "shipment": [
+              "after_picking",
+              "before_packing",
+              "before_manifest_create"
+            ]
+          },
+          "return": {
+            "order": [
+              "create",
+              "complete"
+            ],
+            "shipment": [
+              "received_at_warehouse",
+              "return_complete"
+            ]
+          }
+        }
+      }
+    ],
+    "POST /rest/v1/warehouses/{warehouse_code}/vas": [
+      {
+        "vas": {
+          "vas_service_code": "shrink_wrapping",
+          "code": "SW-OUTBOUND-001",
+          "name": "Shrink Wrapping - Outbound",
+          "instructions": "Apply shrink wrap to all items before packing",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": false,
+          "preselect_on_creation": true,
+          "acknowledgement_type": "user",
+          "start_date": "2026-03-01",
+          "end_date": "2026-12-31",
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ],
+          "evidences": {
+            "photo": true
+          },
+          "vas_custom_attributes_attributes": [
+            {
+              "input_type": "checkbox",
+              "label": "Wrap Type",
+              "is_mandatory": true,
+              "options": [
+                "Standard",
+                "Premium",
+                "Eco-Friendly"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "gift_message",
+          "code": "GM-ORDER-001",
+          "name": "Gift Message - Order Level",
+          "instructions": "Print gift message on order receipt",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "order",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "system",
+          "user_input_field": true,
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "etching",
+          "code": "ETCH-SKU-001",
+          "name": "Etching - SKU Level",
+          "instructions": "Engrave personalized text on product",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": true,
+          "acknowledgement_type": "user",
+          "user_input_field": true,
+          "order_types": [
+            "b2c",
+            "b2b"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_service_code": "price_tagging",
+          "code": "PT-INBOUND-001",
+          "name": "Price Tagging - Inbound",
+          "instructions": "Attach price tag to each item during receiving",
+          "operational_phase": "inbound",
+          "operational_sub_phase": "receive",
+          "task_level": "grn",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "user",
+          "order_types": [
+            "po"
+          ],
+          "company_codes": [
+            "COMP001"
+          ]
+        }
+      }
+    ],
+    "PUT /rest/v1/warehouses/{warehouse_code}/vas/{code}": [
+      {
+        "vas": {
+          "name": "Updated Gift Wrapping",
+          "instructions": "Updated: Use eco-friendly wrapping paper",
+          "operational_phase": "outbound",
+          "operational_sub_phase": "before_packing",
+          "task_level": "shipment",
+          "sku_level_enabled": false,
+          "acknowledgement_type": "user",
+          "order_types": [
+            "b2c",
+            "b2b",
+            "sto"
+          ],
+          "company_codes": [
+            "COMP001",
+            "COMP002"
+          ],
+          "vas_custom_attributes_attributes": [
+            {
+              "input_type": "checkbox",
+              "label": "Wrapping Color",
+              "is_mandatory": true,
+              "options": [
+                "Red",
+                "Blue",
+                "Gold",
+                "Silver"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "vas": {
+          "instructions": "Updated: Use eco-friendly wrapping paper and recycled ribbon"
+        }
+      },
+      {
+        "vas": {
+          "instructions": "Updated instructions for paused VAS",
+          "company_codes": [
+            "COMP001",
+            "COMP003"
+          ]
+        }
+      },
+      {
+        "vas": {
+          "vas_custom_attributes_attributes": [
+            {
+              "label": "Old Field",
+              "delete_attribute": true
+            }
+          ]
+        }
+      }
+    ],
+    "POST /async/v2/b2c/orders": [
+      {
+        "request_id": "1a5b68a345f957f5e02ff083ff3ccb16",
+        "api_path": "/b2c/orders",
+        "results": [
+          {
+            "number": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Order successfully created",
+              "order_number": "ASYNC-BULK-0001",
+              "data": [],
+              "state": "draft",
+              "id": 10584
+            }
+          },
+          {
+            "number": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Number has already been taken"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/b2b/orders": [
+      {
+        "request_id": "1a5b68a345f957f5e02ff083ff3ccb16",
+        "api_path": "/b2b/orders",
+        "results": [
+          {
+            "number": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Order created",
+              "order_number": "ASYNC-BULK-0001",
+              "data": [],
+              "state": "draft",
+              "id": 10584
+            }
+          },
+          {
+            "number": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Number has already been taken"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/products": [
+      {
+        "request_id": "3b7536f4a6139efcb550f239e07959c2",
+        "api_path": "/products",
+        "results": [
+          {
+            "sku": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Product created",
+              "data": [
+                {
+                  "product_information_id": [
+                    192044
+                  ]
+                },
+                {
+                  "product_dimensions_info": {
+                    "ASYNC-BULK-0001-ff1aabc450": 191979
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "sku": "ASYNC-BULK-0003",
+            "status": "failure",
+            "error": "Uom no of units cannot be duplicate"
+          }
+        ]
+      }
+    ],
+    "POST /async/v2/products/modify_image": [
+      {
+        "request_id": "c7f13f23f9c0205630fe8f53f8b13d8f",
+        "api_path": "/products/modify_image",
+        "results": [
+          {
+            "sku": "ASYNC-BULK-0001",
+            "status": "success",
+            "details": {
+              "response": "success",
+              "message": "Product Image Updated Successfully!",
+              "data": [
+                {
+                  "product_image_infos": 9354
+                }
+              ]
+            }
+          },
+          {
+            "sku": "ASYNC-BULK-0002",
+            "status": "failure",
+            "error": "Product not found!"
+          }
+        ]
+      }
+    ]
+  },
+  "request_examples": {
+    "GET /rest/v1/products/stock_movement_history/{sku}": {
+      "fetch": {
+        "id": "61"
+      },
+      "start_date": "1/1/2021",
+      "end_date": "10/7/2024",
+      "page": {
+        "number": 1,
+        "size": 10
+      }
+    }
+  },
+  "response_examples": {
+    "POST /rest/v1/b2c/orders/{order_number}/update_unassigned_order": {
+      "200": {
+        "response": "success",
+        "message": "OK"
+      },
+      "401": {
+        "summary": "error",
+        "status_code": "401",
+        "message": "Unauthorized"
+      },
+      "422": {
+        "summary": "error",
+        "status_code": "422",
+        "message": "Validation failed"
+      },
+      "500": {
+        "summary": "error",
+        "status_code": "500",
+        "message": "Internal server error"
+      }
+    }
+  },
+  "webhooks": {
+    "UpdateInventory": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "admin@seller.example.com",
+        "api_key": "your-api-key"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "inventory_threshold_value": 10,
+          "std_buffer_size": 5,
+          "quantity": 100,
+          "usable_qty": 120,
+          "inprocess_qty": 3,
+          "unusable_quantity": 2,
+          "unusable_inpicking_qty": 0,
+          "usable_inpicking_qty": 4
+        }
+      ]
+    },
+    "UpdateB2BShipmentStatus": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "warehouse_name": "Main DC",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "order_number": "SHIP-001",
+        "tracking_number": "TRACK123",
+        "old_state": "packed",
+        "new_state": "dispatched",
+        "event_on": "2026-05-05T12:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "carrier_awb_number": "AWB123456",
+        "carrier_tracking_id": 987654,
+        "carrier_tracking_url": "https://track.carrier.example/AWB123456",
+        "return_order": false,
+        "merchant_code": "SUPP01",
+        "parent_order_number": null,
+        "order_source": "Api",
+        "reference_number": "REF-1001",
+        "consignment_note_number": "AWB123456",
+        "carrier_name": "DHL Express",
+        "carrier_code": "DHL",
+        "logistic_partner_name": "DHL Partner",
+        "payment_collection": "online",
+        "handover_to_carrier_date": "2026-05-05T11:30:00.000+08:00",
+        "order_number_reference": "B2B-ORD-500"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "quantity": 10,
+          "uom": "Piece",
+          "uom_quantity": 10,
+          "picked_quantity": 10,
+          "batch": "BATCH-001",
+          "expiry_date": "2026-12-31",
+          "stock_condition": "usable",
+          "pick_location_code": "A-01-01",
+          "pick_location_name": "Pick Face A"
+        }
+      ]
+    },
+    "UpdateB2CShipmentStatus": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "order_number": "SHIP-B2C-001",
+        "tracking_number": "TRACK789",
+        "old_state": "packed",
+        "new_state": "dispatched",
+        "event_on": "2026-05-05T12:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "carrier_awb_number": "AWB789",
+        "carrier_tracking_id": "AWB789",
+        "carrier_tracking_url": "https://track.carrier.example/AWB789",
+        "lazada_rts_needed": false,
+        "is_ewms_integrated_carrier": true,
+        "fulflmnt_order_state": "dispatched",
+        "return_order": false,
+        "cs_error": false,
+        "company_code": "CUST001",
+        "parent_order_number": null,
+        "store_code": "STORE01",
+        "order_source": "Web",
+        "consignment_note_number": "AWB789",
+        "carrier_code": "CEXP",
+        "carrier_name": "Carrier Express",
+        "discount_details": {},
+        "channel_name": "Shopify",
+        "handover_to_carrier_date": "2026-05-05T11:45:00.000+08:00"
+      },
+      "products": [
+        {
+          "sku": "SKU999",
+          "paid_price": 29.99,
+          "retail_price": 32.0,
+          "quantity": 2,
+          "uom": "Piece",
+          "uom_quantity": 2,
+          "picked_quantity": 2,
+          "batch": "BN-01",
+          "expiry_date": "2027-06-30",
+          "stock_condition": "usable",
+          "adjustments": {},
+          "pick_location_code": "PF-02-A",
+          "pick_location_name": "Pick Face 2"
+        }
+      ]
+    },
+    "UpdateConsignmentStatus": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "oms-connected@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "consignment_type": "inbound",
+        "number": "CONS-10001",
+        "old_state": "partial",
+        "new_state": "completed",
+        "event_on": "2026-05-06T10:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "receiving_date": "2026-05-04"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "quantity": 100,
+          "received_product_qty": 100,
+          "batch": "BATCH-01",
+          "received_quantity": 100,
+          "expiry_date": "2027-06-30",
+          "usable_quantity": 98,
+          "unusable_quantity": 2,
+          "is_system_generated": false,
+          "base_line_number": "10",
+          "location_name": "Bulk A1",
+          "location_code": "BLK-A1"
+        }
+      ]
+    },
+    "UpdateGRNStatus": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "company@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "consignment_type": "grn",
+        "po_referance_number": "PO-REF-001",
+        "shipment_number": "GRN-SHIP-900",
+        "po_number": "CONS-500",
+        "do_number": "DO-100",
+        "old_state": "pending",
+        "new_state": "received",
+        "event_on": "2026-05-05T12:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "merchant_code": "SUPP01",
+        "order_type": "PO",
+        "receiving_date": "2026-05-05",
+        "consignment_state": "received"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "quantity": 48,
+          "received_qty": 48,
+          "batch": "BATCH-01",
+          "expiry_date": "2027-01-15",
+          "usable_quantity": 46,
+          "unusable_quantity": 2,
+          "quarantine_quantity": 0,
+          "is_system_generated": false,
+          "uom": "Piece",
+          "parent_sku": null,
+          "base_line_number": "1"
+        }
+      ]
+    },
+    "CreateGRN": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "company@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "consignment_type": "grn",
+        "shipment_number": "GRN-SHIP-001",
+        "do_number": "DO-100",
+        "tracking_number": "TRACK-900",
+        "import_number": "IMP-01",
+        "po_number": "CONS-500",
+        "expected_delivery_time": "2026-05-10T18:00:00.000+08:00",
+        "created_at": "2026-05-05T09:00:00.000+08:00",
+        "state": "pending",
+        "event_on": "2026-05-05T09:05:00.000+08:00",
+        "time_zone": "Singapore",
+        "receiving_date": "2026-05-08",
+        "consignment_state": "submitted"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "quantity": 24,
+          "uom": "Piece",
+          "received_qty": 0,
+          "batch": null,
+          "expiry_date": null,
+          "usable_quantity": 0,
+          "unusable_quantity": 0,
+          "quarantine_quantity": 0,
+          "is_system_generated": false,
+          "received_product_qty": 0,
+          "parent_sku": null
+        }
+      ]
+    },
+    "CreateSupplier": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "supplier": {
+        "name": "Acme Supplies Ltd",
+        "vat_tin": "VAT12345678",
+        "code": "SUPP01",
+        "email": "contact@acme.example.com",
+        "contact_number": "1234567890",
+        "contact_name": "Jane Doe",
+        "active": true,
+        "wms_code": "SUPP01",
+        "address": {
+          "address_line_1": "123 Industrial Road",
+          "address_line_2": "Floor 2",
+          "address_line_3": null,
+          "suburb": null,
+          "city": "Singapore",
+          "postal_code": "408564",
+          "state": "Singapore",
+          "country": "Singapore"
+        }
+      }
+    },
+    "CreateB2cManifest": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "order-creator@example.com",
+        "api_key": "your-api-key"
+      },
+      "tracking_numbers": [
+        "AWB123456789",
+        "TRACK-SECOND-SHIPMENT"
+      ],
+      "dispatch_number": "DISP-MNF-2026-001"
+    },
+    "POCreate": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "oms-connected@example.com",
+        "api_key": "your-api-key"
+      },
+      "consignment": {
+        "warehouse_code": "WH01",
+        "merchant_code": "SUPP01",
+        "customer_code": "CUST001",
+        "ship_date": "2026-05-01",
+        "receiving_date": "2026-05-12",
+        "number": "CONS-PO-9001",
+        "order_type": "PO",
+        "instruction": "Receiving dock A",
+        "consignment_products": [
+          {
+            "sku": "SKU123",
+            "quantity": 100,
+            "price": 12.5,
+            "expiry_date": "2027-03-31",
+            "uom": "PCS",
+            "batch": "BN-001",
+            "line_number": 1
+          }
+        ],
+        "consignment_vas": {
+          "price_tag": null,
+          "security_tag_check": false,
+          "shrink_wrapping": false
+        },
+        "fulflmnt_state": "submitted"
+      }
+    },
+    "StockAdjustmentStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "api_key": "your-api-key",
+        "warehouse_name": "Main DC"
+      },
+      "stock_adjustment": {
+        "stock_adjustment_type": "quantity",
+        "warehouse_code": "WH01",
+        "completion_date": "2026-05-07",
+        "stock_transfer_by": "John Doe",
+        "stock_adjustment_number": "SA-2026-001",
+        "adjustment_by": "location",
+        "sku": "SKU123",
+        "usable_quantity": 95,
+        "unusable_quantity": 5,
+        "original_quantity": 100,
+        "adjustment_quantity": -5,
+        "adjustment_state": "completed",
+        "adjustment_reason": "Damaged goods",
+        "batch_number": "BN-100",
+        "original_stock_type": "usable"
+      }
+    },
+    "StockTransferStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "api_key": "your-api-key"
+      },
+      "stock_transfer": {
+        "transfer_type": "sku",
+        "number": "ST-2026-500",
+        "company_name": "Acme Retail",
+        "state": "completed",
+        "sku": "SKU456",
+        "from_company": "Acme Retail",
+        "to_company": "Acme Wholesale",
+        "from_location": "",
+        "to_location": "",
+        "warehouse_code": "WH01",
+        "batch_number": "BN-200",
+        "transfer_quantity": 12,
+        "stock_condition": "usable",
+        "available_to_transfer_unit": 20,
+        "replenishment": false
+      }
+    },
+    "StockTakeStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "api_key": "your-api-key",
+        "warehouse_name": "Main DC"
+      },
+      "stock_take": {
+        "type": "product",
+        "warehouse_code": "WH01",
+        "completion_date": "2026-05-08",
+        "company_name": "Acme Retail",
+        "number": "STK-2026-100",
+        "name": "Cycle count aisle A",
+        "created_by": "Jane Smith",
+        "state": "completed",
+        "items": [
+          {
+            "sku": "SKU789",
+            "usable_quantity": 48,
+            "unusable_quantity": 2,
+            "original_quantity": 50,
+            "new_quantity": 48,
+            "discrepancy": -2,
+            "batch_number": "BN-300",
+            "location": "Pick Face A1",
+            "original_stock_type": "usable"
+          }
+        ]
+      }
+    },
+    "StockChangeWithExtraFields": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "api_key": "your-api-key"
+      },
+      "products": [
+        {
+          "Code": "Adjustment",
+          "Original_Quantity_Sign": "-",
+          "Original_Qty": 100,
+          "Update_Qty": 95,
+          "Dstamp": "20260507143052",
+          "Client_Id": "CUST001",
+          "Sku_Id": "SKU123",
+          "From_Loc_Id": "PICK-A1",
+          "To_Loc_Id": "",
+          "Final_Loc_Id": "",
+          "Reference_Id": "SA-2026-001",
+          "Condition_Id": "USABLE",
+          "Notes": "Cycle count correction",
+          "Reason_Id": "inventory_adjustment",
+          "Batch_Id": "BN-100",
+          "Expiry_Dstamp": "20270630120000",
+          "User_Id": "picker@example.com",
+          "Site_Id": "WH01",
+          "Owner_Id": "CUST001",
+          "Origin_Id": "SG",
+          "From_Site_Id": "WH01",
+          "To_Site_Id": "",
+          "Uploaded": "N"
+        }
+      ]
+    },
+    "OrderPickupList": {
+      "order_amount": 1,
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "order_pickup_list_code": "250507143012345",
+        "user_email": "robot-picker@example.com",
+        "out_order_code": "ORD-778899",
+        "owner_code": "CUST001",
+        "order_type": "normal",
+        "priority": 0,
+        "creation_date": "2026-05-07T10:00:00.000+08:00",
+        "expected_finish_date": "2026-05-09T18:00:00.000+08:00",
+        "carrier_type": "0",
+        "carrier_code": "NINJA",
+        "carrier_name": "Ninja Van",
+        "consignor_province": "Singapore",
+        "consignor_city": "Singapore",
+        "consignor_district": "Tampines",
+        "consignor_address": "1 Warehouse Rd",
+        "consignor_zip_code": "528000",
+        "consignor": "Main DC",
+        "consignor_phone": "6500000000",
+        "consignor_tel": "",
+        "consignment_company": "Acme Retail",
+        "consignor_remark": "Fragile",
+        "consignee_province": "Singapore",
+        "consignee_city": "Singapore",
+        "consignee_district": "Orchard",
+        "consignee_address": "99 Customer St",
+        "consignee_zip_code": "238801",
+        "consignee": "Alice Tan",
+        "consignee_phone": "6591234567",
+        "consignee_remark": "Leave at guardhouse"
+      },
+      "event": {
+        "shipment_number": "SHIP-X-001",
+        "event_on": "2026-05-07T10:05:00.000+08:00"
+      },
+      "products": [
+        {
+          "sku": "SKU123",
+          "owner_code": "CUST001",
+          "total_quantity": 4,
+          "batch": "BN-50",
+          "expiry_date": "2027-01-15",
+          "location_name": "Pick Face A1",
+          "location_code": "PF-A1",
+          "sku_level": 1
+        }
+      ]
+    },
+    "GRNPutawayPending": {
+      "receipt_amount": 1,
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "receipt_code": "CONS-900",
+        "user_email": "robot@example.com",
+        "order_type": "PO",
+        "pallet_code": "",
+        "orig_note": "Dock B receipts",
+        "creation_date": "2026-05-01T08:00:00.000+08:00",
+        "orig_plantform_code": ""
+      },
+      "event": {
+        "consignment_type": "grn",
+        "putaway_type": "SKU",
+        "shipment_number": "GRN-SHIP-500",
+        "po_number": "CONS-900",
+        "event_on": "2026-05-07T14:00:00.000+08:00"
+      },
+      "products": [
+        {
+          "sku_name": "Widget Pro",
+          "sku_code": "SKU123",
+          "owner_code": "CUST001",
+          "received_qty": 48,
+          "expiry_date": "2027-06-30",
+          "quantity": 46,
+          "quarantine_quantity": 2,
+          "uom": "Piece",
+          "sku_level": 0,
+          "production_date": null,
+          "expiration_date": null,
+          "out_batch_code": "BN-1",
+          "input_date": "2026-05-07"
+        },
+        {
+          "sku_name": "Widget Pro",
+          "sku_code": "SKU123",
+          "owner_code": "CUST001",
+          "received_qty": 48,
+          "expiry_date": "2027-06-30",
+          "quantity": 2,
+          "uom": "Piece",
+          "sku_level": 1,
+          "production_date": null,
+          "expiration_date": null,
+          "out_batch_code": "BN-1",
+          "input_date": "2026-05-07"
+        }
+      ]
+    },
+    "POdetailedStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "oms-connected@example.com",
+        "api_key": "your-api-key"
+      },
+      "consignment": {
+        "warehouse_code": "WH01",
+        "merchant_code": "SUPP01",
+        "customer_code": "CUST001",
+        "ship_date": "2026-05-01",
+        "receiving_date": "2026-05-12",
+        "number": "CONS-PO-9001",
+        "order_type": "PO",
+        "instruction": "Receiving dock A",
+        "consignment_products": [
+          {
+            "sku": "SKU123",
+            "quantity": 100,
+            "price": 12.5,
+            "expiry_date": "2027-03-31",
+            "uom": "PCS",
+            "batch": "BN-001",
+            "line_number": 1,
+            "putaway_location_details": {}
+          }
+        ],
+        "consignment_vas": {
+          "price_tag": null,
+          "security_tag_check": false,
+          "shrink_wrapping": false
+        },
+        "fulflmnt_state": "in_progress"
+      }
+    },
+    "PushProduct": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "product": {
+        "name": "Widget Pro",
+        "supplier_code": "SUPP01",
+        "brand_code": "BR01",
+        "category": {
+          "name": "Electronics",
+          "presentation": "Gadgets",
+          "description": null
+        },
+        "storage_type": "Ambient",
+        "sku": "SKU123",
+        "mfupc": "8900000000000",
+        "unique_serial_no": false,
+        "imei_number": false,
+        "batch_management": true,
+        "expiry_management": true,
+        "base_uom_code": "PCS",
+        "stock_take_cycle": false,
+        "stock_take_cycle_days": null,
+        "low_threshold": 10,
+        "buffer_stock": 5,
+        "min_no_of_units": "1",
+        "activated": true,
+        "updated_at": "2026-05-07T12:00:00.000+08:00",
+        "product_type": "product",
+        "country_of_origin": "SG",
+        "action": "updated"
+      },
+      "product_sales_informations_attributes": [
+        {
+          "currency_code": "SGD",
+          "selling_price": "19.99",
+          "retail_price": "24.99",
+          "cost_price": "10.0"
+        }
+      ],
+      "product_dimensions_attributes": [
+        {
+          "uom_code": "PCS",
+          "length_cm": "10.0",
+          "width_cm": "8.0",
+          "height_cm": "5.0",
+          "weight_gm": "250.0",
+          "no_of_units": 1
+        }
+      ],
+      "product_localizations_attributes": [
+        {
+          "country_iso": "SG",
+          "name": "Widget Pro",
+          "mark_as_default": true
+        }
+      ],
+      "hs_codes": [
+        {
+          "hs_code": "851712",
+          "is_default": true,
+          "country_iso": "SG"
+        }
+      ],
+      "product_shelf_life": {
+        "product_life": 365,
+        "inbound_life": 30,
+        "outbound_life": 180
+      },
+      "udfs": []
+    },
+    "KitProductCreate": {
+      "event_parameters": {
+        "event": "create",
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "customer_code": "CUST001",
+        "account_code": "ACC01",
+        "api_key": "your-api-key"
+      },
+      "kit_product": {
+        "id": 42,
+        "sku": "KIT-001",
+        "name": "Sample Kit",
+        "price": 100,
+        "status": "activated",
+        "parent_product": false,
+        "kit_coo": "SG",
+        "warehouse_code": "WH01",
+        "created_at": "2026-05-07T12:00:00.000+08:00",
+        "updated_at": "2026-05-07T12:00:00.000+08:00",
+        "subproducts": [
+          {
+            "sku": "COMP-001",
+            "units": 2,
+            "price": 50,
+            "coo": "SG"
+          }
+        ],
+        "hs_codes": [
+          {
+            "country_iso": "SG",
+            "hs_code": "851712",
+            "is_default": true
+          }
+        ]
+      }
+    },
+    "KitProductUpdate": {
+      "event_parameters": {
+        "event": "update",
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "customer_code": "CUST001",
+        "account_code": "ACC01",
+        "api_key": "your-api-key"
+      },
+      "kit_product": {
+        "id": 42,
+        "sku": "KIT-001",
+        "name": "Sample Kit",
+        "price": 100,
+        "status": "activated",
+        "parent_product": false,
+        "kit_coo": "SG",
+        "warehouse_code": "WH01",
+        "created_at": "2026-05-07T12:00:00.000+08:00",
+        "updated_at": "2026-05-07T14:00:00.000+08:00",
+        "subproducts": [
+          {
+            "sku": "COMP-001",
+            "units": 2,
+            "price": 50,
+            "coo": "SG"
+          }
+        ],
+        "hs_codes": [
+          {
+            "country_iso": "SG",
+            "hs_code": "851712",
+            "is_default": true
+          }
+        ]
+      }
+    },
+    "B2cOrderDetailStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "order_number": "SHIP-B2C-001",
+        "tracking_number": "TRACK-123",
+        "state": "PACKING",
+        "event_on": "2026-05-07T14:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "carrier_tracking_url": "https://example.com/track?id=AWB123",
+        "carrier_code": "NINJA",
+        "company": "Acme Retail",
+        "campaign_code": null,
+        "company_code": "CUST001",
+        "store_code": "STORE01",
+        "media_code": null,
+        "missing_label": false,
+        "label_error": "",
+        "awb": "AWB123",
+        "total_item_qty": 4,
+        "return_order": false,
+        "discount_details": {},
+        "order_items": [
+          {
+            "sku": "SKU123",
+            "quantity": 4,
+            "uom": "Piece",
+            "uom_quantity": 4,
+            "pick_location": "Pick Face A1",
+            "picked_quantity": 4,
+            "batch_number": "BN-50",
+            "expiry_date": "2027-01-15",
+            "stock_condition": "usable",
+            "adjustments": {}
+          }
+        ]
+      }
+    },
+    "B2bOrderDetailStatusChange": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "order_number": "SHIP-B2B-001",
+        "tracking_number": "TRACK-B2B",
+        "state": "PACKING",
+        "event_on": "2026-05-07T14:00:00.000+08:00",
+        "time_zone": "Singapore",
+        "carrier_tracking_url": "https://example.com/track?id=AWB999",
+        "carrier_code": "CARR01",
+        "company": "Acme Wholesale",
+        "campaign_code": null,
+        "company_code": "CUST001",
+        "media_code": null,
+        "missing_label": false,
+        "label_error": "",
+        "awb": "AWB999",
+        "total_item_qty": 10,
+        "return_order": false,
+        "destruction_reason": null,
+        "order_items": [
+          {
+            "sku": "SKU123",
+            "quantity": 10,
+            "uom": "Piece",
+            "uom_quantity": 10,
+            "pick_location": "Bulk A1",
+            "picked_quantity": 10,
+            "batch_number": "BN-1",
+            "expiry_date": "2027-06-01",
+            "stock_condition": "usable"
+          }
+        ]
+      }
+    },
+    "B2cPickPoolAfterPicked": {
+      "event_parameters": {
+        "warehouse_code": "WH01",
+        "seller_email": "seller@example.com",
+        "api_key": "your-api-key"
+      },
+      "event": {
+        "pick_pool_data": [
+          {
+            "order_number": "ORD-778899",
+            "pick_pool_number": "PP-20260507143052",
+            "company_code": "CUST001",
+            "pick_bins": [
+              "BIN-01",
+              "BIN-02"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -380,6 +380,8 @@ class State:
         with _FILE_LOCK:
             existing = self._load(name)
             existing.append(entry)
+            if len(existing) > 500:
+                existing = existing[-500:]
             self._save(name, existing)
 
     def upsert(self, name, entry, keys):
@@ -400,9 +402,13 @@ class State:
                 for index, held in enumerate(existing):
                     if all(held.get(k) == entry.get(k) for k in keys):
                         existing[index] = entry
+                        if len(existing) > 500:
+                            existing = existing[-500:]
                         self._save(name, existing)
                         return True
             existing.append(entry)
+            if len(existing) > 500:
+                existing = existing[-500:]
             self._save(name, existing)
             return False
 
@@ -515,6 +521,8 @@ class ApiLog:
             self.count = len(entries) + 1
             entries.append(self._har_entry(call) if self.format == "har"
                            else self._simple_entry(call))
+            if len(entries) > 500:
+                entries[:] = entries[-500:]
             try:
                 write_json(self.path, document)
             except Exception as error:
@@ -1030,10 +1038,27 @@ def group_test_runs(results_dir, suites):
     """
     groups, claimed = [], set()
     for suite in suites:
-        folder = os.path.join(results_dir, suite["id"]) if results_dir else None
         claimed.add(suite["id"])
+        candidates = [suite["id"]]
+        if suite["id"].startswith("suite-"):
+            candidates.append(suite["id"][6:])
+        else:
+            candidates.append(f"suite-{suite['id']}")
+        for alias in suite.get("aliases", []):
+            candidates.append(alias)
+            if alias.startswith("suite-"):
+                candidates.append(alias[6:])
+            else:
+                candidates.append(f"suite-{alias}")
+        runs = []
+        for name in dict.fromkeys(candidates):
+            claimed.add(name)
+            folder = os.path.join(results_dir, name) if results_dir else None
+            if folder and os.path.isdir(folder):
+                runs.extend(read_test_runs(folder, prefix=name + "/"))
+        runs.sort(key=lambda r: r.get("stamp") or r.get("id") or "", reverse=True)
         entry = {k: v for k, v in suite.items() if k != "command"}
-        entry["runs"] = read_test_runs(folder, prefix=suite["id"] + "/")
+        entry["runs"] = runs
         groups.append(entry)
 
     unfiled = []
@@ -1095,8 +1120,9 @@ class SuiteRunner:
             self.lines.clear()
             self.lines.append("$ " + " ".join(command))
             try:
+                env = dict(os.environ, PYTHONUNBUFFERED="1")
                 process = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE,
-                                           stderr=subprocess.STDOUT, bufsize=1)
+                                           stderr=subprocess.STDOUT, bufsize=1, env=env)
             except Exception as error:
                 self.lines.append("failed to start: %s" % error)
                 self.meta = {"suite": suite["id"], "started": time.time(),
@@ -1174,11 +1200,13 @@ border-right:1px solid var(--line-2);padding:1.4vh 10px;overflow-y:auto;height:1
 .batch-run-btn[disabled]{background:var(--mute-bg);color:var(--muted);cursor:not-allowed}
 .batch-run-btn.running{background:var(--run-bg);color:var(--run-fg);animation:pulse 1.1s ease-in-out infinite}
 .aside-subbar{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 6px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line);margin-bottom:8px}
-.aside-sel-all-label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-size:11px;color:var(--ink-2);font-weight:500}
-.aside-sel-all-label input{margin:0;cursor:pointer}
+.aside-sel-all-label{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;font-size:11.5px;color:var(--ink-2);font-weight:500;padding:2px 4px;border-radius:4px}
+.aside-sel-all-label:hover{color:var(--ink)}
+.aside-sel-all-label input{margin:0;cursor:pointer;width:18px;height:18px;accent-color:var(--accent,#3b82f6);border-radius:4px;vertical-align:middle}
 .aside-queue-indicator{font-size:10.5px;color:var(--run-fg);font-weight:600}
-.suite-chk-label{display:inline-flex;align-items:center;margin-right:2px;cursor:pointer;flex:none}
-.suite-chk-label input{margin:0;cursor:pointer}
+.suite-chk-label{display:inline-flex;align-items:center;justify-content:center;margin-right:5px;cursor:pointer;flex:none;padding:2px;border-radius:4px;transition:background .12s}
+.suite-chk-label:hover{background:var(--hover,rgba(255,255,255,0.06))}
+.suite-chk-label input{margin:0;cursor:pointer;width:18px;height:18px;accent-color:var(--accent,#3b82f6);border-radius:4px;vertical-align:middle}
 .run{display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:none;border:0;cursor:pointer;
 padding:4px 6px 4px 8px;font-size:12px;color:var(--ink-2);border-radius:6px;transition:background .1s;flex:none;box-sizing:border-box}
 .run:hover{background:var(--hover)}
@@ -1256,6 +1284,8 @@ main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow-
 
 /* Suite Box in Sidebar */
 .grp{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:8px}
+.grp.active{border-color:var(--accent, #6366f1);box-shadow:0 0 0 1px var(--accent, #6366f1)}
+.grp.active > .ghd{background:var(--selected)}
 .ghd{display:flex;align-items:center;gap:8px;padding:7px 9px;cursor:pointer;user-select:none;list-style:none;transition:background .12s ease}
 .ghd:hover{background:var(--surface-2)}
 .ghd::-webkit-details-marker{display:none}
@@ -1295,7 +1325,7 @@ main{flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow-
 .case-list{max-height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding-right:2px}
 .case-opt{display:flex;align-items:flex-start;font-size:11px;color:var(--ink-2);cursor:pointer;padding:3px 4px;border-radius:3px;line-height:1.4}
 .case-opt:hover{background:var(--surface)}
-.case-opt input{margin:2px 8px 0 2px;cursor:pointer;flex:none}
+.case-opt input{margin:1px 8px 0 2px;cursor:pointer;flex:none;width:16px;height:16px;accent-color:var(--accent,#3b82f6);border-radius:3px;vertical-align:middle}
 .case-opt b{font-family:"SF Mono",Menlo,monospace;font-size:10.5px;margin-right:5px;color:var(--ink);flex:none}
 .case-opt span{flex:1;word-break:break-word}
 
@@ -1436,11 +1466,69 @@ table.ck tr.no td.cl,table.ck tr.no td.ce{color:var(--ink)}
 </div>
 <script>
 var current=null, result=null, open={}, suites=[], run={}, wasRunning=false, expanded={}, suiteInfoOpen={}, suiteCasePickOpen={}, suiteOpen={}, termOpen=false;
+var activeSuiteId=null, idleTicks=0;
 var knownSuiteCases={}, caseSelection={};
 var suiteSelection={};
 var batchQueue=[], isBatchRunning=false, batchTotal=0, batchCurrentIndex=0;
 var viewMode = localStorage.getItem('test_view_mode') || 'business';
 var SHOWN=10;
+
+function findSuiteItem(id){
+  if(!id) return null;
+  return suites.find(function(item){
+    if(item.id === id) return true;
+    if(item.aliases && item.aliases.indexOf(id) !== -1) return true;
+    var alt = id.indexOf('suite-') === 0 ? id.slice(6) : ('suite-' + id);
+    if(item.id === alt) return true;
+    if(item.aliases && item.aliases.indexOf(alt) !== -1) return true;
+    return false;
+  });
+}
+
+function selectSuite(suiteId){
+  if(!suiteId) return;
+  var s = findSuiteItem(suiteId);
+  if(!s) { drawTree(); return; }
+  activeSuiteId = s.id;
+
+  if(s.runs && s.runs.length > 0){
+    current = s.runs[0].id;
+    open = {};
+    load();
+  } else {
+    current = null;
+    var cases = (s.cases || knownSuiteCases[s.id] || []).map(function(c){
+      return {
+        id: c.id,
+        name: c.name || c.id,
+        shape: c.shape || 'normal',
+        verdict: 'pending',
+        checks: [],
+        note: 'Not executed yet — click Run to execute'
+      };
+    });
+    result = {
+      suite: s.id,
+      name: s.name || s.id,
+      title: s.name || s.id,
+      description: s.description || '',
+      stamp: 'pending',
+      at: null,
+      verdict: 'pending',
+      counts: {
+        total: cases.length,
+        pass: 0,
+        fail: 0,
+        skip: 0,
+        blocked: 0,
+        pending: cases.length
+      },
+      cases: cases
+    };
+    drawTree();
+    draw();
+  }
+}
 
 function syncModeButtons(){
   var bBtn = document.getElementById('btn-mode-business');
@@ -1707,10 +1795,7 @@ function drawTree(){
   document.getElementById('tree').innerHTML = suites.map(function(s){
     var list = s.runs||[], shown = expanded[s.id] ? list : list.slice(0, SHOWN);
     var desc = s.description || '';
-    var isSuiteOpen = suiteOpen[s.id];
-    if(isSuiteOpen === undefined){
-      isSuiteOpen = (result && result.suite === s.id) || suites.length === 1;
-    }
+    var isSuiteOpen = suiteOpen[s.id] !== undefined ? !!suiteOpen[s.id] : (suites.length === 1);
     var isOpen = !!suiteInfoOpen[s.id];
     var isCasePickOpen = !!suiteCasePickOpen[s.id];
     var briefText = s.summary || desc || s.name || s.id;
@@ -1783,10 +1868,11 @@ function drawTree(){
     }
 
     var isSuiteChecked = suiteSelection[s.id] !== false;
+    var isActive = (result && result.suite === s.id) || (activeSuiteId === s.id);
 
-    return '<details class="grp" data-suite-grp="'+esc(s.id)+'"'+(isSuiteOpen?' open':'')+'>'+
+    return '<details class="grp'+(isActive?' active':'')+'" data-suite-grp="'+esc(s.id)+'"'+(isSuiteOpen?' open':'')+'>'+
       '<summary class="ghd">'+
-        (s.orphan?'':'<label class="suite-chk-label" onclick="event.stopPropagation();" title="Include in batch run"><input type="checkbox" data-suite-chk="'+esc(s.id)+'"'+(isSuiteChecked?' checked':'')+((busy||isBatchRunning)?' disabled':'')+'>'+'</label>')+
+        (s.orphan?'':'<label class="suite-chk-label" onclick="event.stopPropagation();" onmousedown="event.stopPropagation();" title="Include in batch run"><input type="checkbox" onclick="event.stopPropagation();" onmousedown="event.stopPropagation();" data-suite-chk="'+esc(s.id)+'"'+(isSuiteChecked?' checked':'')+((busy||isBatchRunning)?' disabled':'')+'>'+'</label>')+
         '<span class="s-arrow">&#9656;</span>'+
         '<span class="nm" title="'+esc(s.name||s.id)+'">'+esc(s.name||s.id)+'</span>'+
         (s.orphan?'':'<button class="go" type="button" data-run-suite="'+esc(s.id)+'" id="run-btn-'+esc(s.id)+'"'+((busy||isBatchRunning)?' disabled'+(isRunningThis?'':' title="A test suite is currently running"'):'')+'>'+
@@ -1891,6 +1977,7 @@ function runNextInBatch(){
 
   var item = batchQueue.shift();
   batchCurrentIndex++;
+  selectSuite(item.suiteId);
   updateBatchRunButton();
   drawTree();
 
@@ -2028,6 +2115,9 @@ function tick(){
   fetch('STATUS_URL').then(function(r){return r.json();}).then(function(s){
     run=s; drawRun(); drawTree(); updateBatchRunButton();
     if(s.running){
+      if(s.suite && (!result || result.suite !== s.suite)){
+        activeSuiteId = s.suite;
+      }
       current=null; load();
       setTimeout(tick, 1500);
     } else if(wasRunning){
@@ -2043,9 +2133,17 @@ function tick(){
           drawTree();
         }
       }
+    } else {
+      idleTicks++;
+      if(idleTicks % 2 === 0 && !current && !isBatchRunning){
+        load();
+      }
+      setTimeout(tick, 5000);
     }
     wasRunning = wasRunning || !!s.running;
-  }).catch(function(){});
+  }).catch(function(){
+    setTimeout(tick, 5000);
+  });
 }
 
 function draw(){
@@ -2212,6 +2310,22 @@ document.addEventListener('click', function(ev){
   if(runId){ current=runId.dataset.runId; open={}; load(); return; }
   var more = ev.target.closest('[data-more]');
   if(more){ expanded[more.dataset.more]=!expanded[more.dataset.more]; drawTree(); return; }
+  var suiteHd = ev.target.closest('[data-suite-grp] > .ghd');
+  if(suiteHd && !ev.target.closest('.suite-chk-label') && !ev.target.closest('.go')){
+    var grp = suiteHd.closest('[data-suite-grp]');
+    var sid = grp ? grp.dataset.suiteGrp : null;
+    if(sid){
+      selectSuite(sid);
+    }
+  }
+  var casePickHd = ev.target.closest('.case-picker-hd');
+  if(casePickHd && !ev.target.closest('.case-picker-btns')){
+    var picker = casePickHd.closest('[data-scases]');
+    var sid = picker ? picker.dataset.scases : null;
+    if(sid && activeSuiteId !== sid){
+      selectSuite(sid);
+    }
+  }
   var runSuite = ev.target.closest('[data-run-suite]');
   if(runSuite && !runSuite.dataset.runCase){
       ev.preventDefault();
@@ -2231,7 +2345,20 @@ document.addEventListener('click', function(ev){
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({suite:suiteId, flags:flags, cases:chosenCases})
       }).then(function(r){return r.json();})
-        .then(function(){ tick(); }).catch(function(){ runSuite.disabled=false; runSuite.textContent='Run'; });
+        .then(function(d){
+          if(d && !d.ok){
+            alert('Cannot run suite "' + suiteId + '": ' + (d.error || 'error'));
+            runSuite.disabled=false;
+            runSuite.textContent='Run All';
+            return;
+          }
+          selectSuite(suiteId);
+          tick();
+        }).catch(function(err){
+          alert('Request failed: ' + err);
+          runSuite.disabled=false;
+          runSuite.textContent='Run All';
+        });
       return;
   }
 });
@@ -2242,6 +2369,7 @@ document.addEventListener('change', function(ev){
     var sid = suiteChk.dataset.suiteChk;
     suiteSelection[sid] = suiteChk.checked;
     updateBatchRunButton();
+    selectSuite(sid);
     return;
   }
   var caseChk = ev.target.closest('input[data-case]');
@@ -2251,6 +2379,9 @@ document.addEventListener('change', function(ev){
     if(!caseSelection[sid]) caseSelection[sid] = {};
     caseSelection[sid][cid] = caseChk.checked;
     updateRunBtnText(sid);
+    if(activeSuiteId !== sid){
+      selectSuite(sid);
+    }
   }
 });
 
@@ -2259,6 +2390,7 @@ function load(){
     .then(function(r){return r.json();})
     .then(function(d){
       current=d.current; result=d.result; suites=d.suites||[];
+      if(result && result.suite) activeSuiteId = result.suite;
       document.getElementById('host').textContent=d.name+' — '+d.host;
       syncModeButtons();
       drawTree(); draw();
@@ -2357,6 +2489,39 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
     status_path = "/test/status"
     suites = suites or []
 
+    def find_suite(asked_id, suite_list):
+        if not asked_id or not suite_list:
+            return None
+        for s in suite_list:
+            if s.get("id") == asked_id:
+                return s
+        for s in suite_list:
+            if asked_id in s.get("aliases", []):
+                return s
+        stripped = asked_id[6:] if asked_id.startswith("suite-") else asked_id
+        for s in suite_list:
+            s_id = s.get("id", "")
+            s_stripped = s_id[6:] if s_id.startswith("suite-") else s_id
+            if s_stripped == stripped:
+                return s
+            aliases = s.get("aliases", [])
+            if any((a[6:] if a.startswith("suite-") else a) == stripped for a in aliases):
+                return s
+        legacy_map = {
+            "confirmation": "IA-5109-US3-feed-submission",
+            "feed-submission": "IA-5109-US3-feed-submission",
+            "oms-contracts": "IA-5109-US3-oms-writeback",
+            "oms-writeback": "IA-5109-US3-oms-writeback",
+            "multi-market": "IA-5109-US3-feed-poll",
+            "feed-poll": "IA-5109-US3-feed-poll",
+        }
+        for k, target in legacy_map.items():
+            if k in stripped:
+                for s in suite_list:
+                    if s.get("id") == target:
+                        return s
+        return None
+
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
 
@@ -2423,7 +2588,7 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
                     asked = json.loads(self.rfile.read(length).decode()) if length else {}
                 except Exception:
                     asked = {}
-                suite = next((s for s in suites if s["id"] == asked.get("suite")), None)
+                suite = find_suite(asked.get("suite"), suites)
                 if suite is None:
                     self._send_raw(404, b'{"ok":false,"error":"unknown suite"}',
                                    "application/json")
@@ -2460,7 +2625,15 @@ def make_handler(config, routes, state, api_log=None, results_dir=None,
             groups = group_test_runs(results_dir, suites)
             runs = all_runs(groups)
             wanted = (parse_qs(parsed.query).get("run") or [None])[0]
-            chosen = next((r for r in runs if r["id"] == wanted), runs[0] if runs else None)
+            if not wanted and runner.meta.get("suite"):
+                running_suite_id = runner.meta["suite"]
+                running_group = next((g for g in groups if g["id"] == running_suite_id), None)
+                if running_group and running_group.get("runs"):
+                    chosen = running_group["runs"][0]
+                else:
+                    chosen = runs[0] if runs else None
+            else:
+                chosen = next((r for r in runs if r["id"] == wanted), runs[0] if runs else None)
 
             def suite_cases(g):
                 all_known = collections.OrderedDict()

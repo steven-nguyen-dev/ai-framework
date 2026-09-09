@@ -2,7 +2,7 @@
 """HTTP Live Report Server for AI Skills & Plugins Registry.
 
 Serves the interactive skills and plugins dashboard on a local HTTP port (default: 24003).
-Scans and discovers all Claude and Antigravity skills, plugins, and desktop extensions.
+Scans and discovers all Claude, Antigravity, Cursor, and Codex skills, plugins, and desktop extensions.
 Supports real-time installation and uninstallation management across target surfaces.
 
 Usage:
@@ -204,7 +204,11 @@ class SkillsReportHandler(SimpleHTTPRequestHandler):
         self._send_json(data)
 
     def _handle_pull_updates(self):
-        pull_res = pull_updates_from_marketplaces()
+        try:
+            importlib.reload(scanner)
+        except Exception:
+            pass
+        pull_res = scanner.pull_updates_from_marketplaces()
         data = get_data(force_refresh=True)
         self._send_json({
             "success": pull_res.get("success", True),
@@ -335,6 +339,8 @@ def main():
             print(f"  • Antigravity Plugins Updated: {res.get('antigravity_plugins_synced')}")
         if "cursor_items_synced" in res:
             print(f"  • Cursor Skills & Plugins Updated: {res.get('cursor_items_synced')}")
+        if "codex_items_synced" in res:
+            print(f"  • Codex Skills & Plugins Updated: {res.get('codex_items_synced')}")
         if res.get("errors"):
             print("  • Errors encountered:")
             for err in res["errors"]:

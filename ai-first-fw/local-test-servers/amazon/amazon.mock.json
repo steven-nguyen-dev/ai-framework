@@ -17,6 +17,9 @@
   "test_suites": [
     {
       "id": "smoke",
+      "aliases": [
+        "suite-smoke"
+      ],
       "name": "Amazon SP-API Smoke Suite",
       "description": "Comprehensive validation of Amazon SP-API mock endpoints and official sandbox fixtures (LWA Auth, Orders, Feeds, Reports, Listings, Pricing, FBA, MFN, RDT)",
       "estimate": "~5s",
@@ -33,12 +36,16 @@
     },
     {
       "id": "IA-5105-US1-taxonomy",
+      "aliases": [
+        "suite-IA-5105-US1-taxonomy",
+        "taxonomy"
+      ],
       "name": "IA-5105-US1: Marketplace Taxonomy Sync",
       "description": "Product Type Definitions discovery per market (US, DE, ES, FR, AU) and the POST /rest/v1/bulk_categories payload it produces, judged against the IA-5105 requirements at the Anchanto OMS mock (:23001)",
       "estimate": "~10s",
       "command": [
         "python3",
-        "./suite-IA-5105-US1-taxonomy.py"
+        "./IA-5105-US1/suite-taxonomy.py"
       ],
       "options": [
         {
@@ -49,88 +56,117 @@
     },
     {
       "id": "IA-5105-US1-connect-us",
+      "aliases": [
+        "suite-IA-5105-US1-connect-us",
+        "connect-us"
+      ],
       "name": "IA-5105-US1: Connect to US Market (E2E Flow)",
       "description": "End-to-End store connect and taxonomy synchronization for Amazon US (ATVPDKIKX0DER) -> Amazon Mock (:23103) -> Transformation -> Anchanto OMS (:23001)",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5105-US1-connect-us.py"
+        "./IA-5105-US1/suite-connect-us.py"
       ]
     },
     {
       "id": "IA-5105-US1-connect-non-us",
+      "aliases": [
+        "suite-IA-5105-US1-connect-non-us",
+        "connect-non-us"
+      ],
       "name": "IA-5105-US1: Connect to non-US Markets (E2E Flow)",
       "description": "End-to-End store connect and taxonomy synchronization for non-US markets (FR, DE, ES, AU) -> Amazon Mock (:23103) -> Transformation -> Anchanto OMS (:23001) with marketplace isolation",
       "estimate": "~5s",
       "command": [
         "python3",
-        "./suite-IA-5105-US1-connect-non-us.py"
+        "./IA-5105-US1/suite-connect-non-us.py"
       ]
     },
     {
       "id": "IA-5105-US1-all",
+      "aliases": [
+        "suite-IA-5105-US1",
+        "suite-IA-5105-US1-all"
+      ],
       "name": "IA-5105-US1: Master Test Suite (All 87 Cases)",
       "description": "Consolidated execution of all 87 test cases covering marketplace taxonomy discovery, US store connect, and multi-marketplace synchronization",
       "estimate": "~15s",
       "command": [
         "python3",
-        "./suite-IA-5105-US1.py"
+        "./IA-5105-US1/suite-all.py"
       ]
     },
     {
-      "id": "suite-IA-5109-US3-confirmation",
-      "name": "IA-5109-US3: Parcel Confirmation & Core Flows",
-      "description": "Validation of Amazon Orders v0 confirmShipment, multi-parcel grouping (Rule N-1), monotonic packageReferenceId (Rule N-2), quantity ledger & atomic pre-submit guard (Rule N-3), and exception matrix (Rule N-4) across 23 cases",
+      "id": "IA-5109-US3-feed-submission",
+      "aliases": [
+        "suite-IA-5109-US3-confirmation",
+        "IA-5109-US3-confirmation",
+        "suite-IA-5109-US3-feed-submission"
+      ],
+      "name": "IA-5109-US3: Flow 1 send -- the feed chain and the feed document",
+      "description": "createFeedDocument -> upload -> createFeed for POST_ORDER_FULFILLMENT_DATA, and what a mapping-4.2 feed document carries: one Item per line, CarrierCode resolved against Amazon's enumeration, a stable MerchantFulfillmentID, a fulfilment date that is not the purchase instant, and never the order number as a tracking number. Calls the mock directly; does not drive JPluger.",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5109-US3-parcel-confirmation.py"
+        "./IA-5109-US3/suite-feed-submission.py"
+      ]
+    },
+    {
+      "id": "IA-5109-US3-feed-poll",
+      "aliases": [
+        "suite-IA-5109-US3-multi-market",
+        "IA-5109-US3-multi-market",
+        "suite-IA-5109-US3-feed-poll"
       ],
-      "options": [
-        {
-          "flag": "--keep-state",
-          "label": "Keep state -- do not empty mock stores"
-        }
+      "name": "IA-5109-US3: Flow 1 poll -- feed status, processing report, bounded outcome",
+      "description": "getFeed's steered answers (DONE clean, DONE rejecting, FATAL, CANCELLED, IN_PROGRESS), getFeedDocument and both processing-report variants, read to the contract's three outcomes -- submitted-and-not-rejected, rejected, unknown. Calls the mock directly; does not drive JPluger.",
+      "estimate": "~3s",
+      "command": [
+        "python3",
+        "./IA-5109-US3/suite-feed-poll.py"
       ]
     },
     {
-      "id": "suite-IA-5109-US3-oms-contracts",
-      "name": "IA-5109-US3: OMS Schemas, DTOs & Contracts",
-      "description": "Validation of OMS contract changes CR-0 to CR-5: RTSDataDTO webhook diff, quantity spelling alias, shipping_details write-back, update_status body, order item quantity ledger, and database durability across 14 cases",
+      "id": "IA-5109-US3-oms-writeback",
+      "aliases": [
+        "suite-IA-5109-US3-oms-contracts",
+        "IA-5109-US3-oms-contracts",
+        "suite-IA-5109-US3-oms-writeback"
+      ],
+      "name": "IA-5109-US3: Flow 1 write-back -- the three outcomes Anchanto OMS is told",
+      "description": "The mapping-4.4 CREATE_ORDER_SHIPMENT write-back against the Anchanto OMS mock: success, failure and unknown distinguishable on the wire, the tracking number never the order number, and sibling isolation. Calls the mock directly; does not drive JPluger.",
       "estimate": "~2s",
       "command": [
         "python3",
-        "./suite-IA-5109-US3-oms-contracts.py"
+        "./IA-5109-US3/suite-oms-writeback.py"
       ]
     },
     {
-      "id": "suite-IA-5109-US3-multi-market",
-      "name": "IA-5109-US3: Multi-Marketplace & Carrier/Customs",
-      "description": "Validation of multi-marketplace isolation (FR, DE, JP, US), Japan-only COD DirectPayment injection, carrier code mappings, and carrier IOSS/customs boundaries (Rule N-5 / CR-6) across 15 cases",
-      "estimate": "~2s",
+      "id": "IA-5109-US3",
+      "aliases": [
+        "suite-IA-5109-US3",
+        "suite-IA-5109-US3-all",
+        "IA-5109-US3-all"
+      ],
+      "name": "IA-5109-US3: Flow 1 master suite (all 40 cases)",
+      "description": "Send, poll and write-back in one run. A green run means the mocks and the IA-5109 documents agree; it is not evidence the integration works, and it is not D-25 -- that is the JPluger JUnit tests.",
+      "estimate": "~6s",
       "command": [
         "python3",
-        "./suite-IA-5109-US3-multi-market.py"
-      ]
-    },
-    {
-      "id": "suite-IA-5109-US3",
-      "name": "IA-5109-US3: Master Test Suite (All 52 Cases)",
-      "description": "Consolidated execution of all 52 test cases covering parcel confirmation, OMS contracts, multi-marketplace isolation, carrier mapping, and customs boundaries",
-      "estimate": "~5s",
-      "command": [
-        "python3",
-        "./suite-IA-5109-US3.py"
+        "./IA-5109-US3/suite-all.py"
       ]
     },
     {
       "id": "IA-5112-US5-sync",
+      "aliases": [
+        "suite-IA-5112-US5-sync"
+      ],
       "name": "IA-5112-US5: Seller-Fulfilled Returns Sync",
       "description": "Validation of Amazon SP-API reports synchronization (GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE), wide static 60-day window, 31-column TSV parsing by header, date parsing, rate limits, and 4-marketplace isolation (FR, DE, JP, US) across 12 cases",
       "estimate": "~2s",
       "command": [
         "python3",
-        "./suite-IA-5112-US5-sync.py"
+        "./IA-5112-US5/suite-sync.py"
       ],
       "options": [
         {
@@ -141,42 +177,56 @@
     },
     {
       "id": "IA-5112-US5-lifecycle",
+      "aliases": [
+        "suite-IA-5112-US5-lifecycle"
+      ],
       "name": "IA-5112-US5: End-to-End Returns Lifecycle",
       "description": "Validation of return reconstruction on primary/fallback keys, item resolution, POST /rest/v1/orders/return (20 ADD + 10 REUSE fields), status updates (new_status=RETURN), 4 completion paths, 30-day ageing, 2 WMS3 conditions, and authority split across 20 cases",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5112-US5-lifecycle.py"
+        "./IA-5112-US5/suite-lifecycle.py"
       ]
     },
     {
       "id": "IA-5112-US5-exceptions",
+      "aliases": [
+        "suite-IA-5112-US5-exceptions"
+      ],
       "name": "IA-5112-US5: Exceptions, Edge Cases & Residuals",
       "description": "Validation of all 23 exception matrix scenarios, regulated returns, unmatched arrivals, quantity mismatches, cumulative limits, ambiguous key collisions, and the 4 residual probes across 28 cases",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5112-US5-exceptions.py"
+        "./IA-5112-US5/suite-exceptions.py"
       ]
     },
     {
       "id": "IA-5112-US5-all",
+      "aliases": [
+        "IA-5112-US5",
+        "suite-IA-5112-US5",
+        "suite-IA-5112-US5-all"
+      ],
       "name": "IA-5112-US5: Master Test Suite (All 60 Cases)",
       "description": "Consolidated execution of all 60 test cases covering seller-fulfilled returns report sync, end-to-end lifecycle progression, exception matrix, and technical residual probes",
       "estimate": "~5s",
       "command": [
         "python3",
-        "./suite-IA-5112-US5.py"
+        "./IA-5112-US5/suite-all.py"
       ]
     },
     {
       "id": "IA-5106-US4-hold",
+      "aliases": [
+        "suite-IA-5106-US4-hold"
+      ],
       "name": "IA-5106-US4: Inbound Buyer Cancellation Request & Order Hold",
       "description": "Validation of buyer cancellation request detection, ORDER_CHANGE notification ingress, 2026-01-01 detail read, string flag parsing (N-2), CR-1 hold payload on OMS, write-once snapshot, and stock preservation across 12 cases",
       "estimate": "~2s",
       "command": [
         "python3",
-        "./suite-IA-5106-US4-hold.py"
+        "./IA-5106-US4/suite-hold.py"
       ],
       "options": [
         {
@@ -187,42 +237,56 @@
     },
     {
       "id": "IA-5106-US4-cancel",
+      "aliases": [
+        "suite-IA-5106-US4-cancel"
+      ],
       "name": "IA-5106-US4: Confirmed Cancellation & Stock Release",
       "description": "Validation of scheduled cancellation sweep on v0, sync marker, defect fixes C-13/C-14/C-15, all three cancelledBy executors (AMAZON, MERCHANT, BUYER), CR-6 ledger, whole-line cancellation rule N-1, stock return to ATP, and partial vs full status across 17 cases",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5106-US4-cancel.py"
+        "./IA-5106-US4/suite-cancel.py"
       ]
     },
     {
       "id": "IA-5106-US4-restore",
+      "aliases": [
+        "suite-IA-5106-US4-restore"
+      ],
       "name": "IA-5106-US4: Rejection, Expiry & Status Restoration",
       "description": "Validation of absence-rule detection over two consecutive reads (L-76), handling REJECTED/WITHDRAWN/EXPIRED, CR-3 restore payload on OMS, status restoration, reservation state revalidation, routing stock lapse to out-of-stock problem order, and audit retention across 11 cases",
       "estimate": "~2s",
       "command": [
         "python3",
-        "./suite-IA-5106-US4-restore.py"
+        "./IA-5106-US4/suite-restore.py"
       ]
     },
     {
       "id": "IA-5106-US4-gate",
+      "aliases": [
+        "suite-IA-5106-US4-gate"
+      ],
       "name": "IA-5106-US4: Pre-Ready-To-Ship Gate, Race Conditions & Resilience",
       "description": "Validation of pre-ready-to-ship validation gate, bulk cancellation check batching up to 300, post-RTS cancellation problem reason, out-of-order event resolution, cutover date filtering, store credentials isolation across 4 markets (FR, DE, JP, US), and poll failure resilience across 16 cases",
       "estimate": "~3s",
       "command": [
         "python3",
-        "./suite-IA-5106-US4-gate.py"
+        "./IA-5106-US4/suite-gate.py"
       ]
     },
     {
       "id": "IA-5106-US4-all",
+      "aliases": [
+        "IA-5106-US4",
+        "suite-IA-5106-US4",
+        "suite-IA-5106-US4-all"
+      ],
       "name": "IA-5106-US4: Master Test Suite (All 56 Cases)",
       "description": "Consolidated execution of all 56 test cases covering inbound hold, confirmed cancellation, rejection/restoration, pre-RTS gating, race conditions, and marketplace isolation",
       "estimate": "~5s",
       "command": [
         "python3",
-        "./suite-IA-5106-US4.py"
+        "./IA-5106-US4/suite-all.py"
       ]
     }
   ],
@@ -1727,6 +1791,34 @@
               ]
             }
           }
+        },
+        {
+          "_comment": "IA-5109 Flow 1. POST_ORDER_FULFILLMENT_DATA is given its own feed id so getFeed can answer with the matching feedType and a fulfilment processing report. Keyed on the feed type, which no other suite sends.",
+          "name": "order fulfilment feed submitted -- 202 Accepted",
+          "when": {
+            "body.feedType": {
+              "contains": "ORDER_FULFILLMENT"
+            }
+          },
+          "then": [
+            {
+              "append": {
+                "store": "feeds",
+                "entry": {
+                  "feedId": "feed-fulfilment-100001",
+                  "feedType": "${body.feedType}",
+                  "inputFeedDocumentId": "${body.inputFeedDocumentId}",
+                  "marketplaceIds": "${body.marketplaceIds}"
+                }
+              }
+            }
+          ],
+          "respond": {
+            "status": 202,
+            "body": {
+              "feedId": "feed-fulfilment-100001"
+            }
+          }
         }
       ],
       "then": [
@@ -1774,6 +1866,23 @@
           }
         },
         {
+          "_comment": "IA-5109. IN_PROGRESS carrying no createdTime, so a caller's document-lifetime bound cannot fire against the fixed 2026-08-26 date the rule below uses. Declared before that rule because this id contains INPROGRESS too and rules match in order. It is what lets a test observe an attempt bound on the non-terminal path rather than a lifetime bound that fires first.",
+          "name": "IN_PROGRESS feed status -- no createdTime",
+          "when": {
+            "path.feedId": {
+              "contains": "INPROGRESS-UNDATED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_FULFILLMENT_DATA",
+              "processingStatus": "IN_PROGRESS"
+            }
+          }
+        },
+        {
           "name": "IN_PROGRESS feed status",
           "when": {
             "path.feedId": {
@@ -1807,6 +1916,65 @@
               "resultFeedDocumentId": "feed-doc-fatal-res"
             }
           }
+        },
+        {
+          "_comment": "IA-5109 Flow 1. Amazon's other terminal status that carries no processing report. Declared before the fulfilment rules because 'CANCELLED-fulfilment-1' contains 'fulfilment' too and rules match in order. No resultFeedDocumentId: a cancelled feed was never processed, so there is no report to read. No createdTime either, deliberately: with one, a caller that failed to treat CANCELLED as terminal would still stop on its document-lifetime bound against this fixed 2026-08-26 date, and a test could not tell the two apart. Without it, only treating CANCELLED as terminal settles the feed.",
+          "name": "CANCELLED feed status",
+          "when": {
+            "path.feedId": {
+              "contains": "CANCELLED"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_FULFILLMENT_DATA",
+              "processingStatus": "CANCELLED"
+            }
+          }
+        },
+        {
+          "_comment": "IA-5109 Flow 1, rejecting variant. Declared before the plain fulfilment rule because 'fulfilment-reject' also contains 'fulfilment' and rules match in order.",
+          "name": "order fulfilment feed DONE -- one message rejected",
+          "when": {
+            "path.feedId": {
+              "contains": "fulfilment-reject"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_FULFILLMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStartTime": "2026-08-26T00:01:00Z",
+              "processingEndTime": "2026-08-26T00:02:00Z",
+              "processingStatus": "DONE",
+              "resultFeedDocumentId": "feed-doc-res-fulfilment-reject"
+            }
+          }
+        },
+        {
+          "_comment": "IA-5109 Flow 1. The feed id POST /feeds hands back for POST_ORDER_FULFILLMENT_DATA. The default rule below still answers POST_FLAT_FILE_INVLOADER_DATA for every other feed id, unchanged.",
+          "name": "order fulfilment feed DONE -- every message accepted",
+          "when": {
+            "path.feedId": {
+              "contains": "fulfilment"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "feedId": "${path.feedId}",
+              "feedType": "POST_ORDER_FULFILLMENT_DATA",
+              "createdTime": "2026-08-26T00:00:00Z",
+              "processingStartTime": "2026-08-26T00:01:00Z",
+              "processingEndTime": "2026-08-26T00:02:00Z",
+              "processingStatus": "DONE",
+              "resultFeedDocumentId": "feed-doc-res-fulfilment-100001"
+            }
+          }
         }
       ],
       "name": "no marker -- 200 feed DONE",
@@ -1820,6 +1988,89 @@
           "processingEndTime": "2026-08-26T00:02:00Z",
           "processingStatus": "DONE",
           "resultFeedDocumentId": "feed-doc-res-100001"
+        }
+      }
+    },
+    {
+      "path": "/feeds/2021-06-30/documents/{feedDocumentId}",
+      "method": "GET",
+      "_comment": "getFeedDocument. The spec's own example points at d34o8swod1owfl.cloudfront.net, which is unreachable offline, so the feed processing report could never be fetched. This mirrors the reports route above and hands back the mock's own /s3/feed-download URL. No compressionAlgorithm: the body is served uncompressed.",
+      "rules": [
+        {
+          "name": "404 -- feed document not found",
+          "when": {
+            "path.feedDocumentId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Feed document ${path.feedDocumentId} not found."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 feed document download URL",
+      "respond": {
+        "status": 200,
+        "body": {
+          "feedDocumentId": "${path.feedDocumentId}",
+          "url": "http://127.0.0.1:23103/s3/feed-download/${path.feedDocumentId}"
+        }
+      }
+    },
+    {
+      "path": "/s3/feed-download/{feedDocumentId}",
+      "method": "GET",
+      "_comment": "Stand-in for the presigned S3 URL getFeedDocument returns, the counterpart of /s3/report-download. Serves the POST_ORDER_FULFILLMENT_DATA processing report UNCOMPRESSED, as text/xml. Element shape is ProcessingReport.xsd: AmazonEnvelope > Header, MessageType, Message > MessageID, ProcessingReport > DocumentTransactionID, StatusCode, ProcessingSummary, Result*. Deliberately not in the SP-API spec, so --check flags it as 'not in spec'.",
+      "rules": [
+        {
+          "name": "404 -- feed document not found",
+          "when": {
+            "path.feedDocumentId": {
+              "contains": "NOTFOUND"
+            }
+          },
+          "respond": {
+            "status": 404,
+            "body": {
+              "errors": [
+                {
+                  "code": "NotFound",
+                  "message": "Feed document ${path.feedDocumentId} not found."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "processing report -- one message rejected",
+          "when": {
+            "path.feedDocumentId": {
+              "contains": "reject"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amzn-envelope.xsd\">\n    <Header>\n        <DocumentVersion>1.02</DocumentVersion>\n        <MerchantIdentifier>A3TESTMERCHANT01</MerchantIdentifier>\n    </Header>\n    <MessageType>ProcessingReport</MessageType>\n    <Message>\n        <MessageID>1</MessageID>\n        <ProcessingReport>\n            <DocumentTransactionID>${path.feedDocumentId}</DocumentTransactionID>\n            <StatusCode>Complete</StatusCode>\n            <ProcessingSummary>\n                <MessagesProcessed>2</MessagesProcessed>\n                <MessagesSuccessful>1</MessagesSuccessful>\n                <MessagesWithError>1</MessagesWithError>\n                <MessagesWithWarning>0</MessagesWithWarning>\n            </ProcessingSummary>\n            <Result>\n                <MessageID>2</MessageID>\n                <ResultCode>Error</ResultCode>\n                <ResultMessageCode>18028</ResultMessageCode>\n                <ResultDescription>Invalid tracking id for carrier Other</ResultDescription>\n            </Result>\n        </ProcessingReport>\n    </Message>\n</AmazonEnvelope>\n",
+            "headers": {
+              "Content-Type": "text/xml; charset=UTF-8"
+            }
+          }
+        }
+      ],
+      "name": "no marker -- 200 processing report, every message accepted",
+      "respond": {
+        "status": 200,
+        "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<AmazonEnvelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"amzn-envelope.xsd\">\n    <Header>\n        <DocumentVersion>1.02</DocumentVersion>\n        <MerchantIdentifier>A3TESTMERCHANT01</MerchantIdentifier>\n    </Header>\n    <MessageType>ProcessingReport</MessageType>\n    <Message>\n        <MessageID>1</MessageID>\n        <ProcessingReport>\n            <DocumentTransactionID>${path.feedDocumentId}</DocumentTransactionID>\n            <StatusCode>Complete</StatusCode>\n            <ProcessingSummary>\n                <MessagesProcessed>2</MessagesProcessed>\n                <MessagesSuccessful>2</MessagesSuccessful>\n                <MessagesWithError>0</MessagesWithError>\n                <MessagesWithWarning>0</MessagesWithWarning>\n            </ProcessingSummary>\n        </ProcessingReport>\n    </Message>\n</AmazonEnvelope>\n",
+        "headers": {
+          "Content-Type": "text/xml; charset=UTF-8"
         }
       }
     },

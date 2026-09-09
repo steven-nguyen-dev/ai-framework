@@ -6,7 +6,7 @@
 **Source documents:** `[KEY]-[TOPIC]-mapping.md` · `[KEY]-[TARGET_SYSTEM]-[TOPIC]-change-requests.md`
 **Claim library:** `[KEY]-[TOPIC]-library.md` — every `L-n` in this document resolves there
 **Author / Team:** `[Author / Team Name]`
-**Written in:** Simplified Technical English, using the terms the repository's context files give.
+**Written in:** the `make-it-short` wording rules, in the terms the repository's context files give.
 
 ---
 
@@ -23,13 +23,8 @@ so development kicks off knowing what is still to settle.
 
 **Writing rules.**
 
-- `references/writing-limits.md` states the character, paragraph, list and column limits every unit
-  here holds.
-- Write in ASD-STE100 Simplified Technical English. Short sentences. Active voice. One idea per
-  sentence. Spell out every contraction.
-- Name each system, party, key and wire field in the word the repository's context files give, and
-  name the context file that owns a term two files share.
-- Write every line in the present tense, as the state that holds when the work is done.
+- `references/writing-limits.md` reaches this repository's unit limits and wording rules, which
+  every unit and every sentence here holds, and states what the contract adds on top.
 - Start every section 4 item with a verb — Add, Remove, Send, Replace, Implement, Audit, Keep,
   Reject, Read — and name the system it lands in.
 - Group section 4 by the team that builds it, then by endpoint, flow or domain inside each team,
@@ -41,7 +36,7 @@ so development kicks off knowing what is still to settle.
 - `C-n`, `CR-n`, `D-n`, `P-n` and `N-n` are permanent, like `L-n`. Group items by the function they
   land in and let the numbers run out of order. A split item takes a letter — `C-6a`, `C-6b`.
 - Every claim carries an `L-n`. The claim library states the citation rule and holds every locator.
-- Use pure Markdown headings and links, and a bullet list from three items up.
+- Keep the sections this requirement uses.
 
 **The flow diagrams.** Section 3 carries one Mermaid `sequenceDiagram` per flow in mapping section
 3, in that section's order, under the flow's own name and trigger. Every participant is a component

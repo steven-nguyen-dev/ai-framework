@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "ATVPDKIKX0DER"
+    ],
+    "reportOptions": "null"
+  }
+]

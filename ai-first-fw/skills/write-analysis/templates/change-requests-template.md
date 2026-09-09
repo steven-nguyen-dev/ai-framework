@@ -21,10 +21,10 @@ change.
 
 **Writing rules.**
 
-- `references/writing-limits.md` states the character, paragraph, list and column limits every unit
-  here holds.
-- Name each system, party, key and wire field in the word the repository's context files give, and
-  expand it on first use, because the reader holds no context file.
+- `references/writing-limits.md` reaches this repository's unit limits and wording rules, which
+  every unit and every sentence here holds, and states the column set this document's tables carry.
+- Expand each system, party, key and wire field on first use, because the reader holds no context
+  file.
 - Group by endpoint. One `###` section per endpoint or flow, headed by the method and path. Its
   change table and its payload sample sit together in that section.
 - Give every property one change status: `ADD`, `UPDATE`, `REMOVE` or `REUSE`, settled against
@@ -35,7 +35,6 @@ change.
   column, the validation — starting with a verb.
 - Section 4 carries one `A-n` per condition that holds once the work is built, and every change row
   is covered by an `A-n`.
-- Use pure Markdown headings and links, and write counts as numbers.
 - Keep the endpoints this requirement touches and delete the rest.
 
 **The payload sample comment.** Every sample is the endpoint's whole request body, fenced `jsonc`,

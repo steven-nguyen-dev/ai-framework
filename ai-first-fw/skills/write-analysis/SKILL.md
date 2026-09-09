@@ -1,7 +1,7 @@
 ---
 name: write-analysis
 description: Write the four-document contract — claim library, mapping, change requests and specs — that implementation follows for one requirement, from its Jira issue or brief, every party's documentation, and the repository's own code and context files. Use on "write the analysis", "analyse this ticket", "write the mapping", "write the change requests", "write the specs", "write the scope", "write the definition of done", "amend the contract", or when a requirement needs its contract before implementation.
-version: 2.1.0
+version: 2.2.0
 disable-model-invocation: false
 ---
 
@@ -35,8 +35,9 @@ that settles the rest.
 | Citation | `L-n` into the library | None — each comment states its source in words |
 | Own sections | Entity alignment, flows, enum translation, uniqueness and ordering | Glossary |
 
-`references/writing-limits.md` carries the character, paragraph, list and column limits every
-document holds. `references/contract-tiers.md` carries the tier test, the order the work moves in,
+`references/writing-limits.md` reaches the `make-it-short` unit limits and wording rules every
+document holds, and carries the column set and the split letter the contract adds on top.
+`references/contract-tiers.md` carries the tier test, the order the work moves in,
 the evidence order between code and documents, and what reaches the preconditions table.
 
 ## Inputs
@@ -246,8 +247,8 @@ The published contract states one thing: what holds now.
 
 **Writing limits**
 
-- Every unit `references/writing-limits.md` names holds the limit that file states for it, counted
-  against the published document.
+- Every unit holds the limit the `make-it-short` unit table states for it, counted against the
+  published document, and every sentence holds that skill's wording rules.
 - Every bullet list that passed its limit carries its items in groups with a heading each, or in a
   table.
 

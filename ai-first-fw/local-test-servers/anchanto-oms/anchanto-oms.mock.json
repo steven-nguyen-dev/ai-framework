@@ -11979,8 +11979,7 @@
             "entry": {
               "kind": "bulk_category_attributes",
               "category_code": "${body.category_code}",
-              "marketplace_code": "${body.marketplace_code}",
-              "attributes": "${body.category_attributes}"
+              "marketplace_code": "${body.marketplace_code}"
             }
           }
         }

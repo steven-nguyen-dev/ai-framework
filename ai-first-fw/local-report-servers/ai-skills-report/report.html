@@ -1303,7 +1303,7 @@
           ALL ECOSYSTEMS
         </div>
         <div class="metric-val blue" id="metricAll">0</div>
-        <div class="metric-sub" id="metricAllSub">All 3 Surfaces</div>
+        <div class="metric-sub" id="metricAllSub">All 5 Surfaces</div>
       </div>
       <div class="metric-card" data-section="claude_code" onclick="selectSection('claude_code')">
         <div class="metric-title">
@@ -1337,6 +1337,14 @@
         <div class="metric-val" id="metricCursor" style="color: #38bdf8;">0</div>
         <div class="metric-sub" id="metricCursorSub">Skills, Rules &amp; MCP</div>
       </div>
+      <div class="metric-card" data-section="codex" onclick="selectSection('codex')">
+        <div class="metric-title">
+          <svg class="metric-svg-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #10a37f;"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          CODEX CLI
+        </div>
+        <div class="metric-val" id="metricCodex" style="color: #10a37f;">0</div>
+        <div class="metric-sub" id="metricCodexSub">Skills, Plugins &amp; MCP</div>
+      </div>
       <div class="metric-card" data-section="skills_index" onclick="selectSection('skills_index')">
         <div class="metric-title">
           <svg class="metric-svg-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #34d399;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
@@ -1351,7 +1359,7 @@
           MCP STATUS
         </div>
         <div class="metric-val" id="metricMcp" style="color: var(--accent);">0</div>
-        <div class="metric-sub" id="metricMcpSub">Claude &amp; AGY Config</div>
+        <div class="metric-sub" id="metricMcpSub">Claude, AGY, Cursor &amp; Codex</div>
       </div>
     </div>
 
@@ -1563,6 +1571,11 @@
       const cursorRules = (reportData.cursor?.rules || []);
       const cursorSkillsTotal = cursorSkills.length + cursorRules.length;
 
+      const codexPlugins = (reportData.codex?.plugins || []);
+      const codexSkills = (reportData.codex?.skills || []);
+      const codexRules = (reportData.codex?.rules || []);
+      const codexSkillsTotal = codexPlugins.reduce((sum, p) => sum + (p.skills_count || (p.skills ? p.skills.length : 0)), 0) + codexSkills.length + codexRules.length;
+
       const marketplaces = (reportData.marketplaces || []);
       const uniqueSkillsCount = s.unique_skills_count || 50;
 
@@ -1570,7 +1583,7 @@
       const metricAll = document.getElementById('metricAll');
       const metricAllSub = document.getElementById('metricAllSub');
       if (metricAll) metricAll.textContent = `${s.total_plugins || 9} Plugins`;
-      if (metricAllSub) metricAllSub.textContent = `${s.total_skills || 97} Total Across 4 Surfaces`;
+      if (metricAllSub) metricAllSub.textContent = `${s.total_skills || 97} Total Across 5 Surfaces`;
 
       const metricClaudeCode = document.getElementById('metricClaudeCode');
       const metricClaudeCodeSub = document.getElementById('metricClaudeCodeSub');
@@ -1592,6 +1605,11 @@
       if (metricCursor) metricCursor.textContent = `${cursorSkillsTotal} Items`;
       if (metricCursorSub) metricCursorSub.textContent = `${cursorSkills.length} Skills • ${cursorRules.length} Rules`;
 
+      const metricCodex = document.getElementById('metricCodex');
+      const metricCodexSub = document.getElementById('metricCodexSub');
+      if (metricCodex) metricCodex.textContent = `${codexPlugins.length} Plugins`;
+      if (metricCodexSub) metricCodexSub.textContent = `${codexSkills.length} Skills • ${codexRules.length} AGENTS.md`;
+
       const metricRegistry = document.getElementById('metricRegistry');
       const metricRegistrySub = document.getElementById('metricRegistrySub');
       if (metricRegistry) metricRegistry.textContent = `${marketplaces.length} Catalogs`;
@@ -1603,7 +1621,8 @@
         m.ecosystems?.antigravity?.configured || 
         m.ecosystems?.claude_desktop?.configured || 
         m.ecosystems?.claude_code?.configured ||
-        m.ecosystems?.cursor?.configured
+        m.ecosystems?.cursor?.configured ||
+        m.ecosystems?.codex?.configured
       ).length;
 
       const metricMcp = document.getElementById('metricMcp');
@@ -1622,6 +1641,8 @@
       if (countAntigravity) countAntigravity.textContent = agyPlugins.length + agySkills.length;
       const countCursor = document.getElementById('countCursor');
       if (countCursor) countCursor.textContent = cursorSkillsTotal;
+      const countCodex = document.getElementById('countCodex');
+      if (countCodex) countCodex.textContent = codexPlugins.length + codexSkillsTotal;
       const countUniqueSkills = document.getElementById('countUniqueSkills');
       if (countUniqueSkills) countUniqueSkills.textContent = marketplaces.length;
     }
@@ -1872,6 +1893,7 @@
         ...(reportData.claude?.cli?.plugins || []),
         ...(reportData.claude?.app_cowork?.plugins || []),
         ...(reportData.antigravity?.cli?.plugins || []),
+        ...(reportData.codex?.plugins || []),
       ];
 
       const uniquePluginsMap = new Map();
@@ -1888,6 +1910,8 @@
         ...(reportData.antigravity?.cli?.skills || []),
         ...(reportData.claude?.cli?.skills || []),
         ...(reportData.claude?.app_cowork?.skills || []),
+        ...(reportData.cursor?.skills || []),
+        ...(reportData.codex?.skills || []),
       ];
 
       const uniqueIndependentMap = new Map();
@@ -2008,6 +2032,7 @@
         const code = m.ecosystems?.claude_code || {};
         const desk = m.ecosystems?.claude_desktop || {};
         const cursor = m.ecosystems?.cursor || {};
+        const codex = m.ecosystems?.codex || {};
         const icon = m.name === 'kibana' ? '📊' : m.name === 'jira' ? '📋' : m.name === 'idea' ? '💡' : '🔌';
 
         return `
@@ -2115,6 +2140,27 @@
                   `}
                 </div>
               </div>
+
+              <!-- Codex CLI -->
+              <div class="mcp-eco-row">
+                <div class="mcp-eco-label">
+                  <span>⌨️ Codex CLI</span>
+                  <span class="mcp-status-pill ${codex.configured ? 'active' : 'inactive'}">
+                    ${codex.configured ? 'Active' : 'Not Added'}
+                  </span>
+                </div>
+                <div class="mcp-eco-actions">
+                  ${codex.configured ? `
+                    <button class="btn btn-sm" style="font-size: 10px; padding: 2px 8px; color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg);" onclick="triggerToggleMcp('${m.id}', 'codex', false)">
+                      Disable
+                    </button>
+                  ` : `
+                    <button class="btn btn-sm btn-action-install" style="font-size: 10px; padding: 2px 8px;" onclick="triggerToggleMcp('${m.id}', 'codex', true)">
+                      ➕ Add to Codex
+                    </button>
+                  `}
+                </div>
+              </div>
             </div>
 
             <!-- Exposed Tools Button (Expandable) -->
@@ -2149,6 +2195,7 @@
       }
 
       const cursorCount = mcpServers.filter(m => m.ecosystems?.cursor?.configured).length;
+      const codexCount = mcpServers.filter(m => m.ecosystems?.codex?.configured).length;
 
       return `
         <!-- Ecosystem Summary Row -->
@@ -2187,6 +2234,14 @@
                 ${cursorCount} / ${mcpServers.length} Active
               </div>
               <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">~/.cursor/mcp.json</div>
+            </div>
+
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;">
+              <div style="font-size: 11px; color: var(--muted); font-weight: 600;">⌨️ Codex CLI</div>
+              <div style="font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #10a37f; margin-top: 2px;">
+                ${codexCount} / ${mcpServers.length} Active
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">~/.codex/config.toml</div>
             </div>
           </div>
         </div>
@@ -2408,6 +2463,55 @@
         }
       }
 
+      // 5. Card: Codex CLI
+      if (activeSection === 'all' || activeSection === 'codex') {
+        const codexSkills = (reportData.codex?.skills || []).filter(filterMatches);
+        const codexRules = (reportData.codex?.rules || []).filter(filterMatches);
+        const codexPlugins = (reportData.codex?.plugins || []).filter(filterMatches);
+        const meta = reportData.codex?.metadata || {};
+
+        if (codexSkills.length > 0 || codexRules.length > 0 || codexPlugins.length > 0 || meta.installed) {
+          html += `
+            <div class="subsection-container" style="margin-bottom: 24px;">
+              <div class="subsection-title">
+                <svg class="metric-svg-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #10a37f;"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                <span>Codex CLI Ecosystem</span>
+              </div>
+              <div class="path-row" style="margin-bottom: 14px;">
+                <span>⌨️ OpenAI Codex &bull; Skills: <code>~/.codex/skills/</code> &amp; <code>~/.agents/skills/</code> &bull; Plugins: <code>~/.codex/plugins/cache/</code> &bull; MCP: <code>~/.codex/config.toml</code></span>
+              </div>
+
+              ${codexPlugins.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header">🧩 Installed Codex Plugins (${codexPlugins.length})</div>
+                  <div class="plugins-vertical-list">
+                    ${codexPlugins.map(renderPluginCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${codexRules.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header" style="color: #10a37f;">📜 AGENTS.md Instructions (${codexRules.length})</div>
+                  <div class="items-grid">
+                    ${codexRules.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${codexSkills.length > 0 ? `
+                <div class="category-block">
+                  <div class="category-header skills-cat">⚡ Codex Agent Skills (${codexSkills.length})</div>
+                  <div class="items-grid">
+                    ${codexSkills.map(renderSkillCard).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+      }
+
       if (!html) {
         html = `<div class="empty-state">No skills or plugins matching the selected filters and search query.</div>`;
       }
@@ -2441,11 +2545,17 @@
         const details = await pullUpdatesFromMarketplaces();
         const mpCount = (details && details.marketplaces_updated) ? details.marketplaces_updated.length : 0;
         const pCount = (details && details.plugins_updated) ? details.plugins_updated.length : 0;
+        const codexCount = (details && details.codex_items_synced) ? details.codex_items_synced : 0;
+        const cursorCount = (details && details.cursor_items_synced) ? details.cursor_items_synced : 0;
+        const extras = [];
+        if (codexCount) extras.push(`Codex ${codexCount} installed`);
+        if (cursorCount) extras.push(`Cursor ${cursorCount} synced`);
+        const extraText = extras.length ? ` • ${extras.join(' • ')}` : '';
         if (pCount > 0) {
           const names = details.plugins_updated.map(p => `${p.plugin_id} (v${p.new_version})`).join(', ');
-          showToast(`Pulled ${mpCount} public marketplaces! Updated plugins: ${names}`, 'success');
+          showToast(`Pulled ${mpCount} public marketplaces! Updated plugins: ${names}${extraText}`, 'success');
         } else {
-          showToast(`Pulled ${mpCount} public marketplaces! All installed plugins are up to date.`, 'success');
+          showToast(`Pulled ${mpCount} public marketplaces. All Claude plugins up to date${extraText}.`, 'success');
         }
       } catch (err) {
         showToast(`Pull updates failed: ${err.message}`, 'error');

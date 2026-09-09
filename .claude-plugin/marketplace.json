@@ -10,13 +10,13 @@
     {
       "name": "ai-first-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: write-analysis, implementation-planner, specs-builder, and review-code.",
-      "version": "2.1.4",
+      "version": "2.1.5",
       "source": "./ai-first-fw/skills"
     },
     {
       "name": "ai-first-fw-utilities",
-      "description": "Standalone engineering utility skills: draw-diagram, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.1.1",
+      "description": "Standalone engineering utility skills: draw-diagram, lead, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
+      "version": "2.3.1",
       "source": "./ai-first-fw/utilities"
     },
     {

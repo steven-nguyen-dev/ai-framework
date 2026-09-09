@@ -5,7 +5,8 @@ Discovers and inspects all skills, plugins, and extensions across:
 1. Claude (CLI, Claude App Cowork, Claude App Code)
 2. Antigravity (CLI, App, IDE)
 3. Cursor (IDE, Skills, Rules, MCP)
-4. Master Alphabetical Skills Registry & Installation Matrix
+4. Codex (CLI, Skills, Plugins, AGENTS.md, MCP)
+5. Master Alphabetical Skills Registry & Installation Matrix
 
 Provides install & uninstall management across target agent surfaces.
 """
@@ -23,6 +24,11 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    import tomllib
+except ImportError:
+    tomllib = None  # type: ignore
 
 def find_workspace_root() -> Path:
     """Locates the ai-framework repository root dynamically across any machine."""
@@ -48,12 +54,20 @@ BACKUPS = WORKSPACE / ".backups"
 BACKUPS.mkdir(parents=True, exist_ok=True)
 
 
+def _codex_home() -> Path:
+    """Returns $CODEX_HOME, defaulting to ~/.codex."""
+    env = os.getenv("CODEX_HOME")
+    if env:
+        return Path(env).expanduser().resolve()
+    return HOME / ".codex"
+
+
 @dataclass
 class SkillItem:
     id: str
     name: str
     description: str
-    section: str  # "claude" | "antigravity" | "cursor"
+    section: str  # "claude" | "antigravity" | "cursor" | "codex"
     subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide" | "skills" | "rules"
     source_type: str  # "local_repo_symlink" | "local_workspace" | "local_user" | "marketplace_github" | "builtin" | "desktop_extension"
     source_label: str  # e.g. "Local (Repo Symlink)", "Marketplace (claude-plugins-official)"
@@ -73,8 +87,8 @@ class PluginItem:
     id: str
     name: str
     description: str
-    section: str  # "claude" | "antigravity" | "cursor"
-    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide" | "extensions" | "plugins"
+    section: str  # "claude" | "antigravity" | "cursor" | "codex"
+    subsection: str  # "cli" | "app_cowork" | "app_code" | "app" | "ide" | "extensions" | "plugins" | "skills"
     source_type: str  # "marketplace_github" | "local" | "desktop_extension" | "builtin"
     source_label: str
     version: str | None
@@ -1023,7 +1037,287 @@ def scan_cursor_plugins() -> list[PluginItem]:
 
 
 # ==============================================================================
-# 3. Master Alphabetical Skills Registry & Installation Matrix
+# 4. Codex Scanners
+# ==============================================================================
+
+def _version_sort_key(name: str):
+    """Sorts version directory names so 0.1.14 ranks after 0.1.9."""
+    parts = []
+    for token in re.split(r"[^0-9A-Za-z]+", name):
+        if not token:
+            continue
+        parts.append((0, int(token)) if token.isdigit() else (1, token.lower()))
+    return parts
+
+
+def _latest_version_dir(plugin_dir: Path) -> Path | None:
+    v_dirs = [v for v in plugin_dir.iterdir() if v.is_dir() and not v.name.startswith(".")]
+    if not v_dirs:
+        return None
+    return sorted(v_dirs, key=lambda d: _version_sort_key(d.name))[-1]
+
+
+def _collect_skill_items_from_root(
+    skills_root: Path,
+    *,
+    id_prefix: str,
+    section: str,
+    subsection: str,
+    source_type: str,
+    source_label: str,
+    plugin_name: str | None = None,
+    version: str | None = None,
+    marketplace: str | None = None,
+    repo_url: str | None = None,
+    extra_meta: dict[str, Any] | None = None,
+) -> list[SkillItem]:
+    """Walks a directory tree and returns SkillItem for every SKILL.md found."""
+    skills: list[SkillItem] = []
+    if not skills_root.is_dir():
+        return skills
+    for root, _, files in os.walk(skills_root):
+        if "SKILL.md" not in files:
+            continue
+        skill_file = Path(root) / "SKILL.md"
+        s_name, s_desc, fm = extract_skill_info_from_file(skill_file)
+        src_type, src_label, resolved = determine_local_source_label(skill_file)
+        meta = {"frontmatter": fm}
+        if extra_meta:
+            meta.update(extra_meta)
+        skills.append(SkillItem(
+            id=f"{id_prefix}:{s_name}",
+            name=s_name,
+            description=s_desc,
+            section=section,
+            subsection=subsection,
+            source_type=source_type or src_type,
+            source_label=source_label or src_label,
+            path=str(skill_file.parent),
+            resolved_path=resolved,
+            plugin_name=plugin_name,
+            version=fm.get("version") or version,
+            marketplace=marketplace,
+            repo_url=repo_url,
+            category=fm.get("category"),
+            metadata=meta,
+        ))
+    return skills
+
+
+def scan_codex_skills() -> list[SkillItem]:
+    """Scans Codex skills from ~/.codex/skills, ~/.agents/skills, and workspace .agents/.codex skills."""
+    skills: list[SkillItem] = []
+    seen_paths: set[str] = set()
+    seen_names: set[str] = set()
+    codex_home = _codex_home()
+
+    def add_from_dir(s_dir: Path, id_prefix: str, source_type: str, source_label: str, extra_meta: dict[str, Any]):
+        if not s_dir.is_dir():
+            return
+        for item in sorted(s_dir.iterdir()):
+            if item.name.startswith("."):
+                continue
+            skill_md = item / "SKILL.md" if item.is_dir() else (item if item.suffix == ".md" else None)
+            if not (skill_md and skill_md.is_file()):
+                continue
+            path_str = str(item)
+            if path_str in seen_paths or item.name in seen_names:
+                continue
+            seen_paths.add(path_str)
+            seen_names.add(item.name)
+            name, desc, fm = extract_skill_info_from_file(skill_md)
+            src_type, src_label, resolved = determine_local_source_label(item)
+            skills.append(SkillItem(
+                id=f"{id_prefix}:{item.name}",
+                name=name,
+                description=desc,
+                section="codex",
+                subsection="skills",
+                source_type=source_type or src_type,
+                source_label=source_label or src_label,
+                path=path_str,
+                resolved_path=resolved,
+                version=fm.get("version"),
+                category=fm.get("category", "Codex Skill"),
+                metadata={**extra_meta, "frontmatter": fm, "target_key": "codex", "surface": "Codex CLI"},
+            ))
+
+    add_from_dir(
+        WORKSPACE / ".agents/skills",
+        "codex:skill:workspace-agents",
+        "local_workspace",
+        "Workspace Agents Skills",
+        {"scope": "workspace"},
+    )
+    add_from_dir(
+        WORKSPACE / ".codex/skills",
+        "codex:skill:workspace",
+        "local_workspace",
+        "Workspace Codex Skills",
+        {"scope": "workspace"},
+    )
+    add_from_dir(
+        codex_home / "skills",
+        "codex:skill:user",
+        "local_user",
+        "Codex User Skills",
+        {"scope": "global"},
+    )
+    add_from_dir(
+        HOME / ".agents/skills",
+        "codex:skill:agents",
+        "local_user",
+        "User Agents Skills",
+        {"scope": "global", "root": "~/.agents/skills"},
+    )
+
+    system_dir = codex_home / "skills" / ".system"
+    if system_dir.is_dir():
+        for item in sorted(system_dir.iterdir()):
+            if item.name.startswith(".") or not item.is_dir():
+                continue
+            skill_md = item / "SKILL.md"
+            if not skill_md.is_file():
+                continue
+            path_str = str(item)
+            if path_str in seen_paths:
+                continue
+            seen_paths.add(path_str)
+            name, desc, fm = extract_skill_info_from_file(skill_md)
+            skills.append(SkillItem(
+                id=f"codex:skill:system:{item.name}",
+                name=name,
+                description=desc,
+                section="codex",
+                subsection="skills",
+                source_type="builtin",
+                source_label="Codex Built-in",
+                path=path_str,
+                resolved_path=path_str,
+                version=fm.get("version"),
+                category=fm.get("category", "Codex System Skill"),
+                metadata={"scope": "system", "target_key": "codex", "surface": "Codex CLI", "frontmatter": fm},
+            ))
+
+    return skills
+
+
+def scan_codex_agents_md() -> list[SkillItem]:
+    """Scans AGENTS.md files Codex uses as always-on project/global instructions."""
+    rules: list[SkillItem] = []
+    candidates = [
+        (WORKSPACE / "AGENTS.md", "workspace", "Workspace AGENTS.md"),
+        (WORKSPACE / ".codex/AGENTS.md", "workspace", "Workspace Codex AGENTS.md"),
+        (_codex_home() / "AGENTS.md", "global", "Global Codex AGENTS.md"),
+    ]
+    seen: set[str] = set()
+    for path, scope, label in candidates:
+        if not path.is_file():
+            continue
+        path_str = str(path)
+        if path_str in seen:
+            continue
+        seen.add(path_str)
+        try:
+            content = path.read_text(encoding="utf-8", errors="replace")
+            first_line = next((l.strip().lstrip("#").strip() for l in content.splitlines() if l.strip()), label)
+        except Exception:
+            first_line = label
+        src_type, src_label, resolved = determine_local_source_label(path)
+        rules.append(SkillItem(
+            id=f"codex:rule:agents-md:{scope}:{path.name}",
+            name=label,
+            description=first_line,
+            section="codex",
+            subsection="rules",
+            source_type=src_type,
+            source_label=src_label,
+            category="AGENTS.md",
+            path=path_str,
+            resolved_path=resolved,
+            metadata={"scope": scope, "target_key": "codex", "surface": "Codex CLI"},
+        ))
+    return rules
+
+
+def scan_codex_plugins() -> list[PluginItem]:
+    """Scans cached Codex plugins from ~/.codex/plugins/cache/<marketplace>/<plugin>/<version>/."""
+    plugins: list[PluginItem] = []
+    cache_dir = _codex_home() / "plugins" / "cache"
+    if not cache_dir.is_dir():
+        return plugins
+
+    for mp_dir in sorted(cache_dir.iterdir()):
+        if not mp_dir.is_dir() or mp_dir.name.startswith("."):
+            continue
+        for p_dir in sorted(mp_dir.iterdir()):
+            if not p_dir.is_dir() or p_dir.name.startswith("."):
+                continue
+            latest = _latest_version_dir(p_dir)
+            if latest is None:
+                continue
+
+            plugin_json = latest / ".codex-plugin" / "plugin.json"
+            p_meta: dict[str, Any] = {}
+            if plugin_json.is_file():
+                try:
+                    p_meta = json.loads(plugin_json.read_text(encoding="utf-8"))
+                except Exception:
+                    p_meta = {}
+
+            plugin_name = p_meta.get("name") or p_dir.name
+            version = p_meta.get("version") or latest.name
+            description = (
+                p_meta.get("description")
+                or (p_meta.get("interface") or {}).get("shortDescription")
+                or f"Codex plugin {plugin_name}"
+            )
+            repo_url = p_meta.get("repository") or p_meta.get("homepage")
+            if isinstance(repo_url, dict):
+                repo_url = repo_url.get("url")
+
+            skills_rel = p_meta.get("skills") or "./skills/"
+            skills_root = (latest / skills_rel).resolve() if skills_rel else latest / "skills"
+            if not skills_root.is_dir():
+                skills_root = latest / "skills"
+
+            contained = _collect_skill_items_from_root(
+                skills_root,
+                id_prefix=f"codex:plugin:{plugin_name}",
+                section="codex",
+                subsection="plugins",
+                source_type="marketplace_github",
+                source_label=f"Codex Plugin Cache ({mp_dir.name})",
+                plugin_name=plugin_name,
+                version=version,
+                marketplace=mp_dir.name,
+                repo_url=repo_url,
+                extra_meta={"scope": "user", "target_key": "codex", "surface": "Codex CLI"},
+            )
+
+            plugins.append(PluginItem(
+                id=f"codex:plugin:{mp_dir.name}:{plugin_name}",
+                name=plugin_name,
+                description=description,
+                section="codex",
+                subsection="plugins",
+                source_type="marketplace_github",
+                source_label=f"Codex Plugin Cache ({mp_dir.name})",
+                version=version,
+                marketplace=mp_dir.name,
+                repo_url=repo_url,
+                commit_sha=None,
+                install_path=str(latest),
+                skills_count=len(contained),
+                skills=contained,
+                metadata=p_meta,
+            ))
+
+    return plugins
+
+
+# ==============================================================================
+# 5. Master Alphabetical Skills Registry & Installation Matrix
 # ==============================================================================
 
 def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
@@ -1033,20 +1327,22 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
     """
     skills_map: dict[str, dict[str, Any]] = {}
 
-    # Target keys for matrix: claude, agy, agy-ide, agy-cli, cursor
+    # Target keys for matrix: claude, agy, agy-ide, agy-cli, cursor, codex
     active_target_defs = [
         {"key": "claude", "label": "Claude CLI", "skills_dir": HOME / ".claude/skills"},
         {"key": "agy", "label": "Antigravity App", "skills_dir": HOME / ".gemini/config/skills"},
         {"key": "agy-ide", "label": "Antigravity IDE", "skills_dir": HOME / ".gemini/antigravity/skills"},
         {"key": "agy-cli", "label": "Antigravity CLI", "skills_dir": HOME / ".gemini/antigravity-cli/skills"},
         {"key": "cursor", "label": "Cursor IDE", "skills_dir": HOME / ".cursor/skills-cursor"},
+        {"key": "codex", "label": "Codex CLI", "skills_dir": _codex_home() / "skills"},
     ]
 
-    # 1. Discovered from Installed Plugins (Claude Code, Cowork, Antigravity/Gemini, Cursor)
+    # 1. Discovered from Installed Plugins (Claude Code, Cowork, Antigravity/Gemini, Cursor, Codex)
     all_plugins = [
         *scan_claude_cli_plugins(),
         *scan_antigravity_cli_plugins(),
         *scan_cursor_plugins(),
+        *scan_codex_plugins(),
     ]
     cowork_plugins, _, _ = scan_claude_app_cowork()
     all_plugins.extend(cowork_plugins)
@@ -1064,6 +1360,22 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
                 "version": s.version or "1.0.0",
                 "can_install": False,
                 "category": s.category or "Cursor",
+                "targets": {},
+            }
+
+    # Include standalone Codex skills (user, workspace, built-in, AGENTS.md)
+    for s in (*scan_codex_skills(), *scan_codex_agents_md()):
+        if s.name not in skills_map:
+            skills_map[s.name] = {
+                "name": s.name,
+                "description": s.description,
+                "source_group": "Codex Built-in" if s.source_type == "builtin" else "Codex CLI",
+                "origin_path": s.path,
+                "repo_url": s.repo_url,
+                "plugin_name": s.plugin_name,
+                "version": s.version or "1.0.0",
+                "can_install": False,
+                "category": s.category or "Codex",
                 "targets": {},
             }
 
@@ -1131,6 +1443,7 @@ def scan_all_skills_alphabetical() -> list[dict[str, Any]]:
         WORKSPACE / ".agents/skills",
         WORKSPACE / ".claude/skills",
         WORKSPACE / ".gemini/skills",
+        WORKSPACE / ".codex/skills",
     ]
     for ws_dir in ws_dirs:
         if ws_dir.is_dir():
@@ -1684,7 +1997,12 @@ def sync_antigravity_plugins() -> list[str]:
 
 
 def sync_cursor_plugins() -> list[str]:
-    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and cached marketplace plugins directly to Cursor global skills (~/.cursor/skills-cursor/)."""
+    """Syncs ai-first-fw-skills, ai-first-fw-utilities, and cached marketplace plugins directly to Cursor global skills (~/.cursor/skills-cursor/).
+    
+    Filters:
+      - ai-first-fw-skills: Excludes review-code (disabled for Cursor).
+      - mattpocock-skills: Keeps only grill skills (grill-me, grill-with-docs, grilling) and wait-what/wait-wait; disables/removes all others.
+    """
     synced = []
     cursor_skills_dir = HOME / ".cursor/skills-cursor"
     cursor_skills_dir.mkdir(parents=True, exist_ok=True)
@@ -1699,6 +2017,19 @@ def sync_cursor_plugins() -> list[str]:
 
     workspace = WORKSPACE
     now_ms = int(time.time() * 1000)
+
+    # Disabled skills filter rules for Cursor
+    CURSOR_DISABLED_AI_FIRST_SKILLS = {"review-code"}
+    # Known mattpocock skills that are disabled for Cursor (keep only grill* and wait-what/wait-wait)
+    KNOWN_MATTPOCOCK_DISABLED = {
+        "ask-matt", "claude-handoff", "code-review", "codebase-design", "diagnosing-bugs",
+        "domain-modeling", "git-guardrails-claude-code", "handoff", "implement",
+        "improve-codebase-architecture", "loop-me", "migrate-to-shoehorn", "prototype",
+        "research", "resolving-merge-conflicts", "scaffold-exercises", "setup-matt-pocock-skills",
+        "setup-pre-commit", "setup-ts-deep-modules", "tdd", "teach", "to-questionnaire",
+        "to-spec", "to-tickets", "triage", "wayfinder", "wizard", "writing-beats",
+        "writing-for-agents", "writing-fragments", "writing-shape"
+    }
 
     # 1. Read or initialize .sync-manifest.json in ~/.cursor/skills-cursor/
     sync_manifest_file = cursor_skills_dir / ".sync-manifest.json"
@@ -1716,6 +2047,14 @@ def sync_cursor_plugins() -> list[str]:
         if src_group.is_dir():
             for item in src_group.iterdir():
                 if item.is_dir() and (item / "SKILL.md").is_file():
+                    # Exclude disabled ai-first skills for Cursor (e.g. review-code)
+                    if p_name == "ai-first-fw-skills" and item.name in CURSOR_DISABLED_AI_FIRST_SKILLS:
+                        dest_skill = cursor_skills_dir / item.name
+                        if dest_skill.exists():
+                            shutil.rmtree(dest_skill, ignore_errors=True)
+                        sync_manifest["skills"].pop(item.name, None)
+                        continue
+
                     dest_skill = cursor_skills_dir / item.name
                     if dest_skill.exists():
                         shutil.rmtree(dest_skill)
@@ -1740,10 +2079,24 @@ def sync_cursor_plugins() -> list[str]:
                     continue
                 latest_v = sorted(v_dirs, key=lambda d: d.name)[-1]
 
+                is_mattpocock = "mattpocock" in p_dir.name or "matt-pocock" in p_dir.name
+
                 for root, _, files in os.walk(latest_v):
                     if "SKILL.md" in files:
                         s_folder = Path(root)
                         s_name = s_folder.name
+
+                        # For matt-pocock skills, keep only grill skills and wait-what/wait-wait
+                        if is_mattpocock:
+                            is_grill = s_name.startswith("grill")
+                            is_wait = s_name in ("wait-what", "wait-wait")
+                            if not (is_grill or is_wait):
+                                dest_s = cursor_skills_dir / s_name
+                                if dest_s.exists():
+                                    shutil.rmtree(dest_s, ignore_errors=True)
+                                sync_manifest["skills"].pop(s_name, None)
+                                continue
+
                         dest_s = cursor_skills_dir / s_name
                         if dest_s.exists():
                             shutil.rmtree(dest_s)
@@ -1754,18 +2107,257 @@ def sync_cursor_plugins() -> list[str]:
                         }
                         synced.append(f"skill:{s_name}")
 
-    # 4. Write updated .sync-manifest.json
+    # Ensure wait-wait alias is available alongside wait-what for Cursor
+    wait_what_dir = cursor_skills_dir / "wait-what"
+    if wait_what_dir.is_dir():
+        wait_wait_dir = cursor_skills_dir / "wait-wait"
+        if wait_wait_dir.exists():
+            shutil.rmtree(wait_wait_dir)
+        shutil.copytree(wait_what_dir, wait_wait_dir)
+        wait_wait_md = wait_wait_dir / "SKILL.md"
+        if wait_wait_md.is_file():
+            content = wait_wait_md.read_text(encoding="utf-8")
+            content = content.replace("name: wait-what", "name: wait-wait")
+            wait_wait_md.write_text(content, encoding="utf-8")
+        sync_manifest["skills"]["wait-wait"] = {
+            "lastSyncedAt": now_ms,
+            "plugin": "mattpocock-skills",
+        }
+        synced.append("skill:wait-wait")
+
+    # 4. Clean up any remaining disabled skills from disk and sync manifest
+    for s_item in list(cursor_skills_dir.iterdir()):
+        if not s_item.is_dir() or s_item.name.startswith("."):
+            continue
+        s_name = s_item.name
+        # Remove disabled ai-first skills
+        if s_name in CURSOR_DISABLED_AI_FIRST_SKILLS:
+            shutil.rmtree(s_item, ignore_errors=True)
+            sync_manifest["skills"].pop(s_name, None)
+            continue
+        # Remove disabled matt-pocock skills
+        p_origin = sync_manifest.get("skills", {}).get(s_name, {}).get("plugin", "")
+        if "mattpocock" in p_origin or "matt-pocock" in p_origin or s_name in KNOWN_MATTPOCOCK_DISABLED:
+            if not (s_name.startswith("grill") or s_name in ("wait-what", "wait-wait")):
+                shutil.rmtree(s_item, ignore_errors=True)
+                sync_manifest["skills"].pop(s_name, None)
+
+    # 5. Write updated .sync-manifest.json
     sync_manifest["lastInventoryAt"] = now_ms
     sync_manifest_file.write_text(json.dumps(sync_manifest, indent=2) + "\n", encoding="utf-8")
 
     return synced
-    sync_manifest_file.write_text(json.dumps(sync_manifest, indent=2) + "\n", encoding="utf-8")
+
+
+def sync_codex_plugins() -> list[str]:
+    """Installs framework and marketplace plugins into Codex on Pull Updates.
+
+    Installs once as Codex plugins (marketplace + cache + config.toml enable).
+    Does not copy SKILL.md into ~/.codex/skills or ~/.agents/skills — those roots plus
+    enabled plugins were producing 2–3 copies of each skill in the Codex `$` picker.
+
+    Never writes into ~/.codex/skills/.system.
+    Same skill filters as Cursor: skip review-code; keep only grill/wait mattpocock skills.
+    """
+    synced: list[str] = []
+    now_ms = int(time.time() * 1000)
+    mp_name = "ai-framework"
+    disabled_ai_first = {"review-code"}
+    mattpocock_disabled = {
+        "ask-matt", "claude-handoff", "code-review", "codebase-design", "diagnosing-bugs",
+        "domain-modeling", "git-guardrails-claude-code", "handoff", "implement",
+        "improve-codebase-architecture", "loop-me", "migrate-to-shoehorn", "prototype",
+        "research", "resolving-merge-conflicts", "scaffold-exercises", "setup-matt-pocock-skills",
+        "setup-pre-commit", "setup-ts-deep-modules", "tdd", "teach", "to-questionnaire",
+        "to-spec", "to-tickets", "triage", "wayfinder", "wizard", "writing-beats",
+        "writing-for-agents", "writing-fragments", "writing-shape",
+    }
+
+    codex_home = _codex_home()
+    user_skill_dirs = [codex_home / "skills", HOME / ".agents/skills"]
+    for d in user_skill_dirs:
+        d.mkdir(parents=True, exist_ok=True)
+
+    mp_root = codex_home / "plugins" / "marketplaces" / mp_name
+    cache_root = codex_home / "plugins" / "cache" / mp_name
+    mp_plugins_dir = mp_root / "plugins"
+    mp_plugins_dir.mkdir(parents=True, exist_ok=True)
+    cache_root.mkdir(parents=True, exist_ok=True)
+
+    sync_manifest: dict[str, Any] = {"version": 1, "skills": {}, "lastInventoryAt": now_ms}
+    manifest_file = (codex_home / "skills") / ".sync-manifest.json"
+    if manifest_file.is_file():
+        try:
+            loaded = json.loads(manifest_file.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict) and isinstance(loaded.get("skills"), dict):
+                sync_manifest["skills"] = loaded["skills"]
+        except Exception:
+            pass
+
+    def _copy_tree(src: Path, dest: Path) -> None:
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(src, dest, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+
+    def _read_plugin_meta(src: Path, fallback_name: str, fallback_ver: str) -> tuple[str, str, str]:
+        for candidate in (src / ".codex-plugin/plugin.json", src / ".claude-plugin/plugin.json", src / "plugin.json"):
+            if candidate.is_file():
+                try:
+                    data = json.loads(candidate.read_text(encoding="utf-8"))
+                    return (
+                        data.get("name") or fallback_name,
+                        str(data.get("version") or fallback_ver),
+                        data.get("description") or f"Codex plugin {fallback_name}",
+                    )
+                except Exception:
+                    pass
+        return fallback_name, fallback_ver, f"Codex plugin {fallback_name}"
+
+    def _codex_manifest(name: str, version: str, description: str) -> dict[str, Any]:
+        short = description.strip().splitlines()[0][:120] if description else name
+        return {
+            "name": name,
+            "version": version,
+            "description": description,
+            "author": {"name": "Steven Nguyen"},
+            "homepage": "https://github.com/steven-nguyen-dev/ai-framework",
+            "repository": "https://github.com/steven-nguyen-dev/ai-framework",
+            "skills": "./skills/",
+            "interface": {
+                "displayName": name,
+                "shortDescription": short,
+                "longDescription": description,
+                "developerName": "Steven Nguyen",
+                "category": "Developer Tools",
+                "capabilities": ["Read", "Write"],
+            },
+        }
+
+    def _install_plugin(plugin_name: str, version: str, description: str, skill_folders: list[Path]) -> None:
+        if not skill_folders:
+            return
+        plugin_dir = mp_plugins_dir / plugin_name
+        if plugin_dir.exists():
+            shutil.rmtree(plugin_dir)
+        skills_root = plugin_dir / "skills"
+        skills_root.mkdir(parents=True, exist_ok=True)
+        for folder in skill_folders:
+            _copy_tree(folder, skills_root / folder.name)
+        wait_what = skills_root / "wait-what"
+        if wait_what.is_dir() and not (skills_root / "wait-wait").exists():
+            _copy_tree(wait_what, skills_root / "wait-wait")
+            wait_wait_md = skills_root / "wait-wait" / "SKILL.md"
+            if wait_wait_md.is_file():
+                content = wait_wait_md.read_text(encoding="utf-8")
+                wait_wait_md.write_text(content.replace("name: wait-what", "name: wait-wait"), encoding="utf-8")
+        manifest_dir = plugin_dir / ".codex-plugin"
+        manifest_dir.mkdir(parents=True, exist_ok=True)
+        (manifest_dir / "plugin.json").write_text(
+            json.dumps(_codex_manifest(plugin_name, version, description), indent=2) + "\n",
+            encoding="utf-8",
+        )
+        cache_dest = cache_root / plugin_name / version
+        _copy_tree(plugin_dir, cache_dest)
+        synced.append(f"plugin:{plugin_name}@{version}")
+
+    installed_plugin_names: list[str] = []
+    marketplace_entries: list[dict[str, Any]] = []
+
+    workspace_plugins = [
+        ("ai-first-fw-skills", WORKSPACE / "ai-first-fw/skills", disabled_ai_first),
+        ("ai-first-fw-utilities", WORKSPACE / "ai-first-fw/utilities", set()),
+    ]
+    for p_name, src_group, skip in workspace_plugins:
+        if not src_group.is_dir():
+            continue
+        folders = [
+            item for item in sorted(src_group.iterdir())
+            if item.is_dir() and (item / "SKILL.md").is_file() and item.name not in skip and not item.name.startswith(".")
+        ]
+        name, version, description = _read_plugin_meta(src_group, p_name, "1.0.0")
+        _install_plugin(name, version, description, folders)
+        installed_plugin_names.append(name)
+        marketplace_entries.append({
+            "name": name,
+            "source": {"source": "local", "path": f"./plugins/{name}"},
+            "policy": {"installation": "INSTALLED_BY_DEFAULT", "authentication": "ON_INSTALL"},
+            "category": "Developer Tools",
+        })
+
+    cache_claude = HOME / ".claude/plugins/cache"
+    if cache_claude.is_dir():
+        for mp_dir in cache_claude.iterdir():
+            if not mp_dir.is_dir():
+                continue
+            for p_dir in mp_dir.iterdir():
+                if not p_dir.is_dir() or p_dir.name in ("ai-first-fw-skills", "ai-first-fw-utilities", "ai-first-fw-mcps"):
+                    continue
+                v_dirs = [v for v in p_dir.iterdir() if v.is_dir() and not v.name.startswith(".")]
+                if not v_dirs:
+                    continue
+                latest_v = sorted(v_dirs, key=lambda d: _version_sort_key(d.name))[-1]
+                is_mattpocock = "mattpocock" in p_dir.name or "matt-pocock" in p_dir.name
+                skill_folders: list[Path] = []
+                for root, _, files in os.walk(latest_v):
+                    if "SKILL.md" not in files:
+                        continue
+                    s_folder = Path(root)
+                    s_name = s_folder.name
+                    if is_mattpocock:
+                        if not (s_name.startswith("grill") or s_name in ("wait-what", "wait-wait")):
+                            continue
+                    skill_folders.append(s_folder)
+                name, version, description = _read_plugin_meta(latest_v, p_dir.name, latest_v.name)
+                _install_plugin(name, version, description, skill_folders)
+                installed_plugin_names.append(name)
+                marketplace_entries.append({
+                    "name": name,
+                    "source": {"source": "local", "path": f"./plugins/{name}"},
+                    "policy": {"installation": "INSTALLED_BY_DEFAULT", "authentication": "ON_INSTALL"},
+                    "category": "Developer Tools",
+                })
+
+    # Remove previously flattened copies so Codex `$` lists each skill once (plugin only).
+    previously_flattened = list(sync_manifest.get("skills", {}).keys())
+    for dest_root in user_skill_dirs:
+        if not dest_root.is_dir():
+            continue
+        for s_name in previously_flattened:
+            dest = dest_root / s_name
+            if dest.is_dir() and not dest.name.startswith("."):
+                shutil.rmtree(dest, ignore_errors=True)
+        for s_item in list(dest_root.iterdir()):
+            if not s_item.is_dir() or s_item.name.startswith("."):
+                continue
+            if s_item.name in disabled_ai_first:
+                shutil.rmtree(s_item, ignore_errors=True)
+
+    sync_manifest = {"version": 1, "skills": {}, "plugins": installed_plugin_names, "lastInventoryAt": now_ms}
+    manifest_file.write_text(json.dumps(sync_manifest, indent=2) + "\n", encoding="utf-8")
+
+    if marketplace_entries:
+        agents_mp = mp_root / ".agents" / "plugins"
+        agents_mp.mkdir(parents=True, exist_ok=True)
+        (agents_mp / "marketplace.json").write_text(json.dumps({
+            "name": mp_name,
+            "interface": {"displayName": "AI Framework"},
+            "plugins": marketplace_entries,
+        }, indent=2) + "\n", encoding="utf-8")
+
+        tables: list[tuple[str, dict[str, Any]]] = [
+            ("marketplaces.ai-framework", {"source_type": "local", "source": str(mp_root)}),
+        ]
+        for p_name in installed_plugin_names:
+            tables.append((f'plugins."{p_name}@{mp_name}"', {"enabled": True}))
+        _upsert_codex_config_tables(tables)
+        synced.append(f"marketplace:{mp_name}")
 
     return synced
 
 
 def pull_updates_from_marketplaces() -> dict[str, Any]:
-    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins across Claude, Claude-One, Claude Code clone, Antigravity, and Cursor."""
+    """Pulls down the latest updates exclusively from registered public marketplaces and updates installed plugins across Claude, Claude-One, Claude Code clone, Antigravity, Cursor, and Codex."""
     known_mp_file = HOME / ".claude/plugins/known_marketplaces.json"
     installed_file = HOME / ".claude/plugins/installed_plugins.json"
 
@@ -2042,6 +2634,11 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
     cowork_synced = sync_cowork_plugins()
     antigravity_synced = sync_antigravity_plugins()
     cursor_synced = sync_cursor_plugins()
+    try:
+        codex_synced = sync_codex_plugins()
+    except Exception as e:
+        errors.append(f"Failed installing Codex plugins: {e}")
+        codex_synced = []
 
     return {
         "success": True,
@@ -2051,6 +2648,7 @@ def pull_updates_from_marketplaces() -> dict[str, Any]:
         "cowork_sessions_synced": len(cowork_synced),
         "antigravity_plugins_synced": len(antigravity_synced),
         "cursor_items_synced": len(cursor_synced),
+        "codex_items_synced": len(codex_synced),
         "errors": errors,
     }
 
@@ -2064,6 +2662,220 @@ sync_and_update_all_marketplaces = pull_updates_from_marketplaces
 # MCP Servers Scanner & Manager
 # ==============================================================================
 
+def _parse_toml_value(val: str):
+    val = val.strip()
+    if val.startswith("[") and val.endswith("]"):
+        inner = val[1:-1].strip()
+        if not inner:
+            return []
+        items = re.findall(r'"((?:\\.|[^"\\])*)"|\'((?:\\.|[^\'\\])*)\'|([^,\s]+)', inner)
+        return [a or b or c for a, b, c in items]
+    if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+        return bytes(val[1:-1], "utf-8").decode("unicode_escape") if "\\" in val[1:-1] else val[1:-1]
+    if val.lower() in ("true", "false"):
+        return val.lower() == "true"
+    try:
+        return int(val)
+    except ValueError:
+        pass
+    try:
+        return float(val)
+    except ValueError:
+        return val
+
+
+def _parse_toml_mcp_fallback(text: str) -> dict[str, Any]:
+    """Minimal parser for [mcp_servers.name] tables when tomllib is unavailable."""
+    mcp: dict[str, dict[str, Any]] = {}
+    current: dict[str, Any] | None = None
+    env_mode = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        hm = re.match(r'^\[mcp_servers\.("?)([^"\]]+)\1(\.env)?\]$', line)
+        if hm:
+            name = hm.group(2)
+            env_mode = bool(hm.group(3))
+            current = mcp.setdefault(name, {})
+            if env_mode:
+                current.setdefault("env", {})
+            continue
+        if re.match(r"^\[", line):
+            current = None
+            env_mode = False
+            continue
+        if current is None or "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        key = key.strip()
+        parsed = _parse_toml_value(val)
+        if env_mode:
+            current.setdefault("env", {})[key] = parsed
+        else:
+            current[key] = parsed
+    return {"mcp_servers": mcp}
+
+
+def _load_toml_file(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {}
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception:
+        return {}
+    if tomllib is not None:
+        try:
+            return tomllib.loads(text)
+        except Exception:
+            pass
+    return _parse_toml_mcp_fallback(text)
+
+
+def _load_codex_mcp_servers() -> dict[str, Any]:
+    """Merges [mcp_servers] tables from global and workspace Codex config.toml files."""
+    result: dict[str, Any] = {}
+    for cfg_file in [_codex_home() / "config.toml", WORKSPACE / ".codex/config.toml"]:
+        data = _load_toml_file(cfg_file)
+        mcp = data.get("mcp_servers") or data.get("mcpServers") or {}
+        if isinstance(mcp, dict):
+            for name, cfg in mcp.items():
+                if isinstance(cfg, dict):
+                    result[name] = cfg
+    return result
+
+
+def _codex_mcp_lookup(name: str, mcps: dict[str, Any]) -> tuple[bool, Any]:
+    """Returns (active, details). Codex tables with enabled=false count as inactive."""
+    cfg = mcps.get(name) or mcps.get(f"{name}-local")
+    if cfg is None:
+        cfg = next((v for k, v in mcps.items() if name in k), None)
+    if not isinstance(cfg, dict):
+        return False, cfg
+    if cfg.get("enabled") is False:
+        return False, cfg
+    return True, cfg
+
+
+def _toml_quote(value: str) -> str:
+    return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _normalize_toml_header(header: str) -> str:
+    return header.replace('"', "")
+
+
+def _strip_toml_table(text: str, target_header: str) -> str:
+    """Removes a TOML table and nested tables under the same header."""
+    target = _normalize_toml_header(target_header)
+    lines = text.splitlines(keepends=True)
+    out: list[str] = []
+    skipping = False
+    for line in lines:
+        header_m = re.match(r"^\[+([^\]\n]+)\]+", line)
+        if header_m:
+            header = _normalize_toml_header(header_m.group(1).strip())
+            skipping = header == target or header.startswith(target + ".")
+        if not skipping:
+            out.append(line)
+    return "".join(out)
+
+
+def _render_simple_toml_table(header: str, fields: dict[str, Any]) -> str:
+    lines = [f"[{header}]"]
+    for key, value in fields.items():
+        if isinstance(value, bool):
+            lines.append(f"{key} = {'true' if value else 'false'}")
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            lines.append(f"{key} = {value}")
+        else:
+            lines.append(f"{key} = {_toml_quote(str(value))}")
+    return "\n".join(lines) + "\n"
+
+
+def _upsert_codex_config_tables(tables: list[tuple[str, dict[str, Any]]]) -> None:
+    """Inserts or replaces named tables in ~/.codex/config.toml without rewriting other keys."""
+    cfg_file = _codex_home() / "config.toml"
+    cfg_file.parent.mkdir(parents=True, exist_ok=True)
+    text = cfg_file.read_text(encoding="utf-8") if cfg_file.is_file() else ""
+    for header, fields in tables:
+        text = _strip_toml_table(text, header)
+        if text and not text.endswith("\n"):
+            text += "\n"
+        if text.strip():
+            text += "\n"
+        text += _render_simple_toml_table(header, fields)
+    cfg_file.write_text(text, encoding="utf-8")
+
+
+def _codex_mcp_table_header(server_id: str) -> str:
+    if re.fullmatch(r"[A-Za-z0-9_-]+", server_id):
+        return f"mcp_servers.{server_id}"
+    escaped = server_id.replace("\\", "\\\\").replace('"', '\\"')
+    return f'mcp_servers."{escaped}"'
+
+
+def _strip_toml_mcp_server(text: str, server_id: str) -> str:
+    """Removes [mcp_servers.ID] and nested [mcp_servers.ID.*] tables from a TOML file."""
+    unquoted_prefixes = {f"mcp_servers.{server_id}", f'mcp_servers."{server_id}"'}
+    lines = text.splitlines(keepends=True)
+    out: list[str] = []
+    skipping = False
+    for line in lines:
+        header_m = re.match(r"^\[+([^\]\n]+)\]+", line)
+        if header_m:
+            header = header_m.group(1).strip()
+            header_unquoted = header.replace('"', "")
+            skipping = False
+            for prefix in (f"mcp_servers.{server_id}",):
+                if header_unquoted == prefix or header_unquoted.startswith(prefix + "."):
+                    skipping = True
+                    break
+            if not skipping:
+                for prefix in unquoted_prefixes:
+                    if header == prefix or header.startswith(prefix + "."):
+                        skipping = True
+                        break
+        if not skipping:
+            out.append(line)
+    return "".join(out).rstrip() + ("\n" if text.endswith("\n") or out else "\n")
+
+
+def _render_codex_mcp_block(server_id: str, cfg: dict[str, Any]) -> str:
+    header = _codex_mcp_table_header(server_id)
+    lines = [f"[{header}]"]
+    if cfg.get("command"):
+        lines.append(f"command = {_toml_quote(cfg['command'])}")
+    if cfg.get("args"):
+        args = ", ".join(_toml_quote(a) for a in cfg["args"])
+        lines.append(f"args = [{args}]")
+    if cfg.get("url"):
+        lines.append(f"url = {_toml_quote(cfg['url'])}")
+    if cfg.get("type"):
+        lines.append(f"type = {_toml_quote(cfg['type'])}")
+    env = cfg.get("env")
+    if isinstance(env, dict) and env:
+        lines.append("")
+        lines.append(f"[{header}.env]")
+        for k, v in env.items():
+            lines.append(f"{k} = {_toml_quote(str(v))}")
+    return "\n".join(lines) + "\n"
+
+
+def _write_codex_mcp_toggle(server_id: str, enable: bool, cfg: dict[str, Any] | None) -> None:
+    cfg_file = _codex_home() / "config.toml"
+    cfg_file.parent.mkdir(parents=True, exist_ok=True)
+    text = cfg_file.read_text(encoding="utf-8") if cfg_file.is_file() else ""
+    text = _strip_toml_mcp_server(text, server_id)
+    if enable and cfg:
+        if text and not text.endswith("\n"):
+            text += "\n"
+        if text.strip():
+            text += "\n"
+        text += _render_codex_mcp_block(server_id, cfg)
+    cfg_file.write_text(text, encoding="utf-8")
+
+
 def scan_mcp_servers() -> list[dict[str, Any]]:
     """Scans local workspace MCP servers and inspects their configuration across Claude, Antigravity, and Cursor."""
     agy_global_file = HOME / ".gemini/config/mcp_config.json"
@@ -2072,6 +2884,8 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
     workspace_mcp_file = WORKSPACE / ".mcp.json"
     cursor_global_file = HOME / ".cursor/mcp.json"
     cursor_workspace_file = WORKSPACE / ".cursor/mcp.json"
+    codex_global_file = _codex_home() / "config.toml"
+    codex_workspace_file = WORKSPACE / ".codex/config.toml"
 
     agy_mcps = {}
     if agy_global_file.is_file():
@@ -2118,6 +2932,8 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                 cursor_mcps.update(json.load(f).get("mcpServers", {}))
         except Exception:
             pass
+
+    codex_mcps = _load_codex_mcp_servers()
 
     mcps: dict[str, dict[str, Any]] = {}
     local_mcps_dir = WORKSPACE / "ai-first-fw/local-mcps"
@@ -2210,6 +3026,11 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                             "config_path": str(cursor_workspace_file if cursor_workspace_file.is_file() else cursor_global_file),
                             "details": cursor_mcps.get(d.name) or cursor_mcps.get(f"{d.name}-local") or next((v for k, v in cursor_mcps.items() if d.name in k), None)
                         },
+                        "codex": {
+                            "configured": _codex_mcp_lookup(d.name, codex_mcps)[0],
+                            "config_path": str(codex_global_file if Path(codex_global_file).is_file() else codex_workspace_file),
+                            "details": _codex_mcp_lookup(d.name, codex_mcps)[1]
+                        },
                         "workspace": {
                             "configured": d.name in workspace_mcps,
                             "config_path": str(workspace_mcp_file),
@@ -2239,6 +3060,10 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
         clean_name = name.replace("-local", "")
         if clean_name not in mcps:
             all_external.setdefault(clean_name, {})["cursor"] = cfg
+    for name, cfg in codex_mcps.items():
+        clean_name = name.replace("-local", "")
+        if clean_name not in mcps:
+            all_external.setdefault(clean_name, {})["codex"] = cfg
 
     for name, sources in all_external.items():
         if name.lower() == "idea":
@@ -2285,6 +3110,13 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
                     "config_path": str(cursor_workspace_file if cursor_workspace_file.is_file() else cursor_global_file),
                     "details": sources.get("cursor")
                 },
+                "codex": {
+                    "configured": ("codex" in sources) and not (
+                        isinstance(sources.get("codex"), dict) and sources.get("codex", {}).get("enabled") is False
+                    ),
+                    "config_path": str(codex_global_file if Path(codex_global_file).is_file() else codex_workspace_file),
+                    "details": sources.get("codex")
+                },
                 "workspace": {
                     "configured": "workspace" in sources,
                     "config_path": str(workspace_mcp_file),
@@ -2297,7 +3129,7 @@ def scan_mcp_servers() -> list[dict[str, Any]]:
 
 
 def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, Any]:
-    """Toggles configuration of a local or external MCP server in Antigravity, Claude Desktop, Claude Code, or Cursor."""
+    """Toggles configuration of a local or external MCP server in Antigravity, Claude Desktop, Claude Code, Cursor, or Codex."""
     local_mcps_dir = WORKSPACE / "ai-first-fw/local-mcps"
     server_dir = local_mcps_dir / server_id
     server_py = server_dir / "server.py"
@@ -2325,6 +3157,7 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
             "claude_desktop": {"url": "http://127.0.0.1:64342/stream", "type": "http"},
             "claude_code": {"url": "http://127.0.0.1:64342/stream", "type": "http"},
             "cursor": {"url": "http://127.0.0.1:64342/stream"},
+            "codex": {"url": "http://127.0.0.1:64342/stream"},
         }
     }
 
@@ -2467,6 +3300,16 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
                         servers.pop(k, None)
             cfg_file.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
 
+    elif target == "codex":
+        if enable:
+            if is_local:
+                mcp_cfg = {"command": cmd, "args": args}
+            else:
+                mcp_cfg = known_external.get(server_id, {}).get("codex", {"url": "http://127.0.0.1:64342/stream"})
+            _write_codex_mcp_toggle(server_id, True, mcp_cfg)
+        else:
+            _write_codex_mcp_toggle(server_id, False, None)
+
     elif target == "workspace":
         if not is_local and enable:
             raise ValueError(f"External MCP server '{server_id}' cannot be added to workspace .mcp.json directly.")
@@ -2505,7 +3348,7 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
 # ==============================================================================
 
 def scan_all() -> dict[str, Any]:
-    """Runs a full scan across Claude, Antigravity, and Cursor ecosystems, master registry, and MCP servers."""
+    """Runs a full scan across Claude, Antigravity, Cursor, and Codex ecosystems, master registry, and MCP servers."""
     # 1. Claude
     claude_cli_skills = scan_claude_cli_skills()
     claude_cli_plugins = scan_claude_cli_plugins()
@@ -2524,25 +3367,31 @@ def scan_all() -> dict[str, Any]:
     cursor_rules = scan_cursor_rules()
     cursor_plugins = scan_cursor_plugins()
 
-    # 4. Master Alphabetical Registry
+    # 4. Codex
+    codex_skills = scan_codex_skills()
+    codex_rules = scan_codex_agents_md()
+    codex_plugins = scan_codex_plugins()
+
+    # 5. Master Alphabetical Registry
     all_skills_alphabetical = scan_all_skills_alphabetical()
 
-    # 5. MCP Servers
+    # 6. MCP Servers
     mcp_servers = scan_mcp_servers()
 
     # Aggregate counts
     all_claude_skills = claude_cli_skills + claude_cowork_skills + [s for p in (claude_cli_plugins + claude_cowork_plugins) for s in p.skills]
     all_agy_skills = agy_cli_skills + agy_app_skills + agy_ide_skills + [s for p in agy_cli_plugins for s in p.skills]
     all_cursor_items = cursor_skills + cursor_rules + [s for p in cursor_plugins for s in p.skills]
+    all_codex_items = codex_skills + codex_rules + [s for p in codex_plugins for s in p.skills]
     
-    total_skills = len(all_claude_skills) + len(all_agy_skills) + len(all_cursor_items)
-    total_plugins = len(claude_cli_plugins) + len(claude_cowork_plugins) + len(agy_cli_plugins) + len(cursor_plugins)
+    total_skills = len(all_claude_skills) + len(all_agy_skills) + len(all_cursor_items) + len(all_codex_items)
+    total_plugins = len(claude_cli_plugins) + len(claude_cowork_plugins) + len(agy_cli_plugins) + len(cursor_plugins) + len(codex_plugins)
 
     local_count = 0
     marketplace_count = 0
     builtin_count = 0
 
-    for s in (all_claude_skills + all_agy_skills + all_cursor_items):
+    for s in (all_claude_skills + all_agy_skills + all_cursor_items + all_codex_items):
         if "marketplace" in s.source_type or "github" in s.source_type or "desktop_extension" in s.source_type:
             marketplace_count += 1
         elif "builtin" in s.source_type:
@@ -2550,13 +3399,19 @@ def scan_all() -> dict[str, Any]:
         else:
             local_count += 1
 
-    for p in (claude_cli_plugins + claude_cowork_plugins + agy_cli_plugins + cursor_plugins):
+    for p in (claude_cli_plugins + claude_cowork_plugins + agy_cli_plugins + cursor_plugins + codex_plugins):
         if "marketplace" in p.source_type or "github" in p.source_type or "desktop_extension" in p.source_type:
             marketplace_count += 1
         elif "builtin" in p.source_type:
             builtin_count += 1
         else:
             local_count += 1
+
+    codex_home = _codex_home()
+    try:
+        codex_cli_present = shutil.which("codex") is not None
+    except Exception:
+        codex_cli_present = False
 
     return {
         "scan_time": datetime.now().isoformat(),
@@ -2571,6 +3426,9 @@ def scan_all() -> dict[str, Any]:
             "cursor_skills_count": len(cursor_skills),
             "cursor_rules_count": len(cursor_rules),
             "cursor_plugins_count": len(cursor_plugins),
+            "codex_skills_count": len(codex_skills),
+            "codex_rules_count": len(codex_rules),
+            "codex_plugins_count": len(codex_plugins),
             "mcp_servers_count": len(mcp_servers),
             "local_count": local_count,
             "marketplace_count": marketplace_count,
@@ -2616,6 +3474,20 @@ def scan_all() -> dict[str, Any]:
                 "config_path": str(HOME / ".cursor"),
                 "workspace_rules_path": str(WORKSPACE / ".cursor/rules") if (WORKSPACE / ".cursor/rules").is_dir() else None,
                 "workspace_mcp_path": str(WORKSPACE / ".cursor/mcp.json") if (WORKSPACE / ".cursor/mcp.json").is_file() else None,
+            }
+        },
+        "codex": {
+            "skills": [asdict(s) for s in codex_skills],
+            "rules": [asdict(s) for s in codex_rules],
+            "plugins": [asdict(p) for p in codex_plugins],
+            "metadata": {
+                "installed": codex_home.is_dir() or codex_cli_present,
+                "cli_present": codex_cli_present,
+                "config_path": str(codex_home),
+                "config_toml": str(codex_home / "config.toml") if (codex_home / "config.toml").is_file() else None,
+                "skills_path": str(codex_home / "skills") if (codex_home / "skills").is_dir() else None,
+                "plugins_path": str(codex_home / "plugins") if (codex_home / "plugins").is_dir() else None,
+                "workspace_agents_md": str(WORKSPACE / "AGENTS.md") if (WORKSPACE / "AGENTS.md").is_file() else None,
             }
         },
         "marketplaces": marketplaces,

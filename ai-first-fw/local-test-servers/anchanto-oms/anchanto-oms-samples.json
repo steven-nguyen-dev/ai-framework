@@ -1,0 +1,4515 @@
+{
+  "metadata": {
+    "title": "Anchanto OMS (SelluSeller) Sample Data & Payload Templates Library",
+    "description": "Extracted request/response examples, markdown templates, and webhook event payloads.",
+    "total_paths": 174
+  },
+  "markdown_templates": {},
+  "request_examples": {
+    "POST /rest/v1/inventory_products/update_stocks": {
+      "product": {
+        "skus": {
+          "sku": [
+            {
+              "seller_sku": "ISKU-ANCH-0001",
+              "quantity": 148,
+              "force_sync": true,
+              "upc": "8901234567890",
+              "inventories": {
+                "inventory": [
+                  {
+                    "warehouse_code": "WH-SG-01",
+                    "quantity": "148"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "PUT /rest/v1/brands/{id}": {
+      "id": 71204,
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "brand": {
+        "name": "Aurora Home Living",
+        "code": "AURORA_HOME",
+        "presentation": "Aurora Home Living",
+        "active": true,
+        "store_code": "ANCH_DEMO_SG_LAZADA_SG"
+      }
+    },
+    "PUT /rest/v1/categories/{id}": {
+      "id": 442019,
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "category": {
+        "name": "Bed Sheets & Pillowcases",
+        "code": "10000412",
+        "presentation": "Bed Sheets & Pillowcases",
+        "marketplaceCode": "lazada_sg",
+        "parentCode": "10000387",
+        "parent": "Bedding",
+        "active": true,
+        "storeCode": "ANCH_DEMO_SG_LAZADA_SG"
+      }
+    },
+    "PUT /rest/v1/category_attributes/{id}": {
+      "id": 990331,
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "category_attributes": {
+        "marketplaceCode": "lazada_sg",
+        "fieldType": "attribute",
+        "dataType": "string",
+        "mandatory": true,
+        "freeText": false,
+        "fieldName": "Material",
+        "fieldCode": "material",
+        "optionType": true,
+        "criteria": "single_select",
+        "ssFieldCode": "material",
+        "smpField": false,
+        "fieldValues": [
+          {
+            "name": "Cotton",
+            "value": "cotton"
+          },
+          {
+            "name": "Bamboo",
+            "value": "bamboo"
+          }
+        ]
+      }
+    },
+    "PUT /rest/v1/smp_shipping_methods/{id}": {
+      "shipping_method": "Lazada Express SG",
+      "marketplace_code": "lazada_sg",
+      "logistics_partner_code": "lex_sg",
+      "smp_shipping_method": {
+        "marketplace_shipping_code": "Lazada Express SG",
+        "default": "false",
+        "payment_type": "all"
+      }
+    },
+    "POST /oauth/token": {
+      "client_id": "a3f9c1e07b5d42a8b6e1d9c4f0a25b73e8d1c6a94f27b30e5d8c1a6b47f92e03",
+      "client_secret": "7b2e5d1a9c4f60b83e7d2a5c1f9048b6d3e7a1c5f0b94d26e8a3c7f1b5d09e42",
+      "grant_type": "authorization_code",
+      "code": "9c4d1f7a3b8e2506d1f4a7c9b3e5028d",
+      "redirect_uri": "https://jplugger-dev.selluseller.com:3004/jpluger/mp/callback"
+    },
+    "POST /rest/v1/inventory_products/sync_failed_status": {
+      "store_code": "SHOPEE-SG-01",
+      "data": [
+        {
+          "product_ids": [
+            884213,
+            884214
+          ],
+          "error_message": "Marketplace rejected stock update: item is under review"
+        },
+        {
+          "product_ids": [
+            884219
+          ],
+          "error_message": "Marketplace item not found"
+        }
+      ]
+    },
+    "POST /rest/v1/manifest/upload": {
+      "number": "MNF-SG-2026-0081142",
+      "fba_dispatch_number": "FBA-SG-77120-0912",
+      "status": "SUCCESS",
+      "document": "https://cdn.lazada.sg/manifests/MNF-SG-2026-0081142.pdf",
+      "error_message": null,
+      "orders": [
+        {
+          "order_number": "LZD-SG-880114772",
+          "line_item_details": [
+            {
+              "id": 5581203,
+              "sku": "AUR-BS-QN-WHT",
+              "quantity": 2,
+              "invoice_number": "INV-2026-0081142",
+              "shipping_method": "Lazada Express SG",
+              "shipping_type": "standard",
+              "tracking_number": "LEXSG7719004411",
+              "line_item_ids": [
+                "8801147721",
+                "8801147722"
+              ]
+            }
+          ]
+        },
+        {
+          "order_number": "LZD-SG-880114773",
+          "line_item_details": [
+            {
+              "id": 5581209,
+              "sku": "NRD-PC-STD-GRY",
+              "quantity": 1,
+              "invoice_number": "INV-2026-0081143",
+              "shipping_method": "Lazada Express SG",
+              "shipping_type": "standard",
+              "tracking_number": "LEXSG7719004412",
+              "line_item_ids": [
+                "8801147731"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "POST /rest/v1/orders/async_shipping_details": {
+      "shipping_details": {
+        "status": "success",
+        "tracking_number": "TIKTOK-TRK-559901",
+        "failure_reason": "",
+        "shipping_lable": {
+          "document_source": "base64",
+          "document_content": "JVBERi0xLjQKJcTl8uXrp..."
+        },
+        "invoice": {
+          "document_source": "base64",
+          "document_content": "JVBERi0xLjQKJdPr6eEK..."
+        },
+        "order_items": [
+          {
+            "id": "55510011",
+            "item_quantity": 2
+          },
+          {
+            "id": "55510012",
+            "item_quantity": 1
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/{id}/serial_number_validation_response": {
+      "shipment_number": "SHP-77120",
+      "shipment_id": 4477120,
+      "order_number": "TT-90210-A",
+      "order_id": 90114455,
+      "order_items": [
+        {
+          "sku": "SKU-RED-M",
+          "serial_validation_status": [
+            {
+              "serial_number": "SN-AAA-0001",
+              "status_message": "Serial number validated",
+              "status": true
+            },
+            {
+              "serial_number": "SN-AAA-0002",
+              "status_message": "Serial number not found in master",
+              "status": false
+            }
+          ]
+        },
+        {
+          "sku": "SKU-BLU-L",
+          "serial_validation_status": [
+            {
+              "serial_number": "SN-BBB-0007",
+              "status_message": "Serial number validated",
+              "status": true
+            }
+          ]
+        }
+      ]
+    },
+    "POST /rest/v1/payouts": {
+      "payout": {
+        "id": "STM-LZD-SG-2026-08-01",
+        "payment_id": "PAYOUT-88117420",
+        "payment_status": "PAID",
+        "statement_time": "2026-08-01T00:00:00Z",
+        "currency": "SGD",
+        "revenue_amount": 18422.55,
+        "fee_amount": 2113.4,
+        "adjustment_amount": -87.25,
+        "settlement_amount": 16221.9,
+        "marketplace_code": "lazada_sg",
+        "store_code": "ANCH_DEMO_SG_LAZADA_SG"
+      }
+    },
+    "POST /rest/v1/promotions/update_failure_reasons": {
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "marketplace_code": "lazada_sg",
+      "promotions": [
+        {
+          "promotion_id": "PRM-2026-4471",
+          "status": "FAILED",
+          "failure_reason": "Promotion window overlaps an existing campaign"
+        },
+        {
+          "promotion_id": "PRM-2026-4472",
+          "status": "FAILED",
+          "failure_reason": "SKU AUR-BS-QN-WHT is not eligible for this campaign"
+        }
+      ]
+    },
+    "POST /rest/v1/reports": {
+      "support_bulk_import_id": null,
+      "report_history_id": 660412,
+      "marketplace_code": "lazada_sg",
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "url": "https://reports.anchanto-demo.com/discrepancy/660412/lazada_sg-2026-08-15.csv"
+    },
+    "POST /rest/v1/shipping_methods": {
+      "name": "Lazada Express SG",
+      "display_on": "shipping_label",
+      "tracking_url": "https://tracker.lazada.sg/tracking?tracking_number=",
+      "fulfilment_code": "LZD_SOC",
+      "update_status": "true",
+      "is_self_service": false,
+      "logistics_partner_code": "lex_sg",
+      "logistic_action": "MP_INTEGRATED",
+      "supportReturnOrder": true
+    },
+    "POST /rest/v1/transactions/async_create_transactions": {
+      "store_code": "ANCH_DEMO_SG_LAZADA_SG",
+      "transactions": [
+        {
+          "seller_marketplace_id": "ANCH_DEMO_SG_LAZADA_SG",
+          "transaction_number": "TXN-LZD-SG-99120441",
+          "transaction_type": "ITEM_REVENUE",
+          "transaction_date": "2026-07-29T11:04:22Z",
+          "amount": 79.9,
+          "fee_name": null,
+          "paid_status": "PAID",
+          "payment_ref_id": "PAYOUT-88117420",
+          "statement": "STM-LZD-SG-2026-08-01",
+          "order_number": "LZD-SG-880114772",
+          "line_item": "8801147721",
+          "marketplace_sku": "AUR-BS-QN-WHT",
+          "is_discrepancy": false
+        },
+        {
+          "seller_marketplace_id": "ANCH_DEMO_SG_LAZADA_SG",
+          "transaction_number": "TXN-LZD-SG-99120442",
+          "transaction_type": "COMMISSION_FEE",
+          "transaction_date": "2026-07-29T11:04:22Z",
+          "amount": -6.39,
+          "fee_name": "Marketplace commission",
+          "paid_status": "PAID",
+          "payment_ref_id": "PAYOUT-88117420",
+          "statement": "STM-LZD-SG-2026-08-01",
+          "order_number": "LZD-SG-880114772",
+          "line_item": "8801147721",
+          "marketplace_sku": "AUR-BS-QN-WHT",
+          "is_discrepancy": false
+        },
+        {
+          "seller_marketplace_id": "ANCH_DEMO_SG_LAZADA_SG",
+          "transaction_number": "TXN-LZD-SG-99120443",
+          "transaction_type": "ADJUSTMENT",
+          "transaction_date": "2026-07-30T02:15:00Z",
+          "amount": -87.25,
+          "fee_name": "Damaged goods adjustment",
+          "paid_status": "UNPAID",
+          "payment_ref_id": "PAYOUT-88117420",
+          "statement": "STM-LZD-SG-2026-08-01",
+          "order_number": "LZD-SG-880114773",
+          "line_item": "8801147731",
+          "marketplace_sku": "NRD-PC-STD-GRY",
+          "is_discrepancy": true
+        }
+      ]
+    },
+    "PATCH /rest/v2/inventory_products/async_update_stocks": {
+      "exclude_buffer_stock": false,
+      "product": {
+        "skus": {
+          "sku": [
+            {
+              "seller_sku": "SKU-1001",
+              "quantity": 42,
+              "force_sync": false,
+              "inventories": {
+                "inventory": [
+                  {
+                    "warehouse_code": "WH-SG-01",
+                    "quantity": 42
+                  }
+                ]
+              },
+              "upc": "0123456789012"
+            }
+          ]
+        }
+      }
+    },
+    "PATCH /rest/v2/inventory_products/update_delta_stocks": {
+      "exclude_buffer_stock": false,
+      "product": {
+        "skus": {
+          "sku": [
+            {
+              "seller_sku": "SKU-1001",
+              "quantity": 42,
+              "force_sync": false,
+              "inventories": {
+                "inventory": [
+                  {
+                    "warehouse_code": "WH-SG-01",
+                    "quantity": 42
+                  }
+                ]
+              },
+              "upc": "0123456789012"
+            }
+          ]
+        }
+      }
+    },
+    "PATCH /rest/v2/inventory_products/update_stocks": {
+      "exclude_buffer_stock": false,
+      "product": {
+        "skus": {
+          "sku": [
+            {
+              "seller_sku": "SKU-1001",
+              "quantity": 42,
+              "force_sync": false,
+              "inventories": {
+                "inventory": [
+                  {
+                    "warehouse_code": "WH-SG-01",
+                    "quantity": 42
+                  }
+                ]
+              },
+              "upc": "0123456789012"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "response_examples": {
+    "GET /rest/v1/orders": {
+      "200": {
+        "payload": [
+          {
+            "order_id": 90114455,
+            "order_number": "ETSY-3399201",
+            "market_place_order_number": "3399201",
+            "marketplace_code": "etsy",
+            "marketplace_name": "Etsy",
+            "store_code": "ETSY_SG_01",
+            "store_name": "Etsy Singapore",
+            "country_code": "SG",
+            "seller_currency": "SGD",
+            "payment_method": "credit_card",
+            "is_cod": false,
+            "price": 128.5,
+            "item_total": 118.0,
+            "payment_total": 128.5,
+            "order_total": 128.5,
+            "items_count": 2,
+            "status": "CANCELLED",
+            "state": "CANCELLED",
+            "statuses": [
+              "CANCELLED"
+            ],
+            "current_state": "CANCELLED",
+            "order_date": "2026-08-12T09:14:00Z",
+            "created_at": "2026-08-12T09:14:03Z",
+            "updated_at": "2026-08-14T11:02:41Z",
+            "marketplace_seller_id": "SELLER-8891",
+            "warehouse_code": "SG-WH-01",
+            "fulfilment_mode": "SELLER_FULFILLED",
+            "fulfilment_by_marketplace": false,
+            "customer_email": "buyer@example.com",
+            "customer_first_name": "Mei",
+            "customer_last_name": "Tan",
+            "order_items": [
+              {
+                "order_item_id": 55510011,
+                "line_item_id": "3399201-1",
+                "sku": "SKU-RED-M",
+                "quantity": 1,
+                "status": "CANCELLED",
+                "item_price": "59.00",
+                "paid_price": 59.0,
+                "currency": "SGD",
+                "shipping_amount": "5.25",
+                "tax_amount": 4.13,
+                "tracking_code": "SGP123456789",
+                "item_codes": [
+                  "IC-0001"
+                ],
+                "shipment_number": "SHP-77120"
+              },
+              {
+                "order_item_id": 55510012,
+                "line_item_id": "3399201-2",
+                "sku": "SKU-BLU-L",
+                "quantity": 1,
+                "status": "CANCELLED",
+                "item_price": "59.00",
+                "paid_price": 59.0,
+                "currency": "SGD",
+                "shipping_amount": "5.25",
+                "tax_amount": 4.13,
+                "tracking_code": "SGP123456790",
+                "item_codes": [
+                  "IC-0002"
+                ],
+                "shipment_number": "SHP-77120"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "NEW",
+        "status": "New",
+        "statuses": [
+          "New"
+        ],
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T10:22:35Z",
+        "order_at": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "marketplace_code": "tiktok",
+        "marketplace_name": "TikTok Shop",
+        "store_code": "TIKTOK_ID_01",
+        "store_name": "TikTok Indonesia",
+        "country_code": "ID",
+        "seller_currency": "IDR",
+        "payment_method": "cash on delivery",
+        "is_cod": true,
+        "price": 262000.0,
+        "items_count": 1,
+        "warehouse_code": "ID-WH-01",
+        "fulfilment_mode": "SELLER_FULFILLED",
+        "fulfilment_by_marketplace": false,
+        "customer_id": 771102,
+        "customer_first_name": "Budi",
+        "customer_last_name": "Santoso",
+        "customer_email": "buyer@example.com",
+        "order_items": [
+          {
+            "order_item_id": 55510011,
+            "line_item_id": "TT-90210-A-1",
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "New",
+            "item_price": "125000.0",
+            "paid_price": 250000.0,
+            "currency": "IDR",
+            "shipping_amount": "12000.0",
+            "tax_amount": 25000.0,
+            "item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "shipment_number": "TT-90210-A",
+            "marketplace_order_item_id": "TT-90210-A-1",
+            "mp_tracking_numbers": []
+          }
+        ]
+      },
+      "201": {
+        "order_id": 90114456,
+        "order_number": "TT-90211-A",
+        "state": "NEW",
+        "status": "New",
+        "statuses": [
+          "New"
+        ],
+        "created_at": "2026-08-15T10:25:02Z",
+        "updated_at": "2026-08-15T10:25:02Z",
+        "order_at": "2026-08-15T10:24:55Z",
+        "store_code": "TIKTOK_ID_01",
+        "marketplace_code": "tiktok",
+        "items_count": 1,
+        "order_items": [
+          {
+            "order_item_id": 55510013,
+            "line_item_id": "TT-90211-A-1",
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "New",
+            "item_codes": [
+              "IC-90211-1"
+            ],
+            "shipment_number": "TT-90211-A"
+          }
+        ]
+      }
+    },
+    "GET /rest/v1/orders/{id}": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "market_place_order_number": "90210",
+        "parent_order_number": null,
+        "marketplace_code": "tiktok",
+        "marketplace_name": "TikTok Shop",
+        "store_code": "TIKTOK_ID_01",
+        "store_name": "TikTok Indonesia",
+        "country_code": "ID",
+        "seller_currency": "IDR",
+        "payment_method": "cash on delivery",
+        "is_cod": true,
+        "price": 262000.0,
+        "item_total": 250000.0,
+        "payment_total": 262000.0,
+        "shipping_amount": "12000.0",
+        "items_count": 1,
+        "status": "PACKED",
+        "state": "PACKED",
+        "statuses": [
+          "New",
+          "Paid",
+          "Packed"
+        ],
+        "order_date": "2026-08-15T10:22:31Z",
+        "order_date_in_smp_timezone": "2026-08-15 17:22:31",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T12:41:09Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "warehouse_code": "ID-WH-01",
+        "branch_code": "JKT-01",
+        "tax_code": "PPN11",
+        "company": "Anchanto Retail",
+        "is_full_tax": false,
+        "customer_id": 771102,
+        "customer_email": "buyer@example.com",
+        "customer_first_name": "Budi",
+        "customer_last_name": "Santoso",
+        "remarks": "Fragile",
+        "delivery_info": "Leave at guard house",
+        "gift_option": false,
+        "gift_message": "",
+        "fulfilment_by_marketplace": false,
+        "order_origin": "MARKETPLACE",
+        "shipping_address": {
+          "first_name": "Budi",
+          "last_name": "Santoso",
+          "address_line1": "Jl. Sudirman No. 12",
+          "address_line2": "Blok B",
+          "city": "Jakarta",
+          "state": "DKI Jakarta",
+          "postcode": "10220",
+          "country_code": "ID",
+          "email": "buyer@example.com",
+          "primary_phone": "+628123456789"
+        },
+        "billing_address": {
+          "first_name": "Budi",
+          "last_name": "Santoso",
+          "address_line1": "Jl. Sudirman No. 12",
+          "city": "Jakarta",
+          "postcode": "10220",
+          "country_code": "ID"
+        },
+        "pickup_address": {
+          "address_line1": "Warehouse 1, Cakung",
+          "city": "Jakarta",
+          "postcode": "13910",
+          "country_code": "ID"
+        },
+        "seller_address": {
+          "address_line1": "Menara Anchanto",
+          "city": "Jakarta",
+          "postcode": "12190",
+          "country_code": "ID"
+        },
+        "shipping_method": {
+          "id": 4411,
+          "name": "Standard",
+          "code": "STD"
+        },
+        "order_items": [
+          {
+            "order_item_id": 55510011,
+            "line_item_id": "TT-90210-A-1",
+            "sku": "SKU-RED-M",
+            "inventory_sku": "INV-RED-M",
+            "name": "Red T-Shirt M",
+            "quantity": 2,
+            "status": "PACKED",
+            "item_price": "125000.0",
+            "paid_price": 250000.0,
+            "currency": "IDR",
+            "shipping_amount": "12000.0",
+            "tax_amount": 25000.0,
+            "seller_discount": 0.0,
+            "channel_discount": 0.0,
+            "courier_code": "JNE",
+            "shipment_provider": "JNE",
+            "shipping_type": "DROPSHIP",
+            "tracking_code": "JNE0099887766",
+            "mp_tracking_numbers": [
+              "JNE0099887766"
+            ],
+            "item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "shipment_number": "SHP-77120",
+            "warehouse_code": "ID-WH-01"
+          }
+        ],
+        "statuses_changed_at": null,
+        "generic_order_tables": []
+      }
+    },
+    "PUT /rest/v1/orders/{id}": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "PAID",
+        "status": "Paid",
+        "statuses": [
+          "Paid"
+        ],
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T13:05:11Z",
+        "order_at": "2026-08-15T10:22:31Z",
+        "store_code": "TIKTOK_ID_01",
+        "marketplace_code": "tiktok",
+        "price": 252000.0,
+        "items_count": 1,
+        "order_items": [
+          {
+            "order_item_id": 55510011,
+            "line_item_id": "TT-90210-A-1",
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Paid",
+            "paid_price": 240000.0,
+            "item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ]
+          }
+        ]
+      }
+    },
+    "GET /rest/v1/orders/{id}/order_items": {
+      "200": {
+        "payload": [
+          {
+            "order_item_id": 55510011,
+            "order_id": 90114455,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "tracking_code": "JNE0099887766",
+            "item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ]
+          },
+          {
+            "order_item_id": 55510012,
+            "order_id": 90114455,
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "tracking_code": "JNE0099887767",
+            "item_codes": [
+              "IC-90210-3"
+            ]
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/async_create_orders": {
+      "200": {
+        "message": "Feed created successfully",
+        "feed_id": "FEED-2026-08-15-000431"
+      }
+    },
+    "POST /rest/v1/orders/{id}/confirm_payment": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "PAID",
+        "status": "Paid",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T13:20:00Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Paid",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": []
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/{id}/cancel": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "CANCELLED",
+        "status": "Cancelled",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T14:11:07Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Cancelled",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": [],
+            "shipment_number": "SHP-77120"
+          },
+          {
+            "id": 55510012,
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "Cancelled",
+            "mp_item_codes": [
+              "IC-90210-3"
+            ],
+            "mp_tracking_numbers": []
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/{id}/mark_complete": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "COMPLETE",
+        "status": "Complete",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-16T08:00:00Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Complete",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": [
+              "JNE0099887766"
+            ],
+            "shipment_number": "SHP-77120"
+          },
+          {
+            "id": 55510012,
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "Complete",
+            "mp_item_codes": [
+              "IC-90210-3"
+            ],
+            "mp_tracking_numbers": [
+              "JNE0099887767"
+            ]
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/bulk_mark_complete": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/orders/{id}/mark_approve_or_reject": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "NEW",
+        "status": "Approve",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T10:30:00Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Approve",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": []
+          },
+          {
+            "id": 55510012,
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "Approve",
+            "mp_item_codes": [
+              "IC-90210-3"
+            ],
+            "mp_tracking_numbers": []
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/shipping_details": {
+      "200": {
+        "success": true,
+        "message": "Shipping details updated successfully",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "order_item_ids": [
+          55510011,
+          55510012
+        ]
+      },
+      "201": {
+        "success": true,
+        "message": "Shipping details created",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "order_item_ids": [
+          55510011,
+          55510012
+        ]
+      }
+    },
+    "GET /rest/v1/orders/{id}/awb_details": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/orders/{id}/update_status": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "PACKED",
+        "status": "Packed",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T15:44:12Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "Packed",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": [
+              "JNE0099887766"
+            ],
+            "shipment_number": "SHP-77120"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/bulk_update_status": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/orders/return": {
+      "200": {
+        "order_id": 90114999,
+        "order_number": "TT-90210-A-R1",
+        "parent_order_number": "TT-90210-A",
+        "state": "RETURN_INITIATED",
+        "status": "Return Initiated",
+        "statuses": [
+          "Return Initiated"
+        ],
+        "created_at": "2026-08-16T09:12:00Z",
+        "updated_at": "2026-08-16T09:12:00Z",
+        "order_at": "2026-08-15T10:22:31Z",
+        "store_code": "TIKTOK_ID_01",
+        "marketplace_code": "tiktok",
+        "marketplace_seller_id": "SELLER-8891",
+        "items_count": 2,
+        "order_items": [
+          {
+            "order_item_id": 55519911,
+            "line_item_id": "55510011",
+            "sku": "SKU-RED-M",
+            "quantity": 1,
+            "status": "Return Initiated",
+            "item_codes": [
+              "IC-90210-1"
+            ],
+            "shipment_number": "TT-90210-A-R1"
+          },
+          {
+            "order_item_id": 55519912,
+            "line_item_id": "55510012",
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "Return Initiated",
+            "item_codes": [
+              "IC-90210-3"
+            ],
+            "shipment_number": "TT-90210-A-R1"
+          }
+        ],
+        "return_order_number": "TT-90210-A-R1"
+      }
+    },
+    "POST /rest/v1/orders/{id}/revert_seller_cancellation": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "NEW",
+        "status": "New",
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T16:05:44Z",
+        "order_date": "2026-08-15T10:22:31Z",
+        "marketplace_seller_id": "SELLER-8891",
+        "line_items": [
+          {
+            "id": 55510011,
+            "sku": "SKU-RED-M",
+            "quantity": 2,
+            "status": "New",
+            "mp_item_codes": [
+              "IC-90210-1",
+              "IC-90210-2"
+            ],
+            "mp_tracking_numbers": []
+          },
+          {
+            "id": 55510012,
+            "sku": "SKU-BLU-L",
+            "quantity": 1,
+            "status": "New",
+            "mp_item_codes": [
+              "IC-90210-3"
+            ],
+            "mp_tracking_numbers": []
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/update_cancelled_order_stock": {
+      "200": {
+        "success": true,
+        "message": "Cancelled order stock updated",
+        "order_id": 90114455,
+        "updated_items": [
+          {
+            "line_item_id": "55510011",
+            "sellable": 1,
+            "damaged": 1
+          },
+          {
+            "line_item_id": "55510012",
+            "sellable": 1,
+            "damaged": 0
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/push_unsynchronized_order": {
+      "200": {
+        "success": true,
+        "message": "Unsynchronized order logged",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "event_type": "CREATE_ORDER"
+      }
+    },
+    "POST /rest/v1/orders/update_orders_meta": {
+      "200": {
+        "success": true,
+        "message": "Order metadata updated successfully"
+      }
+    },
+    "POST /rest/v1/orders/{id}/order_push_failure_reason": {
+      "200": {
+        "success": true,
+        "message": "Failure reason recorded successfully"
+      }
+    },
+    "POST /rest/v1/orders/acknowledge_orders": {
+      "200": {
+        "error": null,
+        "orders": [
+          {
+            "order_id": 90114455,
+            "order_number": "TT-90210-A",
+            "state": "ACKNOWLEDGED",
+            "status": "Acknowledged",
+            "created_at": "2026-08-15T10:22:35Z",
+            "updated_at": "2026-08-15T17:00:12Z",
+            "order_date": "2026-08-15T10:22:31Z",
+            "marketplace_seller_id": "SELLER-8891",
+            "line_items": [
+              {
+                "id": 55510011,
+                "sku": "SKU-RED-M",
+                "quantity": 2,
+                "status": "Acknowledged",
+                "mp_item_codes": [
+                  "IC-90210-1",
+                  "IC-90210-2"
+                ],
+                "mp_tracking_numbers": []
+              },
+              {
+                "id": 55510012,
+                "sku": "SKU-BLU-L",
+                "quantity": 1,
+                "status": "Cancelled",
+                "mp_item_codes": [
+                  "IC-90210-3"
+                ],
+                "mp_tracking_numbers": []
+              }
+            ]
+          },
+          {
+            "order_id": 90114460,
+            "order_number": "TT-90213-A",
+            "state": "CANCELLED",
+            "status": "Cancelled",
+            "created_at": "2026-08-15T11:00:00Z",
+            "updated_at": "2026-08-15T17:00:12Z",
+            "order_date": "2026-08-15T10:58:00Z",
+            "marketplace_seller_id": "SELLER-8891",
+            "line_items": [
+              {
+                "id": 55510020,
+                "sku": "SKU-GRN-S",
+                "quantity": 3,
+                "status": "Cancelled",
+                "mp_item_codes": [],
+                "mp_tracking_numbers": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/bulk_cancellation_check": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/tracking_details": {
+      "200": {
+        "success": true,
+        "message": "Tracking details updated successfully"
+      }
+    },
+    "POST /rest/v1/orders/{id}/update_delta_order": {
+      "200": {
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "state": "NEW",
+        "status": "New",
+        "statuses": [
+          "New"
+        ],
+        "created_at": "2026-08-15T10:22:35Z",
+        "updated_at": "2026-08-15T16:40:02Z",
+        "order_at": "2026-08-15T10:22:31Z",
+        "store_code": "TIKTOK_ID_01",
+        "marketplace_code": "tiktok",
+        "price": 137000.0,
+        "items_count": 1,
+        "order_items": [
+          {
+            "order_item_id": 55510011,
+            "line_item_id": "TT-90210-A-1",
+            "sku": "SKU-RED-M",
+            "quantity": 1,
+            "status": "New",
+            "paid_price": 125000.0,
+            "item_codes": [
+              "IC-90210-1"
+            ],
+            "shipment_number": "TT-90210-A"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/orders/update_fetched_flag": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v1/orders/{id}/invoice": {
+      "200": {
+        "invoice_url": "https://selluseller-invoices.s3.amazonaws.com/INV-90114455.pdf",
+        "status": "available"
+      }
+    },
+    "GET /rest/v1/stores": {
+      "200": {
+        "payload": [
+          {
+            "id": 91045,
+            "name": "Anchanto Demo Lazada SG",
+            "marketplace_name": "Lazada",
+            "marketplace_code": "lazada_sg",
+            "inventory_sync": "2026-08-15T04:10:22.000Z",
+            "product_sync": "2026-08-15T03:55:10.000Z",
+            "order_sync": "2026-08-15T04:12:47.000Z",
+            "cancel_order_sync": "2026-08-15T02:30:00.000Z",
+            "active": true,
+            "deactivated_at": null,
+            "ss_code": "ANCH_DEMO_SG_LAZADA_SG",
+            "store_code": "LZD-SG-77120",
+            "sync_status": "COMPLETED",
+            "mp_timezone": "Asia/Singapore",
+            "country_name": "Singapore",
+            "currency_code": "SGD",
+            "warehouse_id": 4412,
+            "integration_code": "lazada",
+            "state": "ACTIVE",
+            "branch_code": "SG-CENTRAL",
+            "is_global_marketplace": false,
+            "created_at": "2025-11-03T09:14:00.000Z",
+            "updated_at": "2026-08-15T04:12:47.000Z"
+          },
+          {
+            "id": 91046,
+            "name": "Anchanto Demo Shopee SG",
+            "marketplace_name": "Shopee",
+            "marketplace_code": "shopee_sg",
+            "inventory_sync": "2026-08-15T04:08:01.000Z",
+            "product_sync": "2026-08-14T22:40:19.000Z",
+            "order_sync": "2026-08-15T04:09:33.000Z",
+            "cancel_order_sync": "2026-08-15T01:05:00.000Z",
+            "active": true,
+            "deactivated_at": null,
+            "ss_code": "ANCH_DEMO_SG_SHOPEE_SG",
+            "store_code": "SHP-SG-40118",
+            "sync_status": "IN_PROGRESS",
+            "mp_timezone": "Asia/Singapore",
+            "country_name": "Singapore",
+            "currency_code": "SGD",
+            "warehouse_id": 4412,
+            "integration_code": "shopee",
+            "state": "ACTIVE",
+            "branch_code": "SG-CENTRAL",
+            "is_global_marketplace": false,
+            "created_at": "2026-01-22T11:02:44.000Z",
+            "updated_at": "2026-08-15T04:09:33.000Z"
+          }
+        ]
+      }
+    },
+    "GET /rest/v1/stores/{id}": {
+      "200": {
+        "id": 91045,
+        "name": "Anchanto Demo Lazada SG",
+        "marketplace_name": "Lazada",
+        "marketplace_code": "lazada_sg",
+        "inventory_sync": "2026-08-15T04:10:22.000Z",
+        "product_sync": "2026-08-15T03:55:10.000Z",
+        "order_sync": "2026-08-15T04:12:47.000Z",
+        "cancel_order_sync": "2026-08-15T02:30:00.000Z",
+        "active": true,
+        "deactivated_at": null,
+        "ss_code": "ANCH_DEMO_SG_LAZADA_SG",
+        "store_code": "LZD-SG-77120",
+        "sync_status": "COMPLETED",
+        "mp_timezone": "Asia/Singapore",
+        "country_name": "Singapore",
+        "currency_code": "SGD",
+        "warehouse_id": 4412,
+        "integration_code": "lazada",
+        "state": "ACTIVE",
+        "branch_code": "SG-CENTRAL",
+        "is_global_marketplace": false,
+        "created_at": "2025-11-03T09:14:00.000Z",
+        "updated_at": "2026-08-15T04:12:47.000Z"
+      }
+    },
+    "PATCH /rest/v1/stores/{id}": {
+      "200": {
+        "id": 91045,
+        "name": "Anchanto Demo Lazada SG",
+        "marketplace_name": "Lazada",
+        "marketplace_code": "lazada_sg",
+        "inventory_sync": "2026-08-15T04:20:03.000Z",
+        "product_sync": "2026-08-15T03:55:10.000Z",
+        "order_sync": "2026-08-15T04:12:47.000Z",
+        "cancel_order_sync": "2026-08-15T02:30:00.000Z",
+        "active": true,
+        "deactivated_at": null,
+        "ss_code": "ANCH_DEMO_SG_LAZADA_SG",
+        "store_code": "LZD-SG-77120",
+        "sync_status": "COMPLETED",
+        "mp_timezone": "Asia/Singapore",
+        "country_name": "Singapore",
+        "currency_code": "SGD",
+        "warehouse_id": 4412,
+        "integration_code": "lazada",
+        "state": "ACTIVE",
+        "branch_code": "SG-CENTRAL",
+        "is_global_marketplace": false,
+        "created_at": "2025-11-03T09:14:00.000Z",
+        "updated_at": "2026-08-15T04:20:03.000Z"
+      }
+    },
+    "GET /rest/v1/stores/{id}/credentials": {
+      "200": {
+        "payload": [
+          {
+            "key_name": "app_key",
+            "value": "1188402",
+            "presentation": "App Key",
+            "created_at": "2025-11-03T09:14:00.000Z",
+            "updated_at": "2026-06-01T07:41:12.000Z"
+          },
+          {
+            "key_name": "app_secret",
+            "value": "c19a4e7f28b6d035a1c7e9f2b48d6013",
+            "presentation": "App Secret",
+            "created_at": "2025-11-03T09:14:00.000Z",
+            "updated_at": "2026-06-01T07:41:12.000Z"
+          },
+          {
+            "key_name": "access_token",
+            "value": "50000200a1b2c3d4e5f60718293a4b5c",
+            "presentation": "Access Token",
+            "created_at": "2026-06-01T07:41:12.000Z",
+            "updated_at": "2026-08-14T22:10:55.000Z"
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/stores/{id}/disconnect": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/stores/create_smp_and_connect": {
+      "200": {
+        "success": true,
+        "store_id": 55844,
+        "store_code": "SS0000055844",
+        "marketplace_code": "tiktok",
+        "status": "connected"
+      }
+    },
+    "POST /rest/v1/stores/{id}/trigger_fetch_products": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:UpdateInventory": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderStatusupdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderStatusChange": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderApproveOrReject": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:StoreDisconnect": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnStoreTokenExpiry": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AwbDetailUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:StoreConnection": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:WarehouseConnection": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ShippingLableAndInvoice": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AuthAssets": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:LogisticsPartnerConnection": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CreateManifest": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:UploadManifestFailure": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CreateInventoryProduct": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CatalogueList,CatalogueDelist": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CatalogueUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ReturnOrderCreation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderCreation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderReturn": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ReturnCompletion": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderSplit": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ReturnApproveOrderStatusUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CancelApproveOrderStatusUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ReturnDisputeOrderStatusUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:LogisticsPartnerOrderUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:EanFileUpload": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchMpWarehouseList": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnFetchProductDetail": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnEanSearch": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:DelayedShipping": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ShipmentWithhold": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:ShipmentRelease": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateCatalogue": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateOrder": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncInventoryProduct": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncUpdateStock": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateTransaction": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:CreateTaxonAsset": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:PendingOrderStateChange": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:PushTransactionDetails": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:KitProductCreateOrUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:RTSError": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:InitialProductAndOrderSyncComplete": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:GenerateStockDiscrepancyReport": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchProductsWithSkus": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnShipmentCreation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnOrderInTransit": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnStockUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:SetStatusOnMp": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:UpdatePrice": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchOrders": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchCanceledOrders": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchDeliveredOrders": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:FetchProducts": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnMarketplaceProductUpdation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnMarketplaceProductCreation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnMarketplaceProductListing": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnMarketplaceProductRejection": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnMarketplaceProductDeletion": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnShipAddressUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnOrderCancelInProcess": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OrderDelivered": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnLostInTransit": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnInventoryProductUpdation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnManualSapPosting": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnManualSapPostingByFile": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:OnFailedDelivery": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:BulkActivityCompletionUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:DoCreation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:DoShipmentUpdate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:DoReturn": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:DoCancellation": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /Event:SalesReportShipmentDetails": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v1/marketplaces": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/inventory_products": {
+      "201": {
+        "id": 884213,
+        "inventory_sku": "ISKU-ANCH-0001",
+        "sellable": 148,
+        "low_inventory_threshold": 10,
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "cost_price": 8.75,
+        "height": 2.0,
+        "width": 20.0,
+        "length": 30.0,
+        "weight": 0.25,
+        "sr_number_required": false,
+        "upc": "8901234567890",
+        "storage_type": "AMBIENT",
+        "created_at": "2026-08-15 10:22:41",
+        "updated_at": "2026-08-15 10:22:41",
+        "active": true
+      },
+      "200": {
+        "id": 884213,
+        "inventory_sku": "ISKU-ANCH-0001",
+        "sellable": 148,
+        "low_inventory_threshold": 10,
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "cost_price": 8.75,
+        "height": 2.0,
+        "width": 20.0,
+        "length": 30.0,
+        "weight": 0.25,
+        "sr_number_required": false,
+        "upc": "8901234567890",
+        "storage_type": "AMBIENT",
+        "created_at": "2026-08-15 10:22:41",
+        "updated_at": "2026-08-15 10:22:41",
+        "active": true
+      }
+    },
+    "GET /rest/v1/inventory_products": {
+      "200": {
+        "payload": [
+          {
+            "id": 884213,
+            "inventory_sku": "ISKU-ANCH-0001",
+            "sellable": 148,
+            "reserve": 12,
+            "total_stock": 160,
+            "low_inventory_threshold": 10,
+            "name": "Anchanto Cotton Tee - Navy - M",
+            "description": "Cotton tee, navy, medium",
+            "cost_price": 8.75,
+            "height": 2.0,
+            "width": 20.0,
+            "length": 30.0,
+            "weight": 0.25,
+            "sr_number_required": false,
+            "upc": "8901234567890",
+            "storage_type": "AMBIENT",
+            "material_type": "FINISHED_GOOD",
+            "total_usable_quantity": 148,
+            "total_unusable_quantity": 2,
+            "total_inprocess_quantity": 10,
+            "active": true,
+            "created_at": "2026-01-14 09:12:33",
+            "updated_at": "2026-08-10 17:45:02"
+          },
+          {
+            "id": 884214,
+            "inventory_sku": "ISKU-ANCH-0002",
+            "sellable": 0,
+            "reserve": 0,
+            "total_stock": 0,
+            "low_inventory_threshold": 5,
+            "name": "Anchanto Cotton Tee - Navy - L",
+            "description": "Cotton tee, navy, large",
+            "cost_price": 8.75,
+            "height": 2.0,
+            "width": 22.0,
+            "length": 32.0,
+            "weight": 0.27,
+            "sr_number_required": false,
+            "upc": "8901234567906",
+            "storage_type": "AMBIENT",
+            "material_type": "FINISHED_GOOD",
+            "total_usable_quantity": 0,
+            "total_unusable_quantity": 0,
+            "total_inprocess_quantity": 0,
+            "active": true,
+            "created_at": "2026-01-14 09:12:33",
+            "updated_at": "2026-07-30 11:02:19"
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/inventory_products/{id}": {
+      "200": {
+        "id": 884213,
+        "inventory_sku": "ISKU-ANCH-0001",
+        "sellable": 150,
+        "low_inventory_threshold": 10,
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "cost_price": 8.9,
+        "height": 2.0,
+        "width": 20.0,
+        "length": 30.0,
+        "weight": 0.25,
+        "sr_number_required": false,
+        "upc": "8901234567890",
+        "storage_type": "AMBIENT",
+        "created_at": "2026-01-14 09:12:33",
+        "updated_at": "2026-08-15 10:31:07",
+        "active": true
+      }
+    },
+    "GET /rest/v1/inventory_products/{id}": {
+      "200": {
+        "id": 884213,
+        "inventory_sku": "ISKU-ANCH-0001",
+        "sellable": 148,
+        "low_inventory_threshold": 10,
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "cost_price": 8.75,
+        "height": 2.0,
+        "width": 20.0,
+        "length": 30.0,
+        "weight": 0.25,
+        "sr_number_required": false,
+        "upc": "8901234567890",
+        "storage_type": "AMBIENT",
+        "created_at": "2026-01-14 09:12:33",
+        "updated_at": "2026-08-10 17:45:02",
+        "active": true
+      }
+    },
+    "PATCH /rest/v1/inventory_products/update_stocks": {
+      "200": {
+        "status": true,
+        "errors": []
+      }
+    },
+    "POST /rest/v1/inventory_products/update_stocks": {
+      "200": {
+        "status": true,
+        "errors": []
+      },
+      "400": {
+        "status": false,
+        "errors": [
+          {
+            "seller_sku": "ISKU-ANCH-0001",
+            "message": "Warehouse WH-SG-01 not mapped to seller"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/inventory_products/{inventory_product_id}/stock_locations": {
+      "201": {
+        "id": 331902,
+        "quantity": 40,
+        "is_deleted": false,
+        "version": 1,
+        "location_id": 5521,
+        "warehouse_id": 771,
+        "is_usable": true,
+        "created_at": "2026-08-15 10:44:02",
+        "updated_at": "2026-08-15 10:44:02",
+        "location_name": "Rack A-12",
+        "location_code": "A-12",
+        "section_name": "Ambient Zone",
+        "section_id": 44
+      }
+    },
+    "PATCH /rest/v1/inventory_products/{inventory_product_id}/stock_locations/{id}": {
+      "200": {
+        "quantity": 35,
+        "is_deleted": false,
+        "version": 2,
+        "location_id": 5521,
+        "warehouse_id": 771,
+        "is_usable": true,
+        "created_at": "2026-08-15 10:44:02",
+        "updated_at": "2026-08-15 11:02:55",
+        "location_name": "Rack A-12",
+        "location_code": "A-12",
+        "section_name": "Ambient Zone",
+        "section_id": 44
+      }
+    },
+    "GET /rest/v1/inventory_products/{inventory_product_id}/stock_locations/{id}": {
+      "200": {
+        "id": 1,
+        "inventory_product_id": 1001,
+        "warehouse_id": 1,
+        "location": "LOC-A-01",
+        "quantity": 100
+      }
+    },
+    "GET /rest/v1/inventory_products/async_get_products": {
+      "200": {
+        "success": true
+      }
+    },
+    "PATCH /rest/v1/inventory_products/update_delta_stocks": {
+      "200": {
+        "errors": []
+      }
+    },
+    "POST /rest/v1/inventory_products/bulk_update_stocks": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/inventory_products/update_price": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/inventory_products/bulk_update_price": {
+      "200": {
+        "success": true
+      }
+    },
+    "PATCH /rest/v1/inventory_products/async_update_stocks": {
+      "202": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009341"
+      },
+      "200": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009341"
+      }
+    },
+    "POST /rest/v1/inventory_products/async_create_inventory_products": {
+      "202": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009342"
+      },
+      "200": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009342"
+      }
+    },
+    "POST /rest/v1/inventory_products/bulk_update_product": {
+      "200": {
+        "success": true,
+        "message": "1 inventory product(s) updated"
+      }
+    },
+    "POST /rest/v1/catalogues": {
+      "201": {
+        "sku": "CSKU-ANCH-0001",
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "description": "Cotton tee, navy, medium",
+        "price": "19.90",
+        "selling_price": 16.9,
+        "allocated_stock": 148,
+        "created_at": "2026-08-15T10:22:41Z",
+        "updated_at": "2026-08-15T10:22:41Z",
+        "images": [
+          {
+            "title": "Front",
+            "url": "https://cdn.anchanto.example/p/884213/1.jpg"
+          }
+        ]
+      },
+      "200": {
+        "sku": "CSKU-ANCH-0001",
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "description": "Cotton tee, navy, medium",
+        "price": "19.90",
+        "selling_price": 16.9,
+        "allocated_stock": 148,
+        "created_at": "2026-08-15T10:22:41Z",
+        "updated_at": "2026-08-15T10:22:41Z",
+        "images": []
+      }
+    },
+    "GET /rest/v1/catalogues": {
+      "200": {
+        "payload": [
+          {
+            "id": 5512207,
+            "name": "Anchanto Cotton Tee - Navy - M",
+            "description": "Cotton tee, navy, medium",
+            "currency": "SGD",
+            "currency_symbol": "S$",
+            "marketplace_code": "SHOPEE",
+            "is_listed": true,
+            "price": 19.9,
+            "selling_price": 16.9,
+            "allocated_stock": 148,
+            "state": "LIVE",
+            "sku": "CSKU-ANCH-0001",
+            "isku": "ISKU-ANCH-0001",
+            "is_sku_available": true,
+            "sale_start_date": "2026-08-01T00:00:00Z",
+            "sale_end_date": "2026-08-31T23:59:59Z",
+            "master_product_sku": "CSKU-ANCH-0001",
+            "master_product_permalink": null,
+            "is_created": true,
+            "image_updated": false,
+            "height": 2.0,
+            "width": 20.0,
+            "length": 30.0,
+            "weight": 0.25,
+            "upc": "8901234567890",
+            "delivery_sla": "P2D",
+            "ean_number": "8901234567890",
+            "is_ean_available": true,
+            "images": [
+              {
+                "url": "https://cdn.anchanto.example/p/884213/1.jpg",
+                "cdn_url": "https://cdn.anchanto.example/p/884213/1.jpg",
+                "small_url": "https://cdn.anchanto.example/p/884213/1_s.jpg",
+                "large_url": "https://cdn.anchanto.example/p/884213/1_l.jpg",
+                "position": 1,
+                "title": "Front",
+                "type": "PRIMARY",
+                "filename": "1.jpg",
+                "reference_code": "IMG-884213-1",
+                "product_image_id": 771201,
+                "image_id": 771201
+              }
+            ],
+            "group_products": [
+              {
+                "id": 5512208,
+                "product_id": 884214,
+                "product_name": "Anchanto Cotton Tee - Navy - L",
+                "sku": "CSKU-ANCH-0002",
+                "isku": "ISKU-ANCH-0002",
+                "isku_name": "Anchanto Cotton Tee - Navy - L",
+                "upc": "8901234567906",
+                "ean_number": "8901234567906",
+                "product_type": "VARIANT",
+                "price": 19.9,
+                "selling_price": 16.9,
+                "selling_price_start_date": "2026-08-01T00:00:00Z",
+                "selling_price_end_date": "2026-08-31T23:59:59Z",
+                "is_sku_available": true,
+                "marketplace_code": "SHOPEE",
+                "allocated_stock": 0,
+                "width": 22.0,
+                "height": 2.0,
+                "length": 32.0,
+                "option_types_with_value": [
+                  {
+                    "id": 9911,
+                    "field_id": 55,
+                    "value": "L",
+                    "field_name": "Size",
+                    "field_code": "SIZE"
+                  }
+                ],
+                "variant_image": {
+                  "url": "https://cdn.anchanto.example/p/884214/1.jpg",
+                  "reference_code": "IMG-884214-1",
+                  "title": "Front",
+                  "product_image_id": 771208,
+                  "type": "PRIMARY",
+                  "position": 1,
+                  "filename": "1.jpg"
+                },
+                "product_attributes": []
+              }
+            ],
+            "option_types": [
+              {
+                "id": 55,
+                "field_type": "SELECT",
+                "data_type": "STRING",
+                "mandatory": true,
+                "free_text": false,
+                "field_name": "Size",
+                "field_code": "SIZE",
+                "option_type": true
+              }
+            ],
+            "option_values": null,
+            "store": {
+              "id": 90211,
+              "name": "Anchanto SG Flagship",
+              "store_code": "SHOPEE-SG-01",
+              "marketplace_name": "Shopee",
+              "marketplace_code": "SHOPEE",
+              "ss_code": "SHOPEE_SG",
+              "time_zone": "Asia/Singapore",
+              "currency_code": "SGD"
+            },
+            "category": {
+              "name": "Tees",
+              "presentation": "Apparel > Tops > Tees",
+              "code": "100634",
+              "display_name": "Tees",
+              "parent_categories": [
+                {
+                  "name": "Apparel",
+                  "code": "100600"
+                },
+                {
+                  "name": "Tops",
+                  "code": "100630"
+                }
+              ]
+            },
+            "brand": {
+              "name": "Anchanto",
+              "code": "ANCH",
+              "presentation": "Anchanto"
+            },
+            "product_attributes": [
+              {
+                "value": "Cotton",
+                "attribute_name": "Material",
+                "attribute_code": "MATERIAL",
+                "position": 1,
+                "attribute_type": "TEXT",
+                "mandatory": false,
+                "data_type": "STRING",
+                "option_type": false,
+                "field_values": [
+                  {
+                    "name": "Cotton",
+                    "value": "COTTON"
+                  }
+                ]
+              }
+            ],
+            "multiwarehouse_stock": [
+              {
+                "warehouse_code": "WH-SG-01",
+                "stock": 100,
+                "processing_sla": "P1D",
+                "marketplace_warehouse_code": "SHOPEE-WH-SG-A"
+              }
+            ],
+            "kit_details": []
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/catalogues/{sku}": {
+      "200": {
+        "sku": "CSKU-ANCH-0001",
+        "name": "Anchanto Cotton Tee - Navy - M",
+        "description": "Cotton tee, navy, medium - restyled",
+        "price": "21.90",
+        "selling_price": 18.9,
+        "allocated_stock": 150,
+        "created_at": "2026-01-14T09:12:33Z",
+        "updated_at": "2026-08-15T11:14:20Z",
+        "images": [
+          {
+            "title": "Front",
+            "url": "https://cdn.anchanto.example/p/884213/1.jpg"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/catalogues/update_price": {
+      "200": {
+        "marketplace_code": "SHOPEE",
+        "sku": "CSKU-ANCH-0001",
+        "status": true,
+        "message": "Price updated successfully"
+      }
+    },
+    "PATCH /rest/v1/catalogues/{sku}/update_status": {
+      "200": {
+        "store_code": "SHOPEE-SG-01",
+        "status": "DELISTED",
+        "reason": "Out of stock at all warehouses"
+      }
+    },
+    "POST /rest/v1/catalogues/async_create_catalogue": {
+      "202": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009350"
+      },
+      "200": {
+        "message": "Feed submitted successfully",
+        "feed_id": "FEED-2026-08-15-0009350"
+      }
+    },
+    "POST /rest/v1/catalogues/upsert_kit_product_mapping": {
+      "200": {
+        "success": true,
+        "message": "Kit product mapping upserted successfully"
+      }
+    },
+    "POST /rest/v1/catalogues/create_kit_product": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/brands": {
+      "200": {
+        "id": 71204,
+        "name": "Aurora Home",
+        "code": "AURORA_HOME",
+        "presentation": "Aurora Home",
+        "marketplace_code": "lazada_sg",
+        "active": true,
+        "created_at": "2026-08-15T04:35:02.000Z",
+        "updated_at": "2026-08-15T04:35:02.000Z"
+      }
+    },
+    "GET /rest/v1/brands": {
+      "200": {
+        "success": true
+      }
+    },
+    "PATCH /rest/v1/brands/{id}": {
+      "200": {
+        "brand": {
+          "id": 1,
+          "name": "BrandName"
+        }
+      }
+    },
+    "PUT /rest/v1/brands/{id}": {
+      "200": {
+        "name": "Aurora Home Living",
+        "code": "AURORA_HOME",
+        "presentation": "Aurora Home Living",
+        "marketplace_code": "lazada_sg",
+        "active": true,
+        "created_at": "2026-08-15T04:35:02.000Z",
+        "updated_at": "2026-08-15T05:11:48.000Z"
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Brand not found",
+        "status": 404,
+        "message": "Brand not found",
+        "summary": "Not Found"
+      }
+    },
+    "POST /rest/v1/brands/bulk_create": {
+      "200": {
+        "success": true,
+        "message": "Brands created successfully",
+        "created_count": 2,
+        "failed_count": 0,
+        "payload": [
+          {
+            "id": 71204,
+            "name": "Aurora Home",
+            "code": "AURORA_HOME",
+            "presentation": "Aurora Home",
+            "marketplace_code": "lazada_sg",
+            "active": true,
+            "created_at": "2026-08-15T04:35:02.000Z",
+            "updated_at": "2026-08-15T04:35:02.000Z"
+          },
+          {
+            "id": 71205,
+            "name": "Nordvik",
+            "code": "NORDVIK",
+            "presentation": "Nordvik",
+            "marketplace_code": "lazada_sg",
+            "active": true,
+            "created_at": "2026-08-15T04:35:02.000Z",
+            "updated_at": "2026-08-15T04:35:02.000Z"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/categories": {
+      "200": {
+        "id": 442019,
+        "name": "Bed Sheets",
+        "code": "10000412",
+        "presentation": "Bed Sheets",
+        "display_name": "Home & Living / Bedding / Bed Sheets",
+        "marketplace_code": "lazada_sg",
+        "parent_id": "442011",
+        "position": 3,
+        "active": true,
+        "created_at": "2026-08-15T04:40:17.000Z",
+        "updated_at": "2026-08-15T04:40:17.000Z"
+      }
+    },
+    "GET /rest/v1/categories": {
+      "200": {
+        "payload": [
+          {
+            "code": "10000387",
+            "name": "Bedding",
+            "presentation": "Bedding",
+            "pretty_name": "Home & Living / Bedding",
+            "active": "true",
+            "activate": "true",
+            "is_leaf_node": "false",
+            "total_products": "0",
+            "variation": "false"
+          },
+          {
+            "code": "10000412",
+            "name": "Bed Sheets",
+            "presentation": "Bed Sheets",
+            "pretty_name": "Home & Living / Bedding / Bed Sheets",
+            "active": "true",
+            "activate": "true",
+            "is_leaf_node": "true",
+            "total_products": "148",
+            "variation": "true"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/bulk_categories": {
+      "200": {
+        "success": true,
+        "message": "Categories created successfully",
+        "created_count": 4,
+        "failed_count": 0,
+        "payload": [
+          {
+            "id": 442001,
+            "code": "10000001",
+            "name": "Home & Living",
+            "parent_id": null,
+            "active": true
+          },
+          {
+            "id": 442011,
+            "code": "10000387",
+            "name": "Bedding",
+            "parent_id": "442001",
+            "active": true
+          },
+          {
+            "id": 442019,
+            "code": "10000412",
+            "name": "Bed Sheets",
+            "parent_id": "442011",
+            "active": true
+          },
+          {
+            "id": 442020,
+            "code": "10000413",
+            "name": "Pillowcases",
+            "parent_id": "442011",
+            "active": true
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/categories/{id}": {
+      "200": {
+        "category": {
+          "id": 1,
+          "name": "CategoryName",
+          "category_code": "CAT001"
+        }
+      }
+    },
+    "PUT /rest/v1/categories/{id}": {
+      "200": {
+        "name": "Bed Sheets & Pillowcases",
+        "code": "10000412",
+        "presentation": "Bed Sheets & Pillowcases",
+        "marketplace_code": "lazada_sg",
+        "parent_id": "442011",
+        "position": 3,
+        "active": true,
+        "created_at": "2026-08-15T04:40:17.000Z",
+        "updated_at": "2026-08-15T05:22:03.000Z"
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Category not found",
+        "status": 404,
+        "message": "Category not found",
+        "summary": "Not Found"
+      }
+    },
+    "GET /rest/v1/categories/{id}/category_attributes": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/category_attributes": {
+      "200": {
+        "payload": [
+          {
+            "id": "990331",
+            "marketplace": "lazada_sg",
+            "category": "10000412",
+            "field_type": "attribute",
+            "data_type": "string",
+            "mandatory": "true",
+            "is_mandatory": "true",
+            "free_text": "false",
+            "field_name": "Material",
+            "field_code": "material",
+            "option_type": "true",
+            "criteria": "single_select",
+            "parent_id": null,
+            "ss_field_code": "material",
+            "field_values": [
+              {
+                "name": "Cotton",
+                "value": "cotton"
+              },
+              {
+                "name": "Linen",
+                "value": "linen"
+              },
+              {
+                "name": "Microfiber",
+                "value": "microfiber"
+              }
+            ],
+            "created_at": "2026-08-15T04:44:51.000Z",
+            "updated_at": "2026-08-15T04:44:51.000Z"
+          },
+          {
+            "id": "990332",
+            "marketplace": "lazada_sg",
+            "category": "10000412",
+            "field_type": "attribute",
+            "data_type": "decimal",
+            "mandatory": "false",
+            "is_mandatory": "false",
+            "free_text": "true",
+            "field_name": "Thread Count",
+            "field_code": "thread_count",
+            "option_type": "false",
+            "criteria": "text",
+            "parent_id": "990331",
+            "ss_field_code": "thread_count",
+            "field_values": [],
+            "created_at": "2026-08-15T04:44:52.000Z",
+            "updated_at": "2026-08-15T04:44:52.000Z"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/bulk_categories_attributes": {
+      "200": {
+        "success": true,
+        "message": "Category attributes created successfully",
+        "created_count": 2,
+        "failed_count": 0,
+        "payload": [
+          {
+            "id": "990331",
+            "marketplace": "lazada_sg",
+            "category": "10000412",
+            "field_name": "Material",
+            "field_code": "material",
+            "field_type": "attribute",
+            "data_type": "string",
+            "mandatory": "true",
+            "is_mandatory": "true",
+            "free_text": "false",
+            "option_type": "true",
+            "criteria": "single_select",
+            "parent_id": null,
+            "ss_field_code": "material",
+            "field_values": [
+              {
+                "name": "Cotton",
+                "value": "cotton"
+              },
+              {
+                "name": "Linen",
+                "value": "linen"
+              }
+            ],
+            "created_at": "2026-08-15T04:44:51.000Z",
+            "updated_at": "2026-08-15T04:44:51.000Z"
+          },
+          {
+            "id": "990333",
+            "marketplace": "lazada_sg",
+            "category": "10000412",
+            "field_name": "Bed Size",
+            "field_code": "bed_size",
+            "field_type": "attribute",
+            "data_type": "string",
+            "mandatory": "true",
+            "is_mandatory": "true",
+            "free_text": "false",
+            "option_type": "true",
+            "criteria": "single_select",
+            "parent_id": null,
+            "ss_field_code": "bed_size",
+            "field_values": [
+              {
+                "name": "Single",
+                "value": "single"
+              },
+              {
+                "name": "Queen",
+                "value": "queen"
+              },
+              {
+                "name": "King",
+                "value": "king"
+              }
+            ],
+            "created_at": "2026-08-15T04:44:51.000Z",
+            "updated_at": "2026-08-15T04:44:51.000Z"
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/category_attributes/{id}": {
+      "200": {
+        "attribute": {
+          "id": 1,
+          "name": "Color"
+        }
+      }
+    },
+    "PUT /rest/v1/category_attributes/{id}": {
+      "200": {
+        "marketplace": "lazada_sg",
+        "category": "10000412",
+        "field_type": "attribute",
+        "data_type": "string",
+        "mandatory": "true",
+        "is_mandatory": "true",
+        "free_text": "false",
+        "field_name": "Material",
+        "field_code": "material",
+        "option_type": "true",
+        "criteria": "single_select",
+        "ss_field_code": "material",
+        "field_values": [
+          {
+            "name": "Cotton",
+            "value": "cotton"
+          },
+          {
+            "name": "Bamboo",
+            "value": "bamboo"
+          }
+        ],
+        "created_at": "2026-08-15T04:44:51.000Z",
+        "updated_at": "2026-08-15T05:33:20.000Z"
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Category attribute not found",
+        "status": 404,
+        "message": "Category attribute not found",
+        "summary": "Not Found"
+      }
+    },
+    "GET /rest/v1/seller_marketplaces/get_smp": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/seller_marketplaces/build_smp": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v1/seller_marketplaces/create_smp_and_connect": {
+      "200": {
+        "success": true,
+        "store_id": 55844,
+        "store_code": "SS0000055844",
+        "status": "connected"
+      }
+    },
+    "POST /rest/v1/seller_marketplaces/update_stock_sync": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v1/smp_shipping_methods": {
+      "200": {
+        "payload": [
+          {
+            "shipping_method": "Lazada Express SG",
+            "seller_marketplace": "ANCH_DEMO_SG_LAZADA_SG",
+            "marketplace_shipping_code": "Lazada Express SG",
+            "default": "false",
+            "payment_type": "all",
+            "seller_logistics_partner": "lex_sg",
+            "ewms_carrier_code": "LEX_SG",
+            "is_active": "true",
+            "carrier_name": "Lazada Express",
+            "created_at": "2026-08-15T04:31:11.000Z",
+            "updated_at": "2026-08-15T04:31:11.000Z"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/smp_shipping_methods": {
+      "200": {
+        "payload": [
+          {
+            "shipping_method": "Lazada Express SG",
+            "seller_marketplace": "ANCH_DEMO_SG_LAZADA_SG",
+            "marketplace_shipping_code": "Lazada Express SG",
+            "default": "false",
+            "payment_type": "all",
+            "seller_logistics_partner": "lex_sg",
+            "ewms_carrier_code": "LEX_SG",
+            "is_active": "true",
+            "carrier_name": "Lazada Express",
+            "created_at": "2026-08-15T04:31:11.000Z",
+            "updated_at": "2026-08-15T04:31:11.000Z"
+          }
+        ]
+      }
+    },
+    "PATCH /rest/v1/smp_shipping_methods/{id}": {
+      "200": {
+        "success": true
+      }
+    },
+    "PUT /rest/v1/smp_shipping_methods/{id}": {
+      "200": {
+        "payload": [
+          {
+            "shipping_method": "Lazada Express SG",
+            "seller_marketplace": "ANCH_DEMO_SG_LAZADA_SG",
+            "marketplace_shipping_code": "Lazada Express SG",
+            "default": "false",
+            "payment_type": "all",
+            "seller_logistics_partner": "lex_sg",
+            "ewms_carrier_code": "LEX_SG",
+            "is_active": "true",
+            "carrier_name": "Lazada Express",
+            "created_at": "2026-08-15T04:31:11.000Z",
+            "updated_at": "2026-08-15T06:02:40.000Z"
+          }
+        ]
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Smp shipping method not found",
+        "status": 404,
+        "message": "Smp shipping method not found",
+        "summary": "Not Found"
+      }
+    },
+    "POST /rest/v1/image/upload": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v2/distro_orders/list": {
+      "200": {
+        "success": true
+      }
+    },
+    "PATCH /rest/v2/distro_orders/sync_status": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v2/distro_orders/{do_number}": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v2/distro_orders/{do_number}/pickup_timeslots": {
+      "200": {
+        "timeslots": [
+          {
+            "slot_id": "SLOT-01",
+            "start_time": "2026-09-08T09:00:00Z",
+            "end_time": "2026-09-08T12:00:00Z"
+          }
+        ]
+      }
+    },
+    "GET /rest/v2/distro_orders/{do_number}/packages": {
+      "200": {
+        "packages": [
+          {
+            "package_id": "PKG-DO-001",
+            "weight": 2.5,
+            "status": "packed"
+          }
+        ]
+      }
+    },
+    "POST /rest/v2/distro_orders/{do_number}/update_packages": {
+      "200": {
+        "success": true
+      }
+    },
+    "GET /rest/v2/distro_orders/{do_number}/documents": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v2/distro_orders/{do_number}/update_status": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v2/distro_orders/{do_number}/cancel/validate": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v2/distro_orders/{do_number}/cancel": {
+      "200": {
+        "success": true
+      }
+    },
+    "POST /rest/v2/orders/create_or_update_return": {
+      "200": {
+        "success": true,
+        "return_order_number": "RET-2026-001",
+        "status": "initiated"
+      }
+    },
+    "POST /oauth/token": {
+      "200": {
+        "access_token": "f1a6c2d8e40b7935a1c6d2f8b04e7395c1a6d2f8b04e7395c1a6d2f8b04e7395",
+        "token_type": "Bearer",
+        "expires_in": 7200,
+        "refresh_token": "3e9b5c1a7f024d68b3e9c5a1f7d02468b3e9c5a1f7d02468b3e9c5a1f7d02468",
+        "scope": "public",
+        "created_at": 1755216000
+      },
+      "401": {
+        "error": "invalid_grant",
+        "error_description": "The provided authorization grant is invalid, expired, revoked, or was issued to another client.",
+        "status": 401,
+        "message": "The provided authorization grant is invalid, expired, revoked, or was issued to another client.",
+        "summary": "Unauthorized"
+      },
+      "400": {
+        "error": "invalid_request",
+        "error_description": "Missing required parameter: code",
+        "status": 400,
+        "message": "Missing required parameter: code",
+        "summary": "Bad Request"
+      }
+    },
+    "GET /rest/v1/categories/{category_code}/category_attributes": {
+      "200": {
+        "payload": [
+          {
+            "id": "990331",
+            "marketplace": "lazada_sg",
+            "category": "10000412",
+            "field_type": "attribute",
+            "data_type": "string",
+            "mandatory": "true",
+            "is_mandatory": "true",
+            "free_text": "false",
+            "field_name": "Material",
+            "field_code": "material",
+            "option_type": "true",
+            "criteria": "single_select",
+            "parent_id": null,
+            "ss_field_code": "material",
+            "field_values": [
+              {
+                "name": "Cotton",
+                "value": "cotton"
+              },
+              {
+                "name": "Linen",
+                "value": "linen"
+              },
+              {
+                "name": "Microfiber",
+                "value": "microfiber"
+              }
+            ],
+            "created_at": "2026-08-15T04:44:51.000Z",
+            "updated_at": "2026-08-15T04:44:51.000Z"
+          }
+        ]
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Category not found",
+        "status": 404,
+        "message": "Category not found",
+        "summary": "Not Found"
+      }
+    },
+    "POST /rest/v1/inventory_products/sync_failed_status": {
+      "200": "Failed stock statuses synced for 3 product(s)",
+      "400": {
+        "errors": [
+          {
+            "message": "store_code is required",
+            "error_code": "1400"
+          }
+        ]
+      }
+    },
+    "POST /rest/v1/manifest/upload": {
+      "200": {
+        "success": true,
+        "message": "Manifest uploaded successfully",
+        "order_numbers": [
+          "LZD-SG-880114772",
+          "LZD-SG-880114773"
+        ]
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "Number has already been taken",
+        "status": 422,
+        "message": "Number has already been taken",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "Number has already been taken"
+        ]
+      }
+    },
+    "POST /rest/v1/orders/async_shipping_details": {
+      "200": {
+        "success": true,
+        "message": "Shipping details queued for asynchronous processing",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "order_item_ids": [
+          55510011,
+          55510012
+        ]
+      },
+      "201": {
+        "success": true,
+        "message": "Feed accepted",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "order_item_ids": [
+          55510011,
+          55510012
+        ]
+      },
+      "422": {
+        "success": false,
+        "message": "tracking_number is required",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "order_item_ids": []
+      },
+      "500": {
+        "error": "Internal Server Error",
+        "error_message": "async_shipping_details failed",
+        "status": 500
+      }
+    },
+    "POST /rest/v1/orders/{id}/serial_number_validation_response": {
+      "200": {
+        "success": true,
+        "message": "Serial validation response recorded",
+        "order_id": 90114455,
+        "order_number": "TT-90210-A",
+        "processed_serial_numbers": 3,
+        "failed_serial_numbers": [
+          "SN-AAA-0002"
+        ]
+      },
+      "422": {
+        "error": "Unprocessable Entity",
+        "error_message": "Unknown sku SKU-RED-M for order 90114455",
+        "status": 422
+      },
+      "429": {
+        "error": "Too Many Requests",
+        "error_message": "Rate limit exceeded",
+        "status": 429
+      },
+      "500": {
+        "error": "Internal Server Error",
+        "error_message": "serial validation response failed",
+        "status": 500
+      }
+    },
+    "POST /rest/v1/payouts": {
+      "200": {
+        "success": true,
+        "message": "Payout created successfully",
+        "id": 4471209,
+        "payment_id": "PAYOUT-88117420",
+        "settlement_amount": 16221.9,
+        "currency": "SGD",
+        "created_at": "2026-08-15T05:01:12.000Z"
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "Payment has already been taken",
+        "status": 422,
+        "message": "Payment has already been taken",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "payout.payment_id: Payment has already been taken"
+        ]
+      }
+    },
+    "POST /rest/v1/promotions/update_failure_reasons": {
+      "200": {
+        "success": true,
+        "message": "Promotion failure reasons updated",
+        "status": 200
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "Unknown promotion_id PRM-2026-4471",
+        "status": 422,
+        "message": "Unknown promotion_id PRM-2026-4471",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "Unknown promotion_id PRM-2026-4471"
+        ]
+      }
+    },
+    "POST /rest/v1/reports": {
+      "200": {
+        "success": true,
+        "message": "Report updated successfully",
+        "report_history_id": 660412,
+        "url": "https://reports.anchanto-demo.com/discrepancy/660412/lazada_sg-2026-08-15.csv"
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "report_history_id not found",
+        "status": 422,
+        "message": "report_history_id not found",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "report_history_id not found"
+        ]
+      }
+    },
+    "GET /rest/v1/seller_marketplaces/get_all_stocks": {
+      "200": {
+        "payload": [
+          {
+            "marketplace_product_id": "MP-2288451",
+            "marketplace_product_name": "Anchanto Cotton Tee Navy M",
+            "price": 19.9,
+            "selling_price": 16.9,
+            "sale_start_date": "2026-08-01 00:00:00",
+            "sale_end_date": "2026-08-31 23:59:59",
+            "status": "LIVE",
+            "quantity": 148,
+            "product_id": "884213",
+            "product_name": "Anchanto Cotton Tee - Navy - M",
+            "sku": "CSKU-ANCH-0001",
+            "description": "Cotton tee, navy, medium",
+            "marketplace_shop_id": "SHOP-77120",
+            "marketplace_shop_name": "Anchanto SG Flagship",
+            "seller_id": "4471",
+            "product_type": "SIMPLE",
+            "active": true,
+            "is_created_at_platform": true,
+            "group_code": "GRP-TEE-NAVY",
+            "option_type": "SIZE",
+            "category": "Apparel > Tops > Tees",
+            "marketplaceCategoryCode": "100634",
+            "multiwarehouse_stock": [
+              {
+                "warehouse_code": "WH-SG-01",
+                "stock": 100,
+                "processing_sla": "P1D",
+                "marketplace_warehouse_code": "SHOPEE-WH-SG-A"
+              },
+              {
+                "warehouse_code": "WH-SG-02",
+                "stock": 48,
+                "processing_sla": "P2D",
+                "marketplace_warehouse_code": "SHOPEE-WH-SG-B"
+              }
+            ],
+            "marketplace_code": "SHOPEE",
+            "marketplace_name": "Shopee",
+            "country_code": "SG",
+            "platform_product_id": "PLT-99120",
+            "store_code": "SHOPEE-SG-01",
+            "store_name": "Anchanto SG Flagship",
+            "created_at": "2026-01-14 09:12:33",
+            "updated_at": "2026-08-10 17:45:02",
+            "discontinued_at": null
+          }
+        ],
+        "meta_data": {
+          "total_skus": 1842
+        }
+      },
+      "401": {
+        "errors": [
+          {
+            "message": "Access token is invalid",
+            "error_code": "1401"
+          }
+        ]
+      },
+      "404": {
+        "errors": [
+          {
+            "message": "No stocks found for store SHOPEE-SG-01",
+            "error_code": "1404"
+          }
+        ]
+      }
+    },
+    "GET /rest/v1/shipping_methods": {
+      "200": {
+        "payload": [
+          {
+            "name": "Lazada Express SG",
+            "display_on": "shipping_label",
+            "tracking_url": "https://tracker.lazada.sg/tracking?tracking_number=",
+            "marketplace": "Lazada",
+            "country": "Singapore",
+            "shipping_type": "standard",
+            "fulfilment_code": "LZD_SOC",
+            "update_status": "true",
+            "is_self_service": "false",
+            "logistics_partner_code": "lex_sg",
+            "logistic_action": "MP_INTEGRATED"
+          },
+          {
+            "name": "Seller Own Fleet",
+            "display_on": "invoice",
+            "tracking_url": "",
+            "marketplace": "Shopee",
+            "country": "Singapore",
+            "shipping_type": "self_collection",
+            "fulfilment_code": "SHP_SELF",
+            "update_status": "false",
+            "is_self_service": "true",
+            "logistics_partner_code": "seller_own_fleet",
+            "logistic_action": "SELLER_FLEET"
+          }
+        ]
+      },
+      "401": {
+        "error": "invalid_token",
+        "error_description": "The access token is invalid",
+        "status": 401,
+        "message": "The access token is invalid",
+        "summary": "Unauthorized"
+      }
+    },
+    "POST /rest/v1/shipping_methods": {
+      "200": {
+        "id": 33517,
+        "name": "Lazada Express SG",
+        "display_on": "shipping_label",
+        "tracking_url": "https://tracker.lazada.sg/tracking?tracking_number=",
+        "marketplace": "Lazada",
+        "marketplace_id": "104",
+        "marketplace_code": "lazada_sg",
+        "country": "Singapore",
+        "country_id": "196",
+        "shipping_type": "standard",
+        "shipping_type_id": "1",
+        "fulfilment_code": "LZD_SOC",
+        "update_status": "true",
+        "is_self_service": "false",
+        "combined_with_invoice": "false",
+        "logistics_partner_code": "lex_sg",
+        "logistic_action": "MP_INTEGRATED",
+        "created_at": "2026-08-15T04:31:09.000Z",
+        "updated_at": "2026-08-15T04:31:09.000Z"
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "Name has already been taken",
+        "status": 422,
+        "message": "Name has already been taken",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "Name has already been taken"
+        ]
+      }
+    },
+    "GET /rest/v1/shipping_methods/{id}": {
+      "200": {
+        "payload": [
+          {
+            "name": "Lazada Express SG",
+            "display_on": "shipping_label",
+            "tracking_url": "https://tracker.lazada.sg/tracking?tracking_number=",
+            "marketplace": "Lazada",
+            "country": "Singapore",
+            "shipping_type": "standard",
+            "fulfilment_code": "LZD_SOC",
+            "update_status": "true",
+            "is_self_service": "false",
+            "logistics_partner_code": "lex_sg",
+            "logistic_action": "MP_INTEGRATED"
+          }
+        ]
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Shipping method not found",
+        "status": 404,
+        "message": "Shipping method not found",
+        "summary": "Not Found"
+      }
+    },
+    "POST /rest/v1/transactions/async_create_transactions": {
+      "200": {
+        "message": "Transactions queued for processing",
+        "feed_id": "5f2c81a4-9d13-4c67-b0e2-77a1c4de3081"
+      },
+      "422": {
+        "error": "unprocessable_entity",
+        "error_description": "store_code does not belong to this seller",
+        "status": 422,
+        "message": "store_code does not belong to this seller",
+        "summary": "Unprocessable Entity",
+        "errors": [
+          "store_code does not belong to this seller"
+        ]
+      }
+    },
+    "GET /rest/v1/users/me": {
+      "200": {
+        "email": "integration.ops@anchanto-demo.com",
+        "firstname": "Integration",
+        "lastname": "Operations",
+        "username": "integration.ops",
+        "id": 48213,
+        "phone_no": "+6598120044",
+        "seller_id": 3391,
+        "seller_code": "ANCH_DEMO_SG",
+        "seller_tag": null,
+        "base_currency": "SGD",
+        "zone_id": 12,
+        "is_multiwarehousing": true
+      },
+      "401": {
+        "error": "invalid_token",
+        "error_description": "The access token expired",
+        "status": 401,
+        "message": "The access token expired",
+        "summary": "Unauthorized"
+      }
+    },
+    "GET /rest/v1/warehouses": {
+      "200": {
+        "payload": [
+          {
+            "id": 4412,
+            "name": "Singapore Central DC",
+            "code": "SG-CENTRAL-DC",
+            "email": "sg.central.dc@anchanto-demo.com",
+            "state": "ACTIVE",
+            "deactivated_at": null,
+            "inventory_sync": "2026-08-15T04:10:22.000Z",
+            "order_sync": "2026-08-15T04:12:47.000Z",
+            "mp_warehouse": false,
+            "address": {
+              "address1": "12 Tuas Avenue 8",
+              "address2": "Block C, Level 3",
+              "zip": "639236",
+              "city": "Singapore",
+              "phone": "+6562551180",
+              "alternative_phone": "+6562551181",
+              "country": "Singapore",
+              "state_name": "Singapore"
+            },
+            "created_at": "2025-10-01T02:00:00.000Z",
+            "updated_at": "2026-08-15T04:12:47.000Z"
+          },
+          {
+            "id": 4418,
+            "name": "Lazada Fulfilment SG",
+            "code": "LZD-FBL-SG",
+            "email": "fbl.sg@anchanto-demo.com",
+            "state": "ACTIVE",
+            "deactivated_at": null,
+            "inventory_sync": "2026-08-15T03:44:09.000Z",
+            "order_sync": "2026-08-15T03:48:31.000Z",
+            "mp_warehouse": true,
+            "address": {
+              "address1": "5 Changi South Street 3",
+              "address2": null,
+              "zip": "486122",
+              "city": "Singapore",
+              "phone": "+6567220900",
+              "alternative_phone": null,
+              "country": "Singapore",
+              "state_name": "Singapore"
+            },
+            "created_at": "2026-02-11T05:30:00.000Z",
+            "updated_at": "2026-08-15T03:48:31.000Z"
+          }
+        ]
+      },
+      "401": {
+        "error": "invalid_token",
+        "error_description": "The access token is invalid",
+        "status": 401,
+        "message": "The access token is invalid",
+        "summary": "Unauthorized"
+      }
+    },
+    "GET /rest/v1/warehouses/{id}": {
+      "200": {
+        "id": 4412,
+        "name": "Singapore Central DC",
+        "code": "SG-CENTRAL-DC",
+        "email": "sg.central.dc@anchanto-demo.com",
+        "state": "ACTIVE",
+        "deactivated_at": null,
+        "inventory_sync": "2026-08-15T04:10:22.000Z",
+        "order_sync": "2026-08-15T04:12:47.000Z",
+        "mp_warehouse": false,
+        "address": {
+          "address1": "12 Tuas Avenue 8",
+          "address2": "Block C, Level 3",
+          "zip": "639236",
+          "city": "Singapore",
+          "phone": "+6562551180",
+          "alternative_phone": "+6562551181",
+          "country": "Singapore",
+          "state_name": "Singapore"
+        },
+        "created_at": "2025-10-01T02:00:00.000Z",
+        "updated_at": "2026-08-15T04:12:47.000Z"
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Warehouse not found",
+        "status": 404,
+        "message": "Warehouse not found",
+        "summary": "Not Found"
+      }
+    },
+    "GET /rest/v1/warehouses/{warehouse_id}/stock_locations": {
+      "200": {
+        "payload": [
+          {
+            "id": 880114,
+            "quantity": 143,
+            "location_name": "A-01-03",
+            "location_code": "SGC-A-01-03",
+            "section_name": "Fast Moving A",
+            "section_id": 71,
+            "location_id": 20441,
+            "inventory_product_id": 5581203,
+            "is_deleted": false,
+            "is_usable": true,
+            "version": 7,
+            "created_at": "2026-03-14T08:20:00.000Z",
+            "updated_at": "2026-08-15T04:10:22.000Z"
+          },
+          {
+            "id": 880115,
+            "quantity": 0,
+            "location_name": "B-04-11",
+            "location_code": "SGC-B-04-11",
+            "section_name": "Quarantine",
+            "section_id": 74,
+            "location_id": 20502,
+            "inventory_product_id": 5581209,
+            "is_deleted": false,
+            "is_usable": false,
+            "version": 2,
+            "created_at": "2026-05-02T01:11:00.000Z",
+            "updated_at": "2026-08-10T16:03:41.000Z"
+          }
+        ]
+      },
+      "404": {
+        "error": "not_found",
+        "error_description": "Warehouse not found",
+        "status": 404,
+        "message": "Warehouse not found",
+        "summary": "Not Found"
+      }
+    },
+    "PATCH /rest/v2/inventory_products/async_update_stocks": {
+      "200": {
+        "message": "Stock update request accepted",
+        "feed_id": "FEED-2f8c1a9e"
+      },
+      "401": {
+        "message": "Unauthorized",
+        "errors": [
+          "access token is invalid"
+        ]
+      },
+      "422": {
+        "message": "Unprocessable entity",
+        "errors": [
+          "seller_sku SKU-1001 not found for seller"
+        ]
+      }
+    },
+    "PATCH /rest/v2/inventory_products/update_delta_stocks": {
+      "200": {
+        "message": "Stock update request accepted",
+        "feed_id": "FEED-2f8c1a9e"
+      },
+      "401": {
+        "message": "Unauthorized",
+        "errors": [
+          "access token is invalid"
+        ]
+      },
+      "422": {
+        "message": "Unprocessable entity",
+        "errors": [
+          "seller_sku SKU-1001 not found for seller"
+        ]
+      }
+    },
+    "PATCH /rest/v2/inventory_products/update_stocks": {
+      "200": {
+        "message": "Stock update request accepted",
+        "feed_id": "FEED-2f8c1a9e"
+      },
+      "401": {
+        "message": "Unauthorized",
+        "errors": [
+          "access token is invalid"
+        ]
+      },
+      "422": {
+        "message": "Unprocessable entity",
+        "errors": [
+          "seller_sku SKU-1001 not found for seller"
+        ]
+      }
+    }
+  },
+  "webhooks": {
+    "POST /Event:UpdateInventory": {
+      "summary": "On inventory/stock update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderStatusupdate": {
+      "summary": "On order status update (Ready to ship) in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderStatusChange": {
+      "summary": "On order status change (Unpaid to Paid) in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderApproveOrReject": {
+      "summary": "On Order Approve or Reject by Seller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:StoreDisconnect": {
+      "summary": "On store disconnect in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnStoreTokenExpiry": {
+      "summary": "On store token expiry notification in OMS. Fired at 30, 15, 5, and 2 days before auth token expiry, and again on the expiry day (0).",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AwbDetailUpdate": {
+      "summary": "On shipping lable & tracking update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:StoreConnection": {
+      "summary": "On new store connection in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:WarehouseConnection": {
+      "summary": "On new warehouse connection in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ShippingLableAndInvoice": {
+      "summary": "On Shipping lable & Invoice update",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AuthAssets": {
+      "summary": "On Assets Authorization in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:LogisticsPartnerConnection": {
+      "summary": "On logistics partner connection in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CreateManifest": {
+      "summary": "On new Manifest creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:UploadManifestFailure": {
+      "summary": "While failure on manifest upload through api",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CreateInventoryProduct": {
+      "summary": "On inventory product creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CatalogueList,CatalogueDelist": {
+      "summary": "On catalogue list / Catalogue Delist in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CatalogueUpdate": {
+      "summary": "On catalogue update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ReturnOrderCreation": {
+      "summary": "On return order creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderCreation": {
+      "summary": "On order creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderReturn": {
+      "summary": "On order return in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ReturnCompletion": {
+      "summary": "On  Return order in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderSplit": {
+      "summary": "On Order split in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ReturnApproveOrderStatusUpdate": {
+      "summary": "On return approve order status update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CancelApproveOrderStatusUpdate": {
+      "summary": "On cancel approve order status update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ReturnDisputeOrderStatusUpdate": {
+      "summary": "On return dispute order status update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:LogisticsPartnerOrderUpdate": {
+      "summary": "On order state change to RTS/Shipped in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:EanFileUpload": {
+      "summary": "On uploading EAN file for a SellerMarketplace in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchMpWarehouseList": {
+      "summary": "On Marketplace warehouse mapping with selluseller warehouse",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnFetchProductDetail": {
+      "summary": "On fetching product detail from axcel",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnEanSearch": {
+      "summary": "On searching a EAN number for a marketplace product in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:DelayedShipping": {
+      "summary": "On Order Delayed Shipping",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ShipmentWithhold": {
+      "summary": "On shipment withhold",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:ShipmentRelease": {
+      "summary": "On shipment release",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateCatalogue": {
+      "summary": "Async process completion: Create Catalogue",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateOrder": {
+      "summary": "Async process completion: Create Orders",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncInventoryProduct": {
+      "summary": "Async process completion: Create Inventory Products",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncUpdateStock": {
+      "summary": "Async process completion: Inventory Product Update Stock",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:AsyncProcess-AsyncCreateTransaction": {
+      "summary": "Async process completion: Create Transactions",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:CreateTaxonAsset": {
+      "summary": "On Create Taxon Asset in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:PendingOrderStateChange": {
+      "summary": "On order status update from pending in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:PushTransactionDetails": {
+      "summary": "Every Hour push unpushed transaction details",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:KitProductCreateOrUpdate": {
+      "summary": "On kit product creation or updation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:RTSError": {
+      "summary": "On Ready to Ship (RTS) error for a shipment",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:InitialProductAndOrderSyncComplete": {
+      "summary": "On initial product and order sync completion in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:GenerateStockDiscrepancyReport": {
+      "summary": "On stock discrepancy report generation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchProductsWithSkus": {
+      "summary": "On fetching products with SKUs from marketplace",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnShipmentCreation": {
+      "summary": "On shipment creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnOrderInTransit": {
+      "summary": "On order status changed to in transit in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnStockUpdate": {
+      "summary": "On stock update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:SetStatusOnMp": {
+      "summary": "Set status on marketplace",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:UpdatePrice": {
+      "summary": "On price update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchOrders": {
+      "summary": "Fetch orders from marketplace in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchCanceledOrders": {
+      "summary": "Fetch canceled orders from marketplace in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchDeliveredOrders": {
+      "summary": "Fetch delivered orders from marketplace in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:FetchProducts": {
+      "summary": "Fetch products from marketplace in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnMarketplaceProductUpdation": {
+      "summary": "On marketplace product updation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnMarketplaceProductCreation": {
+      "summary": "On marketplace product creation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnMarketplaceProductListing": {
+      "summary": "On marketplace product listing in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnMarketplaceProductRejection": {
+      "summary": "On marketplace product rejection in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnMarketplaceProductDeletion": {
+      "summary": "On marketplace product deletion in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnShipAddressUpdate": {
+      "summary": "On shipping address update in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnOrderCancelInProcess": {
+      "summary": "On order cancel in process in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OrderDelivered": {
+      "summary": "On order delivered in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnLostInTransit": {
+      "summary": "On order lost in transit in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnInventoryProductUpdation": {
+      "summary": "On inventory product updation in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnManualSapPosting": {
+      "summary": "On manual SAP posting in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnManualSapPostingByFile": {
+      "summary": "On manual SAP posting by file in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:OnFailedDelivery": {
+      "summary": "On failed delivery in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:BulkActivityCompletionUpdate": {
+      "summary": "On Bulk Activity Completion in SelluSeller",
+      "description": "",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:DoCreation": {
+      "summary": "On distribution order creation",
+      "description": "Outbound webhook when a distribution order is created.",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:DoShipmentUpdate": {
+      "summary": "On distribution order shipment update",
+      "description": "Outbound webhook when a distribution order shipment is updated.",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:DoReturn": {
+      "summary": "On distribution order return",
+      "description": "Outbound webhook when a distribution order return is completed.",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:DoCancellation": {
+      "summary": "On distribution order cancellation",
+      "description": "Outbound webhook when a distribution order is cancelled.",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "POST /Event:SalesReportShipmentDetails": {
+      "summary": "On shipment complete or cancelled — sales report order details",
+      "description": "Outbound webhook when a shipment reaches complete or completed cancellation. Payload contains Sales Report Order Details rows for all shipments on the order (camelCase). Opt-in per seller.",
+      "example": {
+        "success": true
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    }
+  }
+}

@@ -28,10 +28,8 @@ is still open, the specs' Notes section carries it, and section 8 names the note
 
 **Writing rules.**
 
-- `references/writing-limits.md` states the character, paragraph, list and column limits every unit
-  here holds.
-- Name each system, party, key and wire field in the word the repository's context files give, and
-  name the context file that owns a term two files share.
+- `references/writing-limits.md` reaches this repository's unit limits and wording rules, which
+  every unit and every sentence here holds, and states the column set this document's tables carry.
 - Fill the wire identity from the context files before you write a property row.
 - Group by endpoint. One `###` section per endpoint that carries data, in the order the flow calls
   them, headed `[source]` or `[target]` then the method and path — `source` reaches the system the
@@ -41,7 +39,7 @@ is still open, the specs' Notes section carries it, and section 8 names the note
 - **Reason** is one clause naming why the target property needs that value. "Enum lookup, section 5"
   is a transformation; "the target routes work on this status" is a reason.
 - Every row carries an `L-n`. The claim library states the citation rule and holds every locator.
-- Use pure Markdown headings and links, and keep the sections this requirement uses.
+- Keep the sections this requirement uses.
 
 **The payload sample comment.** Every sample is the endpoint's whole request body, fenced `jsonc`,
 with the trailing comments aligned on one column. Every mapped line carries a comment holding the

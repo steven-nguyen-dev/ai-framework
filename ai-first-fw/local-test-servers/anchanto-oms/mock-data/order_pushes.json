@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  }
+]

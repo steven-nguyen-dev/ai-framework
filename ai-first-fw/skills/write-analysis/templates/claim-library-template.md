@@ -27,8 +27,8 @@ the locator and the words.
 
 **Writing rules.**
 
-- `references/writing-limits.md` states the character, paragraph, list and column limits every unit
-  here holds.
+- `references/writing-limits.md` reaches this repository's unit limits and wording rules, which
+  every unit and every sentence here holds.
 - The document opens on its metadata block and runs straight to section 1. Every word in it sits in
   a table row.
 - **One row, one atomic fact.** `Claim` is a single declarative sentence. Design rationale, deduction
@@ -52,7 +52,6 @@ the locator and the words.
   on carries `change requests` and its section, and that document carries no `L-n` in return.
 - Every kind is one of `code`, `url`, `doc`, `jira`, `user`. Section 2 states the locator form for
   each.
-- Use pure Markdown headings and links.
 
 ---
 

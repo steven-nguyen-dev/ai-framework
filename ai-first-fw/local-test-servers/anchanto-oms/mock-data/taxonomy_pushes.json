@@ -1,1 +1,495 @@
-[]
+[
+  {
+    "kind": "bulk_categories",
+    "code": "SHOES",
+    "name": "Shoes",
+    "children": [],
+    "store_code": "SS0000FR"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000DE"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000ES"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "AUTO_PART",
+    "name": "Auto Part",
+    "children": [],
+    "store_code": "SS0000AU"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "FURNITURE",
+    "name": "Furniture",
+    "children": [],
+    "store_code": "SS0000GB"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "BEAUTY",
+    "name": "Beauty",
+    "children": [],
+    "store_code": "SS0000JP"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "SHOES",
+    "name": "Shoes",
+    "children": [],
+    "store_code": "SS0000FR"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000DE"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000ES"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "AUTO_PART",
+    "name": "Auto Part",
+    "children": [],
+    "store_code": "SS0000AU"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "FURNITURE",
+    "name": "Furniture",
+    "children": [],
+    "store_code": "SS0000GB"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "BEAUTY",
+    "name": "Beauty",
+    "children": [],
+    "store_code": "SS0000JP"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "SHOES",
+    "name": "Shoes",
+    "children": [],
+    "store_code": "SS0000FR"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000DE"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000ES"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "AUTO_PART",
+    "name": "Auto Part",
+    "children": [],
+    "store_code": "SS0000AU"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "FURNITURE",
+    "name": "Furniture",
+    "children": [],
+    "store_code": "SS0000GB"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "BEAUTY",
+    "name": "Beauty",
+    "children": [],
+    "store_code": "SS0000JP"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "SHOES",
+    "name": "Shoes",
+    "children": [],
+    "store_code": "SS0000FR"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000DE"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PRODUCT",
+    "name": "Product",
+    "children": [],
+    "store_code": "SS0000ES"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "AUTO_PART",
+    "name": "Auto Part",
+    "children": [],
+    "store_code": "SS0000AU"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "FURNITURE",
+    "name": "Furniture",
+    "children": [],
+    "store_code": "SS0000GB"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "BEAUTY",
+    "name": "Beauty",
+    "children": [],
+    "store_code": "SS0000JP"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "SHOES",
+    "marketplace_code": "amazon_sp_fr"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_de"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "PRODUCT",
+    "marketplace_code": "amazon_sp_es"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "AUTO_PART",
+    "marketplace_code": "amazon_sp_au"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "BEAUTY",
+    "marketplace_code": "amazon_sp_jp"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "FURNITURE",
+    "marketplace_code": "amazon_sp_gb"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "LUGGAGE",
+    "name": "Luggage",
+    "children": [],
+    "store_code": "SS0000US"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "LUGGAGE",
+    "name": "Luggage",
+    "children": [],
+    "store_code": "SS0000US"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "CLOTHING",
+    "name": "Clothing",
+    "children": [],
+    "store_code": "SS0000US"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "ELECTRONICS",
+    "name": "Electronics",
+    "children": [],
+    "store_code": "SS0000US"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "TOYS_AND_GAMES",
+    "name": "Toys and Games",
+    "children": [],
+    "store_code": "SS0000US"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "LUGGAGE",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "CLOTHING",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "ELECTRONICS",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "TOYS_AND_GAMES",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "LUGGAGE",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "LUGGAGE",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "CLOTHING",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "ELECTRONICS",
+    "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_category_attributes",
+    "category_code": "TOYS_AND_GAMES",
+    "marketplace_code": "amazon_sp_us"
+  }
+]
