@@ -3,7 +3,7 @@
 Steve's workspace for building, testing, and refining AI skills, utilities, and local report servers.
 
 ## Style
-- `make-it-short` holds this workspace's writing limits and wording rules. Automatically invoke and apply it whenever the user asks or demands to write it short, write it concise, make documents concise/direct, tighten text, or any similar demanding phrasing ("write it short", "make it short", "write it concise", "document need to be concise", "be concise", "be direct", "make it direct", "tighten this", "cut this down"). Once requested or demanded in a session, every subsequent piece of writing in that session holds those rules until instructed otherwise.
+- `make-it-short` holds this workspace's writing limits and wording rules. Automatically invoke and apply it whenever the user requests or demands brevity, conciseness, directness, compact documentation, or shortened text. Once activated in a session, all subsequent writing and responses in that session must follow these rules until instructed otherwise.
 - When reporting information to me, be extremely concise and sacrifice grammar for the sake of concision.
 - Dereference every name before you write it — chat, docs, commits. A system to its full reach; a flow to its originator, every hop, its sink; a property, host or module name to the value it resolves to. Names drift from their targets and never say so.
 - Stop where evidence stops. Every verb you write is one you read in the source; elsewhere the line reads `unknown` or `not found by this search`.
