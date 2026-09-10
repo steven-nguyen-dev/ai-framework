@@ -14,8 +14,8 @@ The **AI-First Framework** (`ai-first-fw`) provides an end-to-end ecosystem for 
 
 ```
 ai-first-fw/
-├── skills/              # Core lifecycle skills governing the development workflow (v2.0.0)
-├── utilities/           # Standalone utility skills for specialized engineering tasks (v2.0.0)
+├── skills/              # Core lifecycle skills governing the development workflow (v2.1.5)
+├── utilities/           # Standalone utility skills for specialized engineering tasks (v2.4.3)
 ├── local-theme/         # Unified Dark Report Theme design tokens, CSS, & JS toolkit
 ├── local-test-servers/  # Spec-driven mock HTTP servers and integration test engine
 ├── local-mcps/          # Local Model Context Protocol (MCP) servers
@@ -28,7 +28,7 @@ ai-first-fw/
 
 ### 1. [`skills/`](skills) — Core Lifecycle Skills
 A set of specialized, composable skills that guide AI agents through a gated development lifecycle:
-- **`write-analysis`** (`v2.0.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
+- **`write-analysis`** (`v2.1.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
 - **`implementation-planner`** (`v0.8.0`): Orchestrates the multi-step lifecycle across approval gates (`G1` requirements approval, `G2` implementation plan approval).
 - **`specs-builder`** (`v0.10.0`): Analyzes API documentation and payload samples to produce mapping plans and integration specifications.
 - **`review-code`** (`v2.0.0`): Audits branch diffs against requirements, project conventions, and approved plans prior to gate approval across 3 isolated review passes.
@@ -36,6 +36,9 @@ A set of specialized, composable skills that guide AI agents through a gated dev
 ### 2. [`utilities/`](utilities) — Standalone Skills
 Independent helper skills for focused tasks outside the core lifecycle:
 - **`draw-diagram`** (`v1.0.0`): Mermaid diagram generation and styling adhering to the shared dark palette.
+- **`herdr-leader`** (`v1.0.0`): Fixed-pane swarm leadership orchestration across model tiers via the `herdr` CLI without directly editing code.
+- **`make-it-short`** (`v4.1.0`): Enforces repository writing limits and conciseness rules (223-char items, 500-char paragraphs, 7-item lists, 6-col tables).
+- **`sync-context`** (`v1.0.0`): Drift reporting, conflict resolution, and synchronization across projects sharing a context folder.
 - **`sync-pr`** (`v2.0.0`): Worktree-isolated feature promotion to QA/UAT mirror branches, gated on a scoped build and unit tests.
 - **`write-docs`** (`v1.0.0`): Technical knowledge note writing adhering to repo standards.
 - **`write-pr-desc`** (`v1.0.0`): PR description authoring aligned to the repo template, applied to the open pull request on approval.
@@ -62,7 +65,7 @@ Live dashboard servers generating actionable engineering reports directly from l
 - **Central Reports Portal** (`portal.py`): Web-based management dashboard on port 24000 to monitor, start, stop, and restart all report servers.
 - **`local-report-servers/daily-report`**: Live daily work report viewer and markdown aggregator with on-going matter tracking on port 24001.
 - **`local-report-servers/jpluger-pr-stats`**: Live pull request backlog, review coverage, aging distribution, and monthly velocity dashboard on port 24002 (standalone app: `jpluger-pr-stats-1.0.0.zip`).
-- **`local-report-servers/ai-skills-report`**: Universal AI skills & plugins catalog, marketplace manager, and environment inspector for Claude & Antigravity/Gemini on port 24003 (standalone app: `ai-skills-report-1.0.0.zip`).
+- **`local-report-servers/ai-skills-report`**: Universal AI skills & plugins catalog, marketplace manager, and environment inspector for Claude & Antigravity/Gemini on port 24003 (standalone app: `ai-skills-report-1.3.0.zip`).
 - **`local-report-servers/elk-log-explorer`**: Interactive dark-themed ELK log explorer with multi-agent AI natural language query translation and 1-click macOS launcher on port 24004 (standalone app: `elk-log-explorer-1.0.0.zip`).
 
 ---
@@ -138,6 +141,9 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/review-code
 
 # Utility Skills
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/draw-diagram
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/herdr-leader
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/make-it-short
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-context
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-pr
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-pr-desc
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-docs

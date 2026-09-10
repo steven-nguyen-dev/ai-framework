@@ -43,8 +43,8 @@ The **AI-First Framework** standardizes the entire software development lifecycl
 ai-framework/
 ├── .claude-plugin/              # Claude Code plugin & marketplace manifest
 ├── ai-first-fw/
-│   ├── skills/                  # Core lifecycle gated skills (v2.0.0)
-│   ├── utilities/               # Standalone engineering utilities & API extractors (v2.0.0)
+│   ├── skills/                  # Core lifecycle gated skills (v2.1.5)
+│   ├── utilities/               # Standalone engineering utilities & API extractors (v2.4.3)
 │   ├── local-theme/             # Unified dark developer theme tokens, CSS & JS
 │   ├── local-report-servers/    # Live engineering dashboards & distribution .app installers
 │   ├── local-test-servers/      # Spec-driven mock engine & integration test runner
@@ -58,13 +58,16 @@ ai-framework/
 
 ### 1. 🛡️ Lifecycle Skills (`ai-first-fw/skills/`)
 Gated AI skills that enforce engineering rigor before code is touched:
-* **`write-analysis`** (`v2.0.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
+* **`write-analysis`** (`v2.1.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
 * **`implementation-planner`** (`v0.8.0`): Master lifecycle orchestrator managing approval gates (`G1` requirements approval, `G2` technical plan approval).
 * **`specs-builder`** (`v0.10.0`): Fills integration spec folders and writes confidence-graded mapping plans against test harnesses.
 * **`review-code`** (`v2.0.0`): Cold pull request and branch diff reviewer auditing requirements compliance, codebase rules, and security across 3 isolated passes.
 
 ### 2. ⚡ Standalone Utilities (`ai-first-fw/utilities/`)
 * **`draw-diagram`** (`v1.0.0`): Draws one Mermaid block (flowchart, sequence, state, ER) styled to the shared dark palette and parsed before shipping.
+* **`herdr-leader`** (`v1.0.0`): Fixed-pane swarm leadership orchestration across model tiers via the `herdr` CLI without directly editing code.
+* **`make-it-short`** (`v4.1.0`): Enforces repository writing limits and conciseness rules (223-char items, 500-char paragraphs, 7-item lists, 6-col tables).
+* **`sync-context`** (`v1.0.0`): Multi-project context folder drift detection, conflict resolution, and synchronization.
 * **`sync-pr`** (`v2.0.0`): Syncs the current feature branch into its QA or UAT mirror branch from a separate worktree — merge, build and unit-test the touched modules, push, draft PR where none is open — and tears down mirrors once landed.
 * **`write-docs`** (`v1.0.0`): Writes one technical knowledge note in the house style — drafted in temp, every fact traced to its source, every uncertainty carried to an Open questions section.
 * **`write-pr-desc`** (`v1.0.0`): Reads the session and the branch diff, fills the repository PR template, and applies the approved body to the open GitHub pull request.
@@ -127,6 +130,9 @@ npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/skills/review-code
 
 # Utility Skills
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/draw-diagram
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/herdr-leader
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/make-it-short
+npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-context
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/sync-pr
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-pr-desc
 npx skills add steven-nguyen-dev/ai-framework/ai-first-fw/utilities/write-docs

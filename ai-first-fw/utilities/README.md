@@ -22,5 +22,5 @@ skill and belongs one level up.
 
 ## Invocation mode
 
-- **Model-invoked** (`draw-diagram`, `sync-pr`, `write-pr-desc`, `write-skill`): Automatically discovered and invoked by AI models whenever performing their matching tasks.
-- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (`write-docs`, `lv1-architecture-review`, `naver-api-extractor`, `lotteon-api-extractor`) that run only when explicitly typed by the human.
+- **Model-invoked** (`draw-diagram`, `make-it-short`, `sync-pr`, `write-pr-desc`, `write-skill`): Automatically discovered and invoked by AI models whenever performing matching tasks or adhering to workspace writing rules.
+- **User-invoked** (`disable-model-invocation: true`): Interactive utilities (`herdr-leader`, `lotteon-api-extractor`, `lv1-architecture-review`, `naver-api-extractor`, `sync-context`, `write-docs`) that run only when explicitly typed or demanded by the human.

@@ -77,7 +77,7 @@ Every server is fully packaged according to **[`SHAREABLE_SERVER_STANDARD.md`](S
 | :--- | :--- | :--- | :--- |
 | **Daily Work Reports** | [`daily-report-1.0.0.zip`](daily-report/daily-report-1.0.0.zip) | `24001` | `Install.command`, `Start.command`, `install_app.sh` |
 | **JPluger PR Stats** | [`jpluger-pr-stats-1.0.0.zip`](jpluger-pr-stats/jpluger-pr-stats-1.0.0.zip) | `24002` | `Install.command`, `Start.command`, `install_app.sh` |
-| **AI Skills & Plugins** | [`ai-skills-report-1.0.0.zip`](ai-skills-report/ai-skills-report-1.0.0.zip) | `24003` | `Install.command`, `Start.command`, `install_app.sh` |
+| **AI Skills & Plugins** | [`ai-skills-report-1.3.0.zip`](ai-skills-report/ai-skills-report-1.3.0.zip) | `24003` | `Install.command`, `Start.command`, `install_app.sh` |
 | **ELK AI Log Explorer** | [`elk-log-explorer-1.0.0.zip`](elk-log-explorer/elk-log-explorer-1.0.0.zip) | `24004` | `Install.command`, `Start.command`, `install_app.sh` |
 | **Eton Orders Monitoring** | [`eton-orders-monitoring-1.0.0.zip`](eton-orders-monitoring/eton-orders-monitoring-1.0.0.zip) | `24005` | `Install.command`, `Start.command`, `install_app.sh` |
 
