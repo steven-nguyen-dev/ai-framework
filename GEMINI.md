@@ -18,3 +18,6 @@ This workspace operates across and manages exactly two repositories:
 
 Never reference, search, or associate with external sibling repositories (such as `JPluger`).
 
+# Concise Writing & Make-It-Short Rule
+
+Automatically invoke and apply the `make-it-short` skill whenever the user demands or requests writing it short, writing concisely, making documentation or text concise/direct, tightening, cutting down, or any similar conciseness phrasing (e.g., "write it short", "write it concise", "document need to be concise", "concise document", "be direct", "make it direct", "make it short", "tighten this", "cut this down"). Once demanded in a session, all subsequent writing and documentation in that session must conform to `make-it-short` limits and rules.

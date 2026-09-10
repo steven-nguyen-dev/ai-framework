@@ -1,7 +1,7 @@
 ---
 name: make-it-short
-description: Rewrites one piece of writing to this repository's limits and wording rules. Use on "make it short", "shorten this", "tighten this", "cut this down"; on checking a draft before it ships; and on every later draft once the user has asked for these rules in the session.
-version: 4.0.0
+description: Rewrites or produces writing following this repository's conciseness limits and wording rules. Automatically invoke and apply whenever the user asks or demands to "make it short", "write it short", "write it concise", "make it concise", "be concise", "document need to be concise", "concise document", "be direct", "make it direct", "tighten this", "cut this down", "keep it brief", "trim this", or any similar demand for conciseness, brevity, and directness; also use when checking a draft before it ships, and on every subsequent draft or reply once requested in the session.
+version: 4.0.1
 disable-model-invocation: false
 ---
 
@@ -9,6 +9,12 @@ disable-model-invocation: false
 
 Rewrites one piece of writing in place: the file the user names, or the reply this agent holds
 unsent.
+
+Automatically triggered whenever the user demands concise, direct, or shortened writing — including
+phrases such as "write it short", "make it short", "write it concise", "make it concise", "be concise",
+"document need to be concise", "concise document", "be direct", "make it direct", "tighten this",
+"cut this down", "trim this", or similar phrasing. Once demanded in a session, all subsequent writing
+and documentation in that session must follow these limits and wording rules until told otherwise.
 
 ## The bar
 
