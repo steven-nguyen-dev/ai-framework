@@ -633,13 +633,15 @@ def scan_antigravity_cli_skills() -> list[SkillItem]:
 
 
 def scan_antigravity_cli_plugins() -> list[PluginItem]:
-    """Scans Antigravity & Gemini plugins across ~/.gemini/ and ~/.antigravity/."""
+    """Scans Antigravity & Gemini plugins across ~/.gemini/, ~/.antigravity-personal/, and ~/.antigravity-personal-gau/."""
     plugins: list[PluginItem] = []
     seen_plugins: set[str] = set()
 
     plugin_dirs = [
         HOME / ".gemini/antigravity/plugins",
         HOME / ".gemini/config/plugins",
+        HOME / ".antigravity-personal/.gemini/config/plugins",
+        HOME / ".antigravity-personal-gau/.gemini/config/plugins",
         HOME / ".gemini/antigravity-cli/plugins",
         HOME / ".gemini/plugins",
         HOME / ".antigravity/plugins",
@@ -676,6 +678,18 @@ def scan_antigravity_cli_plugins() -> list[PluginItem]:
                 if "SKILL.md" in files:
                     skill_file = Path(root) / "SKILL.md"
                     s_name, s_desc, fm = extract_skill_info_from_file(skill_file)
+
+                    # Filter disabled skills for Antigravity across all profiles
+                    # 1. Disable review-code from ai-first plugin
+                    if p_name == "ai-first-fw-skills" and s_name == "review-code":
+                        continue
+                    # 2. In matt-pocock skills, keep only grill skills and wait-what/wait-wait
+                    if "mattpocock" in p_name or "matt-pocock" in p_name:
+                        is_grill = s_name.startswith("grill") or "grill" in s_name
+                        is_wait = s_name in ("wait-what", "wait-wait")
+                        if not (is_grill or is_wait):
+                            continue
+
                     contained_skills.append(SkillItem(
                         id=f"antigravity:plugin:{p_name}:{s_name}",
                         name=s_name,
@@ -1508,6 +1522,10 @@ def clean_legacy_symlinks() -> list[str]:
         HOME / ".gemini/config/skills",
         HOME / ".gemini/antigravity/skills",
         HOME / ".gemini/antigravity-cli/skills",
+        HOME / ".antigravity-personal/.gemini/config/skills",
+        HOME / ".antigravity-personal/.gemini/antigravity-cli/skills",
+        HOME / ".antigravity-personal-gau/.gemini/config/skills",
+        HOME / ".antigravity-personal-gau/.gemini/antigravity-cli/skills",
     ]:
         if d.is_dir():
             for item in d.iterdir():
@@ -1949,49 +1967,186 @@ def sync_cowork_plugins() -> list[str]:
     return synced
 
 
+def get_antigravity_profiles() -> list[tuple[str, Path]]:
+    """Returns the list of detected Antigravity profiles: (profile_label, gemini_root_dir)."""
+    profiles = [("default", HOME / ".gemini")]
+    personal = HOME / ".antigravity-personal"
+    if personal.is_dir():
+        profiles.append(("personal", personal / ".gemini"))
+    personal_gau = HOME / ".antigravity-personal-gau"
+    if personal_gau.is_dir():
+        profiles.append(("personal-gau", personal_gau / ".gemini"))
+    return profiles
+
+
 def sync_antigravity_plugins() -> list[str]:
-    """Syncs marketplace plugins to Antigravity global plugins directory (~/.gemini/config/plugins/)."""
+    """Syncs marketplace plugins across all Antigravity profiles (~/.gemini, ~/.antigravity-personal/.gemini, ~/.antigravity-personal-gau/.gemini).
+    
+    Strict standard across all profiles:
+      - ai-first-fw-skills: Excludes review-code (disabled for Antigravity).
+      - mattpocock-skills: Keeps only grill-related skills (grill-me, grill-with-docs, grilling) and wait-what/wait-wait; disables/removes all others.
+      - ai-first-fw-utilities: Synced in full.
+      - Declarative skills.json: Excludes review-code, includes only grill & wait-what.
+      - MCP servers: Keeps local MCP config synchronized.
+    """
     synced = []
-    agy_plugins_dir = HOME / ".gemini/config/plugins"
-    agy_plugins_dir.mkdir(parents=True, exist_ok=True)
     workspace = WORKSPACE
+    profiles = get_antigravity_profiles()
 
-    # 1. Sync ai-first-fw-skills
-    skills_src = workspace / "ai-first-fw/skills"
-    if skills_src.is_dir():
-        tgt = agy_plugins_dir / "ai-first-fw-skills"
-        if tgt.exists():
-            shutil.rmtree(tgt)
-        shutil.copytree(skills_src, tgt)
-        synced.append("ai-first-fw-skills")
+    # Discover latest cached mattpocock paths for skills.json
+    mattpocock_eng_path = None
+    mattpocock_prod_path = None
+    matt_cache = HOME / ".claude/plugins/cache/claude-plugins-official/mattpocock-skills"
+    if matt_cache.is_dir():
+        v_dirs = [v for v in matt_cache.iterdir() if v.is_dir()]
+        if v_dirs:
+            latest_matt = sorted(v_dirs, key=lambda d: d.name)[-1]
+            if (latest_matt / "skills/engineering").is_dir():
+                mattpocock_eng_path = str(latest_matt / "skills/engineering")
+            if (latest_matt / "skills/productivity").is_dir():
+                mattpocock_prod_path = str(latest_matt / "skills/productivity")
 
-    # 2. Sync ai-first-fw-utilities
-    utils_src = workspace / "ai-first-fw/utilities"
-    if utils_src.is_dir():
-        tgt = agy_plugins_dir / "ai-first-fw-utilities"
-        if tgt.exists():
-            shutil.rmtree(tgt)
-        shutil.copytree(utils_src, tgt)
-        synced.append("ai-first-fw-utilities")
+    default_mcp_cfg = HOME / ".gemini/config/mcp_config.json"
 
-    # 3. Sync cached marketplace plugins (e.g. mattpocock-skills)
-    cache_root = HOME / ".claude/plugins/cache"
-    if cache_root.is_dir():
-        for mp_dir in cache_root.iterdir():
-            if not mp_dir.is_dir():
-                continue
-            for p_dir in mp_dir.iterdir():
-                if not p_dir.is_dir() or p_dir.name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+    for prof_name, gemini_root in profiles:
+        config_dir = gemini_root / "config"
+        plugins_dir = config_dir / "plugins"
+        plugins_dir.mkdir(parents=True, exist_ok=True)
+
+        # 1. Sync ai-first-fw-skills (with review-code disabled)
+        skills_src = workspace / "ai-first-fw/skills"
+        if skills_src.is_dir():
+            tgt = plugins_dir / "ai-first-fw-skills"
+            if tgt.exists():
+                shutil.rmtree(tgt)
+            shutil.copytree(skills_src, tgt, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+
+            # Disable review-code skill
+            shutil.rmtree(tgt / "review-code", ignore_errors=True)
+
+            # Update plugin manifests to remove review-code
+            for m_file in [tgt / "plugin.json", tgt / ".claude-plugin/plugin.json"]:
+                if m_file.is_file():
+                    try:
+                        m_data = json.loads(m_file.read_text(encoding="utf-8"))
+                        if "skills" in m_data and isinstance(m_data["skills"], list):
+                            m_data["skills"] = [
+                                s for s in m_data["skills"]
+                                if not (s == "./review-code" or s.endswith("/review-code") or s == "review-code")
+                            ]
+                        m_file.write_text(json.dumps(m_data, indent=2) + "\n", encoding="utf-8")
+                    except Exception:
+                        pass
+            synced.append(f"{prof_name}:ai-first-fw-skills")
+
+        # 2. Sync ai-first-fw-utilities
+        utils_src = workspace / "ai-first-fw/utilities"
+        if utils_src.is_dir():
+            tgt = plugins_dir / "ai-first-fw-utilities"
+            if tgt.exists():
+                shutil.rmtree(tgt)
+            shutil.copytree(utils_src, tgt, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+            synced.append(f"{prof_name}:ai-first-fw-utilities")
+
+        # 3. Sync cached marketplace plugins (e.g. mattpocock-skills, ai-first-fw-mcps)
+        cache_root = HOME / ".claude/plugins/cache"
+        if cache_root.is_dir():
+            for mp_dir in cache_root.iterdir():
+                if not mp_dir.is_dir():
                     continue
-                v_dirs = [v for v in p_dir.iterdir() if v.is_dir()]
-                if not v_dirs:
-                    continue
-                latest_v = sorted(v_dirs, key=lambda d: d.name)[-1]
-                tgt = agy_plugins_dir / p_dir.name
-                if tgt.exists():
-                    shutil.rmtree(tgt)
-                shutil.copytree(latest_v, tgt)
-                synced.append(p_dir.name)
+                for p_dir in mp_dir.iterdir():
+                    if not p_dir.is_dir() or p_dir.name in ("ai-first-fw-skills", "ai-first-fw-utilities"):
+                        continue
+                    v_dirs = [v for v in p_dir.iterdir() if v.is_dir()]
+                    if not v_dirs:
+                        continue
+                    latest_v = sorted(v_dirs, key=lambda d: d.name)[-1]
+                    tgt = plugins_dir / p_dir.name
+                    if tgt.exists():
+                        shutil.rmtree(tgt)
+                    shutil.copytree(latest_v, tgt, ignore=shutil.ignore_patterns(".DS_Store", "__pycache__"))
+
+                    # If mattpocock-skills, filter: retain ONLY grill skills and wait-what/wait-wait
+                    if "mattpocock" in p_dir.name or "matt-pocock" in p_dir.name:
+                        skills_sub = tgt / "skills"
+                        if skills_sub.is_dir():
+                            for root, dirs, files in os.walk(str(skills_sub), topdown=False):
+                                if "SKILL.md" in files:
+                                    folder = Path(root)
+                                    s_name = folder.name
+                                    is_grill = s_name.startswith("grill") or "grill" in s_name
+                                    is_wait = s_name in ("wait-what", "wait-wait")
+                                    if not (is_grill or is_wait):
+                                        shutil.rmtree(folder, ignore_errors=True)
+                            # Clean up empty category subfolders
+                            for root, dirs, files in os.walk(str(skills_sub), topdown=False):
+                                p_r = Path(root)
+                                if p_r != skills_sub and not any(p_r.iterdir()):
+                                    try:
+                                        p_r.rmdir()
+                                    except Exception:
+                                        pass
+
+                        # Discover surviving skills for manifest
+                        surviving_skills = []
+                        for smd in tgt.rglob("SKILL.md"):
+                            rel = "./" + str(smd.parent.relative_to(tgt))
+                            surviving_skills.append(rel)
+                        surviving_skills.sort()
+
+                        for m_file in [tgt / "plugin.json", tgt / ".claude-plugin/plugin.json"]:
+                            if m_file.is_file():
+                                try:
+                                    m_data = json.loads(m_file.read_text(encoding="utf-8"))
+                                    m_data["skills"] = surviving_skills
+                                    m_file.write_text(json.dumps(m_data, indent=2) + "\n", encoding="utf-8")
+                                except Exception:
+                                    pass
+
+                    synced.append(f"{prof_name}:{p_dir.name}")
+
+        # 4. Synchronize declarative skills.json
+        skills_entries = [
+            {
+                "path": str(workspace / "ai-first-fw/skills"),
+                "exclude": [
+                    "^review-code$"
+                ]
+            },
+            {
+                "path": str(workspace / "ai-first-fw/utilities")
+            }
+        ]
+        if mattpocock_eng_path:
+            skills_entries.append({
+                "path": mattpocock_eng_path,
+                "include_only": [
+                    "^grill-with-docs$"
+                ]
+            })
+        if mattpocock_prod_path:
+            skills_entries.append({
+                "path": mattpocock_prod_path,
+                "include_only": [
+                    "^grill-me$",
+                    "^grilling$",
+                    "^wait-what$"
+                ]
+            })
+        try:
+            (config_dir / "skills.json").write_text(json.dumps({"entries": skills_entries}, indent=2) + "\n", encoding="utf-8")
+        except Exception:
+            pass
+
+        # 5. Synchronize mcp_config.json if default profile is configured
+        if default_mcp_cfg.is_file() and default_mcp_cfg.stat().st_size > 0:
+            target_mcp_cfg = config_dir / "mcp_config.json"
+            if config_dir != default_mcp_cfg.parent:
+                if not target_mcp_cfg.exists() or target_mcp_cfg.stat().st_size == 0:
+                    try:
+                        shutil.copy2(default_mcp_cfg, target_mcp_cfg)
+                    except Exception:
+                        pass
 
     return synced
 
@@ -3165,28 +3320,36 @@ def toggle_mcp_target(server_id: str, target: str, enable: bool) -> dict[str, An
         raise FileNotFoundError(f"MCP server '{server_id}' is not a recognized local or external MCP server.")
 
     if target == "antigravity":
-        cfg_file = HOME / ".gemini/config/mcp_config.json"
-        cfg = {}
-        if cfg_file.is_file():
-            try:
-                with open(cfg_file) as f:
-                    cfg = json.load(f)
-            except Exception:
-                pass
-        servers = cfg.setdefault("mcpServers", {})
-        if enable:
-            if is_local:
-                servers[server_id] = {
-                    "command": cmd,
-                    "args": args
-                }
+        cfg_files = [
+            HOME / ".gemini/config/mcp_config.json",
+            HOME / ".antigravity-personal/.gemini/config/mcp_config.json",
+            HOME / ".antigravity-personal-gau/.gemini/config/mcp_config.json",
+        ]
+        for cfg_file in cfg_files:
+            # Skip profile if parent profile root does not exist
+            if ".antigravity-personal" in str(cfg_file) and not cfg_file.parent.parent.parent.is_dir():
+                continue
+            cfg = {}
+            if cfg_file.is_file():
+                try:
+                    with open(cfg_file) as f:
+                        cfg = json.load(f)
+                except Exception:
+                    pass
+            servers = cfg.setdefault("mcpServers", {})
+            if enable:
+                if is_local:
+                    servers[server_id] = {
+                        "command": cmd,
+                        "args": args
+                    }
+                else:
+                    servers[server_id] = known_external.get(server_id, {}).get("antigravity", {"url": "http://127.0.0.1:64342/stream"})
             else:
-                servers[server_id] = known_external.get(server_id, {}).get("antigravity", {"url": "http://127.0.0.1:64342/stream"})
-        else:
-            servers.pop(server_id, None)
-            servers.pop(f"{server_id}-local", None)
-        cfg_file.parent.mkdir(parents=True, exist_ok=True)
-        cfg_file.write_text(json.dumps(cfg, indent=4), encoding="utf-8")
+                servers.pop(server_id, None)
+                servers.pop(f"{server_id}-local", None)
+            cfg_file.parent.mkdir(parents=True, exist_ok=True)
+            cfg_file.write_text(json.dumps(cfg, indent=4), encoding="utf-8")
 
     elif target == "claude_desktop":
         desktop_cfg_files = [

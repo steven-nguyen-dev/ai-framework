@@ -336,7 +336,7 @@ def main():
         if "cowork_sessions_synced" in res:
             print(f"  • Claude Cowork Sessions Updated: {res.get('cowork_sessions_synced')}")
         if "antigravity_plugins_synced" in res:
-            print(f"  • Antigravity Plugins Updated: {res.get('antigravity_plugins_synced')}")
+            print(f"  • Antigravity Plugins Updated (3 Profiles: default, personal, personal-gau): {res.get('antigravity_plugins_synced')}")
         if "cursor_items_synced" in res:
             print(f"  • Cursor Skills & Plugins Updated: {res.get('cursor_items_synced')}")
         if "codex_items_synced" in res:

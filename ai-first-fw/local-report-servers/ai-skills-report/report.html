@@ -2399,7 +2399,7 @@
                 <span>Antigravity Unified Ecosystem</span>
               </div>
               <div class="path-row" style="margin-bottom: 14px;">
-                <span>⚡ 100% Unified Model &bull; Shared across <strong>CLI (agy)</strong>, <strong>Desktop App 2.0</strong>, and <strong>IDE (IntelliJ / VS Code)</strong> via <code>~/.gemini/config/plugins/</code> &amp; <code>.agents/skills.json</code></span>
+                <span>⚡ 100% Unified Model &bull; Synced across <strong>Default</strong>, <strong>Personal</strong>, and <strong>Personal-GAU</strong> profiles &bull; Shared across <strong>CLI (agy)</strong>, <strong>Desktop App 2.0</strong>, and <strong>IDE (IntelliJ / VS Code)</strong> via <code>~/.gemini/config/plugins/</code> &amp; <code>skills.json</code></span>
               </div>
 
               ${agyPlugins.length > 0 ? `
@@ -2547,7 +2547,9 @@
         const pCount = (details && details.plugins_updated) ? details.plugins_updated.length : 0;
         const codexCount = (details && details.codex_items_synced) ? details.codex_items_synced : 0;
         const cursorCount = (details && details.cursor_items_synced) ? details.cursor_items_synced : 0;
+        const agyCount = (details && details.antigravity_plugins_synced) ? details.antigravity_plugins_synced : 0;
         const extras = [];
+        if (agyCount) extras.push(`Antigravity (3 profiles) ${agyCount} synced`);
         if (codexCount) extras.push(`Codex ${codexCount} installed`);
         if (cursorCount) extras.push(`Cursor ${cursorCount} synced`);
         const extraText = extras.length ? ` • ${extras.join(' • ')}` : '';

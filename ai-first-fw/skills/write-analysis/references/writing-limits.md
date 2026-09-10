@@ -1,6 +1,6 @@
 # Writing limits
 
-`ai-first-fw/utilities/make-it-short/references/writing-limits.md` holds this repository's one set:
+`ai-first-fw/utilities/make-it-short/SKILL.md` holds this repository's one set:
 the unit limits, the wording rules, and the move that brings each over-limit unit back inside its
 limit. Every document of the contract holds that set, and every template's writing-rules block
 points at it.
