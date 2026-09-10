@@ -25,6 +25,7 @@ python3 portal.py
 | **AI Skills & Plugins** | `24003` | [`ai-skills-report/`](ai-skills-report) | Claude & Antigravity skills, plugins, and extensions registry |
 | **ELK AI Log Explorer** | `24004` | [`elk-log-explorer/`](elk-log-explorer) | Interactive ELK & Kibana log explorer with Claude & AGY Gemini AI agents |
 | **Eton Orders Monitoring** | `24005` | [`eton-orders-monitoring/`](eton-orders-monitoring) | Eton replay and live orders audit, funnel drop-off tracker, and error diagnostics |
+| **SonarQube Issues Explorer** | `24006` | [`sonarqube-issues/`](sonarqube-issues) | SonarQube server-parity issue browser, clean code taxonomy filters, and local IDE findings |
 | **Local Theme** | *Shared* | [`../local-theme/`](../local-theme) | Reusable Dark Report Theme CSS/JS toolkit & tokens |
 
 ---
@@ -65,6 +66,9 @@ python3 elk-log-explorer/server.py --port 24004
 
 # Eton Orders Monitoring Server
 python3 eton-orders-monitoring/server.py --port 24005
+
+# SonarQube Issues Server
+python3 sonarqube-issues/server.py --port 24006
 ```
 
 ---
@@ -80,4 +84,5 @@ Every server is fully packaged according to **[`SHAREABLE_SERVER_STANDARD.md`](S
 | **AI Skills & Plugins** | [`ai-skills-report-1.3.0.zip`](ai-skills-report/ai-skills-report-1.3.0.zip) | `24003` | `Install.command`, `Start.command`, `install_app.sh` |
 | **ELK AI Log Explorer** | [`elk-log-explorer-1.0.0.zip`](elk-log-explorer/elk-log-explorer-1.0.0.zip) | `24004` | `Install.command`, `Start.command`, `install_app.sh` |
 | **Eton Orders Monitoring** | [`eton-orders-monitoring-1.0.0.zip`](eton-orders-monitoring/eton-orders-monitoring-1.0.0.zip) | `24005` | `Install.command`, `Start.command`, `install_app.sh` |
+| **SonarQube Issues Explorer** | [`sonarqube-issues-1.0.0.zip`](sonarqube-issues/sonarqube-issues-1.0.0.zip) | `24006` | `Install.command`, `Start.command`, `install_app.sh` |
 

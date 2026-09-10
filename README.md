@@ -82,6 +82,8 @@ Native live dashboards and standalone shareable macOS `.app` packages:
 * **`jpluger-pr-stats`** (`:24002`): GitHub PR backlog, review coverage, and velocity tracker.
 * **`ai-skills-report`** (`:24003`): Universal AI skills and plugins registry for Claude & Antigravity.
 * **`elk-log-explorer`** (`:24004`): Interactive dark-themed ELK log explorer with multi-agent natural language query translator.
+* **`eton-orders-monitoring`** (`:24005`): Eton replay and live orders audit, funnel drop-off tracker, and error diagnostics.
+* **`sonarqube-issues`** (`:24006`): SonarQube server-parity issue browser, clean code taxonomy filters, and local IDE findings.
 
 ### 4. 🧪 Local Test Servers (`ai-first-fw/local-test-servers/`)
 * **Central Test Portal** (`:23000`): Management interface for local API mocks and integration runs.
@@ -172,6 +174,8 @@ Add the skill directory paths to your agent configuration (`~/.gemini/config/ski
 | **Report** | `24002` | **JPluger PR Stats** | GitHub pull request triage & velocity |
 | **Report** | `24003` | **AI Skills Registry** | Skills & plugins ecosystem manager |
 | **Report** | `24004` | **ELK AI Log Explorer** | Log query & multi-agent AI explorer |
+| **Report** | `24005` | **Eton Orders Monitoring** | Live orders audit & drop-off tracker |
+| **Report** | `24006` | **SonarQube Issues Explorer** | SonarQube issue browser & IDE findings |
 
 ---
 

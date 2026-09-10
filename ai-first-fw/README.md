@@ -64,9 +64,11 @@ Model Context Protocol servers built to extend AI assistant capabilities in loca
 Live dashboard servers generating actionable engineering reports directly from live repositories and tools:
 - **Central Reports Portal** (`portal.py`): Web-based management dashboard on port 24000 to monitor, start, stop, and restart all report servers.
 - **`local-report-servers/daily-report`**: Live daily work report viewer and markdown aggregator with on-going matter tracking on port 24001.
-- **`local-report-servers/jpluger-pr-stats`**: Live pull request backlog, review coverage, aging distribution, and monthly velocity dashboard on port 24002 (standalone app: `jpluger-pr-stats-1.0.0.zip`).
-- **`local-report-servers/ai-skills-report`**: Universal AI skills & plugins catalog, marketplace manager, and environment inspector for Claude & Antigravity/Gemini on port 24003 (standalone app: `ai-skills-report-1.3.0.zip`).
-- **`local-report-servers/elk-log-explorer`**: Interactive dark-themed ELK log explorer with multi-agent AI natural language query translation and 1-click macOS launcher on port 24004 (standalone app: `elk-log-explorer-1.0.0.zip`).
+- **`local-report-servers/jpluger-pr-stats`**: Live pull request backlog, review coverage, aging distribution, and monthly velocity dashboard on port 24002.
+- **`local-report-servers/ai-skills-report`**: Universal AI skills & plugins catalog, marketplace manager, and environment inspector for Claude & Antigravity/Gemini on port 24003.
+- **`local-report-servers/elk-log-explorer`**: Interactive dark-themed ELK log explorer with multi-agent AI natural language query translation and 1-click macOS launcher on port 24004.
+- **`local-report-servers/eton-orders-monitoring`**: Eton replay and live orders audit, funnel drop-off tracker, and error diagnostics on port 24005.
+- **`local-report-servers/sonarqube-issues`**: SonarQube server-parity issue browser, clean code taxonomy filters, and local IDE findings on port 24006.
 
 ---
 

@@ -74,6 +74,14 @@ KNOWN_SERVERS = {
         "folder": "eton-orders-monitoring",
         "script": "server.py",
     },
+    "sonarqube-issues": {
+        "key": "sonarqube-issues",
+        "name": "SonarQube Issues Explorer",
+        "description": "SonarQube server-parity issue browser, clean code taxonomy filters, and local IDE findings",
+        "port": 24006,
+        "folder": "sonarqube-issues",
+        "script": "server.py",
+    },
 }
 
 

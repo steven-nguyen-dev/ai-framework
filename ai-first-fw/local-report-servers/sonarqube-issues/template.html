@@ -1,0 +1,1799 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SonarQube Issues Explorer (Port 24006)</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="stylesheet" href="/theme/theme.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+    :root {
+      --canvas: #020617;
+      --panel: #0b0f19;
+      --surface: #0f172a;
+      --surface-2: #1e293b;
+      --border: #1e293b;
+      --border-hover: #334155;
+      --ink: #f8fafc;
+      --ink-2: #cbd5e1;
+      --muted: #94a3b8;
+      --line: #1e293b;
+      --line-2: #334155;
+      --accent: #60a5fa;
+      --accent-bg: rgba(59, 130, 246, 0.15);
+      --accent-border: rgba(96, 165, 250, 0.35);
+      --pass-bg: rgba(16, 185, 129, 0.15);
+      --pass-fg: #34d399;
+      --pass-border: rgba(52, 211, 153, 0.35);
+      --fail-bg: rgba(239, 68, 68, 0.15);
+      --fail-fg: #f87171;
+      --fail-border: rgba(248, 113, 113, 0.35);
+      --warn-bg: rgba(245, 158, 11, 0.15);
+      --warn-fg: #fbbf24;
+      --warn-border: rgba(251, 191, 36, 0.35);
+      --mute-bg: rgba(51, 65, 85, 0.4);
+      --mute-fg: #cbd5e1;
+      --mute-border: rgba(100, 116, 139, 0.35);
+      --teal-bg: rgba(20, 184, 166, 0.15);
+      --teal-fg: #2dd4bf;
+      --teal-border: rgba(45, 212, 191, 0.35);
+      --violet-bg: rgba(168, 85, 247, 0.15);
+      --violet-fg: #c084fc;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px -4px rgba(0, 0, 0, 0.6);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      font-size: 13.5px;
+    }
+
+    header.theme-header {
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .header-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .badge-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1px solid var(--border-hover);
+      background: var(--surface-2);
+      color: var(--ink-2);
+      display: inline-flex;
+      align-items: center;
+    }
+    .badge-tag.accent {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .badge-tag.server {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .badge-tag.local {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+
+    .spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-hover);
+      background: var(--surface);
+      color: var(--ink);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .btn:hover {
+      border-color: var(--accent);
+      background: var(--surface-2);
+      color: #fff;
+    }
+    .btn-primary {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: rgba(96, 165, 250, 0.25);
+      color: #fff;
+    }
+
+    /* Fixed 1080px Max-Width Centered Container */
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 20px 16px 80px;
+      width: 100%;
+    }
+
+    /* Metric Cards - 5 Cards without Effort */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .metric-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: var(--shadow);
+    }
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .metric-value.security { color: #f87171; }
+    .metric-value.reliability { color: #fbbf24; }
+    .metric-value.maintainability { color: #60a5fa; }
+
+    /* Filter Box */
+    .filter-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Top Scope & Search Toolbar */
+    .filter-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .scope-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scope-item .filter-label {
+      width: auto;
+      min-width: auto;
+    }
+    .scope-item select {
+      max-width: 250px;
+    }
+    .source-radio-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 6px;
+      padding: 5px 12px;
+      gap: 14px;
+    }
+    .source-radio-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color 0.15s ease;
+      user-select: none;
+    }
+    .source-radio-label input[type="radio"] {
+      cursor: pointer;
+      margin: 0;
+      width: 13px;
+      height: 13px;
+      accent-color: var(--accent);
+    }
+    .source-radio-label:hover {
+      color: var(--ink);
+    }
+    .source-radio-label.active {
+      color: var(--ink);
+    }
+    .source-radio-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+    .source-radio-label.active .source-radio-count {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--ink);
+    }
+
+    .search-action-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      justify-content: flex-end;
+      min-width: 280px;
+    }
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      max-width: 320px;
+    }
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      width: 14px;
+      height: 14px;
+      stroke: var(--muted);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      pointer-events: none;
+    }
+    .search-box input[type=search] {
+      width: 100%;
+      padding-left: 32px;
+      padding-right: 10px;
+    }
+    .btn-reset {
+      font-size: 11px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      white-space: nowrap;
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-reset:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+      background: var(--surface-2);
+    }
+
+    /* Facets Section with Unified Label Column */
+    .filter-facets {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      width: 76px;
+      min-width: 76px;
+      flex-shrink: 0;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    select, input[type=search], input[type=text] {
+      background: var(--surface);
+      border: 1px solid var(--border-hover);
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    select:focus, input:focus {
+      border-color: var(--accent);
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-hover);
+      background: var(--surface);
+      color: var(--ink-2);
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .pill-btn:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .pill-btn.active {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .pill-btn.active.security {
+      background: var(--fail-bg);
+      border-color: var(--fail-fg);
+      color: #fca5a5;
+    }
+    .pill-btn.active.reliability {
+      background: var(--warn-bg);
+      border-color: var(--warn-fg);
+      color: #fde68a;
+    }
+    .pill-btn.active.maintainability {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: #93c5fd;
+    }
+    .pill-btn.active.blocker {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+    .pill-btn.active.high {
+      background: rgba(249, 115, 22, 0.25);
+      border-color: #f97316;
+      color: #fdba74;
+    }
+    .pill-btn.active.medium {
+      background: rgba(234, 179, 8, 0.2);
+      border-color: #eab308;
+      color: #fef08a;
+    }
+    .pill-btn.active.low {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+      color: #93c5fd;
+    }
+    .pill-btn.active.info {
+      background: rgba(100, 116, 139, 0.3);
+      border-color: #94a3b8;
+      color: #cbd5e1;
+    }
+
+    .pill-count {
+      font-size: 10px;
+      opacity: 0.8;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    /* Results Header Bar */
+    .view-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .results-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+
+    /* Fixed Table Layout with Rule & Message as biggest column */
+    .issue-table-wrap {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    table.issue-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    table.issue-table th {
+      background: var(--surface);
+      padding: 10px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      border-bottom: 1px solid var(--border);
+    }
+    table.issue-table td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 12.5px;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    table.issue-table tr:hover {
+      background: rgba(30, 41, 59, 0.45);
+    }
+
+    /* Table Column Widths */
+    .col-source { width: 75px; }
+    .col-quality { width: 160px; }
+    .col-rule-msg { width: auto; } /* BIGGEST COLUMN */
+    .col-loc { width: 235px; }
+    .col-status { width: 70px; text-align: center; }
+
+    .issue-rule {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .issue-rule:hover {
+      text-decoration: underline;
+    }
+    .issue-rulename {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+    .issue-msg {
+      color: var(--ink);
+      font-weight: 500;
+      margin-top: 4px;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    /* Interactive Location Box: Module and Class on separate lines */
+    .loc-box {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      cursor: pointer;
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.15s ease;
+      user-select: none;
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .loc-box:hover {
+      background: var(--surface-2);
+      border-color: var(--accent-border);
+    }
+    .loc-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .loc-module {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 11px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .loc-file {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 11.5px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .loc-copy-hint {
+      font-size: 9.5px;
+      color: var(--muted);
+      opacity: 0.65;
+      margin-top: 1px;
+    }
+    .loc-box:hover .loc-copy-hint {
+      color: var(--accent);
+      opacity: 1;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .badge-soft.security { background: var(--fail-bg); color: var(--fail-fg); border: 1px solid var(--fail-border); }
+    .badge-soft.reliability { background: var(--warn-bg); color: var(--warn-fg); border: 1px solid var(--warn-border); }
+    .badge-soft.maintainability { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+    
+    .badge-soft.blocker { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-soft.high { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.35); }
+    .badge-soft.medium { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .badge-soft.low { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-soft.info { background: rgba(100, 116, 139, 0.2); color: #cbd5e1; border: 1px solid rgba(100, 116, 139, 0.35); }
+
+    .badge-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .badge-source.server {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+    }
+    .badge-source.local {
+      background: var(--teal-bg);
+      color: var(--teal-fg);
+      border: 1px solid var(--teal-border);
+    }
+
+    /* Group Cards */
+    .group-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .group-header {
+      padding: 12px 16px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .group-header:hover {
+      background: var(--surface-2);
+    }
+    .group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-content {
+      background: var(--panel);
+      border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      max-width: 820px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 24px 28px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    }
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .modal-desc pre, .modal-desc code {
+      background: #020617;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      overflow-x: auto;
+    }
+    .modal-desc h3 {
+      font-size: 13px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .close-btn:hover { color: #fff; }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Drag & Drop Overlay */
+    .drop-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .drop-overlay.active {
+      display: flex;
+    }
+    .drop-overlay-box {
+      border: 2px dashed var(--accent);
+      border-radius: 12px;
+      padding: 40px 60px;
+      text-align: center;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+  </style>
+</head>
+<body>
+
+<header class="theme-header">
+  <div class="header-container">
+    <h1>
+      <svg width="22" height="22" viewBox="0 0 32 32" style="vertical-align:-3px"><rect width="32" height="32" rx="7" fill="#020617"/><path d="M7 26V9C7 7.34 8.34 6 10 6H22C23.66 6 25 7.34 25 9V26" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/><path d="M11 11H21M11 16H21M11 21H17" stroke="#34d399" stroke-width="2" stroke-linecap="round"/><circle cx="21" cy="21" r="2.5" fill="#f87171"/></svg>
+      SonarQube Issues Explorer
+    </h1>
+    <span class="badge-tag accent">Port 24006</span>
+    <div class="spacer"></div>
+    <a href="https://sonarqube.anchanto.com" target="_blank" rel="noopener noreferrer" class="btn" title="Open SonarQube Server">
+      🌐 SonarQube Server
+    </a>
+    <button class="btn" onclick="triggerRefresh()">🔄 Sync Fresh Data</button>
+    <button class="btn" onclick="document.getElementById('exportFileInput').click()" title="Load an exported report file (.html or .json)">📂 Load Export</button>
+    <input type="file" id="exportFileInput" accept=".html,.json" style="display:none" onchange="handleFileSelect(event)">
+    <a href="/export" class="btn btn-primary" download="sonarqube-issues-report.html">📥 Export Report</a>
+  </div>
+</header>
+
+<main>
+  <!-- Top Metrics (5 Cards without Effort) -->
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">
+        <span>Total Issues</span>
+        <span id="sourceSplitBadge" class="badge-tag server">Server Findings</span>
+      </div>
+      <div class="metric-value" id="kpiTotalIssues">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">
+        <span>Security</span>
+        <span class="badge-soft security">Quality</span>
+      </div>
+      <div class="metric-value security" id="kpiSecurity">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">
+        <span>Reliability</span>
+        <span class="badge-soft reliability">Quality</span>
+      </div>
+      <div class="metric-value reliability" id="kpiReliability">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">
+        <span>Maintainability</span>
+        <span class="badge-soft maintainability">Quality</span>
+      </div>
+      <div class="metric-value maintainability" id="kpiMaintainability">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">
+        <span id="kpiProjectsLabel">Server Projects</span>
+        <span class="badge-tag" id="kpiLocalStatus">IDE Sync</span>
+      </div>
+      <div class="metric-value" id="kpiProjects">16</div>
+    </div>
+  </div>
+
+  <!-- Server Parity Filters Panel -->
+  <div class="filter-panel">
+    <!-- Top Toolbar: Scope Selectors & Search/Reset -->
+    <div class="filter-toolbar">
+      <div class="scope-group">
+        <div class="scope-item">
+          <span class="filter-label">Source</span>
+          <div class="source-radio-group" role="radiogroup" aria-label="Issue Source">
+            <label class="source-radio-label active" id="labelSourceServer" title="SonarQube Server issues">
+              <input type="radio" name="sourceRadio" id="sourceServer" value="server" checked onchange="setSource('server')">
+              <span>Server</span>
+              <span class="source-radio-count" id="countSourceServer">0</span>
+            </label>
+            <label class="source-radio-label" id="labelSourceLocal" title="Local IDE SonarLint issues">
+              <input type="radio" name="sourceRadio" id="sourceLocal" value="local" onchange="setSource('local')">
+              <span>Local IDE</span>
+              <span class="source-radio-count" id="countSourceLocal">0</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="scope-item">
+          <span class="filter-label" id="projectScopeLabel">Project</span>
+          <select id="projectSelect" onchange="onProjectChange()">
+            <option value="">All Server Projects (16)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-action-group">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" id="textSearch" placeholder="Search file, message, or rule..." oninput="applyFilters()">
+        </div>
+        <button class="btn btn-reset" onclick="resetFilters()" title="Reset all filters to defaults">
+          <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Facet Rows: Cleanly structured with aligned 76px label column -->
+    <div class="filter-facets">
+      <!-- Quality Row -->
+      <div class="filter-row">
+        <span class="filter-label">Quality</span>
+        <div class="filter-group" id="qualityPills">
+          <div class="pill-btn active security" data-quality="SECURITY" onclick="toggleFilterPill(this, 'quality')">
+            Security <span class="pill-count" id="countSecurity">0</span>
+          </div>
+          <div class="pill-btn active reliability" data-quality="RELIABILITY" onclick="toggleFilterPill(this, 'quality')">
+            Reliability <span class="pill-count" id="countReliability">0</span>
+          </div>
+          <div class="pill-btn active maintainability" data-quality="MAINTAINABILITY" onclick="toggleFilterPill(this, 'quality')">
+            Maintainability <span class="pill-count" id="countMaintainability">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Severity Row -->
+      <div class="filter-row">
+        <span class="filter-label">Severity</span>
+        <div class="filter-group" id="severityPills">
+          <div class="pill-btn active blocker" data-sev="BLOCKER" onclick="toggleFilterPill(this, 'severity')">
+            Blocker <span class="pill-count" id="countBlocker">0</span>
+          </div>
+          <div class="pill-btn active high" data-sev="HIGH" onclick="toggleFilterPill(this, 'severity')">
+            High <span class="pill-count" id="countHigh">0</span>
+          </div>
+          <div class="pill-btn active medium" data-sev="MEDIUM" onclick="toggleFilterPill(this, 'severity')">
+            Medium <span class="pill-count" id="countMedium">0</span>
+          </div>
+          <div class="pill-btn active low" data-sev="LOW" onclick="toggleFilterPill(this, 'severity')">
+            Low <span class="pill-count" id="countLow">0</span>
+          </div>
+          <div class="pill-btn active info" data-sev="INFO" onclick="toggleFilterPill(this, 'severity')">
+            Info <span class="pill-count" id="countInfo">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Row -->
+      <div class="filter-row">
+        <span class="filter-label">Status</span>
+        <div class="filter-group" id="statusPills">
+          <div class="pill-btn active" data-status="OPEN" onclick="toggleFilterPill(this, 'status')">
+            OPEN <span class="pill-count" id="countOpen">0</span>
+          </div>
+          <div class="pill-btn" data-status="CONFIRMED" onclick="toggleFilterPill(this, 'status')">
+            CONFIRMED <span class="pill-count" id="countConfirmed">0</span>
+          </div>
+          <div class="pill-btn" data-status="ACCEPTED" onclick="toggleFilterPill(this, 'status')">
+            ACCEPTED <span class="pill-count" id="countAccepted">0</span>
+          </div>
+          <div class="pill-btn" data-status="FALSE_POSITIVE" onclick="toggleFilterPill(this, 'status')">
+            FALSE_POSITIVE <span class="pill-count" id="countFalsePositive">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group By Row -->
+      <div class="filter-row">
+        <span class="filter-label">Group By</span>
+        <div class="filter-group" id="groupByPills">
+          <div class="pill-btn active" data-group="" onclick="setGroupBy(this, '')">None (Flat)</div>
+          <div class="pill-btn" data-group="rule" onclick="setGroupBy(this, 'rule')">Rule</div>
+          <div class="pill-btn" data-group="file" onclick="setGroupBy(this, 'file')">File</div>
+          <div class="pill-btn" data-group="module" onclick="setGroupBy(this, 'module')">Module</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results View Bar -->
+  <div class="view-bar">
+    <div class="results-count" id="resultsCount">Showing 0 matching issues</div>
+  </div>
+
+  <!-- Content Container (Table or Group Cards) -->
+  <div id="contentContainer"></div>
+
+  <!-- Pagination (Flat view) -->
+  <div class="pagination-bar" id="paginationBar" style="display:none;"></div>
+</main>
+
+<!-- Rule Details Modal -->
+<div class="modal-backdrop" id="ruleModal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <span class="badge-tag accent" id="modalRuleKey">java:S...</span>
+          <span class="badge-soft" id="modalQualityBadge">MAINTAINABILITY</span>
+        </div>
+        <div class="modal-title" id="modalRuleTitle">Rule Name</div>
+      </div>
+      <button class="close-btn" onclick="closeRuleModal()">✕</button>
+    </div>
+    <div class="modal-desc" id="modalRuleBody">Loading rule details...</div>
+  </div>
+</div>
+
+<script>
+function extractModuleFromPath(filePath, projectKey) {
+  if (!filePath) return projectKey || 'general';
+  let cleanPath = filePath.replace(/\\/g, '/');
+  if (cleanPath.startsWith('jpluger-') && cleanPath.includes(':')) {
+    cleanPath = cleanPath.split(':', 2)[1];
+  }
+  const parts = cleanPath.split('/').filter(Boolean);
+  const srcIdx = parts.indexOf('src');
+  if (srcIdx > 0) return parts[srcIdx - 1];
+  if (parts.length > 1) return parts[0];
+  return projectKey || 'general';
+}
+
+function normalizeDataset(raw) {
+  if (!raw) return { issues: [], projects: [], totalIssues: 0 };
+
+  let issues = [];
+  let projects = [];
+  let localMeta = null;
+  let rulesCache = {};
+
+  if (Array.isArray(raw)) {
+    issues = raw;
+  } else if (typeof raw === 'object') {
+    issues = raw.issues || raw.data || raw.findings || [];
+    projects = raw.projects || [];
+    localMeta = raw.localMeta || null;
+    rulesCache = raw.rulesCache || {};
+  }
+
+  const normalizedIssues = issues.map(iss => {
+    if (!iss || typeof iss !== 'object') return null;
+
+    let fp = iss.filePath || iss.file || iss.path || '';
+    if (!fp && iss.component) {
+      fp = iss.component.includes(':') ? iss.component.split(':', 2)[1] : iss.component;
+    }
+
+    const project = (
+      iss.project ||
+      iss.projectKey ||
+      (iss.component && iss.component.includes(':') ? iss.component.split(':')[0] : 'general')
+    );
+
+    const moduleName = iss.module || extractModuleFromPath(fp, project);
+
+    // Software Quality (handles legacy type BUG, VULNERABILITY, CODE_SMELL)
+    let sq = (iss.softwareQuality || '').toUpperCase();
+    if (!sq) {
+      const itype = (iss.type || '').toUpperCase();
+      if (itype === 'VULNERABILITY' || itype === 'SECURITY_HOTSPOT') sq = 'SECURITY';
+      else if (itype === 'BUG') sq = 'RELIABILITY';
+      else sq = 'MAINTAINABILITY';
+    }
+    if (!['SECURITY', 'RELIABILITY', 'MAINTAINABILITY'].includes(sq)) {
+      sq = 'MAINTAINABILITY';
+    }
+
+    // Severity (handles legacy CRITICAL, MAJOR, MINOR)
+    let sev = (iss.impactSeverity || iss.severity || 'INFO').toUpperCase();
+    if (sev === 'CRITICAL') sev = 'HIGH';
+    else if (sev === 'MAJOR') sev = 'MEDIUM';
+    else if (sev === 'MINOR') sev = 'LOW';
+    if (!['BLOCKER', 'HIGH', 'MEDIUM', 'LOW', 'INFO'].includes(sev)) {
+      sev = 'INFO';
+    }
+
+    // Status
+    let st = (iss.status || iss.issueStatus || 'OPEN').toUpperCase();
+    if (st === 'REOPENED' || st === 'OPEN') st = 'OPEN';
+    else if (st === 'WONTFIX' || st === 'ACCEPTED') st = 'ACCEPTED';
+    else if (st === 'FALSE-POSITIVE' || st === 'FALSE_POSITIVE') st = 'FALSE_POSITIVE';
+    else if (st === 'CONFIRMED') st = 'CONFIRMED';
+    else st = 'OPEN';
+
+    let line = iss.line;
+    if (line == null && iss.textRange && iss.textRange.startLine != null) {
+      line = iss.textRange.startLine;
+    }
+    if (line == null) line = 1;
+
+    const ruleKey = iss.rule || iss.ruleKey || 'unknown';
+    const ruleName = iss.ruleName || (rulesCache[ruleKey] && rulesCache[ruleKey].name) || '';
+
+    return {
+      ...iss,
+      id: iss.id || iss.key || `${project}-${fp}-${line}`,
+      key: iss.key || iss.id || '',
+      project: project,
+      projectName: iss.projectName || project,
+      branch: iss.branch || 'main',
+      rule: ruleKey,
+      ruleName: ruleName,
+      message: iss.message || iss.msg || '',
+      filePath: fp,
+      line: parseInt(line, 10) || 1,
+      softwareQuality: sq,
+      softwareQualities: [sq],
+      impactSeverity: sev,
+      severity: iss.severity || sev,
+      status: st,
+      effort: iss.effort || iss.debt || '0min',
+      effortMinutes: parseInt(iss.effortMinutes != null ? iss.effortMinutes : 0, 10),
+      type: iss.type || 'CODE_SMELL',
+      cleanCodeAttribute: iss.cleanCodeAttribute,
+      cleanCodeAttributeCategory: iss.cleanCodeAttributeCategory,
+      source: iss.source || (iss.isLocal ? 'local' : 'server'),
+      serverUrl: iss.serverUrl || '',
+      module: moduleName,
+      repoPath: iss.repoPath || (iss.scope && iss.scope.includes('/.idea/') ? iss.scope.split('/.idea/')[0] : '') || '',
+      creationDate: iss.creationDate
+    };
+  }).filter(Boolean);
+
+  if (!projects || projects.length === 0) {
+    const pkeys = [...new Set(normalizedIssues.map(i => i.project).filter(Boolean))].sort();
+    projects = pkeys.map(k => ({
+      key: k,
+      name: k,
+      branches: ['main'],
+      mainBranch: 'main'
+    }));
+  }
+
+  const repoPaths = raw.repoPaths || [...new Set(normalizedIssues.map(i => i.repoPath).filter(Boolean))].sort();
+  const srvCount = normalizedIssues.filter(i => i.source === 'server').length;
+  const locCount = normalizedIssues.filter(i => i.source === 'local').length;
+
+  return {
+    timestamp: raw.timestamp || new Date().toISOString(),
+    epoch: raw.epoch || Date.now(),
+    projects: projects,
+    repoPaths: repoPaths,
+    issues: normalizedIssues,
+    totalIssues: normalizedIssues.length,
+    serverCount: srvCount,
+    localCount: locCount,
+    rulesCache: rulesCache,
+    localMeta: localMeta
+  };
+}
+
+// Embedded Data injected by server or static export
+let REPORT_DATA = normalizeDataset(__REPORT_DATA_JSON__);
+
+let activeFilters = {
+  project: '',
+  source: 'server',
+  search: '',
+  qualities: ['SECURITY', 'RELIABILITY', 'MAINTAINABILITY'],
+  severities: ['BLOCKER', 'HIGH', 'MEDIUM', 'LOW', 'INFO'],
+  statuses: ['OPEN'],
+  groupBy: '',
+  page: 1,
+  pageSize: 50
+};
+
+let currentFilteredIssues = [];
+
+function init() {
+  const issues = REPORT_DATA.issues || [];
+  const srvCount = REPORT_DATA.serverCount || issues.filter(i => i.source === 'server').length;
+  const locCount = REPORT_DATA.localCount || issues.filter(i => i.source === 'local').length;
+  if (srvCount === 0 && locCount > 0) {
+    activeFilters.source = 'local';
+  } else {
+    activeFilters.source = 'server';
+  }
+  updateSourceRadioUI();
+  renderProjectsDropdown();
+  updateTopKpis();
+  applyFilters();
+}
+
+function setSource(src) {
+  if (activeFilters.source === src) return;
+  activeFilters.source = src;
+  activeFilters.project = '';
+  updateSourceRadioUI();
+  renderProjectsDropdown();
+  updateTopKpis();
+  applyFilters();
+}
+
+function updateSourceRadioUI() {
+  const isServer = activeFilters.source === 'server';
+  const rServer = document.getElementById('sourceServer');
+  const rLocal = document.getElementById('sourceLocal');
+  if (rServer) rServer.checked = isServer;
+  if (rLocal) rLocal.checked = !isServer;
+
+  const lServer = document.getElementById('labelSourceServer');
+  const lLocal = document.getElementById('labelSourceLocal');
+  if (lServer) lServer.classList.toggle('active', isServer);
+  if (lLocal) lLocal.classList.toggle('active', !isServer);
+
+  const pLabel = document.getElementById('projectScopeLabel');
+  if (pLabel) pLabel.textContent = isServer ? 'Project' : 'Module';
+}
+
+function renderProjectsDropdown() {
+  const select = document.getElementById('projectSelect');
+  if (!select) return;
+
+  const allIssues = REPORT_DATA.issues || [];
+
+  if (activeFilters.source === 'server') {
+    const srvIssues = allIssues.filter(i => i.source === 'server');
+    const projects = REPORT_DATA.projects || [];
+    select.innerHTML = `<option value="">All Server Projects (${projects.length})</option>`;
+
+    projects.forEach(p => {
+      const count = srvIssues.filter(i => i.project === p.key).length;
+      const opt = document.createElement('option');
+      opt.value = p.key;
+      opt.textContent = `${p.key} (${count.toLocaleString()} issues)`;
+      if (activeFilters.project === p.key) opt.selected = true;
+      select.appendChild(opt);
+    });
+  } else {
+    const locIssues = allIssues.filter(i => i.source === 'local');
+    const modMap = {};
+    locIssues.forEach(i => {
+      const mod = i.project || i.module || 'Unknown';
+      modMap[mod] = (modMap[mod] || 0) + 1;
+    });
+    const modKeys = Object.keys(modMap).sort();
+    select.innerHTML = `<option value="">All Local Modules (${modKeys.length})</option>`;
+
+    modKeys.forEach(m => {
+      const count = modMap[m];
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = `${m} (${count.toLocaleString()} issues)`;
+      if (activeFilters.project === m) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+}
+
+function onProjectChange() {
+  const pkey = document.getElementById('projectSelect').value;
+  activeFilters.project = pkey;
+  applyFilters();
+}
+
+function updateTopKpis() {
+  const allIssues = REPORT_DATA.issues || [];
+  const srvCount = REPORT_DATA.serverCount || allIssues.filter(i => i.source === 'server').length;
+  const locCount = REPORT_DATA.localCount || allIssues.filter(i => i.source === 'local').length;
+
+  const rSrvEl = document.getElementById('countSourceServer');
+  if (rSrvEl) rSrvEl.textContent = srvCount.toLocaleString();
+  const rLocEl = document.getElementById('countSourceLocal');
+  if (rLocEl) rLocEl.textContent = locCount.toLocaleString();
+
+  const isServer = activeFilters.source === 'server';
+  const sourceIssues = allIssues.filter(i => i.source === activeFilters.source);
+
+  document.getElementById('kpiTotalIssues').textContent = sourceIssues.length.toLocaleString();
+  const splitEl = document.getElementById('sourceSplitBadge');
+  if (splitEl) {
+    splitEl.textContent = isServer ? 'Server Findings' : 'Local IDE Findings';
+    splitEl.className = `badge-tag ${isServer ? 'server' : 'local'}`;
+  }
+
+  const sec = sourceIssues.filter(i => i.softwareQuality === 'SECURITY').length;
+  const rel = sourceIssues.filter(i => i.softwareQuality === 'RELIABILITY').length;
+  const main = sourceIssues.filter(i => i.softwareQuality === 'MAINTAINABILITY').length;
+
+  document.getElementById('kpiSecurity').textContent = sec.toLocaleString();
+  document.getElementById('kpiReliability').textContent = rel.toLocaleString();
+  document.getElementById('kpiMaintainability').textContent = main.toLocaleString();
+
+  const projCardLabel = document.getElementById('kpiProjectsLabel');
+  if (isServer) {
+    if (projCardLabel) projCardLabel.textContent = 'Server Projects';
+    document.getElementById('kpiProjects').textContent = (REPORT_DATA.projects || []).length;
+  } else {
+    if (projCardLabel) projCardLabel.textContent = 'Local Modules';
+    const locMods = new Set(sourceIssues.map(i => i.project || i.module || 'Unknown'));
+    document.getElementById('kpiProjects').textContent = locMods.size;
+  }
+
+  if (REPORT_DATA.localMeta && REPORT_DATA.localMeta.available) {
+    document.getElementById('kpiLocalStatus').textContent = 'IDE H2 Connected';
+    document.getElementById('kpiLocalStatus').classList.add('accent');
+  }
+}
+
+function toggleFilterPill(el, type) {
+  el.classList.toggle('active');
+  const activeEls = el.parentElement.querySelectorAll('.pill-btn.active');
+  
+  if (type === 'quality') {
+    activeFilters.qualities = Array.from(activeEls).map(e => e.getAttribute('data-quality'));
+  } else if (type === 'severity') {
+    activeFilters.severities = Array.from(activeEls).map(e => e.getAttribute('data-sev'));
+  } else if (type === 'status') {
+    activeFilters.statuses = Array.from(activeEls).map(e => e.getAttribute('data-status'));
+  }
+  applyFilters();
+}
+
+function setGroupBy(el, group) {
+  el.parentElement.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeFilters.groupBy = group;
+  activeFilters.page = 1;
+  renderContent();
+}
+
+function resetFilters() {
+  activeFilters.project = '';
+  activeFilters.search = '';
+  document.getElementById('projectSelect').value = '';
+  document.getElementById('textSearch').value = '';
+
+  document.querySelectorAll('#qualityPills .pill-btn').forEach(p => p.classList.add('active'));
+  document.querySelectorAll('#severityPills .pill-btn').forEach(p => p.classList.add('active'));
+  document.querySelectorAll('#statusPills .pill-btn').forEach(p => {
+    if (p.getAttribute('data-status') === 'OPEN') p.classList.add('active');
+    else p.classList.remove('active');
+  });
+  document.querySelectorAll('#groupByPills .pill-btn').forEach(p => {
+    if (p.getAttribute('data-group') === '') p.classList.add('active');
+    else p.classList.remove('active');
+  });
+
+  activeFilters.qualities = ['SECURITY', 'RELIABILITY', 'MAINTAINABILITY'];
+  activeFilters.severities = ['BLOCKER', 'HIGH', 'MEDIUM', 'LOW', 'INFO'];
+  activeFilters.statuses = ['OPEN'];
+  activeFilters.groupBy = '';
+  activeFilters.page = 1;
+  activeFilters.pageSize = 50;
+
+  renderProjectsDropdown();
+  updateTopKpis();
+  applyFilters();
+}
+
+function applyFilters() {
+  activeFilters.project = document.getElementById('projectSelect').value;
+  activeFilters.search = document.getElementById('textSearch').value.trim().toLowerCase();
+  activeFilters.page = 1;
+
+  const allIssues = REPORT_DATA.issues || [];
+
+  currentFilteredIssues = allIssues.filter(iss => {
+    if (iss.source !== activeFilters.source) return false;
+    if (activeFilters.project && iss.project !== activeFilters.project) return false;
+    if (!activeFilters.qualities.includes(iss.softwareQuality)) return false;
+    if (!activeFilters.severities.includes(iss.impactSeverity)) return false;
+    if (!activeFilters.statuses.includes(iss.status)) return false;
+
+    if (activeFilters.search) {
+      const fp = (iss.filePath || '').toLowerCase();
+      const msg = (iss.message || '').toLowerCase();
+      const rk = (iss.rule || '').toLowerCase();
+      const rn = (iss.ruleName || '').toLowerCase();
+      if (!fp.includes(activeFilters.search) && !msg.includes(activeFilters.search) && !rk.includes(activeFilters.search) && !rn.includes(activeFilters.search)) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  updateFilterFacetCounts(allIssues);
+  renderContent();
+}
+
+function updateFilterFacetCounts(allIssues) {
+  const subset = allIssues.filter(iss => {
+    if (iss.source !== activeFilters.source) return false;
+    if (activeFilters.project && iss.project !== activeFilters.project) return false;
+    return true;
+  });
+
+  document.getElementById('countSecurity').textContent = subset.filter(i => i.softwareQuality === 'SECURITY').length;
+  document.getElementById('countReliability').textContent = subset.filter(i => i.softwareQuality === 'RELIABILITY').length;
+  document.getElementById('countMaintainability').textContent = subset.filter(i => i.softwareQuality === 'MAINTAINABILITY').length;
+
+  document.getElementById('countBlocker').textContent = subset.filter(i => i.impactSeverity === 'BLOCKER').length;
+  document.getElementById('countHigh').textContent = subset.filter(i => i.impactSeverity === 'HIGH').length;
+  document.getElementById('countMedium').textContent = subset.filter(i => i.impactSeverity === 'MEDIUM').length;
+  document.getElementById('countLow').textContent = subset.filter(i => i.impactSeverity === 'LOW').length;
+  document.getElementById('countInfo').textContent = subset.filter(i => i.impactSeverity === 'INFO').length;
+
+  document.getElementById('countOpen').textContent = subset.filter(i => i.status === 'OPEN').length;
+  document.getElementById('countConfirmed').textContent = subset.filter(i => i.status === 'CONFIRMED').length;
+  document.getElementById('countAccepted').textContent = subset.filter(i => i.status === 'ACCEPTED').length;
+  document.getElementById('countFalsePositive').textContent = subset.filter(i => i.status === 'FALSE_POSITIVE').length;
+}
+
+function getFilename(filePath) {
+  if (!filePath) return 'unknown';
+  const parts = filePath.replace(/\\/g, '/').split('/');
+  return parts[parts.length - 1];
+}
+
+function copyPath(filePath, el, moduleName) {
+  let full = filePath || '';
+  if (moduleName && moduleName !== 'general' && !full.startsWith(moduleName + '/') && !full.startsWith(moduleName + ':')) {
+    full = `${moduleName}/${full}`;
+  }
+  if (!full) return;
+  navigator.clipboard.writeText(full).then(() => {
+    showToast('Copied: ' + full);
+  }).catch(() => {
+    const input = document.createElement('input');
+    input.value = full;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    showToast('Copied: ' + full);
+  });
+}
+
+function showToast(msg) {
+  let container = document.getElementById('toasts');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toasts';
+    container.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px;';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  toast.style.cssText = 'background:var(--panel);border:1px solid var(--border-hover);border-left:4px solid var(--pass-fg);border-radius:8px;padding:9px 14px;font-size:12px;color:var(--ink);box-shadow:0 10px 25px rgba(0,0,0,0.6);font-family:"JetBrains Mono",monospace;display:flex;align-items:center;gap:8px;';
+  toast.innerHTML = `<span>✓</span> <span>${escapeHtml(msg)}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 2400);
+}
+
+function renderContent() {
+  const container = document.getElementById('contentContainer');
+  const countEl = document.getElementById('resultsCount');
+  const paginationBar = document.getElementById('paginationBar');
+
+  const total = currentFilteredIssues.length;
+  countEl.textContent = `Showing ${total.toLocaleString()} matching issues`;
+
+  if (total === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);">
+      <div style="font-size:24px;margin-bottom:8px">🔍</div>
+      <div style="font-size:14px;font-weight:600;color:var(--ink)">No issues match the selected filters</div>
+      <div style="font-size:12px;margin-top:4px">Try adjusting or clearing your active filters</div>
+    </div>`;
+    paginationBar.style.display = 'none';
+    return;
+  }
+
+  if (activeFilters.groupBy) {
+    paginationBar.style.display = 'none';
+    renderGroupedView(container);
+  } else {
+    renderFlatTableView(container);
+    renderPagination(paginationBar, total);
+  }
+}
+
+function renderGroupedView(container) {
+  const gtype = activeFilters.groupBy;
+  const groups = {};
+
+  currentFilteredIssues.forEach(iss => {
+    let key, title;
+    if (gtype === 'rule') {
+      key = iss.rule || 'unknown';
+      title = `${key} — ${iss.ruleName || key}`;
+    } else if (gtype === 'file') {
+      key = iss.filePath || 'unknown';
+      title = `<${iss.module || 'general'}> / <${getFilename(key)}>`;
+    } else {
+      key = iss.module || 'general';
+      title = `Module: <${key}>`;
+    }
+
+    if (!groups[key]) {
+      groups[key] = { key, title, items: [] };
+    }
+    groups[key].items.push(iss);
+  });
+
+  const sortedGroups = Object.values(groups).sort((a, b) => b.items.length - a.items.length);
+
+  let html = '';
+  sortedGroups.forEach((g, idx) => {
+    const isExpanded = idx === 0;
+    html += `
+      <div class="group-card">
+        <div class="group-header" onclick="toggleGroup(${idx})">
+          <div class="group-title">
+            <span id="group-arrow-${idx}" style="font-size:11px;color:var(--muted)">${isExpanded ? '▼' : '▶'}</span>
+            <span>${escapeHtml(g.title)}</span>
+          </div>
+          <div>
+            <span class="badge-tag accent">${g.items.length} issues</span>
+          </div>
+        </div>
+        <div class="group-body" id="group-body-${idx}" style="display:${isExpanded ? 'block' : 'none'}">
+          <div class="issue-table-wrap" style="border:none;border-radius:0;">
+            <table class="issue-table">
+              <thead>
+                <tr>
+                  <th class="col-source">Source</th>
+                  <th class="col-quality">Quality / Severity</th>
+                  <th class="col-rule-msg">Rule & Message</th>
+                  <th class="col-loc">Location (Click to Copy)</th>
+                  <th class="col-status">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${g.items.slice(0, 100).map(renderIssueRow).join('')}
+                ${g.items.length > 100 ? `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:10px;">Showing top 100 of ${g.items.length} issues in this group</td></tr>` : ''}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleGroup(idx) {
+  const body = document.getElementById(`group-body-${idx}`);
+  const arrow = document.getElementById(`group-arrow-${idx}`);
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.textContent = '▼';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▶';
+  }
+}
+
+function renderFlatTableView(container) {
+  const start = (activeFilters.page - 1) * activeFilters.pageSize;
+  const pageItems = currentFilteredIssues.slice(start, start + activeFilters.pageSize);
+
+  let html = `
+    <div class="issue-table-wrap">
+      <table class="issue-table">
+        <thead>
+          <tr>
+            <th class="col-source">Source</th>
+            <th class="col-quality">Quality / Severity</th>
+            <th class="col-rule-msg">Rule & Message</th>
+            <th class="col-loc">Location (Click to Copy)</th>
+            <th class="col-status">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${pageItems.map(renderIssueRow).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  container.innerHTML = html;
+}
+
+function renderIssueRow(iss) {
+  const qClass = (iss.softwareQuality || 'maintainability').toLowerCase();
+  const sClass = (iss.impactSeverity || 'info').toLowerCase();
+  const srcClass = iss.source === 'server' ? 'server' : 'local';
+  const filename = getFilename(iss.filePath);
+  const moduleName = iss.module || iss.project || 'general';
+  const displayPath = (moduleName && moduleName !== 'general' && !iss.filePath.startsWith(moduleName + '/'))
+    ? `${moduleName}/${iss.filePath}`
+    : iss.filePath;
+
+  return `
+    <tr>
+      <td class="col-source">
+        <span class="badge-source ${srcClass}">${iss.source}</span>
+      </td>
+      <td class="col-quality">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span class="badge-soft ${qClass}">${iss.softwareQuality}</span>
+          <span class="badge-soft ${sClass}">${iss.impactSeverity}</span>
+        </div>
+      </td>
+      <td class="col-rule-msg">
+        <div>
+          <a class="issue-rule" onclick="openRuleModal('${escapeHtml(iss.rule)}')">${escapeHtml(iss.rule)}</a>
+          <span class="issue-rulename"> · ${escapeHtml(iss.ruleName || '')}</span>
+          ${iss.serverUrl ? `<a href="${iss.serverUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;font-size:11px;margin-left:6px;" title="Open on SonarQube Server">🔗</a>` : ''}
+        </div>
+        <div class="issue-msg">${escapeHtml(iss.message)}</div>
+      </td>
+      <td class="col-loc">
+        <div class="loc-box" onclick="copyPath('${escapeHtml(iss.filePath)}', this, '${escapeHtml(moduleName)}')" title="Click to copy path: ${escapeHtml(displayPath)} (Line ${iss.line})">
+          <div class="loc-display">
+            <div class="loc-module" title="Module: ${escapeHtml(moduleName)}">&lt;${escapeHtml(moduleName)}&gt;</div>
+            <div class="loc-file" title="Class: ${escapeHtml(filename)}">&lt;${escapeHtml(filename)}&gt;</div>
+          </div>
+          <div class="loc-copy-hint">📋 Click to copy path (Line ${iss.line})</div>
+        </div>
+      </td>
+      <td class="col-status">
+        <span class="badge-tag">${iss.status}</span>
+      </td>
+    </tr>
+  `;
+}
+
+function renderPagination(bar, total) {
+  const totalPages = Math.ceil(total / activeFilters.pageSize);
+  if (totalPages <= 1) {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'flex';
+
+  let html = `
+    <button class="btn" ${activeFilters.page === 1 ? 'disabled style="opacity:0.4"' : ''} onclick="goToPage(${activeFilters.page - 1})">◀ Prev</button>
+    <span style="font-size:12px;color:var(--muted);">Page ${activeFilters.page} of ${totalPages}</span>
+    <button class="btn" ${activeFilters.page === totalPages ? 'disabled style="opacity:0.4"' : ''} onclick="goToPage(${activeFilters.page + 1})">Next ▶</button>
+  `;
+  bar.innerHTML = html;
+}
+
+function goToPage(p) {
+  activeFilters.page = p;
+  renderContent();
+  window.scrollTo({ top: 380, behavior: 'smooth' });
+}
+
+function openRuleModal(ruleKey) {
+  const modal = document.getElementById('ruleModal');
+  const title = document.getElementById('modalRuleTitle');
+  const keyEl = document.getElementById('modalRuleKey');
+  const body = document.getElementById('modalRuleBody');
+  const badge = document.getElementById('modalQualityBadge');
+
+  keyEl.textContent = ruleKey;
+  title.textContent = 'Loading...';
+  body.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;">Fetching rule documentation...</div>';
+  modal.classList.add('open');
+
+  const cache = REPORT_DATA.rulesCache || {};
+  if (cache[ruleKey]) {
+    populateRuleModal(ruleKey, cache[ruleKey]);
+    return;
+  }
+
+  fetch(`/api/rule?key=${encodeURIComponent(ruleKey)}`)
+    .then(res => res.json())
+    .then(data => {
+      populateRuleModal(ruleKey, data.rule);
+    })
+    .catch(err => {
+      body.innerHTML = `<div style="color:var(--fail-fg);">Failed to load rule: ${err.message}</div>`;
+    });
+}
+
+function populateRuleModal(ruleKey, rule) {
+  document.getElementById('modalRuleTitle').textContent = rule.name || ruleKey;
+  const badge = document.getElementById('modalQualityBadge');
+  
+  let sq = 'MAINTAINABILITY';
+  if (rule.impacts && rule.impacts.length) {
+    sq = rule.impacts[0].softwareQuality || 'MAINTAINABILITY';
+  }
+  badge.textContent = sq;
+  badge.className = `badge-soft ${sq.toLowerCase()}`;
+
+  let content = '';
+  if (rule.htmlDesc) {
+    content += `<div>${rule.htmlDesc}</div>`;
+  }
+  if (rule.descriptionSections && rule.descriptionSections.length) {
+    rule.descriptionSections.forEach(sec => {
+      content += `<div style="margin-top:16px;">${sec.content}</div>`;
+    });
+  }
+  if (!content) {
+    content = `<p style="color:var(--muted)">No extended documentation available for ${ruleKey}.</p>`;
+  }
+
+  document.getElementById('modalRuleBody').innerHTML = content;
+}
+
+function closeRuleModal() {
+  document.getElementById('ruleModal').classList.remove('open');
+}
+
+function closeModalOnBackdrop(e) {
+  if (e.target.id === 'ruleModal') {
+    closeRuleModal();
+  }
+}
+
+function triggerRefresh() {
+  const btn = event.target;
+  btn.textContent = '⏳ Syncing...';
+  btn.disabled = true;
+
+  fetch('/api/refresh', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+      alert(`Sync Complete! Loaded ${data.totalIssues} issues (${data.serverCount} server, ${data.localCount} local). Reloading page...`);
+      window.location.reload();
+    })
+    .catch(err => {
+      alert(`Sync failed: ${err.message}`);
+      btn.textContent = '🔄 Sync Fresh Data';
+      btn.disabled = false;
+    });
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  readExportFile(file);
+  e.target.value = '';
+}
+
+function readExportFile(file) {
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const text = evt.target.result;
+    loadExportContent(text, file.name);
+  };
+  reader.readAsText(file);
+}
+
+function loadExportContent(text, filename) {
+  let parsed = null;
+  // 1. Try parsing directly as JSON
+  try {
+    parsed = JSON.parse(text);
+  } catch(e) {
+    // 2. Try extracting const REPORT_DATA = ... from HTML
+    const match = text.match(/const\s+REPORT_DATA\s*=\s*(\{[\s\S]*?\});\s*(?:\n|let|const|<)/);
+    if (match) {
+      try {
+        parsed = JSON.parse(match[1]);
+      } catch (e2) {
+        const match2 = text.match(/REPORT_DATA\s*=\s*(\{[\s\S]*?\})\s*;/);
+        if (match2) {
+          try { parsed = JSON.parse(match2[1]); } catch(e3) {}
+        }
+      }
+    } else {
+      const match2 = text.match(/REPORT_DATA\s*=\s*(\{[\s\S]*?\})\s*;/);
+      if (match2) {
+        try { parsed = JSON.parse(match2[1]); } catch(e3) {}
+      }
+    }
+  }
+
+  if (!parsed) {
+    showToast('❌ Could not parse export file: invalid JSON or HTML report format');
+    return;
+  }
+
+  const normalized = normalizeDataset(parsed);
+  if (!normalized || !normalized.issues || normalized.issues.length === 0) {
+    showToast('❌ No valid issues found in export file');
+    return;
+  }
+
+  REPORT_DATA = normalized;
+  const srvCount = (REPORT_DATA.issues || []).filter(i => i.source === 'server').length;
+  const locCount = (REPORT_DATA.issues || []).filter(i => i.source === 'local').length;
+  if (srvCount === 0 && locCount > 0) {
+    activeFilters.source = 'local';
+  } else {
+    activeFilters.source = 'server';
+  }
+  activeFilters.project = '';
+  updateSourceRadioUI();
+  renderProjectsDropdown();
+  updateTopKpis();
+  applyFilters();
+
+  if (window.location.protocol.startsWith('http')) {
+    fetch('/api/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(REPORT_DATA)
+    }).catch(() => {});
+  }
+
+  showToast(`✔ Loaded ${normalized.issues.length.toLocaleString()} issues from ${filename || 'export file'}`);
+}
+
+// Drag & drop support
+window.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  const overlay = document.getElementById('dropOverlay');
+  if (overlay) overlay.classList.add('active');
+});
+
+window.addEventListener('dragleave', (e) => {
+  if (e.relatedTarget === null) {
+    const overlay = document.getElementById('dropOverlay');
+    if (overlay) overlay.classList.remove('active');
+  }
+});
+
+window.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const overlay = document.getElementById('dropOverlay');
+  if (overlay) overlay.classList.remove('active');
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+    readExportFile(e.dataTransfer.files[0]);
+  }
+});
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+<div id="dropOverlay" class="drop-overlay">
+  <div class="drop-overlay-box">
+    <div style="font-size:38px;margin-bottom:8px;">📂</div>
+    <div style="font-size:16px;font-weight:700;color:var(--ink);">Drop SonarQube export file here</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Supports .html and .json export files (both new and legacy formats)</div>
+  </div>
+</div>
+</body>
+</html>
