@@ -6,7 +6,7 @@ Core lifecycle skills governing specification-first, review-driven software deve
 
 ## 📖 Overview
 
-The **`ai-first-fw-skills`** plugin (`v2.1.5`) provides an end-to-end gated development workflow. It replaces unstructured code generation with structured requirement analysis, confidence-graded mapping plans, strict plan gates, and cold multi-pass code audits before pull requests are created.
+The **`ai-first-fw-skills`** plugin provides an end-to-end gated development workflow. It replaces unstructured code generation with structured requirement analysis, confidence-graded mapping plans, strict plan gates, and cold multi-pass code audits before pull requests are created.
 
 ```
 [ Requirements / Jira Ticket ]
@@ -39,12 +39,14 @@ The **`ai-first-fw-skills`** plugin (`v2.1.5`) provides an end-to-end gated deve
 
 ## 🧩 Lifecycle Skills
 
-| Skill | Version | Description | Key Deliverables & Gates |
-| :--- | :--- | :--- | :--- |
-| **[`write-analysis`](write-analysis/)** | `v2.1.0` | Writes the four-document contract from ticket brief, docs, and codebase | Claim library, field mapping, change requests, ticket summary |
-| **[`implementation-planner`](implementation-planner/)** | `v0.8.0` | Master lifecycle orchestrator managing multi-stage approval gates | **Gate G1** (Requirements), **Gate G2** (Plan Quality Bar) |
-| **[`specs-builder`](specs-builder/)** | `v0.10.0` | Generates integration spec folder and confidence-graded mapping plan | `mapping-plan.md` (Confidence `A` / `B` / `C`), integration specs |
-| **[`review-code`](review-code/)** | `v2.0.0` | Cold branch and PR diff reviewer across 3 isolated passes | Pass 1: Requirements · Pass 2: Repo Rules · Pass 3: Security |
+| Skill | Description | Key Deliverables & Gates |
+| :--- | :--- | :--- |
+| **[`write-analysis`](write-analysis/)** | Writes the four-document contract from ticket brief, docs, and codebase | Claim library, field mapping, change requests, ticket summary |
+| **[`implementation-planner`](implementation-planner/)** | Master lifecycle orchestrator managing multi-stage approval gates | **Gate G1** (Requirements), **Gate G2** (Plan Quality Bar) |
+| **[`specs-builder`](specs-builder/)** | Generates integration spec folder and confidence-graded mapping plan | `mapping-plan.md` (Confidence `A` / `B` / `C`), integration specs |
+| **[`review-code`](review-code/)** | Cold branch and PR diff reviewer across 3 isolated passes | Pass 1: Requirements · Pass 2: Repo Rules · Pass 3: Security |
+
+> Each skill declares and versions independently in its own `SKILL.md` frontmatter. Check `plugin.json` for current plugin bundle versions.
 
 ---
 

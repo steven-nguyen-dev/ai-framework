@@ -14,8 +14,8 @@ The **AI-First Framework** (`ai-first-fw`) provides an end-to-end ecosystem for 
 
 ```
 ai-first-fw/
-├── skills/              # Core lifecycle skills governing the development workflow (v2.1.5)
-├── utilities/           # Standalone utility skills for specialized engineering tasks (v2.4.3)
+├── skills/              # Core lifecycle skills governing the development workflow
+├── utilities/           # Standalone utility skills for specialized engineering tasks
 ├── local-theme/         # Unified Dark Report Theme design tokens, CSS, & JS toolkit
 ├── local-test-servers/  # Spec-driven mock HTTP servers and integration test engine
 ├── local-mcps/          # Local Model Context Protocol (MCP) servers
@@ -28,23 +28,23 @@ ai-first-fw/
 
 ### 1. [`skills/`](skills) — Core Lifecycle Skills
 A set of specialized, composable skills that guide AI agents through a gated development lifecycle:
-- **`write-analysis`** (`v2.1.0`): Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
-- **`implementation-planner`** (`v0.8.0`): Orchestrates the multi-step lifecycle across approval gates (`G1` requirements approval, `G2` implementation plan approval).
-- **`specs-builder`** (`v0.10.0`): Analyzes API documentation and payload samples to produce mapping plans and integration specifications.
-- **`review-code`** (`v2.0.0`): Audits branch diffs against requirements, project conventions, and approved plans prior to gate approval across 3 isolated review passes.
+- **`write-analysis`**: Writes the four-document contract — claim library, mapping spec, change request spec, and ticket summary — for a requirement.
+- **`implementation-planner`**: Orchestrates the multi-step lifecycle across approval gates (`G1` requirements approval, `G2` implementation plan approval).
+- **`specs-builder`**: Analyzes API documentation and payload samples to produce mapping plans and integration specifications.
+- **`review-code`**: Audits branch diffs against requirements, project conventions, and approved plans prior to gate approval across 3 isolated review passes.
 
 ### 2. [`utilities/`](utilities) — Standalone Skills
 Independent helper skills for focused tasks outside the core lifecycle:
-- **`draw-diagram`** (`v1.0.0`): Mermaid diagram generation and styling adhering to the shared dark palette.
-- **`herdr-leader`** (`v1.0.0`): Fixed-pane swarm leadership orchestration across model tiers via the `herdr` CLI without directly editing code.
-- **`make-it-short`** (`v4.1.0`): Enforces repository writing limits and conciseness rules (223-char items, 500-char paragraphs, 7-item lists, 6-col tables).
-- **`sync-context`** (`v1.0.0`): Drift reporting, conflict resolution, and synchronization across projects sharing a context folder.
-- **`sync-pr`** (`v2.0.0`): Worktree-isolated feature promotion to QA/UAT mirror branches, gated on a scoped build and unit tests.
-- **`write-docs`** (`v1.0.0`): Technical knowledge note writing adhering to repo standards.
-- **`write-pr-desc`** (`v1.0.0`): PR description authoring aligned to the repo template, applied to the open pull request on approval.
-- **`write-skill`** (`v0.1.0`): Skill authoring and revising under standard quality levers.
-- **`lv1-architecture-review`** (`v0.0.2`): Architecture checklist auditing.
-- **`naver-api-extractor`** (`v0.0.1`) & **`lotteon-api-extractor`** (`v0.0.1`): E-commerce API spec extraction and generation.
+- **`draw-diagram`**: Mermaid diagram generation and styling adhering to the shared dark palette.
+- **`herdr-leader`**: Fixed-pane swarm leadership orchestration across model tiers via the `herdr` CLI without directly editing code.
+- **`make-it-short`**: Enforces repository writing limits and conciseness rules (223-char items, 500-char paragraphs, 7-item lists, 6-col tables).
+- **`sync-context`**: Drift reporting, conflict resolution, and synchronization across projects sharing a context folder.
+- **`sync-pr`**: Worktree-isolated feature promotion to QA/UAT mirror branches, gated on a scoped build and unit tests.
+- **`write-docs`**: Technical knowledge note writing adhering to repo standards.
+- **`write-pr-desc`**: PR description authoring aligned to the repo template, applied to the open pull request on approval.
+- **`write-skill`**: Skill authoring and revising under standard quality levers.
+- **`lv1-architecture-review`**: Architecture checklist auditing.
+- **`naver-api-extractor`** & **`lotteon-api-extractor`**: E-commerce API spec extraction and generation.
 
 ### 3. [`local-theme/`](local-theme) — Unified Local Design System
 Central design tokens (`theme.json`), shared stylesheets (`theme.css`), and JavaScript visualization toolkit (`theme.js`) used across all test servers, mock servers, and report servers.
