@@ -68,6 +68,7 @@ from fetcher import (
     load_rules_cache,
     normalize_dataset,
     parse_effort_minutes,
+    sync_local_findings_if_updated,
 )
 
 FAVICON_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#020617"/><path d="M7 26V9C7 7.34 8.34 6 10 6H22C23.66 6 25 7.34 25 9V26" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/><path d="M11 11H21M11 16H21M11 21H17" stroke="#34d399" stroke-width="2" stroke-linecap="round"/><circle cx="21" cy="21" r="2.5" fill="#f87171"/></svg>"""
@@ -183,6 +184,10 @@ class SonarReportHandler(SimpleHTTPRequestHandler):
             with DATA_LOCK:
                 data = fetch_all()
 
+        if data:
+            with DATA_LOCK:
+                data, _ = sync_local_findings_if_updated(data)
+
         json_str = json.dumps(data)
         content = content.replace("__REPORT_DATA_JSON__", json_str)
 
@@ -271,12 +276,15 @@ class SonarReportHandler(SimpleHTTPRequestHandler):
         severity = params.get("severity", params.get("impactSeverity", []))
         status = params.get("status", [])
         source = params.get("source", [""])[0]
+        repo = params.get("repo", [""])[0]
         rule = params.get("rule", [])
         search = params.get("search", params.get("q", [""]))[0].strip().lower()
         group_by = params.get("groupBy", [""])[0]
 
         filtered = []
         for iss in issues:
+            if repo and iss.get("repoPath") != repo:
+                continue
             if project and iss.get("project") != project:
                 continue
             if branch and branch != "all" and iss.get("branch") != branch:

@@ -1,7 +1,7 @@
 ---
 name: herdr-leader
 description: Nominate this agent as the Herdr swarm leader for its current tab. Use on /herdr-leader, /lead, or /leader.
-version: 1.4.1
+version: 1.4.3
 disable-model-invocation: true
 ---
 
@@ -35,11 +35,11 @@ Run `pane-limits --init-leader` to claim leadership, auto-name workers in `$HERD
 Break the objective into bounded, self-contained briefs. Assign each brief by recommended role:
 - **Opus (Top Tier / Smartest Worker)**: High-complexity tasks — architecture design, intricate cross-system refactorings, deep spec/contract synthesis, and hardest root-cause debugging.
 - **Gemini (Core Workhorse / Smart Worker — Bulk of Work)**: Normal complexity and below — feature implementation, unit/integration test suites, multi-file code editing, routine audits, and specs building. Gemini panes form the backbone of the swarm and handle the lion's share of tasks.
-- **Grok & GPT (Simple Worker / Fire & Forget)**: Small, self-contained single-pass units — isolated utility scripts, syntax/formatting/lint cleanup, quick regex, repetitive boilerplate, and localized single-file fixes.
+- **Default / All Others (Simple Worker / Fire & Forget)**: Small, self-contained single-pass units — isolated utility scripts, syntax/formatting/lint cleanup, quick regex, repetitive boilerplate, and localized single-file fixes (e.g. Grok, GPT).
 
 Treat tier roles as soft recommendations; when a target worker is busy, overflow flexibly to capable idle workers. Before dispatch, check capacity with `pane-limits <target>`. Split the brief if verdict is `HIGH` or `BREACH`.
 
-**Completion:** every task brief is sized within model limits (<650K for Claude/Gemini, <210K for Grok/GPT) and assigned to an available worker.
+**Completion:** every task brief is sized within model limits (<650K for Claude/Gemini/GPT, <210K default for all others) and assigned to an available worker.
 
 ### Step 3 — Dispatch and queue on fixed panes
 

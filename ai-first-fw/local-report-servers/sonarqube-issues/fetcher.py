@@ -477,6 +477,23 @@ def extract_repo_path(scope: str) -> str:
     return ""
 
 
+def get_git_branch(repo_path: str) -> str:
+    """Detects active git branch for a local repository directory."""
+    if not repo_path or not os.path.isdir(repo_path):
+        return "local-workspace"
+    try:
+        head_file = os.path.join(repo_path, ".git", "HEAD")
+        if os.path.isfile(head_file):
+            with open(head_file, "r", encoding="utf-8") as f:
+                ref = f.read().strip()
+                if ref.startswith("ref: refs/heads/"):
+                    return ref[16:]
+                return ref[:8]
+    except Exception:
+        pass
+    return "local-workspace"
+
+
 def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """Dumps local findings from IntelliJ's SonarLint H2 database via H2Dump utility.
     Zero modifications, read-only AUTO_SERVER=TRUE connection.
@@ -491,6 +508,7 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
         "java": java_bin,
         "h2Jar": h2_jar,
         "dbPath": h2_db,
+        "dbMtime": os.path.getmtime(h2_db) if (h2_db and os.path.isfile(h2_db)) else 0,
         "error": None,
         "count": 0,
     }
@@ -557,6 +575,7 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
         raw_local_only = data.get("localOnlyIssues", [])
 
         normalized_local: List[Dict[str, Any]] = []
+        branch_cache: Dict[str, str] = {}
 
         # Process knownFindings
         for item in raw_known:
@@ -579,12 +598,16 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
             effort_mins = 15
 
             repo_p = extract_repo_path(item.get("scope", ""))
+            if repo_p not in branch_cache:
+                branch_cache[repo_p] = get_git_branch(repo_p)
+            branch_name = branch_cache[repo_p]
+
             norm = {
                 "id": f"local-{item.get('id')}",
                 "key": item.get("serverKey") or f"local-{item.get('id')}",
                 "project": f"jpluger-{mod}" if not mod.startswith("jpluger-") else mod,
                 "projectName": f"Local IDE ({mod})",
-                "branch": "local-workspace",
+                "branch": branch_name,
                 "rule": rule_key,
                 "ruleName": rule_name,
                 "message": item.get("message", ""),
@@ -613,12 +636,16 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
             rule_key = item.get("ruleKey", "")
             rule_meta = rules_cache.get(rule_key, {})
             repo_p = extract_repo_path(item.get("scope", ""))
+            if repo_p not in branch_cache:
+                branch_cache[repo_p] = get_git_branch(repo_p)
+            branch_name = branch_cache[repo_p]
+
             norm = {
                 "id": f"local-only-{item.get('id')}",
                 "key": f"local-only-{item.get('id')}",
                 "project": f"jpluger-{item.get('module')}",
                 "projectName": f"Local Only ({item.get('module')})",
-                "branch": "local-workspace",
+                "branch": branch_name,
                 "rule": rule_key,
                 "ruleName": rule_meta.get("name", rule_key),
                 "message": item.get("message", ""),
@@ -653,6 +680,70 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
                 os.remove(tmp_out)
             except Exception:
                 pass
+
+
+def sync_local_findings_if_updated(data: Dict[str, Any]) -> Tuple[Dict[str, Any], bool]:
+    """Checks if IntelliJ SonarLint's H2 database was updated since data was saved.
+    If updated, dumps only the fresh local findings in ~1 second, updates data,
+    and returns (updated_data, True). Otherwise returns (data, False).
+    """
+    h2_db = discover_h2_database()
+    if not h2_db or not os.path.isfile(h2_db):
+        return data, False
+
+    db_mtime = os.path.getmtime(h2_db)
+    recorded_mtime = (data.get("localMeta") or {}).get("dbMtime", 0)
+
+    # If within 1 second, considered up-to-date
+    if db_mtime <= recorded_mtime:
+        return data, False
+
+    sys.stderr.write(f"[*] Newer SonarLint H2 database detected (modified {time.strftime('%H:%M:%S', time.localtime(db_mtime))}). Refreshing local findings...\n")
+    rules_cache = data.get("rulesCache") or load_rules_cache()
+    local_issues, local_meta = fetch_local_ide_findings(rules_cache)
+    local_meta["dbMtime"] = db_mtime
+
+    if not local_meta.get("available"):
+        return data, False
+
+    # Keep server issues, replace local issues
+    server_issues = [i for i in data.get("issues", []) if i.get("source") == "server"]
+    combined = server_issues + local_issues
+
+    quality_counts = {"SECURITY": 0, "RELIABILITY": 0, "MAINTAINABILITY": 0}
+    severity_counts = {"BLOCKER": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0, "INFO": 0}
+    status_counts = {"OPEN": 0, "CONFIRMED": 0, "ACCEPTED": 0, "FALSE_POSITIVE": 0}
+    total_effort_minutes = 0
+
+    for iss in combined:
+        sq = iss.get("softwareQuality", "MAINTAINABILITY")
+        quality_counts[sq] = quality_counts.get(sq, 0) + 1
+        sev = iss.get("impactSeverity", "INFO")
+        severity_counts[sev] = severity_counts.get(sev, 0) + 1
+        st = iss.get("status", "OPEN")
+        status_counts[st] = status_counts.get(st, 0) + 1
+        total_effort_minutes += iss.get("effortMinutes", 0)
+
+    data["issues"] = combined
+    data["totalIssues"] = len(combined)
+    data["localCount"] = len(local_issues)
+    data["serverCount"] = len(server_issues)
+    data["qualityCounts"] = quality_counts
+    data["severityCounts"] = severity_counts
+    data["statusCounts"] = status_counts
+    data["totalEffortMinutes"] = total_effort_minutes
+    data["totalEffortFormatted"] = format_effort_minutes(total_effort_minutes)
+    data["localMeta"] = local_meta
+    data["timestamp"] = time.strftime("%Y-%m-%d %H:%M:%S")
+
+    # Persist to data.json
+    try:
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+    except Exception as e:
+        sys.stderr.write(f"[WARN] Failed to write updated data.json: {e}\n")
+
+    return data, True
 
 
 def fetch_all(force: bool = False) -> Dict[str, Any]:

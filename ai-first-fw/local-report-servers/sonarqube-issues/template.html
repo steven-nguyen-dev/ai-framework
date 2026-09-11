@@ -203,33 +203,38 @@
       gap: 12px;
     }
 
-    /* Top Scope & Search Toolbar */
+    /* Top Scope Toolbar - Strict Fixed 3-Column Grid (Source, Repo, Module) */
     .filter-toolbar {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto minmax(260px, 1.2fr) minmax(220px, 1fr);
+      gap: 16px;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
-    }
-    .scope-group {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
     }
     .scope-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      min-width: 0;
     }
     .scope-item .filter-label {
-      width: auto;
-      min-width: auto;
+      width: 52px;
+      min-width: 52px;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
     }
     .scope-item select {
-      max-width: 250px;
+      width: 100%;
+      min-width: 0;
+      height: 34px;
+      font-size: 12px;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, opacity 0.15s ease;
     }
     .source-radio-group {
       display: inline-flex;
@@ -237,19 +242,22 @@
       background: var(--surface);
       border: 1px solid var(--border-hover);
       border-radius: 6px;
-      padding: 5px 12px;
-      gap: 14px;
+      padding: 5px 10px;
+      gap: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .source-radio-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 600;
       color: var(--muted);
       transition: color 0.15s ease;
       user-select: none;
+      white-space: nowrap;
     }
     .source-radio-label input[type="radio"] {
       cursor: pointer;
@@ -257,6 +265,7 @@
       width: 13px;
       height: 13px;
       accent-color: var(--accent);
+      flex-shrink: 0;
     }
     .source-radio-label:hover {
       color: var(--ink);
@@ -267,32 +276,40 @@
     .source-radio-count {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      padding: 1px 5px;
+      padding: 1px 6px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--muted);
+      white-space: nowrap;
+      min-width: 20px;
+      text-align: center;
     }
     .source-radio-label.active .source-radio-count {
       background: rgba(255, 255, 255, 0.14);
       color: var(--ink);
     }
 
-    .search-action-group {
+    /* Facets Section with Unified Label Column */
+    .filter-facets {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    /* Search & Reset Row inside Facets Group */
+    .search-filter-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex: 1;
-      justify-content: flex-end;
-      min-width: 280px;
+      gap: 12px;
     }
-    .search-box {
+    .search-filter-row .search-box {
       position: relative;
       display: flex;
       align-items: center;
       flex: 1;
-      max-width: 320px;
+      max-width: 460px;
     }
-    .search-box svg {
+    .search-filter-row .search-box svg {
       position: absolute;
       left: 10px;
       width: 14px;
@@ -304,10 +321,12 @@
       fill: none;
       pointer-events: none;
     }
-    .search-box input[type=search] {
+    .search-filter-row .search-box input[type=search] {
       width: 100%;
       padding-left: 32px;
       padding-right: 10px;
+      height: 32px;
+      font-size: 12px;
     }
     .btn-reset {
       font-size: 11px;
@@ -329,13 +348,6 @@
       color: var(--ink);
       border-color: var(--accent);
       background: var(--surface-2);
-    }
-
-    /* Facets Section with Unified Label Column */
-    .filter-facets {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
     }
     .filter-row {
       display: flex;
@@ -467,7 +479,11 @@
     }
 
     /* Fixed Table Layout with Rule & Message as biggest column */
+    #contentContainer {
+      min-height: 440px;
+    }
     .issue-table-wrap {
+      min-height: 440px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -775,7 +791,7 @@
     <a href="https://sonarqube.anchanto.com" target="_blank" rel="noopener noreferrer" class="btn" title="Open SonarQube Server">
       🌐 SonarQube Server
     </a>
-    <button class="btn" onclick="triggerRefresh()">🔄 Sync Fresh Data</button>
+    <button id="btnSyncData" class="btn" onclick="triggerRefresh(event)">🔄 Sync Fresh Data</button>
     <button class="btn" onclick="document.getElementById('exportFileInput').click()" title="Load an exported report file (.html or .json)">📂 Load Export</button>
     <input type="file" id="exportFileInput" accept=".html,.json" style="display:none" onchange="handleFileSelect(event)">
     <a href="/export" class="btn btn-primary" download="sonarqube-issues-report.html">📥 Export Report</a>
@@ -824,34 +840,42 @@
 
   <!-- Server Parity Filters Panel -->
   <div class="filter-panel">
-    <!-- Top Toolbar: Scope Selectors & Search/Reset -->
+    <!-- Top Toolbar: 3 Fixed Scope Selectors (Source, Repo, Module) -->
     <div class="filter-toolbar">
-      <div class="scope-group">
-        <div class="scope-item">
-          <span class="filter-label">Source</span>
-          <div class="source-radio-group" role="radiogroup" aria-label="Issue Source">
-            <label class="source-radio-label active" id="labelSourceServer" title="SonarQube Server issues">
-              <input type="radio" name="sourceRadio" id="sourceServer" value="server" checked onchange="setSource('server')">
-              <span>Server</span>
-              <span class="source-radio-count" id="countSourceServer">0</span>
-            </label>
-            <label class="source-radio-label" id="labelSourceLocal" title="Local IDE SonarLint issues">
-              <input type="radio" name="sourceRadio" id="sourceLocal" value="local" onchange="setSource('local')">
-              <span>Local IDE</span>
-              <span class="source-radio-count" id="countSourceLocal">0</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="scope-item">
-          <span class="filter-label" id="projectScopeLabel">Project</span>
-          <select id="projectSelect" onchange="onProjectChange()">
-            <option value="">All Server Projects (16)</option>
-          </select>
+      <div class="scope-item" id="scopeItemSource">
+        <span class="filter-label">Source</span>
+        <div class="source-radio-group" role="radiogroup" aria-label="Issue Source">
+          <label class="source-radio-label active" id="labelSourceServer" title="SonarQube Server issues">
+            <input type="radio" name="sourceRadio" id="sourceServer" value="server" checked onchange="setSource('server')">
+            <span>Server</span>
+            <span class="source-radio-count" id="countSourceServer">0</span>
+          </label>
+          <label class="source-radio-label" id="labelSourceLocal" title="Local SonarLint issues">
+            <input type="radio" name="sourceRadio" id="sourceLocal" value="local" onchange="setSource('local')">
+            <span>Local</span>
+            <span class="source-radio-count" id="countSourceLocal">0</span>
+          </label>
         </div>
       </div>
 
-      <div class="search-action-group">
+      <div class="scope-item" id="scopeItemRepo">
+        <span class="filter-label" id="repoScopeLabel">Repo</span>
+        <select id="repoSelect" onchange="onRepoChange()">
+        </select>
+      </div>
+
+      <div class="scope-item" id="scopeItemProject">
+        <span class="filter-label" id="projectScopeLabel">Module</span>
+        <select id="projectSelect" onchange="onProjectChange()">
+        </select>
+      </div>
+    </div>
+
+    <!-- Facet Rows: Search, Quality, Severity, Status, Group By -->
+    <div class="filter-facets">
+      <!-- Search & Reset row (same group with filter buttons) -->
+      <div class="filter-row search-filter-row">
+        <span class="filter-label">Search</span>
         <div class="search-box">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="search" id="textSearch" placeholder="Search file, message, or rule..." oninput="applyFilters()">
@@ -861,10 +885,6 @@
           Reset Filters
         </button>
       </div>
-    </div>
-
-    <!-- Facet Rows: Cleanly structured with aligned 76px label column -->
-    <div class="filter-facets">
       <!-- Quality Row -->
       <div class="filter-row">
         <span class="filter-label">Quality</span>
@@ -1111,9 +1131,9 @@ function normalizeDataset(raw) {
 let REPORT_DATA = normalizeDataset(__REPORT_DATA_JSON__);
 
 let activeFilters = {
-  project: '',
   source: 'server',
-  search: '',
+  repo: '',
+  project: '',
   qualities: ['SECURITY', 'RELIABILITY', 'MAINTAINABILITY'],
   severities: ['BLOCKER', 'HIGH', 'MEDIUM', 'LOW', 'INFO'],
   statuses: ['OPEN'],
@@ -1124,16 +1144,50 @@ let activeFilters = {
 
 let currentFilteredIssues = [];
 
+function getRepoDisplayName(repoPath) {
+  if (!repoPath) return 'Unknown Repo';
+  const parts = repoPath.replace(/\\/g, '/').split('/').filter(Boolean);
+  if (parts.length >= 2) {
+    return parts.slice(-2).join('/');
+  }
+  return parts[parts.length - 1] || repoPath;
+}
+
 function init() {
   const issues = REPORT_DATA.issues || [];
   const srvCount = REPORT_DATA.serverCount || issues.filter(i => i.source === 'server').length;
   const locCount = REPORT_DATA.localCount || issues.filter(i => i.source === 'local').length;
-  if (srvCount === 0 && locCount > 0) {
+  
+  let savedSource = null;
+  try { savedSource = sessionStorage.getItem('sq_active_source'); } catch (e) {}
+
+  if (savedSource === 'local' || savedSource === 'server') {
+    activeFilters.source = savedSource;
+  } else if (srvCount === 0 && locCount > 0) {
     activeFilters.source = 'local';
   } else {
     activeFilters.source = 'server';
   }
+
+  // Determine active repo for local findings (strictly separate, never combined)
+  const locIssues = issues.filter(i => i.source === 'local');
+  const repos = Array.from(new Set(locIssues.map(i => i.repoPath).filter(Boolean))).sort((a, b) => {
+    if (a.includes('jpluger-family')) return -1;
+    if (b.includes('jpluger-family')) return 1;
+    return a.localeCompare(b);
+  });
+  let savedRepo = null;
+  try { savedRepo = sessionStorage.getItem('sq_active_repo'); } catch (e) {}
+
+  if (savedRepo && repos.includes(savedRepo)) {
+    activeFilters.repo = savedRepo;
+  } else {
+    // Default strictly to active repo (jpluger-family if present)
+    activeFilters.repo = repos[0] || '';
+  }
+
   updateSourceRadioUI();
+  renderReposDropdown();
   renderProjectsDropdown();
   updateTopKpis();
   applyFilters();
@@ -1142,8 +1196,10 @@ function init() {
 function setSource(src) {
   if (activeFilters.source === src) return;
   activeFilters.source = src;
+  try { sessionStorage.setItem('sq_active_source', src); } catch (e) {}
   activeFilters.project = '';
   updateSourceRadioUI();
+  renderReposDropdown();
   renderProjectsDropdown();
   updateTopKpis();
   applyFilters();
@@ -1160,18 +1216,85 @@ function updateSourceRadioUI() {
   const lLocal = document.getElementById('labelSourceLocal');
   if (lServer) lServer.classList.toggle('active', isServer);
   if (lLocal) lLocal.classList.toggle('active', !isServer);
+}
 
-  const pLabel = document.getElementById('projectScopeLabel');
-  if (pLabel) pLabel.textContent = isServer ? 'Project' : 'Module';
+function renderReposDropdown() {
+  const repoSelect = document.getElementById('repoSelect');
+  const repoLabel = document.getElementById('repoScopeLabel');
+  if (!repoSelect) return;
+
+  if (activeFilters.source === 'server') {
+    if (repoLabel) repoLabel.textContent = 'Server';
+    repoSelect.disabled = true;
+    repoSelect.style.opacity = '0.65';
+    repoSelect.style.cursor = 'default';
+    repoSelect.innerHTML = `<option value="">sonarqube.anchanto.com (Remote)</option>`;
+    return;
+  }
+
+  // Local IDE
+  if (repoLabel) repoLabel.textContent = 'Repo';
+  repoSelect.disabled = false;
+  repoSelect.style.opacity = '1';
+  repoSelect.style.cursor = 'pointer';
+
+  const issues = REPORT_DATA.issues || [];
+  const locIssues = issues.filter(i => i.source === 'local');
+  const repoMap = {};
+  const repoBranches = {};
+  locIssues.forEach(i => {
+    const r = i.repoPath || 'Unknown';
+    repoMap[r] = (repoMap[r] || 0) + 1;
+    if (i.branch && i.branch !== 'local-workspace' && !repoBranches[r]) {
+      repoBranches[r] = i.branch;
+    }
+  });
+
+  const repoPaths = Object.keys(repoMap).sort((a, b) => {
+    if (a.includes('jpluger-family')) return -1;
+    if (b.includes('jpluger-family')) return 1;
+    return a.localeCompare(b);
+  });
+
+  if (!repoPaths.includes(activeFilters.repo)) {
+    activeFilters.repo = repoPaths[0] || '';
+    try { sessionStorage.setItem('sq_active_repo', activeFilters.repo); } catch(e) {}
+  }
+
+  repoSelect.innerHTML = '';
+  repoPaths.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r;
+    const bName = repoBranches[r] ? ` [${repoBranches[r]}]` : '';
+    opt.textContent = `${getRepoDisplayName(r)}${bName} (${repoMap[r].toLocaleString()} issues)`;
+    if (activeFilters.repo === r) opt.selected = true;
+    repoSelect.appendChild(opt);
+  });
+}
+
+function onRepoChange() {
+  const rval = document.getElementById('repoSelect').value;
+  activeFilters.repo = rval;
+  try { sessionStorage.setItem('sq_active_repo', rval); } catch (e) {}
+  activeFilters.project = '';
+  renderProjectsDropdown();
+  updateTopKpis();
+  applyFilters();
 }
 
 function renderProjectsDropdown() {
   const select = document.getElementById('projectSelect');
+  const pLabel = document.getElementById('projectScopeLabel');
   if (!select) return;
 
   const allIssues = REPORT_DATA.issues || [];
 
   if (activeFilters.source === 'server') {
+    if (pLabel) pLabel.textContent = 'Project';
+    select.disabled = false;
+    select.style.opacity = '1';
+    select.style.cursor = 'pointer';
+
     const srvIssues = allIssues.filter(i => i.source === 'server');
     const projects = REPORT_DATA.projects || [];
     select.innerHTML = `<option value="">All Server Projects (${projects.length})</option>`;
@@ -1185,7 +1308,15 @@ function renderProjectsDropdown() {
       select.appendChild(opt);
     });
   } else {
-    const locIssues = allIssues.filter(i => i.source === 'local');
+    if (pLabel) pLabel.textContent = 'Module';
+    select.disabled = false;
+    select.style.opacity = '1';
+    select.style.cursor = 'pointer';
+
+    let locIssues = allIssues.filter(i => i.source === 'local');
+    if (activeFilters.repo) {
+      locIssues = locIssues.filter(i => i.repoPath === activeFilters.repo);
+    }
     const modMap = {};
     locIssues.forEach(i => {
       const mod = i.project || i.module || 'Unknown';
@@ -1214,21 +1345,36 @@ function onProjectChange() {
 function updateTopKpis() {
   const allIssues = REPORT_DATA.issues || [];
   const srvCount = REPORT_DATA.serverCount || allIssues.filter(i => i.source === 'server').length;
-  const locCount = REPORT_DATA.localCount || allIssues.filter(i => i.source === 'local').length;
+
+  const isServer = activeFilters.source === 'server';
+  let sourceIssues = allIssues.filter(i => i.source === activeFilters.source);
+  if (!isServer && activeFilters.repo) {
+    sourceIssues = sourceIssues.filter(i => i.repoPath === activeFilters.repo);
+  }
 
   const rSrvEl = document.getElementById('countSourceServer');
   if (rSrvEl) rSrvEl.textContent = srvCount.toLocaleString();
   const rLocEl = document.getElementById('countSourceLocal');
-  if (rLocEl) rLocEl.textContent = locCount.toLocaleString();
-
-  const isServer = activeFilters.source === 'server';
-  const sourceIssues = allIssues.filter(i => i.source === activeFilters.source);
+  if (rLocEl) {
+    const activeRepoCount = (!isServer && activeFilters.repo)
+      ? sourceIssues.length
+      : allIssues.filter(i => i.source === 'local' && i.repoPath === activeFilters.repo).length;
+    rLocEl.textContent = (activeRepoCount || sourceIssues.length).toLocaleString();
+  }
 
   document.getElementById('kpiTotalIssues').textContent = sourceIssues.length.toLocaleString();
   const splitEl = document.getElementById('sourceSplitBadge');
   if (splitEl) {
-    splitEl.textContent = isServer ? 'Server Findings' : 'Local IDE Findings';
-    splitEl.className = `badge-tag ${isServer ? 'server' : 'local'}`;
+    if (isServer) {
+      splitEl.textContent = 'Server Findings';
+      splitEl.className = 'badge-tag server';
+    } else {
+      const bName = sourceIssues[0]?.branch && sourceIssues[0].branch !== 'local-workspace'
+        ? ` • ${sourceIssues[0].branch}`
+        : '';
+      splitEl.textContent = `${getRepoDisplayName(activeFilters.repo)}${bName}`;
+      splitEl.className = 'badge-tag local';
+    }
   }
 
   const sec = sourceIssues.filter(i => i.softwareQuality === 'SECURITY').length;
@@ -1315,6 +1461,7 @@ function applyFilters() {
 
   currentFilteredIssues = allIssues.filter(iss => {
     if (iss.source !== activeFilters.source) return false;
+    if (activeFilters.source === 'local' && activeFilters.repo && iss.repoPath !== activeFilters.repo) return false;
     if (activeFilters.project && iss.project !== activeFilters.project) return false;
     if (!activeFilters.qualities.includes(iss.softwareQuality)) return false;
     if (!activeFilters.severities.includes(iss.impactSeverity)) return false;
@@ -1339,6 +1486,7 @@ function applyFilters() {
 function updateFilterFacetCounts(allIssues) {
   const subset = allIssues.filter(iss => {
     if (iss.source !== activeFilters.source) return false;
+    if (activeFilters.source === 'local' && activeFilters.repo && iss.repoPath !== activeFilters.repo) return false;
     if (activeFilters.project && iss.project !== activeFilters.project) return false;
     return true;
   });
@@ -1660,21 +1808,27 @@ function closeModalOnBackdrop(e) {
   }
 }
 
-function triggerRefresh() {
-  const btn = event.target;
-  btn.textContent = '⏳ Syncing...';
-  btn.disabled = true;
+function triggerRefresh(e) {
+  const btn = (e && e.target) ? e.target : document.getElementById('btnSyncData');
+  if (btn) {
+    btn.textContent = '⏳ Syncing...';
+    btn.disabled = true;
+  }
 
   fetch('/api/refresh', { method: 'POST' })
     .then(res => res.json())
     .then(data => {
-      alert(`Sync Complete! Loaded ${data.totalIssues} issues (${data.serverCount} server, ${data.localCount} local). Reloading page...`);
-      window.location.reload();
+      showToast(`✔ Sync complete: ${data.totalIssues.toLocaleString()} total issues (${data.serverCount.toLocaleString()} server, ${data.localCount.toLocaleString()} local). Reloading...`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 700);
     })
     .catch(err => {
-      alert(`Sync failed: ${err.message}`);
-      btn.textContent = '🔄 Sync Fresh Data';
-      btn.disabled = false;
+      showToast(`❌ Sync failed: ${err.message}`);
+      if (btn) {
+        btn.textContent = '🔄 Sync Fresh Data';
+        btn.disabled = false;
+      }
     });
 }
 
