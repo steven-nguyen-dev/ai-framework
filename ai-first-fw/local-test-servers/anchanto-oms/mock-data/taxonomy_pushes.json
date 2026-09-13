@@ -491,5 +491,12 @@
     "kind": "bulk_category_attributes",
     "category_code": "TOYS_AND_GAMES",
     "marketplace_code": "amazon_sp_us"
+  },
+  {
+    "kind": "bulk_categories",
+    "code": "PING",
+    "name": null,
+    "children": null,
+    "store_code": "PING"
   }
 ]

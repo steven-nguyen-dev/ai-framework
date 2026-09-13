@@ -598,6 +598,13 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
             effort_mins = 15
 
             repo_p = extract_repo_path(item.get("scope", ""))
+            # Skip stale findings for files that no longer exist on disk
+            if repo_p and os.path.isdir(repo_p):
+                f1 = os.path.join(repo_p, mod, file_p)
+                f2 = os.path.join(repo_p, file_p)
+                if not os.path.isfile(f1) and not os.path.isfile(f2):
+                    continue
+
             if repo_p not in branch_cache:
                 branch_cache[repo_p] = get_git_branch(repo_p)
             branch_name = branch_cache[repo_p]
@@ -636,6 +643,14 @@ def fetch_local_ide_findings(rules_cache: Dict[str, Any]) -> Tuple[List[Dict[str
             rule_key = item.get("ruleKey", "")
             rule_meta = rules_cache.get(rule_key, {})
             repo_p = extract_repo_path(item.get("scope", ""))
+            mod = item.get("module", "general")
+            file_p = item.get("file", "")
+            if repo_p and os.path.isdir(repo_p):
+                f1 = os.path.join(repo_p, mod, file_p)
+                f2 = os.path.join(repo_p, file_p)
+                if not os.path.isfile(f1) and not os.path.isfile(f2):
+                    continue
+
             if repo_p not in branch_cache:
                 branch_cache[repo_p] = get_git_branch(repo_p)
             branch_name = branch_cache[repo_p]

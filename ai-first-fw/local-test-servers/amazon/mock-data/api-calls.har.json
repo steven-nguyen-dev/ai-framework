@@ -7,945 +7,6 @@
     },
     "entries": [
       {
-        "startedDateTime": "2026-09-08T00:53:55.189Z",
-        "time": 1.168,
-        "_seq": 467,
-        "_rule": "browse tree requested -- reportId carries reportOptions.MarketplaceId",
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/reports/2021-06-30/reports' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A39IBJ37TRP1C6\"], \"reportOptions\": {\"MarketplaceId\": \"A39IBJ37TRP1C6\"}}'",
-        "request": {
-          "method": "POST",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Content-Length",
-              "value": "134"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {
-            "mimeType": "application/json",
-            "text": "{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A39IBJ37TRP1C6\"], \"reportOptions\": {\"MarketplaceId\": \"A39IBJ37TRP1C6\"}}",
-            "_json": {
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "marketplaceIds": [
-                "A39IBJ37TRP1C6"
-              ],
-              "reportOptions": {
-                "MarketplaceId": "A39IBJ37TRP1C6"
-              }
-            }
-          },
-          "headersSize": -1,
-          "bodySize": 134
-        },
-        "response": {
-          "status": 202,
-          "statusText": "Accepted",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 45,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A39IBJ37TRP1C6\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A39IBJ37TRP1C6"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 45
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 1.168,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:55.343Z",
-        "time": 0.082,
-        "_seq": 468,
-        "_rule": "browse tree report -- DONE",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A39IBJ37TRP1C6' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A39IBJ37TRP1C6",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 307,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A39IBJ37TRP1C6\", \"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStartTime\": \"2026-08-26T00:01:00Z\", \"processingEndTime\": \"2026-08-26T00:02:00Z\", \"processingStatus\": \"DONE\", \"reportDocumentId\": \"rep-doc-rep-browsetree-A39IBJ37TRP1C6\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A39IBJ37TRP1C6",
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "createdTime": "2026-08-26T00:00:00Z",
-              "processingStartTime": "2026-08-26T00:01:00Z",
-              "processingEndTime": "2026-08-26T00:02:00Z",
-              "processingStatus": "DONE",
-              "reportDocumentId": "rep-doc-rep-browsetree-A39IBJ37TRP1C6"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 307
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.082,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:55.495Z",
-        "time": 0.079,
-        "_seq": 469,
-        "_rule": "no marker -- 200 report document download URL",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A39IBJ37TRP1C6' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A39IBJ37TRP1C6",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 151,
-            "mimeType": "application/json",
-            "text": "{\"reportDocumentId\": \"rep-doc-rep-browsetree-A39IBJ37TRP1C6\", \"url\": \"http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A39IBJ37TRP1C6\"}",
-            "_json": {
-              "reportDocumentId": "rep-doc-rep-browsetree-A39IBJ37TRP1C6",
-              "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A39IBJ37TRP1C6"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 151
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.079,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:55.648Z",
-        "time": 0.109,
-        "_seq": 470,
-        "_rule": "browse tree -- Australia (SYNTHETIC)",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A39IBJ37TRP1C6' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A39IBJ37TRP1C6",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 1377,
-            "mimeType": "application/json",
-            "text": "<?xml version=\"1.0\"?>\n<Result>\n  <query>4851720051</query>\n\n  <!-- SYNTHETIC. The nodes below this comment are not an Amazon capture. They are\n       written for IA-5105 so the browse-node transform in the plan's section 4.3 has\n       leaves to act on: hasChildren=false, a stated productTypeDefinitions, and a\n       browseNodeAttributes/recommended_browse_nodes value that differs from\n       browseNodeId on the first one, so the plan's value precedence is observable.\n       No capture in this repository states a German, Spanish or Australian browse\n       node; these ids are invented and must not be cited as observed. -->\n  <Node>\n    <browseNodeId>4851724051</browseNodeId>\n    <browseNodeAttributes count=\"2\">\n      <attribute name=\"item_type_keyword\">auto_part</attribute>\n      <attribute name=\"recommended_browse_nodes\">4851724051</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Replacement Parts</browseNodeName>\n    <browseNodeStoreContextName>Replacement Parts</browseNodeStoreContextName>\n    <browsePathById>4851720051,4851723051,4851724051</browsePathById>\n    <browsePathByName>Automotive,Replacement Parts</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>AUTO_PART</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
-            "_json": null
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 1377
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.109,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:55.799Z",
-        "time": 1.247,
-        "_seq": 471,
-        "_rule": "browse tree requested -- reportId carries reportOptions.MarketplaceId",
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/reports/2021-06-30/reports' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A1F83G8C2ARO7P\"], \"reportOptions\": {\"MarketplaceId\": \"A1F83G8C2ARO7P\"}}'",
-        "request": {
-          "method": "POST",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Content-Length",
-              "value": "134"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {
-            "mimeType": "application/json",
-            "text": "{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A1F83G8C2ARO7P\"], \"reportOptions\": {\"MarketplaceId\": \"A1F83G8C2ARO7P\"}}",
-            "_json": {
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "marketplaceIds": [
-                "A1F83G8C2ARO7P"
-              ],
-              "reportOptions": {
-                "MarketplaceId": "A1F83G8C2ARO7P"
-              }
-            }
-          },
-          "headersSize": -1,
-          "bodySize": 134
-        },
-        "response": {
-          "status": 202,
-          "statusText": "Accepted",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 45,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A1F83G8C2ARO7P\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A1F83G8C2ARO7P"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 45
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 1.247,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:55.951Z",
-        "time": 0.079,
-        "_seq": 472,
-        "_rule": "browse tree report -- DONE",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A1F83G8C2ARO7P' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A1F83G8C2ARO7P",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 307,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A1F83G8C2ARO7P\", \"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStartTime\": \"2026-08-26T00:01:00Z\", \"processingEndTime\": \"2026-08-26T00:02:00Z\", \"processingStatus\": \"DONE\", \"reportDocumentId\": \"rep-doc-rep-browsetree-A1F83G8C2ARO7P\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A1F83G8C2ARO7P",
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "createdTime": "2026-08-26T00:00:00Z",
-              "processingStartTime": "2026-08-26T00:01:00Z",
-              "processingEndTime": "2026-08-26T00:02:00Z",
-              "processingStatus": "DONE",
-              "reportDocumentId": "rep-doc-rep-browsetree-A1F83G8C2ARO7P"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 307
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.079,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.105Z",
-        "time": 0.078,
-        "_seq": 473,
-        "_rule": "no marker -- 200 report document download URL",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A1F83G8C2ARO7P' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A1F83G8C2ARO7P",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 151,
-            "mimeType": "application/json",
-            "text": "{\"reportDocumentId\": \"rep-doc-rep-browsetree-A1F83G8C2ARO7P\", \"url\": \"http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1F83G8C2ARO7P\"}",
-            "_json": {
-              "reportDocumentId": "rep-doc-rep-browsetree-A1F83G8C2ARO7P",
-              "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1F83G8C2ARO7P"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 151
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.078,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.257Z",
-        "time": 0.078,
-        "_seq": 474,
-        "_rule": "browse tree -- US / seller default store",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1F83G8C2ARO7P' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1F83G8C2ARO7P",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "text/xml; charset=UTF-8"
-            }
-          ],
-          "content": {
-            "size": 2852,
-            "mimeType": "text/xml; charset=UTF-8",
-            "text": "<?xml version=\"1.0\"?>\n<Result>\n  <query>2619525011</query>\n  <Node>\n    <browseNodeId>000000001</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">blue-product</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Items: Blue</browseNodeName>\n    <browseNodeStoreContextName>Powersports Condensers</browseNodeStoreContextName>\n    <browsePathById>10000001,10000002,10000003,10000004,10000005,10000006</browsePathById>\n    <browsePathByName>Items, Blue &amp; Aqua,Royal,Teal,Azure</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>BLUE_PRODUCT_ITEM</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172282</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Electronics</browseNodeName>\n    <browseNodeStoreContextName>Electronics</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282</browsePathById>\n    <browsePathByName>Electronics</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>281052</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>281052</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Audio &amp; Video</browseNodeName>\n    <browseNodeStoreContextName>Audio &amp; Video</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>172541</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172541</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">headphones</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Headphones, Earbuds &amp; Accessories</browseNodeName>\n    <browseNodeStoreContextName>Headphones &amp; Earbuds</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052,172541</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video,Headphones, Earbuds &amp; Accessories</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>HEADPHONES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
-            "_json": null
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 2852
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.078,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.418Z",
-        "time": 0.709,
-        "_seq": 475,
-        "_rule": "browse tree requested -- reportId carries reportOptions.MarketplaceId",
-        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/reports/2021-06-30/reports' -H 'Content-Type: application/json' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***' --data-raw '{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A1VC38T7YXB528\"], \"reportOptions\": {\"MarketplaceId\": \"A1VC38T7YXB528\"}}'",
-        "request": {
-          "method": "POST",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Content-Length",
-              "value": "134"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {
-            "mimeType": "application/json",
-            "text": "{\"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"marketplaceIds\": [\"A1VC38T7YXB528\"], \"reportOptions\": {\"MarketplaceId\": \"A1VC38T7YXB528\"}}",
-            "_json": {
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "marketplaceIds": [
-                "A1VC38T7YXB528"
-              ],
-              "reportOptions": {
-                "MarketplaceId": "A1VC38T7YXB528"
-              }
-            }
-          },
-          "headersSize": -1,
-          "bodySize": 134
-        },
-        "response": {
-          "status": 202,
-          "statusText": "Accepted",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 45,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A1VC38T7YXB528\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A1VC38T7YXB528"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 45
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.709,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.570Z",
-        "time": 0.081,
-        "_seq": 476,
-        "_rule": "browse tree report -- DONE",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A1VC38T7YXB528' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/reports/rep-browsetree-A1VC38T7YXB528",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 307,
-            "mimeType": "application/json",
-            "text": "{\"reportId\": \"rep-browsetree-A1VC38T7YXB528\", \"reportType\": \"GET_XML_BROWSE_TREE_DATA\", \"createdTime\": \"2026-08-26T00:00:00Z\", \"processingStartTime\": \"2026-08-26T00:01:00Z\", \"processingEndTime\": \"2026-08-26T00:02:00Z\", \"processingStatus\": \"DONE\", \"reportDocumentId\": \"rep-doc-rep-browsetree-A1VC38T7YXB528\"}",
-            "_json": {
-              "reportId": "rep-browsetree-A1VC38T7YXB528",
-              "reportType": "GET_XML_BROWSE_TREE_DATA",
-              "createdTime": "2026-08-26T00:00:00Z",
-              "processingStartTime": "2026-08-26T00:01:00Z",
-              "processingEndTime": "2026-08-26T00:02:00Z",
-              "processingStatus": "DONE",
-              "reportDocumentId": "rep-doc-rep-browsetree-A1VC38T7YXB528"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 307
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.081,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.752Z",
-        "time": 0.085,
-        "_seq": 477,
-        "_rule": "no marker -- 200 report document download URL",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A1VC38T7YXB528' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/reports/2021-06-30/documents/rep-doc-rep-browsetree-A1VC38T7YXB528",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "content": {
-            "size": 151,
-            "mimeType": "application/json",
-            "text": "{\"reportDocumentId\": \"rep-doc-rep-browsetree-A1VC38T7YXB528\", \"url\": \"http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1VC38T7YXB528\"}",
-            "_json": {
-              "reportDocumentId": "rep-doc-rep-browsetree-A1VC38T7YXB528",
-              "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1VC38T7YXB528"
-            }
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 151
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.085,
-          "receive": 0
-        }
-      },
-      {
-        "startedDateTime": "2026-09-08T00:53:56.962Z",
-        "time": 0.068,
-        "_seq": 478,
-        "_rule": "browse tree -- US / seller default store",
-        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1VC38T7YXB528' -H 'X-Amz-Access-Token: ***redacted***' -H 'Authorization: ***redacted***'",
-        "request": {
-          "method": "GET",
-          "url": "http://127.0.0.1:23103/s3/report-download/rep-doc-rep-browsetree-A1VC38T7YXB528",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Accept-Encoding",
-              "value": "identity"
-            },
-            {
-              "name": "Host",
-              "value": "127.0.0.1:23103"
-            },
-            {
-              "name": "User-Agent",
-              "value": "Python-urllib/3.14"
-            },
-            {
-              "name": "X-Amz-Access-Token",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Authorization",
-              "value": "***redacted***"
-            },
-            {
-              "name": "Connection",
-              "value": "close"
-            }
-          ],
-          "queryString": [],
-          "postData": {},
-          "headersSize": -1,
-          "bodySize": 0
-        },
-        "response": {
-          "status": 200,
-          "statusText": "OK",
-          "httpVersion": "HTTP/1.1",
-          "cookies": [],
-          "headers": [
-            {
-              "name": "Content-Type",
-              "value": "text/xml; charset=UTF-8"
-            }
-          ],
-          "content": {
-            "size": 2852,
-            "mimeType": "text/xml; charset=UTF-8",
-            "text": "<?xml version=\"1.0\"?>\n<Result>\n  <query>2619525011</query>\n  <Node>\n    <browseNodeId>000000001</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">blue-product</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Items: Blue</browseNodeName>\n    <browseNodeStoreContextName>Powersports Condensers</browseNodeStoreContextName>\n    <browsePathById>10000001,10000002,10000003,10000004,10000005,10000006</browsePathById>\n    <browsePathByName>Items, Blue &amp; Aqua,Royal,Teal,Azure</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>BLUE_PRODUCT_ITEM</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172282</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Electronics</browseNodeName>\n    <browseNodeStoreContextName>Electronics</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282</browsePathById>\n    <browsePathByName>Electronics</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>281052</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>281052</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">electronics</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Audio &amp; Video</browseNodeName>\n    <browseNodeStoreContextName>Audio &amp; Video</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video</browsePathByName>\n    <hasChildren>true</hasChildren>\n    <childNodes count=\"1\">\n      <id>172541</id>\n    </childNodes>\n    <productTypeDefinitions>ELECTRONICS</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n  <Node>\n    <browseNodeId>172541</browseNodeId>\n    <browseNodeAttributes count=\"1\">\n      <attribute name=\"item_type_keyword\">headphones</attribute>\n    </browseNodeAttributes>\n    <browseNodeName>Headphones, Earbuds &amp; Accessories</browseNodeName>\n    <browseNodeStoreContextName>Headphones &amp; Earbuds</browseNodeStoreContextName>\n    <browsePathById>2619525011,172282,281052,172541</browsePathById>\n    <browsePathByName>Electronics,Audio &amp; Video,Headphones, Earbuds &amp; Accessories</browsePathByName>\n    <hasChildren>false</hasChildren>\n    <childNodes count=\"0\" />\n    <productTypeDefinitions>HEADPHONES</productTypeDefinitions>\n    <refinementsInformation count=\"0\">\n    </refinementsInformation>\n  </Node>\n</Result>\n",
-            "_json": null
-          },
-          "redirectURL": "",
-          "headersSize": -1,
-          "bodySize": 2852
-        },
-        "cache": {},
-        "timings": {
-          "send": 0,
-          "wait": 0.068,
-          "receive": 0
-        }
-      },
-      {
         "startedDateTime": "2026-09-08T00:53:57.169Z",
         "time": 0.127,
         "_seq": 479,
@@ -197388,6 +196449,2224 @@
         "timings": {
           "send": 0,
           "wait": 0.076,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T12:07:47.108Z",
+        "time": 2.201,
+        "_seq": 501,
+        "_rule": "token issued -- 200 LWA bearer token",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/auth/o2/token' -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'grant_type=refresh_token&refresh_token=x'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/auth/o2/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "curl/8.7.1"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "name": "Content-Length",
+              "value": "40"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/x-www-form-urlencoded",
+            "text": "grant_type=refresh_token&refresh_token=x",
+            "_json": null
+          },
+          "headersSize": -1,
+          "bodySize": 40
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 164,
+            "mimeType": "application/json",
+            "text": "{\"access_token\": \"Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"rws_mock_refresh_token_12345\"}",
+            "_json": {
+              "access_token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890",
+              "token_type": "bearer",
+              "expires_in": 3600,
+              "refresh_token": "rws_mock_refresh_token_12345"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 164
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.201,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T12:07:47.264Z",
+        "time": 0.085,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- search on US (North America) (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "User-Agent",
+              "value": "curl/8.7.1"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 416,
+            "mimeType": "application/json",
+            "text": "{\"productTypes\": [{\"name\": \"LUGGAGE\", \"displayName\": \"Luggage\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"CLOTHING\", \"displayName\": \"Clothing\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"ELECTRONICS\", \"displayName\": \"Electronics\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"TOYS_AND_GAMES\", \"displayName\": \"Toys and Games\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}], \"productTypeVersion\": \"1akswa0RJ+ef\"}",
+            "_json": {
+              "productTypes": [
+                {
+                  "name": "LUGGAGE",
+                  "displayName": "Luggage",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "CLOTHING",
+                  "displayName": "Clothing",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "ELECTRONICS",
+                  "displayName": "Electronics",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "TOYS_AND_GAMES",
+                  "displayName": "Toys and Games",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                }
+              ],
+              "productTypeVersion": "1akswa0RJ+ef"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 416
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.085,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:11.101Z",
+        "time": 11.146,
+        "_seq": 501,
+        "_rule": "token issued -- 200 LWA bearer token",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23103/auth/o2/token' -H 'Content-Type: application/json; charset=utf-8' --data-raw '{\"grant_type\":\"refresh_token\",\"refresh_token\":\"Atzr|MOCK-REFRESH\",\"client_id\":\"amzn1.application-oa2-client.test12345\",\"client_secret\":\"amzn_secret_key_67890\",\"scope\":\"\"}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23103/auth/o2/token",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "name": "Content-Length",
+              "value": "252"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "User-Agent",
+              "value": "okhttp/3.14.9"
+            }
+          ],
+          "queryString": [],
+          "postData": {
+            "mimeType": "application/json; charset=utf-8",
+            "text": "{\"grant_type\":\"refresh_token\",\"refresh_token\":\"Atzr|MOCK-REFRESH\",\"client_id\":\"amzn1.application-oa2-client.test12345\",\"client_secret\":\"amzn_secret_key_67890\",\"scope\":\"\"}",
+            "_json": {
+              "grant_type": "refresh_token",
+              "refresh_token": "Atzr|MOCK-REFRESH",
+              "client_id": "amzn1.application-oa2-client.test12345",
+              "client_secret": "amzn_secret_key_67890",
+              "scope": ""
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 252
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 164,
+            "mimeType": "application/json",
+            "text": "{\"access_token\": \"Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"refresh_token\": \"rws_mock_refresh_token_12345\"}",
+            "_json": {
+              "access_token": "Atza|IQEBLjAsAhQmock_sp_api_access_token_1234567890",
+              "token_type": "bearer",
+              "expires_in": 3600,
+              "refresh_token": "rws_mock_refresh_token_12345"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 164
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 11.146,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:11.282Z",
+        "time": 2.568,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- search on US (North America) (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'x-amz-access-token: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "amazon-selling-partner-api-sdk/1.9.0/Java"
+            },
+            {
+              "name": "x-amz-access-token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 416,
+            "mimeType": "application/json",
+            "text": "{\"productTypes\": [{\"name\": \"LUGGAGE\", \"displayName\": \"Luggage\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"CLOTHING\", \"displayName\": \"Clothing\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"ELECTRONICS\", \"displayName\": \"Electronics\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}, {\"name\": \"TOYS_AND_GAMES\", \"displayName\": \"Toys and Games\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"]}], \"productTypeVersion\": \"1akswa0RJ+ef\"}",
+            "_json": {
+              "productTypes": [
+                {
+                  "name": "LUGGAGE",
+                  "displayName": "Luggage",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "CLOTHING",
+                  "displayName": "Clothing",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "ELECTRONICS",
+                  "displayName": "Electronics",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                },
+                {
+                  "name": "TOYS_AND_GAMES",
+                  "displayName": "Toys and Games",
+                  "marketplaceIds": [
+                    "ATVPDKIKX0DER"
+                  ]
+                }
+              ],
+              "productTypeVersion": "1akswa0RJ+ef"
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 416
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.568,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:11.433Z",
+        "time": 0.884,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) CLOTHING (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes/CLOTHING?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'x-amz-access-token: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes/CLOTHING?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "amazon-selling-partner-api-sdk/1.9.0/Java"
+            },
+            {
+              "name": "x-amz-access-token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "requirements",
+              "value": "LISTING_PRODUCT_ONLY"
+            },
+            {
+              "name": "requirementsEnforced",
+              "value": "ENFORCED"
+            },
+            {
+              "name": "locale",
+              "value": "en_US"
+            },
+            {
+              "name": "parentageLevel",
+              "value": "NONE"
+            },
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 848,
+            "mimeType": "application/json",
+            "text": "{\"metaSchema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/_meta\", \"verb\": \"GET\"}, \"checksum\": \"\"}, \"schema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/CLOTHING?marketplaceId=ATVPDKIKX0DER\", \"verb\": \"GET\"}, \"checksum\": \"bce0a86289059681d6d202b69c7f3240\"}, \"requirements\": \"LISTING_PRODUCT_ONLY\", \"requirementsEnforced\": \"ENFORCED\", \"propertyGroups\": {\"product_identity\": {\"title\": \"Product Identity\", \"description\": \"Information to uniquely identify your product\", \"propertyNames\": [\"item_name\", \"brand\", \"feed_product_type\", \"size\", \"color\", \"target_gender\", \"age_range_description\", \"outer_material_type\"]}}, \"locale\": \"en_US\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"productType\": \"CLOTHING\", \"displayName\": \"Clothing\", \"productTypeVersion\": {\"version\": \"g5FBr6qwQ0l9\", \"latest\": true, \"releaseCandidate\": false}}",
+            "_json": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/CLOTHING?marketplaceId=ATVPDKIKX0DER",
+                  "verb": "GET"
+                },
+                "checksum": "bce0a86289059681d6d202b69c7f3240"
+              },
+              "requirements": "LISTING_PRODUCT_ONLY",
+              "requirementsEnforced": "ENFORCED",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name",
+                    "brand",
+                    "feed_product_type",
+                    "size",
+                    "color",
+                    "target_gender",
+                    "age_range_description",
+                    "outer_material_type"
+                  ]
+                }
+              },
+              "locale": "en_US",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ],
+              "productType": "CLOTHING",
+              "displayName": "Clothing",
+              "productTypeVersion": {
+                "version": "g5FBr6qwQ0l9",
+                "latest": true,
+                "releaseCandidate": false
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 848
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.884,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:11.585Z",
+        "time": 0.908,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) CLOTHING schema",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/ptd-schema/CLOTHING?marketplaceId=ATVPDKIKX0DER'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/s3/ptd-schema/CLOTHING?marketplaceId=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "User-Agent",
+              "value": "okhttp/2.7.5"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceId",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 5253,
+            "mimeType": "application/json",
+            "text": "{\"x-fixture-provenance\": \"SYNTHETIC. Not a capture, and no requirement document names it.\", \"$schema\": \"https://json-schema.org/draft/2019-09/schema\", \"$id\": \"https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/CLOTHING\", \"title\": \"Clothing\", \"description\": \"Amazon Selling Partner API Product Type Definition for CLOTHING (US Marketplace)\", \"type\": \"object\", \"required\": [\"item_name\", \"brand\", \"feed_product_type\", \"size\", \"color\", \"target_gender\", \"age_range_description\", \"outer_material_type\"], \"properties\": {\"item_name\": {\"title\": \"Item Name\", \"description\": \"The title or name of the clothing item as displayed on Amazon product detail page.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Item Name\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 200, \"pattern\": \"^[^\\\\n\\\\r]+$\"}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"brand\": {\"title\": \"Brand\", \"description\": \"The brand, trademark, or manufacturer of the clothing item.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Brand\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 100}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"feed_product_type\": {\"title\": \"Feed Product Type\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Feed Product Type\", \"type\": \"string\", \"enum\": [\"shirt\", \"pants\", \"dress\", \"outerwear\", \"sweater\", \"shorts\", \"skirt\", \"underwear\"], \"enumNames\": [\"Shirt\", \"Pants\", \"Dress\", \"Outerwear\", \"Sweater\", \"Shorts\", \"Skirt\", \"Underwear\"]}}}}, \"size\": {\"title\": \"Size\", \"description\": \"Standardized apparel size.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Size\", \"type\": \"string\", \"enum\": [\"XS\", \"S\", \"M\", \"L\", \"XL\", \"2XL\", \"3XL\"], \"enumNames\": [\"Extra Small\", \"Small\", \"Medium\", \"Large\", \"Extra Large\", \"2X-Large\", \"3X-Large\"]}}}}, \"color\": {\"title\": \"Color\", \"description\": \"The primary color of the apparel.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Color\", \"type\": \"string\", \"enum\": [\"black\", \"white\", \"navy\", \"heather_grey\", \"red\", \"olive_green\", \"burgundy\"], \"enumNames\": [\"Black\", \"White\", \"Navy Blue\", \"Heather Grey\", \"Red\", \"Olive Green\", \"Burgundy\"]}}}}, \"target_gender\": {\"title\": \"Target Gender\", \"description\": \"Intended gender for the clothing item.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Target Gender\", \"type\": \"string\", \"enum\": [\"male\", \"female\", \"unisex\"], \"enumNames\": [\"Male\", \"Female\", \"Unisex\"]}}}}, \"age_range_description\": {\"title\": \"Age Range Description\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Age Range Description\", \"type\": \"string\", \"enum\": [\"adult\", \"teen\", \"kids\", \"toddler\", \"infant\"], \"enumNames\": [\"Adult\", \"Teen\", \"Kids\", \"Toddler\", \"Infant\"]}}}}, \"outer_material_type\": {\"title\": \"Outer Material Type\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Outer Material Type\", \"type\": \"string\", \"enum\": [\"cotton\", \"polyester\", \"wool\", \"linen\", \"silk\", \"spandex\", \"denim\"], \"enumNames\": [\"100% Cotton\", \"Polyester\", \"Wool\", \"Linen\", \"Silk\", \"Spandex Blend\", \"Denim\"]}}}}, \"bullet_point\": {\"title\": \"Bullet Point\", \"description\": \"Key product features (up to 5 bullet points).\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 5, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Bullet Point\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 500}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}}}}, \"care_instructions\": {\"title\": \"Care Instructions\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Care Instructions\", \"type\": \"string\", \"enum\": [\"machine_wash\", \"hand_wash_only\", \"dry_clean_only\", \"machine_wash_cold\"], \"enumNames\": [\"Machine Wash Warm\", \"Hand Wash Only\", \"Dry Clean Only\", \"Machine Wash Cold Gentle\"]}}}}, \"closure_type\": {\"title\": \"Closure Type\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Closure Type\", \"type\": \"string\", \"enum\": [\"button\", \"zipper\", \"pull_on\", \"drawstring\", \"hook_and_eye\", \"snap\"], \"enumNames\": [\"Button\", \"Zipper\", \"Pull On\", \"Drawstring\", \"Hook and Eye\", \"Snap\"]}}}}, \"warranty_description\": {\"title\": \"Warranty Description\", \"editable\": false, \"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Warranty Description\", \"type\": \"string\", \"maxLength\": 500}}}}}, \"$defs\": {\"language_tag\": {\"type\": \"string\", \"title\": \"Language Tag\", \"default\": \"en_US\"}, \"marketplace_id\": {\"type\": \"string\", \"title\": \"Marketplace ID\", \"default\": \"ATVPDKIKX0DER\"}}}",
+            "_json": {
+              "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+              "$schema": "https://json-schema.org/draft/2019-09/schema",
+              "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/CLOTHING",
+              "title": "Clothing",
+              "description": "Amazon Selling Partner API Product Type Definition for CLOTHING (US Marketplace)",
+              "type": "object",
+              "required": [
+                "item_name",
+                "brand",
+                "feed_product_type",
+                "size",
+                "color",
+                "target_gender",
+                "age_range_description",
+                "outer_material_type"
+              ],
+              "properties": {
+                "item_name": {
+                  "title": "Item Name",
+                  "description": "The title or name of the clothing item as displayed on Amazon product detail page.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Item Name",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "pattern": "^[^\\n\\r]+$"
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "brand": {
+                  "title": "Brand",
+                  "description": "The brand, trademark, or manufacturer of the clothing item.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Brand",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "feed_product_type": {
+                  "title": "Feed Product Type",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Feed Product Type",
+                        "type": "string",
+                        "enum": [
+                          "shirt",
+                          "pants",
+                          "dress",
+                          "outerwear",
+                          "sweater",
+                          "shorts",
+                          "skirt",
+                          "underwear"
+                        ],
+                        "enumNames": [
+                          "Shirt",
+                          "Pants",
+                          "Dress",
+                          "Outerwear",
+                          "Sweater",
+                          "Shorts",
+                          "Skirt",
+                          "Underwear"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "size": {
+                  "title": "Size",
+                  "description": "Standardized apparel size.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Size",
+                        "type": "string",
+                        "enum": [
+                          "XS",
+                          "S",
+                          "M",
+                          "L",
+                          "XL",
+                          "2XL",
+                          "3XL"
+                        ],
+                        "enumNames": [
+                          "Extra Small",
+                          "Small",
+                          "Medium",
+                          "Large",
+                          "Extra Large",
+                          "2X-Large",
+                          "3X-Large"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "color": {
+                  "title": "Color",
+                  "description": "The primary color of the apparel.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Color",
+                        "type": "string",
+                        "enum": [
+                          "black",
+                          "white",
+                          "navy",
+                          "heather_grey",
+                          "red",
+                          "olive_green",
+                          "burgundy"
+                        ],
+                        "enumNames": [
+                          "Black",
+                          "White",
+                          "Navy Blue",
+                          "Heather Grey",
+                          "Red",
+                          "Olive Green",
+                          "Burgundy"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "target_gender": {
+                  "title": "Target Gender",
+                  "description": "Intended gender for the clothing item.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Target Gender",
+                        "type": "string",
+                        "enum": [
+                          "male",
+                          "female",
+                          "unisex"
+                        ],
+                        "enumNames": [
+                          "Male",
+                          "Female",
+                          "Unisex"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "age_range_description": {
+                  "title": "Age Range Description",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Age Range Description",
+                        "type": "string",
+                        "enum": [
+                          "adult",
+                          "teen",
+                          "kids",
+                          "toddler",
+                          "infant"
+                        ],
+                        "enumNames": [
+                          "Adult",
+                          "Teen",
+                          "Kids",
+                          "Toddler",
+                          "Infant"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "outer_material_type": {
+                  "title": "Outer Material Type",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Outer Material Type",
+                        "type": "string",
+                        "enum": [
+                          "cotton",
+                          "polyester",
+                          "wool",
+                          "linen",
+                          "silk",
+                          "spandex",
+                          "denim"
+                        ],
+                        "enumNames": [
+                          "100% Cotton",
+                          "Polyester",
+                          "Wool",
+                          "Linen",
+                          "Silk",
+                          "Spandex Blend",
+                          "Denim"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "bullet_point": {
+                  "title": "Bullet Point",
+                  "description": "Key product features (up to 5 bullet points).",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Bullet Point",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      }
+                    }
+                  }
+                },
+                "care_instructions": {
+                  "title": "Care Instructions",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Care Instructions",
+                        "type": "string",
+                        "enum": [
+                          "machine_wash",
+                          "hand_wash_only",
+                          "dry_clean_only",
+                          "machine_wash_cold"
+                        ],
+                        "enumNames": [
+                          "Machine Wash Warm",
+                          "Hand Wash Only",
+                          "Dry Clean Only",
+                          "Machine Wash Cold Gentle"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "closure_type": {
+                  "title": "Closure Type",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Closure Type",
+                        "type": "string",
+                        "enum": [
+                          "button",
+                          "zipper",
+                          "pull_on",
+                          "drawstring",
+                          "hook_and_eye",
+                          "snap"
+                        ],
+                        "enumNames": [
+                          "Button",
+                          "Zipper",
+                          "Pull On",
+                          "Drawstring",
+                          "Hook and Eye",
+                          "Snap"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "warranty_description": {
+                  "title": "Warranty Description",
+                  "editable": false,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Warranty Description",
+                        "type": "string",
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                }
+              },
+              "$defs": {
+                "language_tag": {
+                  "type": "string",
+                  "title": "Language Tag",
+                  "default": "en_US"
+                },
+                "marketplace_id": {
+                  "type": "string",
+                  "title": "Marketplace ID",
+                  "default": "ATVPDKIKX0DER"
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 5253
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.908,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:13.829Z",
+        "time": 1.527,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) ELECTRONICS (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes/ELECTRONICS?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'x-amz-access-token: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes/ELECTRONICS?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "amazon-selling-partner-api-sdk/1.9.0/Java"
+            },
+            {
+              "name": "x-amz-access-token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "requirements",
+              "value": "LISTING_PRODUCT_ONLY"
+            },
+            {
+              "name": "requirementsEnforced",
+              "value": "ENFORCED"
+            },
+            {
+              "name": "locale",
+              "value": "en_US"
+            },
+            {
+              "name": "parentageLevel",
+              "value": "NONE"
+            },
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 860,
+            "mimeType": "application/json",
+            "text": "{\"metaSchema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/_meta\", \"verb\": \"GET\"}, \"checksum\": \"\"}, \"schema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/ELECTRONICS?marketplaceId=ATVPDKIKX0DER\", \"verb\": \"GET\"}, \"checksum\": \"2d4643eebd0f592cbaa6e8e8fc3b74ff\"}, \"requirements\": \"LISTING_PRODUCT_ONLY\", \"requirementsEnforced\": \"ENFORCED\", \"propertyGroups\": {\"product_identity\": {\"title\": \"Product Identity\", \"description\": \"Information to uniquely identify your product\", \"propertyNames\": [\"item_name\", \"brand\", \"model_number\", \"power_source_type\", \"connectivity_technology\", \"voltage\", \"wattage\", \"battery_capacity\"]}}, \"locale\": \"en_US\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"productType\": \"ELECTRONICS\", \"displayName\": \"Electronics\", \"productTypeVersion\": {\"version\": \"eIK6y8+aBnYX\", \"latest\": true, \"releaseCandidate\": false}}",
+            "_json": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/ELECTRONICS?marketplaceId=ATVPDKIKX0DER",
+                  "verb": "GET"
+                },
+                "checksum": "2d4643eebd0f592cbaa6e8e8fc3b74ff"
+              },
+              "requirements": "LISTING_PRODUCT_ONLY",
+              "requirementsEnforced": "ENFORCED",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name",
+                    "brand",
+                    "model_number",
+                    "power_source_type",
+                    "connectivity_technology",
+                    "voltage",
+                    "wattage",
+                    "battery_capacity"
+                  ]
+                }
+              },
+              "locale": "en_US",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ],
+              "productType": "ELECTRONICS",
+              "displayName": "Electronics",
+              "productTypeVersion": {
+                "version": "eIK6y8+aBnYX",
+                "latest": true,
+                "releaseCandidate": false
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 860
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 1.527,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:14.000Z",
+        "time": 0.154,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) ELECTRONICS schema",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/ptd-schema/ELECTRONICS?marketplaceId=ATVPDKIKX0DER'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/s3/ptd-schema/ELECTRONICS?marketplaceId=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "User-Agent",
+              "value": "okhttp/2.7.5"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceId",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 3617,
+            "mimeType": "application/json",
+            "text": "{\"x-fixture-provenance\": \"SYNTHETIC. Not a capture, and no requirement document names it.\", \"$schema\": \"https://json-schema.org/draft/2019-09/schema\", \"$id\": \"https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/ELECTRONICS\", \"title\": \"Electronics\", \"description\": \"Amazon Selling Partner API Product Type Definition for ELECTRONICS (US Marketplace)\", \"type\": \"object\", \"required\": [\"item_name\", \"brand\", \"model_number\", \"power_source_type\", \"connectivity_technology\"], \"properties\": {\"item_name\": {\"title\": \"Item Name\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Item Name\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 200}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"brand\": {\"title\": \"Brand\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Brand\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 100}}}}, \"model_number\": {\"title\": \"Model Number\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Model Number\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 50}}}}, \"power_source_type\": {\"title\": \"Power Source Type\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Power Source Type\", \"type\": \"string\", \"enum\": [\"battery_powered\", \"corded_electric\", \"solar_powered\", \"usb_powered\"], \"enumNames\": [\"Battery Powered\", \"Corded Electric\", \"Solar Powered\", \"USB Powered\"]}}}}, \"connectivity_technology\": {\"title\": \"Connectivity Technology\", \"type\": \"array\", \"minItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Connectivity Technology\", \"type\": \"string\", \"enum\": [\"bluetooth\", \"wi_fi\", \"usb\", \"hdmi\", \"nfc\", \"auxiliary\", \"ethernet\"], \"enumNames\": [\"Bluetooth\", \"Wi-Fi\", \"USB\", \"HDMI\", \"NFC\", \"Auxiliary 3.5mm\", \"Ethernet\"]}}}}, \"voltage\": {\"title\": \"Voltage\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Voltage\", \"type\": \"number\", \"minimum\": 1, \"maximum\": 500}, \"unit\": {\"title\": \"Unit\", \"type\": \"string\", \"enum\": [\"volts\", \"millivolts\"], \"enumNames\": [\"Volts\", \"Millivolts\"]}}}}, \"wattage\": {\"title\": \"Wattage\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Wattage\", \"type\": \"number\", \"minimum\": 0.1, \"maximum\": 5000}, \"unit\": {\"title\": \"Unit\", \"type\": \"string\", \"enum\": [\"watts\", \"kilowatts\", \"milliwatts\"], \"enumNames\": [\"Watts\", \"Kilowatts\", \"Milliwatts\"]}}}}, \"battery_capacity\": {\"title\": \"Battery Capacity\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Battery Capacity\", \"type\": \"number\", \"minimum\": 1, \"maximum\": 100000}, \"unit\": {\"title\": \"Unit\", \"type\": \"string\", \"enum\": [\"milliamp_hours\", \"amp_hours\", \"watt_hours\"], \"enumNames\": [\"Milliamp Hours (mAh)\", \"Amp Hours (Ah)\", \"Watt Hours (Wh)\"]}}}}, \"bullet_point\": {\"title\": \"Bullet Point\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 5, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Bullet Point\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 500}}}}}, \"$defs\": {\"language_tag\": {\"type\": \"string\", \"title\": \"Language Tag\", \"default\": \"en_US\"}, \"marketplace_id\": {\"type\": \"string\", \"title\": \"Marketplace ID\", \"default\": \"ATVPDKIKX0DER\"}}}",
+            "_json": {
+              "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+              "$schema": "https://json-schema.org/draft/2019-09/schema",
+              "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/ELECTRONICS",
+              "title": "Electronics",
+              "description": "Amazon Selling Partner API Product Type Definition for ELECTRONICS (US Marketplace)",
+              "type": "object",
+              "required": [
+                "item_name",
+                "brand",
+                "model_number",
+                "power_source_type",
+                "connectivity_technology"
+              ],
+              "properties": {
+                "item_name": {
+                  "title": "Item Name",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Item Name",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "brand": {
+                  "title": "Brand",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Brand",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      }
+                    }
+                  }
+                },
+                "model_number": {
+                  "title": "Model Number",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Model Number",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 50
+                      }
+                    }
+                  }
+                },
+                "power_source_type": {
+                  "title": "Power Source Type",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Power Source Type",
+                        "type": "string",
+                        "enum": [
+                          "battery_powered",
+                          "corded_electric",
+                          "solar_powered",
+                          "usb_powered"
+                        ],
+                        "enumNames": [
+                          "Battery Powered",
+                          "Corded Electric",
+                          "Solar Powered",
+                          "USB Powered"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "connectivity_technology": {
+                  "title": "Connectivity Technology",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Connectivity Technology",
+                        "type": "string",
+                        "enum": [
+                          "bluetooth",
+                          "wi_fi",
+                          "usb",
+                          "hdmi",
+                          "nfc",
+                          "auxiliary",
+                          "ethernet"
+                        ],
+                        "enumNames": [
+                          "Bluetooth",
+                          "Wi-Fi",
+                          "USB",
+                          "HDMI",
+                          "NFC",
+                          "Auxiliary 3.5mm",
+                          "Ethernet"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "voltage": {
+                  "title": "Voltage",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Voltage",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 500
+                      },
+                      "unit": {
+                        "title": "Unit",
+                        "type": "string",
+                        "enum": [
+                          "volts",
+                          "millivolts"
+                        ],
+                        "enumNames": [
+                          "Volts",
+                          "Millivolts"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "wattage": {
+                  "title": "Wattage",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Wattage",
+                        "type": "number",
+                        "minimum": 0.1,
+                        "maximum": 5000
+                      },
+                      "unit": {
+                        "title": "Unit",
+                        "type": "string",
+                        "enum": [
+                          "watts",
+                          "kilowatts",
+                          "milliwatts"
+                        ],
+                        "enumNames": [
+                          "Watts",
+                          "Kilowatts",
+                          "Milliwatts"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "battery_capacity": {
+                  "title": "Battery Capacity",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Battery Capacity",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 100000
+                      },
+                      "unit": {
+                        "title": "Unit",
+                        "type": "string",
+                        "enum": [
+                          "milliamp_hours",
+                          "amp_hours",
+                          "watt_hours"
+                        ],
+                        "enumNames": [
+                          "Milliamp Hours (mAh)",
+                          "Amp Hours (Ah)",
+                          "Watt Hours (Wh)"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "bullet_point": {
+                  "title": "Bullet Point",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Bullet Point",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                      }
+                    }
+                  }
+                }
+              },
+              "$defs": {
+                "language_tag": {
+                  "type": "string",
+                  "title": "Language Tag",
+                  "default": "en_US"
+                },
+                "marketplace_id": {
+                  "type": "string",
+                  "title": "Marketplace ID",
+                  "default": "ATVPDKIKX0DER"
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 3617
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.154,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:14.142Z",
+        "time": 0.102,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) LUGGAGE (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes/LUGGAGE?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'x-amz-access-token: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes/LUGGAGE?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "amazon-selling-partner-api-sdk/1.9.0/Java"
+            },
+            {
+              "name": "x-amz-access-token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "requirements",
+              "value": "LISTING_PRODUCT_ONLY"
+            },
+            {
+              "name": "requirementsEnforced",
+              "value": "ENFORCED"
+            },
+            {
+              "name": "locale",
+              "value": "en_US"
+            },
+            {
+              "name": "parentageLevel",
+              "value": "NONE"
+            },
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 786,
+            "mimeType": "application/json",
+            "text": "{\"metaSchema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/_meta\", \"verb\": \"GET\"}, \"checksum\": \"\"}, \"schema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/LUGGAGE?marketplaceId=ATVPDKIKX0DER\", \"verb\": \"GET\"}, \"checksum\": \"a9f8353439b55c8d670bcb42a4aa8669\"}, \"requirements\": \"LISTING_PRODUCT_ONLY\", \"requirementsEnforced\": \"ENFORCED\", \"propertyGroups\": {\"product_identity\": {\"title\": \"Product Identity\", \"description\": \"Information to uniquely identify your product\", \"propertyNames\": [\"item_name\", \"brand\", \"external_product_id\", \"color\", \"capacity\"]}}, \"locale\": \"en_US\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"productType\": \"LUGGAGE\", \"displayName\": \"Luggage\", \"productTypeVersion\": {\"version\": \"1akswa0RJ+ef\", \"latest\": true, \"releaseCandidate\": false}}",
+            "_json": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/LUGGAGE?marketplaceId=ATVPDKIKX0DER",
+                  "verb": "GET"
+                },
+                "checksum": "a9f8353439b55c8d670bcb42a4aa8669"
+              },
+              "requirements": "LISTING_PRODUCT_ONLY",
+              "requirementsEnforced": "ENFORCED",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name",
+                    "brand",
+                    "external_product_id",
+                    "color",
+                    "capacity"
+                  ]
+                }
+              },
+              "locale": "en_US",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ],
+              "productType": "LUGGAGE",
+              "displayName": "Luggage",
+              "productTypeVersion": {
+                "version": "1akswa0RJ+ef",
+                "latest": true,
+                "releaseCandidate": false
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 786
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.102,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:14.281Z",
+        "time": 0.14,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) LUGGAGE schema",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/ptd-schema/LUGGAGE?marketplaceId=ATVPDKIKX0DER'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/s3/ptd-schema/LUGGAGE?marketplaceId=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "User-Agent",
+              "value": "okhttp/2.7.5"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceId",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 3369,
+            "mimeType": "application/json",
+            "text": "{\"x-fixture-provenance\": \"SYNTHETIC. Not a capture. The IA-5105 mapping spec section 1.1 states this file is \\\"hand-authored for a different test, not a capture\\\" and that it \\\"models neither item_type_keyword nor recommended_browse_nodes as an actual schema property\\\". The plan section 1 table lists it as trimmed and records recommended_browse_nodes as absent. Gate G-4 exists because no real US capture is available, so nothing observed here may be cited as Amazon US's behaviour.\", \"$schema\": \"https://schemas.amazon.com/selling-partners/definitions/product-types/meta-schema/v1\", \"$id\": \"https://schemas.amazon.com/selling-partners/definitions/product-types/schema/v1/LUGGAGE\", \"$comment\": \"Amazon product type definition for LUGGAGE product type\", \"$defs\": {\"marketplace_id\": {\"default\": \"ATVPDKIKX0DER\", \"editable\": false, \"hidden\": true, \"examples\": [\"Amazon.com\"], \"type\": \"string\", \"anyOf\": [{\"type\": \"string\"}, {\"type\": \"string\", \"enum\": [\"ATVPDKIKX0DER\"], \"enumNames\": [\"Amazon.com\"]}]}, \"language_tag\": {\"default\": \"en_US\", \"editable\": false, \"hidden\": true, \"examples\": [\"English (United States)\"], \"type\": \"string\", \"anyOf\": [{\"type\": \"string\"}, {\"type\": \"string\", \"enum\": [\"en_US\"], \"enumNames\": [\"English (United States)\"]}]}}, \"type\": \"object\", \"required\": [\"item_name\", \"brand\"], \"properties\": {\"item_name\": {\"title\": \"Item Name\", \"description\": \"The title of the product.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Item Name\", \"type\": \"string\", \"maxLength\": 200}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"brand\": {\"title\": \"Brand\", \"description\": \"Name of the brand associated with the product.\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Brand\", \"type\": \"string\", \"maxLength\": 100}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"external_product_id\": {\"title\": \"External Product ID\", \"description\": \"Standard identifier for the product (UPC, EAN, GTIN).\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\", \"type\"], \"properties\": {\"value\": {\"title\": \"External Product ID Value\", \"type\": \"string\", \"maxLength\": 40}, \"type\": {\"title\": \"External Product ID Type\", \"type\": \"string\", \"enum\": [\"EAN\", \"UPC\", \"GTIN\"], \"enumNames\": [\"EAN\", \"UPC\", \"GTIN\"]}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"color\": {\"title\": \"Color\", \"description\": \"The color of the luggage.\", \"type\": \"array\", \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Color\", \"type\": \"string\", \"enum\": [\"Black\", \"Blue\", \"Red\", \"Silver\"], \"enumNames\": [\"Black\", \"Blue\", \"Red\", \"Silver\"]}, \"language_tag\": {\"$ref\": \"#/$defs/language_tag\"}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}, \"capacity\": {\"title\": \"Capacity\", \"description\": \"Luggage storage capacity in liters.\", \"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"value\": {\"title\": \"Capacity Value\", \"type\": \"number\", \"minimum\": 1, \"maximum\": 200}, \"unit\": {\"title\": \"Unit\", \"type\": \"string\", \"enum\": [\"liters\"], \"enumNames\": [\"Liters\"]}, \"marketplace_id\": {\"$ref\": \"#/$defs/marketplace_id\"}}}}}}",
+            "_json": {
+              "x-fixture-provenance": "SYNTHETIC. Not a capture. The IA-5105 mapping spec section 1.1 states this file is \"hand-authored for a different test, not a capture\" and that it \"models neither item_type_keyword nor recommended_browse_nodes as an actual schema property\". The plan section 1 table lists it as trimmed and records recommended_browse_nodes as absent. Gate G-4 exists because no real US capture is available, so nothing observed here may be cited as Amazon US's behaviour.",
+              "$schema": "https://schemas.amazon.com/selling-partners/definitions/product-types/meta-schema/v1",
+              "$id": "https://schemas.amazon.com/selling-partners/definitions/product-types/schema/v1/LUGGAGE",
+              "$comment": "Amazon product type definition for LUGGAGE product type",
+              "$defs": {
+                "marketplace_id": {
+                  "default": "ATVPDKIKX0DER",
+                  "editable": false,
+                  "hidden": true,
+                  "examples": [
+                    "Amazon.com"
+                  ],
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ATVPDKIKX0DER"
+                      ],
+                      "enumNames": [
+                        "Amazon.com"
+                      ]
+                    }
+                  ]
+                },
+                "language_tag": {
+                  "default": "en_US",
+                  "editable": false,
+                  "hidden": true,
+                  "examples": [
+                    "English (United States)"
+                  ],
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "en_US"
+                      ],
+                      "enumNames": [
+                        "English (United States)"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "type": "object",
+              "required": [
+                "item_name",
+                "brand"
+              ],
+              "properties": {
+                "item_name": {
+                  "title": "Item Name",
+                  "description": "The title of the product.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Item Name",
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "brand": {
+                  "title": "Brand",
+                  "description": "Name of the brand associated with the product.",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Brand",
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "external_product_id": {
+                  "title": "External Product ID",
+                  "description": "Standard identifier for the product (UPC, EAN, GTIN).",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value",
+                      "type"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "External Product ID Value",
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      "type": {
+                        "title": "External Product ID Type",
+                        "type": "string",
+                        "enum": [
+                          "EAN",
+                          "UPC",
+                          "GTIN"
+                        ],
+                        "enumNames": [
+                          "EAN",
+                          "UPC",
+                          "GTIN"
+                        ]
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "color": {
+                  "title": "Color",
+                  "description": "The color of the luggage.",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Color",
+                        "type": "string",
+                        "enum": [
+                          "Black",
+                          "Blue",
+                          "Red",
+                          "Silver"
+                        ],
+                        "enumNames": [
+                          "Black",
+                          "Blue",
+                          "Red",
+                          "Silver"
+                        ]
+                      },
+                      "language_tag": {
+                        "$ref": "#/$defs/language_tag"
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                },
+                "capacity": {
+                  "title": "Capacity",
+                  "description": "Luggage storage capacity in liters.",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "title": "Capacity Value",
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 200
+                      },
+                      "unit": {
+                        "title": "Unit",
+                        "type": "string",
+                        "enum": [
+                          "liters"
+                        ],
+                        "enumNames": [
+                          "Liters"
+                        ]
+                      },
+                      "marketplace_id": {
+                        "$ref": "#/$defs/marketplace_id"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 3369
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.14,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:14.421Z",
+        "time": 0.11,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) TOYS_AND_GAMES (ATVPDKIKX0DER)",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/definitions/2020-09-01/productTypes/TOYS_AND_GAMES?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER' -H 'Content-Type: application/json' -H 'x-amz-access-token: ***redacted***'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/definitions/2020-09-01/productTypes/TOYS_AND_GAMES?requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=ENFORCED&locale=en_US&parentageLevel=NONE&marketplaceIds=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "amazon-selling-partner-api-sdk/1.9.0/Java"
+            },
+            {
+              "name": "x-amz-access-token",
+              "value": "***redacted***"
+            },
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "requirements",
+              "value": "LISTING_PRODUCT_ONLY"
+            },
+            {
+              "name": "requirementsEnforced",
+              "value": "ENFORCED"
+            },
+            {
+              "name": "locale",
+              "value": "en_US"
+            },
+            {
+              "name": "parentageLevel",
+              "value": "NONE"
+            },
+            {
+              "name": "marketplaceIds",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 842,
+            "mimeType": "application/json",
+            "text": "{\"metaSchema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/_meta\", \"verb\": \"GET\"}, \"checksum\": \"\"}, \"schema\": {\"link\": {\"resource\": \"http://127.0.0.1:23103/s3/ptd-schema/TOYS_AND_GAMES?marketplaceId=ATVPDKIKX0DER\", \"verb\": \"GET\"}, \"checksum\": \"fb1a99a97a5929bda1638db8b57cb203\"}, \"requirements\": \"LISTING_PRODUCT_ONLY\", \"requirementsEnforced\": \"ENFORCED\", \"propertyGroups\": {\"product_identity\": {\"title\": \"Product Identity\", \"description\": \"Information to uniquely identify your product\", \"propertyNames\": [\"item_name\", \"brand\", \"manufacturer_minimum_age\", \"cpsia_cautionary_statement\", \"number_of_players\"]}}, \"locale\": \"en_US\", \"marketplaceIds\": [\"ATVPDKIKX0DER\"], \"productType\": \"TOYS_AND_GAMES\", \"displayName\": \"Toys and Games\", \"productTypeVersion\": {\"version\": \"3zHK2qEiaZle\", \"latest\": true, \"releaseCandidate\": false}}",
+            "_json": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/TOYS_AND_GAMES?marketplaceId=ATVPDKIKX0DER",
+                  "verb": "GET"
+                },
+                "checksum": "fb1a99a97a5929bda1638db8b57cb203"
+              },
+              "requirements": "LISTING_PRODUCT_ONLY",
+              "requirementsEnforced": "ENFORCED",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name",
+                    "brand",
+                    "manufacturer_minimum_age",
+                    "cpsia_cautionary_statement",
+                    "number_of_players"
+                  ]
+                }
+              },
+              "locale": "en_US",
+              "marketplaceIds": [
+                "ATVPDKIKX0DER"
+              ],
+              "productType": "TOYS_AND_GAMES",
+              "displayName": "Toys and Games",
+              "productTypeVersion": {
+                "version": "3zHK2qEiaZle",
+                "latest": true,
+                "releaseCandidate": false
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 842
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.11,
+          "receive": 0
+        }
+      },
+      {
+        "startedDateTime": "2026-09-11T13:10:14.557Z",
+        "time": 0.115,
+        "_seq": 501,
+        "_rule": "Amazon SP-API taxonomy fixture -- US (North America) TOYS_AND_GAMES schema",
+        "_curl": "curl -i -X GET 'http://127.0.0.1:23103/s3/ptd-schema/TOYS_AND_GAMES?marketplaceId=ATVPDKIKX0DER'",
+        "request": {
+          "method": "GET",
+          "url": "http://127.0.0.1:23103/s3/ptd-schema/TOYS_AND_GAMES?marketplaceId=ATVPDKIKX0DER",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23103"
+            },
+            {
+              "name": "Connection",
+              "value": "Keep-Alive"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip"
+            },
+            {
+              "name": "User-Agent",
+              "value": "okhttp/2.7.5"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "marketplaceId",
+              "value": "ATVPDKIKX0DER"
+            }
+          ],
+          "postData": {},
+          "headersSize": -1,
+          "bodySize": 0
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 2570,
+            "mimeType": "application/json",
+            "text": "{\"x-fixture-provenance\": \"SYNTHETIC. Not a capture, and no requirement document names it.\", \"$schema\": \"https://json-schema.org/draft/2019-09/schema\", \"$id\": \"https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/TOYS_AND_GAMES\", \"title\": \"Toys and Games\", \"description\": \"Amazon Selling Partner API Product Type Definition for TOYS_AND_GAMES (US Marketplace)\", \"type\": \"object\", \"required\": [\"item_name\", \"brand\", \"manufacturer_minimum_age\", \"cpsia_cautionary_statement\"], \"properties\": {\"item_name\": {\"title\": \"Item Name\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Item Name\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 200}}}}, \"brand\": {\"title\": \"Brand\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Brand\", \"type\": \"string\", \"minLength\": 1, \"maxLength\": 100}}}}, \"manufacturer_minimum_age\": {\"title\": \"Manufacturer Minimum Age\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\", \"unit\"], \"properties\": {\"value\": {\"title\": \"Minimum Age\", \"type\": \"number\", \"minimum\": 0, \"maximum\": 1200}, \"unit\": {\"title\": \"Unit\", \"type\": \"string\", \"enum\": [\"months\", \"years\"], \"enumNames\": [\"Months\", \"Years\"]}}}}, \"cpsia_cautionary_statement\": {\"title\": \"CPSIA Cautionary Statement\", \"type\": \"array\", \"minItems\": 1, \"items\": {\"type\": \"object\", \"required\": [\"value\"], \"properties\": {\"value\": {\"title\": \"Cautionary Statement\", \"type\": \"string\", \"enum\": [\"choking_hazard_balloon\", \"choking_hazard_contains_a_marble\", \"choking_hazard_contains_small_ball\", \"choking_hazard_is_a_marble\", \"choking_hazard_is_a_small_ball\", \"choking_hazard_small_parts\", \"no_warning_applicable\"], \"enumNames\": [\"Choking Hazard - Balloon\", \"Choking Hazard - Contains a Marble\", \"Choking Hazard - Contains Small Ball\", \"Choking Hazard - Is a Marble\", \"Choking Hazard - Is a Small Ball\", \"Choking Hazard - Small Parts\", \"No Warning Applicable\"]}}}}, \"number_of_players\": {\"title\": \"Number of Players\", \"type\": \"array\", \"minItems\": 1, \"maxItems\": 1, \"items\": {\"type\": \"object\", \"properties\": {\"minimum\": {\"title\": \"Minimum Players\", \"type\": \"integer\", \"minimum\": 1, \"maximum\": 100}, \"maximum\": {\"title\": \"Maximum Players\", \"type\": \"integer\", \"minimum\": 1, \"maximum\": 100}}}}}, \"$defs\": {\"language_tag\": {\"type\": \"string\", \"title\": \"Language Tag\", \"default\": \"en_US\"}, \"marketplace_id\": {\"type\": \"string\", \"title\": \"Marketplace ID\", \"default\": \"ATVPDKIKX0DER\"}}}",
+            "_json": {
+              "x-fixture-provenance": "SYNTHETIC. Not a capture, and no requirement document names it.",
+              "$schema": "https://json-schema.org/draft/2019-09/schema",
+              "$id": "https://schemas.amazon.com/selling-partner-api/product-types/v2020-09-01/TOYS_AND_GAMES",
+              "title": "Toys and Games",
+              "description": "Amazon Selling Partner API Product Type Definition for TOYS_AND_GAMES (US Marketplace)",
+              "type": "object",
+              "required": [
+                "item_name",
+                "brand",
+                "manufacturer_minimum_age",
+                "cpsia_cautionary_statement"
+              ],
+              "properties": {
+                "item_name": {
+                  "title": "Item Name",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Item Name",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    }
+                  }
+                },
+                "brand": {
+                  "title": "Brand",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Brand",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      }
+                    }
+                  }
+                },
+                "manufacturer_minimum_age": {
+                  "title": "Manufacturer Minimum Age",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value",
+                      "unit"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Minimum Age",
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1200
+                      },
+                      "unit": {
+                        "title": "Unit",
+                        "type": "string",
+                        "enum": [
+                          "months",
+                          "years"
+                        ],
+                        "enumNames": [
+                          "Months",
+                          "Years"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "cpsia_cautionary_statement": {
+                  "title": "CPSIA Cautionary Statement",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "value"
+                    ],
+                    "properties": {
+                      "value": {
+                        "title": "Cautionary Statement",
+                        "type": "string",
+                        "enum": [
+                          "choking_hazard_balloon",
+                          "choking_hazard_contains_a_marble",
+                          "choking_hazard_contains_small_ball",
+                          "choking_hazard_is_a_marble",
+                          "choking_hazard_is_a_small_ball",
+                          "choking_hazard_small_parts",
+                          "no_warning_applicable"
+                        ],
+                        "enumNames": [
+                          "Choking Hazard - Balloon",
+                          "Choking Hazard - Contains a Marble",
+                          "Choking Hazard - Contains Small Ball",
+                          "Choking Hazard - Is a Marble",
+                          "Choking Hazard - Is a Small Ball",
+                          "Choking Hazard - Small Parts",
+                          "No Warning Applicable"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "number_of_players": {
+                  "title": "Number of Players",
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "minimum": {
+                        "title": "Minimum Players",
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      },
+                      "maximum": {
+                        "title": "Maximum Players",
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100
+                      }
+                    }
+                  }
+                }
+              },
+              "$defs": {
+                "language_tag": {
+                  "type": "string",
+                  "title": "Language Tag",
+                  "default": "en_US"
+                },
+                "marketplace_id": {
+                  "type": "string",
+                  "title": "Marketplace ID",
+                  "default": "ATVPDKIKX0DER"
+                }
+              }
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 2570
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 0.115,
           "receive": 0
         }
       }

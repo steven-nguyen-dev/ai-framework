@@ -1,7 +1,7 @@
 ---
 name: draw-diagram
 description: Draws one Mermaid block — flowchart, sequence, state machine or ER — from a subject the agent has read, styled to the repo's dark palette and parsed before it ships. Use on "draw a diagram", "diagram this flow", "visualise this architecture"; on restyling or fixing a Mermaid block that already exists; and on reviewing one before it ships.
-version: 1.0.0
+version: 1.1.0
 disable-model-invocation: false
 ---
 
@@ -39,11 +39,9 @@ reason.
 
 ## Step 3 — Draw the block
 
-Follow the skeleton for the type in `references/recipes.md`. Label each edge with the verb the
-subject uses for that hop. Label each node with its name and its role.
+Follow the skeleton for the type in `references/recipes.md`. Start line 1 directly with the diagram type identifier. Label each edge with the verb the subject uses for that hop. Label each node with its name and its role.
 
-**Completion:** every element from step 2 stands in the block carrying its role's class, and the
-block carries the init header and one `classDef` per role used.
+**Completion:** every element from step 2 stands in the block carrying its role's class, and the block carries one `classDef` per role used.
 
 ## Step 4 — Parse and check
 
@@ -55,7 +53,8 @@ Fix what it reports and run it again. Then quote the block against each line of 
 ## The bar
 
 - Mermaid parses the block without error.
+- Line 1 contains solely the diagram type identifier.
 - Every node carries a palette class matching its role.
 - Every edge label is an active verb read from the subject.
 - Every node dereferences to a thing the subject names.
-- The block carries a `title:` block.
+- A Markdown heading above the code fence names the diagram title.

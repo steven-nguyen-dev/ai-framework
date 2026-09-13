@@ -1,7 +1,7 @@
 ---
 name: herdr-leader
 description: Nominate this agent as the Herdr swarm leader for its current tab. Use on /herdr-leader, /lead, or /leader.
-version: 1.4.3
+version: 1.8.0
 disable-model-invocation: true
 ---
 
@@ -13,7 +13,8 @@ Orchestrates worker panes inside the active Herdr tab (`$HERDR_TAB_ID`) via the 
 
 - **Roster** — live tab worker table from `pane-limits --init-leader`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
-- **Scratchpads** — `.scratchpads/` in repo root or agent `/tmp` for intermediate artifacts, payloads, and handoffs.
+- **Coordinator** — swarm-coordinator MCP: session log, task briefs, results, scratch payloads.
+- **Wiki** — wiki MCP: plans, specs, mappings, traps, decisions.
 
 ## Rapid Swarm Launchers
 
@@ -37,42 +38,81 @@ Break the objective into bounded, self-contained briefs. Assign each brief by re
 - **Gemini (Core Workhorse / Smart Worker — Bulk of Work)**: Normal complexity and below — feature implementation, unit/integration test suites, multi-file code editing, routine audits, and specs building. Gemini panes form the backbone of the swarm and handle the lion's share of tasks.
 - **Default / All Others (Simple Worker / Fire & Forget)**: Small, self-contained single-pass units — isolated utility scripts, syntax/formatting/lint cleanup, quick regex, repetitive boilerplate, and localized single-file fixes (e.g. Grok, GPT).
 
-Treat tier roles as soft recommendations; when a target worker is busy, overflow flexibly to capable idle workers. Before dispatch, check capacity with `pane-limits <target>`. Split the brief if verdict is `HIGH` or `BREACH`.
+Treat tier roles as soft recommendations; when a target worker is busy, overflow flexibly to capable idle workers.
 
-**Completion:** every task brief is sized within model limits (<650K for Claude/Gemini/GPT, <210K default for all others) and assigned to an available worker.
+The token limit is a **pre-dispatch target**: the figure the pane must be under **at the moment the instruction is sent**, not a ceiling to notice after the fact.
 
-### Step 3 — Dispatch and queue on fixed panes
+**Clear when `current + predicted > limit`.**
+- `current` — the pane's usage now, from `pane-limits <target>`.
+- `predicted` — what the next task will consume: the brief itself, the files it must read, and the tool output it will generate. Estimate generously; a task that reads a large source file and runs a test suite costs far more than its brief.
+- `limit` — **700K** for the big pool (Claude / Gemini / GPT), **210K** default for every other model.
 
-Keep the swarm pane count fixed; allocate all briefs across existing panes. Dispatch with `herdr agent prompt <target> "<brief>"`. If target workers are busy, queue jobs sequentially via `herdr agent wait <target>` or pipeline across idle workers. Address workers by assigned name (`<space>-<model>-<n>`). Interrupt runaway tasks with `herdr agent send-keys <target> ctrl+c`.
+Run `pane-limits <target>` immediately before every dispatch. Each row prints its **headroom** (`limit - current`) — the token budget available to the next task. Compare the prediction against it:
+- `predicted <= headroom` — send the brief as it stands.
+- `predicted > headroom` — clear first (Step 6), or split the unit so the prediction fits.
+- `BREACH` (current is already at or over the limit) — clear before sending, whatever the task's size.
 
-**Completion:** all active tasks run on existing fixed panes without adding new panes.
+There is no warning band between OK and BREACH: a band cannot know how big the next task is, so it would shout at a nearly-full pane taking a tiny follow-up and stay quiet on an empty pane taking a huge one. The headroom figure and the prediction decide it.
 
-### Step 4 — Exchange data via scratchpads
+**Completion:** every task brief is sized so that `current + predicted` stays within the model's limit (700K for Claude/Gemini/GPT, 210K default for all others), the headroom is verified at dispatch time, and the brief is assigned to an available worker.
 
-For passing complex payloads, task briefs, test output dumps, or intermediate data between agents, use the `.scratchpads/` directory in the repository root or `/tmp`. Keep source directories clean of transient files. When passing data between workers, write to `.scratchpads/<name>.<ext>` and pass the path in the dispatch prompt.
+### Step 3 — Delegate through the coordinator
 
-**Completion:** all inter-agent files and dumps reside strictly in `.scratchpads/` or `/tmp`.
+Keep the swarm pane count fixed; allocate all briefs across existing panes.
 
-### Step 5 — Verify on disk (zero blind trust)
+Open every turn with `swarm-coordinator.session_log()`. It returns the roster and a bounded tail of recent delegations and completions. This is what survives compaction — the roster lives in Redis, not in the context window.
 
-Track task progress with `herdr agent wait <target>`. Verify on disk directly using `git diff`, `ls -la`, `wc -l`, compilers, and test suites before accepting task completion. Re-dispatch immediately if a worker claims success without modifying disk or test outcomes.
+Upsert the plan before delegating: `wiki.upsert("plan/<ticket>", "<step>", body, summary, expected_version)`. A brief then carries `wiki_refs=["plan/<ticket>#<step>"]` and the worker fetches its own section. The brief itself stays short; the plan section carries the detail.
 
-**Completion:** every completed task is corroborated by actual disk modifications or passing test commands.
+**When `wiki.search` returns nothing useful, rephrase and retry.** The wiki ranks English full text with a trigram fallback — there is no query expansion, no synonym list and no embedding. You are the expansion: try the domain term instead of the generic one, the external system's own vocabulary instead of ours, a distinctive noun instead of a sentence, and the CJK value itself where one exists. Two or three rephrasings before concluding the wiki does not hold something. A search that returns nothing is a miss to work, not an answer.
 
-### Step 6 — Clear or hand off context
+Dispatch with `swarm-coordinator.delegate(target, brief, wiki_refs)`. One call writes the task, appends the session log and prompts the target pane. It returns the task id.
 
-- **Stateless tasks**:
-  1. `herdr agent prompt <target> "/clear "` (include trailing space).
-  2. Wait: `herdr agent wait <target> --timeout 30000` (or `sleep 1`).
-  3. Dispatch next brief.
-- **Stateful tasks**:
-  1. `herdr agent prompt <target> "Write handoff to '.scratchpads/<target>-handoff.md' covering uncommitted work, decisions, verified counts, open items, and traps."`
-  2. Verify on disk: `wc -l .scratchpads/<target>-handoff.md`.
-  3. Send `herdr agent prompt <target> "/clear "`.
-  4. Wait: `herdr agent wait <target> --timeout 30000`.
-  5. Resume: `herdr agent prompt <target> "Read '.scratchpads/<target>-handoff.md' in full FIRST, then proceed with <next-task>."`
+Every brief template ends with this line, verbatim:
 
-**Completion:** target pane is cleared, and resumed stateful tasks have verified handoff files on disk.
+> When finished, call `swarm-coordinator.complete("<task-id>", "done", "<3-line summary>")`. Put anything longer in `swarm-coordinator.put()` and name the key in your summary.
+
+Before dispatch, check capacity with `pane-limits <target>`. Split the brief if the verdict is `HIGH` or `BREACH`. Interrupt a runaway task with `herdr agent send-keys <target> ctrl+c`.
+
+**Completion:** every brief is delegated through `delegate`, each carrying its plan section and the `complete` line. The turn ends. **Do not wait.**
+
+### Step 4 — Let the completions come to you
+
+Your turn ends after delegating. A worker's `complete` call prompts this pane and starts a new turn. You do not poll, you do not `herdr agent wait`, and you do not ask the user whether the workers are done.
+
+A new turn opens with `session_log()`, then `swarm-coordinator.get("result:<id>")` for the task that woke you.
+
+Three workers finishing together send three prompts, so you take three turns. That is expected.
+
+**The one failure mode:** a worker sometimes ends its turn without calling `complete`. It sends no prompt, so you do not wake. Redis still holds the task and `session_log()` still shows it outstanding — you will see it on your next turn, whatever wakes you. Prompt that worker once.
+
+**Completion:** every task reaches a `result:<id>`, read on the turn its completion prompted.
+
+### Step 5 — Exchange payloads through Redis, not files
+
+`swarm-coordinator.put(name, value)` writes a scratch payload and returns its key.
+`swarm-coordinator.get(key)` reads it. Keys expire after 7 days.
+
+A `complete` summary runs to three lines, so a 900-line test dump or ELK extract goes to `put()`; the summary names the key and the next pane calls `get()`. Handoffs between workers travel the same way.
+
+`.scratchpads/` is retired. Do not create it, and do not pass file paths where a key belongs.
+
+Scratch stays out of the wiki. A scratch payload holds true for twenty minutes; the wiki keeps what it stores.
+
+**Completion:** no inter-agent payload touches the filesystem.
+
+### Step 6 — Verify on disk, then clear or hand off
+
+Zero blind trust is unchanged. A worker's `complete` is a claim, not evidence. Verify with `git diff`, `ls -la`, `wc -l`, compilers and test suites before accepting anything. Re-delegate immediately if a worker claims success without changing disk or test outcomes.
+
+Durable learning found along the way goes back to the wiki — a trap, a decision, a verified mapping — via `wiki.upsert`. A trap the wiki holds that a worker just disproved gets `wiki.retire`, with the evidence in `note`, in the same turn. A live wrong chunk misleads every later search.
+
+Clearing context:
+
+- **Stateless:** `herdr agent prompt <target> "/clear "` (trailing space), then delegate the next brief.
+- **Stateful:** delegate a brief asking the worker to `put()` its handoff and report the key; verify the key reads back; `/clear `; then delegate the next brief carrying that key in `wiki_refs` or in the brief text.
+
+**Completion:** every accepted task is corroborated on disk, and every resumed worker resumes from a key that reads back.
 
 ## The bar
 
@@ -82,7 +122,11 @@ Track task progress with `herdr agent wait <target>`. Verify on disk directly us
 - Implementation code is never written by the leader; all work is delegated.
 - Task complexity matches recommended model tiers with Gemini absorbing the bulk of work.
 - Swarm pane count remains fixed with sequential queueing instead of ad-hoc splitting.
-- Inter-agent communication, drafts, and handoffs sit in `.scratchpads/` or `/tmp`.
+- The token limit is treated as a pre-dispatch target — clear when `current + predicted > limit` (700K big pool, 210K default), done before the next instruction rather than after a finished task.
+- Inter-agent payloads travel through `put`/`get`; `.scratchpads/` is never created.
+- Every turn opens with `session_log()`; every brief ends with the `complete` line.
+- The leader never waits on a worker. Completions arrive as prompts.
 - All completed work is verified on disk.
 - Every step terminates on a checkable completion criterion.
+
 

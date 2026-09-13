@@ -7068,6 +7068,120 @@
           "wait": 0.104,
           "receive": 0
         }
+      },
+      {
+        "startedDateTime": "2026-09-11T12:07:47.412Z",
+        "time": 2.489,
+        "_seq": 22,
+        "_rule": "no marker -- category tree created, 200 with created_count",
+        "_curl": "curl -i -X POST 'http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=PING' -H 'Content-Type: application/json' --data-raw '{\"category\":{\"code\":\"PING\"}}'",
+        "request": {
+          "method": "POST",
+          "url": "http://127.0.0.1:23001/rest/v1/bulk_categories?store_code=PING",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Host",
+              "value": "127.0.0.1:23001"
+            },
+            {
+              "name": "User-Agent",
+              "value": "curl/8.7.1"
+            },
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Length",
+              "value": "28"
+            }
+          ],
+          "queryString": [
+            {
+              "name": "store_code",
+              "value": "PING"
+            }
+          ],
+          "postData": {
+            "mimeType": "application/json",
+            "text": "{\"category\":{\"code\":\"PING\"}}",
+            "_json": {
+              "category": {
+                "code": "PING"
+              }
+            }
+          },
+          "headersSize": -1,
+          "bodySize": 28
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "httpVersion": "HTTP/1.1",
+          "cookies": [],
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "content": {
+            "size": 500,
+            "mimeType": "application/json",
+            "text": "{\"success\": true, \"message\": \"Categories created successfully\", \"created_count\": 4, \"failed_count\": 0, \"payload\": [{\"id\": 442001, \"code\": \"10000001\", \"name\": \"Home & Living\", \"parent_id\": null, \"active\": true}, {\"id\": 442011, \"code\": \"10000387\", \"name\": \"Bedding\", \"parent_id\": \"442001\", \"active\": true}, {\"id\": 442019, \"code\": \"10000412\", \"name\": \"Bed Sheets\", \"parent_id\": \"442011\", \"active\": true}, {\"id\": 442020, \"code\": \"10000413\", \"name\": \"Pillowcases\", \"parent_id\": \"442011\", \"active\": true}]}",
+            "_json": {
+              "success": true,
+              "message": "Categories created successfully",
+              "created_count": 4,
+              "failed_count": 0,
+              "payload": [
+                {
+                  "id": 442001,
+                  "code": "10000001",
+                  "name": "Home & Living",
+                  "parent_id": null,
+                  "active": true
+                },
+                {
+                  "id": 442011,
+                  "code": "10000387",
+                  "name": "Bedding",
+                  "parent_id": "442001",
+                  "active": true
+                },
+                {
+                  "id": 442019,
+                  "code": "10000412",
+                  "name": "Bed Sheets",
+                  "parent_id": "442011",
+                  "active": true
+                },
+                {
+                  "id": 442020,
+                  "code": "10000413",
+                  "name": "Pillowcases",
+                  "parent_id": "442011",
+                  "active": true
+                }
+              ]
+            }
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": 500
+        },
+        "cache": {},
+        "timings": {
+          "send": 0,
+          "wait": 2.489,
+          "receive": 0
+        }
       }
     ]
   }

@@ -5,7 +5,7 @@ herdr-pane-limits.py
 Optimized, token-efficient capacity checker and pane namer for herdr.
 - Confined strictly to the current tab ($HERDR_TAB_ID)
 - Explicit model token limits:
-  - Big pool (Gemini, Claude, GPT): 650k tokens (<650K)
+  - Big pool (Gemini, Claude, GPT): 700k tokens (<700K)
   - Default (all other models & unknown): 210k tokens (<210K)
 - Auto-names unnamed panes in the current tab as <model>-<number>
 - Supports checking a single target (1 line) or all panes in the tab (compact table)
@@ -18,16 +18,20 @@ Usage:
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import time
 
 # Explicit token limits in thousands (K)
-BIG_POOL_LIMIT_K = 650.0
-BIG_POOL_HIGH_K = 550.0
-
+BIG_POOL_LIMIT_K = 700.0
 DEFAULT_LIMIT_K = 210.0
-DEFAULT_HIGH_K = 175.0
+
+# Retained only so older callers importing these names keep working; the HIGH band no
+# longer decides anything. Dispatch is decided by `current + predicted > limit`, and the
+# figure the leader needs is the headroom (`limit - current`) printed on every row.
+BIG_POOL_HIGH_K = BIG_POOL_LIMIT_K
+DEFAULT_HIGH_K = DEFAULT_LIMIT_K
 
 # Backwards compatibility aliases
 CLAUDE_GEMINI_LIMIT_K = BIG_POOL_LIMIT_K
@@ -106,17 +110,17 @@ def get_space_tag(tab_id=None, ws_id=None):
 def get_model_target_limit(name, kind, tail_lines=""):
     """
     Determines explicit token target limit based on model:
-    - Big pool (Gemini, Claude, GPT): 650k tokens (<650K)
+    - Big pool (Gemini, Claude, GPT): 700k tokens (<700K)
     - Default (all others / Grok / Unknown): 210k tokens (<210K)
     Returns: (limit_tokens_k, limit_str, high_tokens_k)
     """
     combined = f"{name} {kind}".lower()
     if any(m in combined for m in ["gemini", "agy", "claude", "opus", "sonnet", "gpt", "codex"]):
-        return BIG_POOL_LIMIT_K, "<650K", BIG_POOL_HIGH_K
+        return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
 
     tail = tail_lines.lower()
     if any(m in tail for m in ["gemini", "agy", "claude", "opus", "sonnet", "gpt", "codex"]):
-        return BIG_POOL_LIMIT_K, "<650K", BIG_POOL_HIGH_K
+        return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
 
     return DEFAULT_LIMIT_K, "<210K", DEFAULT_HIGH_K
 
@@ -395,11 +399,12 @@ def load_lead_skill_directives():
 - Default (all others): Simple worker (Fire & forget).
 - Soft guidance: Recommended, not rigid. Adapt flexibly if a tier is busy.
 - Fixed panes & queueing: Keep pane count fixed; queue jobs via `herdr agent wait <target>` instead of creating new panes.
-- Capacity: Big pool (Claude/Gemini/GPT) <650K, default for all others <210K. Run `pane-limits <target>` before dispatch. Split if HIGH.
+- Capacity is a PRE-DISPATCH TARGET. Clear when `current + predicted > limit`, where current is the pane's usage now, predicted is what the next task will consume (brief + files it must read + tool output it will generate), and limit is 700K for the big pool (Claude/Gemini/GPT) or 210K default for all others. Run `pane-limits <target>` immediately before every dispatch. Each row prints its headroom (`limit - current`), the budget for the next task: predicted <= headroom -> send as-is; predicted > headroom, or verdict `BREACH` -> clear first (handoff first if the next task needs the current context).
 ### 5. Inter-Agent Communication & Scratchpads
 - Use root repo '.scratchpads/' or agent tmp folder (/tmp) for inter-agent communication, drafts, payloads, and handoffs. Keep source tree clean.
-### 6. Context Hygiene: Clear or Handoff
-- Stateless: `/clear ` (trailing space). Stateful: handoff to '.scratchpads/<target>-handoff.md' -> verify -> `/clear ` -> read handoff.
+### 6. Context Hygiene: Clear Before the Next Instruction
+- Clear only as the first move of the NEXT dispatch, never as cleanup after a finished task. A pane under target keeps its context.
+- Stateless: `/clear ` (trailing space) -> wait -> send brief. Stateful: handoff to '.scratchpads/<target>-handoff.md' -> verify on disk -> `/clear ` -> wait -> resume pointing at the handoff.
 ### 7. Execution Mechanics
 - Address by name (`<space>-<model>-<n>`). Interrupt via `herdr agent send-keys <target> ctrl+c`."""
 
@@ -682,10 +687,23 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
     time.sleep(0.8)  # allow shells in newly spawned panes to finish loading
 
     print("🚀 Launching worker agents...")
+    session_id = os.environ.get("SWARM_SESSION_ID", "")
+    leader = os.environ.get("SWARM_LEADER", "")
+    roster = os.environ.get("SWARM_ROSTER", "")
+
     for pid, cmd, name in valid_workers:
         run_cmd(["herdr", "pane", "rename", pid, name])
         run_cmd(["herdr", "agent", "rename", pid, name])
-        run_cmd(["herdr", "pane", "run", pid, cmd])
+        run_cmd_str = cmd
+        if session_id:
+            env_export = (
+                f"export SWARM_SESSION_ID={shlex.quote(session_id)} "
+                f"SWARM_LEADER={shlex.quote(leader)} "
+                f"SWARM_ROSTER={shlex.quote(roster)} "
+                f"SWARM_PANE={shlex.quote(name)}; "
+            )
+            run_cmd_str = f"{env_export}{cmd}"
+        run_cmd(["herdr", "pane", "run", pid, run_cmd_str])
         print(f"  ↳ [{pid}] {name} (Right Half) -> `{cmd}`")
 
     print("⏳ Waiting for agents to initialize...")
@@ -696,6 +714,10 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
 
 
 def main():
+    if "--space-tag" in sys.argv:
+        print(get_space_tag())
+        sys.exit(0)
+
     if "--init-leader" in sys.argv or "--leader-prompt" in sys.argv:
         current_tab = get_current_tab()
         current_pane = get_current_pane()
@@ -788,20 +810,15 @@ def main():
 
         if used_k is not None:
             if used_k >= limit_tokens_k:
-                verdict = f"BREACH ({used_k:.1f}K >= {limit_tokens_k:.0f}K) -> CLEAR/HANDOFF"
-            elif used_k >= high_tokens_k:
-                verdict = f"HIGH ({used_k:.1f}K) -> SPLIT UNIT"
+                verdict = f"BREACH ({used_k:.1f}K >= {limit_tokens_k:.0f}K) -> CLEAR BEFORE NEXT INSTRUCTION"
             else:
-                verdict = "OK"
+                verdict = f"OK  headroom {limit_tokens_k - used_k:.0f}K"
         elif pct is not None:
-            equiv_limit_pct = 65.0 if limit_tokens_k == CLAUDE_GEMINI_LIMIT_K else 82.0
-            equiv_high_pct = 55.0 if limit_tokens_k == CLAUDE_GEMINI_LIMIT_K else 68.0
+            equiv_limit_pct = 70.0 if limit_tokens_k == CLAUDE_GEMINI_LIMIT_K else 82.0
             if pct >= equiv_limit_pct:
-                verdict = f"BREACH ({pct:.0f}% >= {equiv_limit_pct:.0f}%) -> CLEAR/HANDOFF"
-            elif pct >= equiv_high_pct:
-                verdict = f"HIGH ({pct:.0f}%) -> SPLIT UNIT"
+                verdict = f"BREACH ({pct:.0f}% >= {equiv_limit_pct:.0f}%) -> CLEAR BEFORE NEXT INSTRUCTION"
             else:
-                verdict = "OK"
+                verdict = f"OK  headroom ~{equiv_limit_pct - pct:.0f}% of window"
         else:
             verdict = "UNKNOWN"
 
