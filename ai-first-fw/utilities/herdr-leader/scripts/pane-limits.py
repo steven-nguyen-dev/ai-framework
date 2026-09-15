@@ -582,14 +582,9 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
     Option 4: clan, agp, agr, agg
     Option 5: clan, agp, agr, cus, gpt
     """
-    try:
-        opt = int(option_num)
-    except ValueError:
-        print(f"ERR: Invalid spawn option '{option_num}'. Choose 3, 4, or 5.", file=sys.stderr)
-        return False
-
-    if opt not in (3, 4, 5):
-        print(f"ERR: Unsupported spawn option '{opt}'. Choose 3, 4, or 5.", file=sys.stderr)
+    opt = str(option_num).strip().lower()
+    if opt not in ("3", "3a", "4", "4a", "5"):
+        print(f"ERR: Unsupported spawn option '{option_num}'. Choose 3, 3a, 4, 4a, or 5.", file=sys.stderr)
         return False
 
     if not tab_id:
@@ -618,7 +613,8 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
     run_cmd(["herdr", "pane", "rename", leader_pane_id, leader_name])
     run_cmd(["herdr", "agent", "rename", leader_pane_id, leader_name])
 
-    print(f"🌱 Spawning {opt} worker panes (Leader on Left Half, All Workers on Right Half)...")
+    worker_count = 3 if opt in ("3", "3a") else (4 if opt in ("4", "4a") else 5)
+    print(f"🌱 Spawning {worker_count} worker panes (Leader on Left Half, All Workers on Right Half)...")
 
     # Step 1: Divide the tab cleanly 50/50 vertically.
     # Leader stays in left half; p1 becomes the root of the right half.
@@ -631,7 +627,7 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
     workers = []  # list of (pane_id, command, assigned_name)
 
     # Step 2: Subdivide ONLY within the right half (never touching leader_pane_id again)
-    if opt == 3:
+    if opt == "3":
         # 3 workers in right half:
         # p1 (top-right, 50% height)
         # p2 (bottom-left of right half, 50% height)
@@ -646,7 +642,22 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
             (p3, "agr", f"{space_tag}-gemini-2"),
         ]
 
-    elif opt == 4:
+    elif opt == "3a":
+        # 3 workers in right half (Opus, Grok, GPT):
+        # p1 (top-right, 50% height) -> Opus
+        # p2 (bottom-left of right half, 50% height) -> Grok
+        # p3 (bottom-right of right half, 50% height) -> GPT
+        p2 = split_pane(p1, direction="down", cwd=cwd, ratio="0.5")
+        time.sleep(0.15)
+        p3 = split_pane(p2, direction="right", cwd=cwd, ratio="0.5") if p2 else None
+
+        workers = [
+            (p1, "clan", f"{space_tag}-opus-1"),
+            (p2, "cus", f"{space_tag}-grok-1"),
+            (p3, "gpt", f"{space_tag}-gpt-1"),
+        ]
+
+    elif opt == "4":
         # 4 workers in right half (2x2 grid):
         # Top row: p1 (top-left), p3 (top-right)
         # Bottom row: p2 (bottom-left), p4 (bottom-right)
@@ -663,7 +674,24 @@ def spawn_swarm(option_num, tab_id=None, leader_pane_id=None):
             (p4, "agg", f"{space_tag}-gemini-3"),
         ]
 
-    elif opt == 5:
+    elif opt == "4a":
+        # 4 workers in right half (2x2 grid): 2 Opus, 1 Grok, 1 GPT
+        # Top row: p1 (top-left, Opus), p3 (top-right, Opus)
+        # Bottom row: p2 (bottom-left, Grok), p4 (bottom-right, GPT)
+        p2 = split_pane(p1, direction="down", cwd=cwd, ratio="0.5")
+        time.sleep(0.15)
+        p3 = split_pane(p1, direction="right", cwd=cwd, ratio="0.5")
+        time.sleep(0.15)
+        p4 = split_pane(p2, direction="right", cwd=cwd, ratio="0.5") if p2 else None
+
+        workers = [
+            (p1, "clan", f"{space_tag}-opus-1"),
+            (p3, "clan", f"{space_tag}-opus-2"),
+            (p2, "cus", f"{space_tag}-grok-1"),
+            (p4, "gpt", f"{space_tag}-gpt-1"),
+        ]
+
+    elif opt == "5":
         # 5 workers in right half:
         # Top row (2 workers): p1, p3
         # Bottom row (3 workers): p2, p4, p5
@@ -730,7 +758,7 @@ def main():
         idx = sys.argv.index("--spawn")
         if idx + 1 < len(sys.argv):
             spawn_opt = sys.argv[idx + 1]
-    elif len(sys.argv) > 1 and sys.argv[1] in ("3", "4", "5"):
+    elif len(sys.argv) > 1 and sys.argv[1].lower() in ("3", "3a", "4", "4a", "5"):
         spawn_opt = sys.argv[1]
 
     if spawn_opt:

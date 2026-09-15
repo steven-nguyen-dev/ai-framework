@@ -46,5 +46,1119 @@
         "reason": "BuyerCanceled"
       }
     ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": [
+      {
+        "line_item_id": "811",
+        "approved": 1,
+        "received": 1
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "cancel",
+    "order_id": "41277",
+    "cancellation_reason": "<absent>",
+    "marketplace_code": "amazon_sp_fr",
+    "items": [
+      {
+        "id": 2866997,
+        "item_codes": [
+          "OIID-01"
+        ],
+        "item_quantity": 2,
+        "reason": "BuyerCanceled"
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "APPROVED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "REJECTED",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "IN_PROGRESS",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "8Q123456789FR",
+    "return_type": "PUTAWAY",
+    "order_items": [
+      {
+        "id": 811,
+        "sku": "SKU-1001",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse",
+        "approved": 1,
+        "received": 1,
+        "putaway": 1,
+        "disposition": [
+          {
+            "code": "usable_quantity",
+            "quantity": 1
+          }
+        ],
+        "remaining_unresolved": 0
+      }
+    ]
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "COMPLETE",
+    "order_items": []
+  },
+  {
+    "kind": "update_status",
+    "order_id": "41277",
+    "new_status": "RETURN",
+    "wms_status": "<absent>",
+    "tracking_number": "<absent>",
+    "return_type": "PUTAWAY",
+    "order_items": []
   }
 ]

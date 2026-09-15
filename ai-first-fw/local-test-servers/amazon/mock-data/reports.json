@@ -1,5 +1,13 @@
 [
   {
+    "reportId": "rep-listings-ATVPDKIKX0DER",
+    "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
+    "marketplaceIds": [
+      "ATVPDKIKX0DER"
+    ],
+    "reportOptions": "null"
+  },
+  {
     "reportId": "rep-100001",
     "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
     "marketplaceIds": [
@@ -46,5 +54,1139 @@
       "ATVPDKIKX0DER"
     ],
     "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-100001",
+    "reportType": "GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9-CANCELLED",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9-CANCELLED"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9-CANCELLED"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-DEFAULTSTORE",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": "null"
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1PA6795UKMFR9",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1PA6795UKMFR9"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1PA6795UKMFR9"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A39IBJ37TRP1C6",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A39IBJ37TRP1C6"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A39IBJ37TRP1C6"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1F83G8C2ARO7P",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1F83G8C2ARO7P"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1F83G8C2ARO7P"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1VC38T7YXB528",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1VC38T7YXB528"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1VC38T7YXB528"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A13V1IB3VIYZZH",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A13V1IB3VIYZZH"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A13V1IB3VIYZZH"
+    }
+  },
+  {
+    "reportId": "rep-browsetree-A1RKKUPIHCS9HS",
+    "reportType": "GET_XML_BROWSE_TREE_DATA",
+    "marketplaceIds": [
+      "A1RKKUPIHCS9HS"
+    ],
+    "reportOptions": {
+      "MarketplaceId": "A1RKKUPIHCS9HS"
+    }
   }
 ]

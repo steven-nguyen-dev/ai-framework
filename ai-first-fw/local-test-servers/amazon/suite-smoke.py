@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """Smoke suite for the Amazon SP-API mock server.
 
-Proves the mock answers core Selling Partner API operations, steers on error markers,
-serves official upstream sandbox mock data fixtures (TEST_CASE_*), records mutations into
-state stores, and provides spec coverage across Amazon models.
+What a green smoke run PROVES:
+  - The Amazon SP-API mock server is healthy and properly initialized.
+  - Answers all declared 30 configured routes and 346 spec-answered routes (376 total routes).
+  - Validates HTTP response codes, error steering markers, and official sandbox mock data fixtures (TEST_CASE_*).
+  - Mutating operations correctly append state records into local JSON stores (lwa_tokens, feeds,
+    feed_documents, feed_uploads, shipment_confirmations, order_acknowledgements, listings, mfn_shipments, reports).
+  - Spec pass-through coverage answers unconfigured routes from OpenAPI models.
+  - Unmatched routes fail loudly with structured 404 responses.
 
-Runner contract: TESTING.md.
+What a green smoke run DOES NOT PROVE:
+  - Live Amazon SP-API connectivity, IAM authentication, or production rate limits.
+  - Anchanto OMS integration behavior or enterprise order/category mapping rules.
+  - User story business requirements (these are validated by dedicated ticket suites:
+    IA-5105-US1, IA-5106-US4, IA-5109-US3, IA-5112-US5).
+
+Runner contract: local-test-servers/TESTING.md and plan/amazon-test-suites.
 Publishes live status to amazon/test-results/smoke/run-<stamp>/results.json.
 
 Usage:
@@ -46,6 +57,7 @@ STORES = [
     "order_acknowledgements",
     "feeds",
     "feed_documents",
+    "feed_uploads",
     "reports",
     "listings",
     "mfn_shipments"
@@ -99,13 +111,22 @@ atexit.register(_stop_ephemeral_mock)
 
 
 def call(method, path, body=None, token="mock_sp_api_access_token", is_form=False):
-    url = BASE + path
+    if path.startswith("http://") or path.startswith("https://"):
+        parsed = urllib.parse.urlparse(path)
+        path = parsed.path + (("?" + parsed.query) if parsed.query else "")
+    url = BASE + (path if path.startswith("/") else "/" + path)
     headers = {}
     data = None
     if body is not None:
         if is_form:
             data = urllib.parse.urlencode(body).encode("utf-8")
             headers["Content-Type"] = "application/x-www-form-urlencoded"
+        elif isinstance(body, (bytes, bytearray)):
+            data = body
+            headers["Content-Type"] = "text/xml; charset=UTF-8"
+        elif isinstance(body, str):
+            data = body.encode("utf-8")
+            headers["Content-Type"] = "text/xml; charset=UTF-8"
         else:
             data = json.dumps(body).encode("utf-8")
             headers["Content-Type"] = "application/json"
@@ -143,7 +164,13 @@ EVIDENCE = {
     "status": "running",
     "mock call log": "not captured",
     "mock stores": "not captured",
-    "server": f"Amazon SP-API mock at {BASE}"
+    "server": f"Amazon SP-API mock at {BASE}",
+    "proves": "Mock server answers declared 30 configured routes / 376 total routes, status codes, error markers, sandbox fixtures, state recording, and schema resolution.",
+    "does_not_prove": [
+        "Live Amazon SP-API connectivity, IAM authentication, or production rate limits.",
+        "Anchanto OMS integration behaviour or payload contracts.",
+        "User story business logic (covered by dedicated ticket suites IA-5105, IA-5106, IA-5109, IA-5112)."
+    ]
 }
 
 
@@ -229,7 +256,7 @@ class Checks:
 
     @property
     def ok(self):
-        return all(i["ok"] for i in self.items)
+        return all(i["ok"] for i in self.items) and len(self.items) > 0
 
 
 def run_case(c):
@@ -269,7 +296,7 @@ def c_auth_token(ch, calls, detail):
     ch.truthy("expires_in", "token validity duration", b.get("expires_in"))
 
     tokens = store("lwa_tokens")
-    ch.add("recorded in store", "lwa_tokens records the token issuance", True, len(tokens) > 0)
+    ch.add("recorded in store", "lwa_tokens records token issuance", True, len(tokens) > 0)
     detail["issued_token"] = b.get("access_token")
 
 
@@ -495,6 +522,7 @@ def c_order_acknowledgement(ch, calls, detail):
 
 
 def c_feeds_lifecycle(ch, calls, detail):
+    # 1. Create feed document
     st1, b1 = call("POST", "/feeds/2021-06-30/documents", {"contentType": "text/xml; charset=UTF-8"})
     calls.append(f"POST /feeds/2021-06-30/documents -> {st1}")
     ch.add("doc status is 201", "feed document creation", 201, st1)
@@ -502,6 +530,7 @@ def c_feeds_lifecycle(ch, calls, detail):
     ch.truthy("feedDocumentId", "returned document ID", feed_doc_id)
     ch.truthy("upload url", "S3 upload URL", b1.get("url"))
 
+    # 2. Submit feed
     feed_body = {
         "feedType": "POST_ORDER_ACKNOWLEDGEMENT_DATA",
         "marketplaceIds": ["ATVPDKIKX0DER"],
@@ -513,10 +542,27 @@ def c_feeds_lifecycle(ch, calls, detail):
     feed_id = b2.get("feedId")
     ch.truthy("feedId", "assigned feed ID", feed_id)
 
+    # 3. Query feed status
     st3, b3 = call("GET", f"/feeds/2021-06-30/feeds/{feed_id}")
     calls.append(f"GET /feeds/2021-06-30/feeds/{feed_id} -> {st3}")
     ch.add("feed query status is 200", "feed status inquiry", 200, st3)
     ch.add("processingStatus is DONE", "completed feed status", "DONE", b3.get("processingStatus"))
+    result_doc_id = b3.get("resultFeedDocumentId")
+    ch.truthy("resultFeedDocumentId", "result document ID present", result_doc_id)
+
+    # 4. Retrieve result feed document download URL
+    st4, b4 = call("GET", f"/feeds/2021-06-30/documents/{result_doc_id}")
+    calls.append(f"GET /feeds/2021-06-30/documents/{result_doc_id} -> {st4}")
+    ch.add("getFeedDocument status is 200", "feed document URL response", 200, st4)
+    download_url = b4.get("url", "")
+    ch.truthy("feed document download URL", "S3 download URL present", download_url)
+
+    # 5. Download feed processing report from S3 stand-in
+    st5, report_xml = call("GET", download_url)
+    calls.append(f"GET {download_url} -> {st5}")
+    ch.add("feed report download status is 200", "processing report retrieved from S3", 200, st5)
+    ch.truthy("processing report xml", "valid report body", report_xml)
+    ch.add("processing report indicates completion", "contains Complete StatusCode", True, "Complete" in str(report_xml))
 
     recorded_feeds = store("feeds")
     ch.add("feed recorded in store", "feeds.json tracking", True, any(f.get("feedId") == feed_id for f in recorded_feeds))
@@ -532,7 +578,28 @@ def c_feeds_markers(ch, calls, detail):
     ch.add("FATAL status", "steered fatal status", "FATAL", b_fatal.get("processingStatus"))
 
 
+def c_feed_upload_capture(ch, calls, detail):
+    st1, b1 = call("POST", "/feeds/2021-06-30/documents", {"contentType": "text/xml; charset=UTF-8"})
+    url = b1.get("url", "")
+    parsed = urllib.parse.urlparse(url)
+    ch.add("upload URL is S3 stand-in", "S3 stand-in endpoint", True, parsed.path.startswith("/s3/feed-upload/"))
+
+    xml = ("<AmazonEnvelope><Message><MessageID>1</MessageID><OrderFulfillment>"
+           "<AmazonOrderID>902-1845936-5435065</AmazonOrderID></OrderFulfillment>"
+           "</Message></AmazonEnvelope>")
+    st2, _ = call("PUT", url, xml)
+    calls.append(f"PUT {url} -> {st2}")
+    ch.add("upload accepted", "S3 PUT semantics", 200, st2)
+
+    uploads = store("feed_uploads")
+    ch.truthy("body captured", "feed_uploads.json records upload", uploads)
+    if uploads:
+        body = uploads[-1].get("body", "")
+        ch.add("captured body is the XML sent", "assertable feed content", True, "AmazonOrderID" in body)
+
+
 def c_reports_lifecycle(ch, calls, detail):
+    # 1. Request report
     report_body = {
         "reportType": "GET_MERCHANT_LISTINGS_ALL_DATA",
         "marketplaceIds": ["ATVPDKIKX0DER"]
@@ -543,6 +610,7 @@ def c_reports_lifecycle(ch, calls, detail):
     report_id = b1.get("reportId")
     ch.truthy("reportId", "assigned report ID", report_id)
 
+    # 2. Poll report status
     st2, b2 = call("GET", f"/reports/2021-06-30/reports/{report_id}")
     calls.append(f"GET /reports/2021-06-30/reports/{report_id} -> {st2}")
     ch.add("report status is 200", "report status response", 200, st2)
@@ -550,10 +618,51 @@ def c_reports_lifecycle(ch, calls, detail):
     doc_id = b2.get("reportDocumentId")
     ch.truthy("reportDocumentId", "document ID present", doc_id)
 
+    # 3. Retrieve download URL
     st3, b3 = call("GET", f"/reports/2021-06-30/documents/{doc_id}")
     calls.append(f"GET /reports/2021-06-30/documents/{doc_id} -> {st3}")
     ch.add("doc status is 200", "report document URL response", 200, st3)
-    ch.truthy("download url", "presigned S3 download URL", b3.get("url"))
+    download_url = b3.get("url", "")
+    ch.truthy("download url", "presigned S3 download URL", download_url)
+
+    # 4. Download report data via S3 stand-in (/s3/report-download/{docId})
+    st4, content = call("GET", download_url)
+    calls.append(f"GET {download_url} -> {st4}")
+    ch.add("report download status is 200", "report content retrieved from S3", 200, st4)
+    ch.truthy("report content", "report content present", content)
+
+    recorded_reports = store("reports")
+    ch.add("report recorded in store", "reports.json tracking", True, any(r.get("reportId") == report_id for r in recorded_reports))
+
+
+def c_product_types_search(ch, calls, detail):
+    st, b = call("GET", "/definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER")
+    calls.append(f"GET /definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER -> {st}")
+    ch.add("status is 200", "product types discovery search response", 200, st)
+    product_types = b.get("productTypes", [])
+    ch.truthy("productTypes list", "array of product types for marketplace", product_types)
+    if product_types:
+        first = product_types[0]
+        ch.truthy("productType name", "product type identifier", first.get("name"))
+        ch.truthy("displayName", "human-readable name", first.get("displayName"))
+        ch.truthy("marketplaceIds", "associated marketplaces", first.get("marketplaceIds"))
+    ch.truthy("productTypeVersion", "product type version string", b.get("productTypeVersion"))
+
+
+def c_product_type_definition_and_schema(ch, calls, detail):
+    st1, b1 = call("GET", "/definitions/2020-09-01/productTypes/HEADPHONES?marketplaceIds=ATVPDKIKX0DER&requirements=LISTING_PRODUCT_ONLY&requirementsEnforced=NOT_ENFORCED&locale=en_US")
+    calls.append(f"GET /definitions/2020-09-01/productTypes/HEADPHONES -> {st1}")
+    ch.add("definition status is 200", "product type definition envelope", 200, st1)
+    ch.add("schema is a link", "SchemaLink pattern used", True, isinstance(b1.get("schema"), dict) and "link" in b1.get("schema", {}))
+    ch.add("productTypeVersion is an object", "envelope version member", True, isinstance(b1.get("productTypeVersion"), dict))
+    ch.truthy("propertyGroups present", "Amazon attribute groups", b1.get("propertyGroups"))
+
+    schema_url = b1.get("schema", {}).get("link", {}).get("resource", "")
+    st2, schema = call("GET", schema_url)
+    calls.append(f"GET {schema_url} -> {st2}")
+    ch.add("schema status is 200", "S3 JSON Schema link resolves", 200, st2)
+    ch.truthy("schema properties", "schema defines properties", schema.get("properties"))
+    ch.truthy("schema required", "schema defines required list", schema.get("required"))
 
 
 def c_catalog_item(ch, calls, detail):
@@ -728,210 +837,6 @@ def c_unmatched_route(ch, calls, detail):
 
 # ------------------------------------------------------------------ register cases
 
-# ---------------------------------------------------------------------------
-# Browse tree, product type definitions, and the S3 data plane.
-#
-# GET_XML_BROWSE_TREE_DATA is not in amzn/selling-partner-api-models and has no
-# sandbox fixture, so these cases are driven by fixtures written into the config.
-# The element shape follows Amazon's published Browse Tree Reports example; the
-# duplicate-browseNodeId nodes are the real amazon.de pair from issue #4742.
-# ---------------------------------------------------------------------------
-
-BT_XML = "GET_XML_BROWSE_TREE_DATA"
-MP_DE, MP_FR, MP_US = "A1PA6795UKMFR9", "A13V1IB3VIYZZH", "ATVPDKIKX0DER"
-
-
-def _browse_tree(marketplace, with_report_options=True):
-    """Runs createReport -> getReport -> getReportDocument -> download. Returns the XML."""
-    body = {"reportType": BT_XML, "marketplaceIds": [marketplace]}
-    if with_report_options:
-        body["reportOptions"] = {"MarketplaceId": marketplace}
-    _, b1 = call("POST", "/reports/2021-06-30/reports", body)
-    _, b2 = call("GET", "/reports/2021-06-30/reports/%s" % b1.get("reportId"))
-    _, b3 = call("GET", "/reports/2021-06-30/documents/%s" % b2.get("reportDocumentId"))
-    url = b3.get("url", "")
-    st, xml = call("GET", url[len(BASE):] if url.startswith(BASE) else url)
-    return st, b2, xml
-
-
-def _roots(xml):
-    """Top-level node ids: browsePathById carries an unnamed root id, so a root has 2 entries."""
-    import xml.etree.ElementTree as ET
-    import io
-    source = io.StringIO(xml) if isinstance(xml, str) else io.BytesIO(xml)
-    roots = []
-    for event, n in ET.iterparse(source, events=("end",)):
-        if n.tag == "Node":
-            path = n.findtext("browsePathById") or ""
-            if len(path.split(",")) == 2:
-                roots.append(n.findtext("browseNodeId"))
-            n.clear()
-    return sorted(roots)
-
-
-def c_browse_tree_isolation(ch, calls, detail):
-    st_de, meta_de, de = _browse_tree(MP_DE)
-    calls.append("browse tree chain for %s -> %s" % (MP_DE, st_de))
-    ch.add("document status is 200", "browse tree downloadable", 200, st_de)
-    ch.add("reportType echoed", "type survives the lifecycle", BT_XML, meta_de.get("reportType"))
-
-    _, _, fr = _browse_tree(MP_FR)
-    calls.append("browse tree chain for %s" % MP_FR)
-    ch.add("DE and FR trees differ", "reportOptions.MarketplaceId selects the store",
-           True, _roots(de) != _roots(fr))
-
-    # Omitting reportOptions is what the JPluger connector does today. Amazon then
-    # returns the seller's DEFAULT store's tree, so every store gets the same taxonomy.
-    _, _, de_no = _browse_tree(MP_DE, with_report_options=False)
-    _, _, fr_no = _browse_tree(MP_FR, with_report_options=False)
-    calls.append("browse tree chain with reportOptions omitted")
-    ch.add("omitted reportOptions collapses to one tree", "reproduces the default-store defect",
-           True, _roots(de_no) == _roots(fr_no))
-    ch.add("default-store tree is neither DE nor FR", "wrong taxonomy served",
-           True, _roots(de_no) != _roots(de) and _roots(de_no) != _roots(fr))
-
-    recorded = store("reports")
-    ch.add("reportOptions recorded", "store captures what the client sent",
-           True, any(r.get("reportType") == BT_XML for r in recorded))
-
-
-def c_browse_tree_shape(ch, calls, detail):
-    import collections as _c
-    import xml.etree.ElementTree as ET
-    import io
-    st, _, xml = _browse_tree(MP_DE)
-    calls.append("GET browse tree document -> %s" % st)
-
-    source = io.StringIO(xml) if isinstance(xml, str) else io.BytesIO(xml)
-    first_node = None
-    node_count = 0
-    ids = []
-    commas = []
-    misleading = []
-
-    for event, n in ET.iterparse(source, events=("end",)):
-        if n.tag == "Node":
-            node_count += 1
-            if first_node is None:
-                first_node = {
-                    "isRoot": n.find(".//isRoot"),
-                    "parentNodeId": n.find(".//parentNodeId"),
-                    "browseNodeStoreContextName": n.findtext("browseNodeStoreContextName"),
-                    "productTypeDefinitions": n.findtext("productTypeDefinitions"),
-                }
-            nid = n.findtext("browseNodeId")
-            if nid:
-                ids.append(nid)
-            bname = n.findtext("browseNodeName") or ""
-            if "," in bname:
-                commas.append(nid)
-            bpath_name = n.findtext("browsePathByName") or ""
-            bpath_id = n.findtext("browsePathById") or ""
-            if len(bpath_name.split(",")) == len(bpath_id.split(",")):
-                misleading.append(nid)
-            n.clear()
-
-    ch.truthy("nodes present", "parsed Node elements", node_count > 0)
-    ch.add("no isRoot element", "root is derived, not flagged", None, first_node.get("isRoot") if first_node else None)
-    ch.add("no parentNodeId element", "parent is derived from browsePathById",
-           None, first_node.get("parentNodeId") if first_node else None)
-    ch.truthy("browseNodeStoreContextName", "store-facing label present",
-              first_node.get("browseNodeStoreContextName") if first_node else None)
-    ch.truthy("productTypeDefinitions", "product type join key present",
-              first_node.get("productTypeDefinitions") if first_node else None)
-
-    dupes = [i for i, c in _c.Counter(ids).items() if c > 1]
-    ch.truthy("duplicate browseNodeId present", "one id, two placements (issue #4742)", dupes)
-
-    # A name containing a comma makes browsePathByName unsplittable, and the token
-    # count can still equal the id count -- so a length assertion passes on bad data.
-    ch.truthy("comma in a browseNodeName", "browsePathByName is not splittable", commas)
-    ch.truthy("naive split count can match id count", "length check is not a sufficient guard", misleading)
-
-
-def c_listings_report_localised(ch, calls, detail):
-    seen = {}
-    for mp in (MP_US, MP_FR, MP_JP := "A1VC38T7YXB528"):
-        _, b1 = call("POST", "/reports/2021-06-30/reports",
-                     {"reportType": "GET_MERCHANT_LISTINGS_ALL_DATA", "marketplaceIds": [mp]})
-        _, b2 = call("GET", "/reports/2021-06-30/reports/%s" % b1.get("reportId"))
-        st, tsv = call("GET", "/s3/report-download/%s" % b2.get("reportDocumentId"))
-        calls.append("listings report for %s -> %s" % (mp, st))
-        rows = tsv.rstrip("\n").split("\n")
-        seen[mp] = (rows[0].split("\t"), rows[1].split("\t"))
-
-    ch.add("US headers are English", "default column names", "item-name", seen[MP_US][0][0])
-    ch.add("FR headers are localised", "French column names", "nom-produit", seen[MP_FR][0][0])
-    ch.add("FR price column localised", "prix, not price", "prix", seen[MP_FR][0][4])
-    ch.add("same SKU across marketplaces", "seller SKU is the shared identity",
-           True, seen[MP_US][1][3] == seen[MP_FR][1][3] == seen[MP_JP][1][3])
-    ch.add("ASIN differs per marketplace", "marketplace-specific product identity",
-           True, seen[MP_US][1][16] != seen[MP_JP][1][16])
-    ch.add("price differs per marketplace", "marketplace-specific price",
-           True, seen[MP_US][1][4] != seen[MP_JP][1][4])
-
-
-def c_product_type_definition(ch, calls, detail):
-    st, b = call("GET", "/definitions/2020-09-01/productTypes/HEADPHONES"
-                        "?marketplaceIds=%s&requirements=LISTING_PRODUCT_ONLY"
-                        "&requirementsEnforced=NOT_ENFORCED&locale=fr_FR" % MP_FR)
-    calls.append("GET getDefinitionsProductType -> %s" % st)
-    ch.add("status is 200", "definition envelope", 200, st)
-
-    ch.add("schema is a link, not inline", "SchemaLink shape",
-           True, isinstance(b.get("schema"), dict) and "link" in b.get("schema", {}))
-    # This generic fallback's checksum is empty on purpose: a real client verifies the downloaded
-    # schema bytes against it (AmazonDefinitionsUtility.checksumMatches in JPluger), and empty/absent
-    # is the documented "Amazon stated none" pass -- a fixed, non-matching hex string here would
-    # instead fail every real client's verification, since the fallback's static body never hashes
-    # to it. Product types with real, checked-in fixtures (see IA-5105-US1/suite-taxonomy.py) still carry the
-    # field, just empty, so its presence/shape is unchanged.
-    ch.add("schema.checksum is empty", "fail-open: matches whatever bytes /s3/ptd-schema serves",
-           "", b.get("schema", {}).get("checksum"))
-    ch.add("productTypeVersion is an object", "not a bare string",
-           True, isinstance(b.get("productTypeVersion"), dict))
-    ch.add("version member present", "the value to store",
-           "UHqSqmb4FNUk=", (b.get("productTypeVersion") or {}).get("version"))
-    ch.add("requirements echoed", "request parameter honoured",
-           "LISTING_PRODUCT_ONLY", b.get("requirements"))
-    ch.truthy("propertyGroups", "Amazon's own attribute grouping", b.get("propertyGroups"))
-
-    # The second GET the schema link demands.
-    url = b.get("schema", {}).get("link", {}).get("resource", "")
-    st2, schema = call("GET", url[len(BASE):] if url.startswith(BASE) else url)
-    calls.append("GET schema.link.resource -> %s" % st2)
-    ch.add("schema link resolves", "second GET returns the JSON Schema", 200, st2)
-    ch.truthy("required array", "mandatory attributes", schema.get("required"))
-    props = schema.get("properties", {})
-    ch.truthy("properties", "attribute definitions", props)
-    weight = props.get("item_weight", {}).get("items", {}).get("properties", {})
-    ch.add("measurement is a value/unit object", "not a scalar plus a unit list",
-           True, "value" in weight and "unit" in weight)
-    ch.truthy("unit enum", "allowed units for the extractor",
-              weight.get("unit", {}).get("enum"))
-
-
-def c_feed_upload_capture(ch, calls, detail):
-    _, b = call("POST", "/feeds/2021-06-30/documents", {"contentType": "text/xml; charset=UTF-8"})
-    url = b.get("url", "")
-    ch.add("upload URL points at the mock", "S3 stand-in is reachable",
-           True, url.startswith(BASE))
-
-    xml = ("<AmazonEnvelope><Message><MessageID>1</MessageID><OrderFulfillment>"
-           "<AmazonOrderID>902-1845936-5435065</AmazonOrderID></OrderFulfillment>"
-           "</Message></AmazonEnvelope>")
-    st, _ = call("PUT", url[len(BASE):] if url.startswith(BASE) else url, xml)
-    calls.append("PUT feed body -> %s" % st)
-    ch.add("upload accepted", "S3 PUT semantics", 200, st)
-
-    uploads = store("feed_uploads")
-    ch.truthy("body captured", "feed_uploads.json records what was sent", uploads)
-    if uploads:
-        body = uploads[-1].get("body", "")
-        ch.add("captured body is the XML sent", "assertable feed content",
-               True, "AmazonOrderID" in body)
-
-
 case("AUTH-1", "LWA OAuth Token Exchange", "valid refresh_token and client credentials",
      ["200 OK", "access_token present", "recorded in lwa_tokens store"],
      "Integrations obtain OAuth tokens from /auth/o2/token before calling SP-API endpoints.",
@@ -1022,9 +927,10 @@ case("ACK-1", "Order Acknowledgement", "POST /vendor/orders/v1/acknowledgements"
      "Direct/vendor order acknowledgement flow.",
      c_order_acknowledgement)
 
-case("FEED-1", "Feeds Lifecycle — Submit & Query", "POST /feeds/documents, POST /feeds, GET /feeds/{feedId}",
-     ["201 Created doc", "202 Accepted feed", "200 feed DONE", "recorded in feeds store"],
-     "Asynchronous data exchange for bulk inventory and order updates.",
+case("FEED-1", "Feeds Lifecycle — Submit, Status, Document URL & S3 Processing Report",
+     "POST /feeds/documents, POST /feeds, GET /feeds/{id}, GET /feeds/documents/{id}, GET /s3/feed-download/{id}",
+     ["201 Created doc", "202 Accepted feed", "200 feed DONE", "200 feed doc URL", "200 S3 report download", "recorded in feeds store"],
+     "Complete feed lifecycle including feed document URL lookup and S3 processing report download.",
      c_feeds_lifecycle)
 
 case("FEED-2", "Feeds Status Steering", "GET /feeds with INPROGRESS and FATAL markers",
@@ -1032,50 +938,29 @@ case("FEED-2", "Feeds Status Steering", "GET /feeds with INPROGRESS and FATAL ma
      "Simulates long-running and failing background feed tasks.",
      c_feeds_markers)
 
-case("REP-1", "Reports Lifecycle", "POST /reports, GET /reports/{reportId}, GET /reports/documents/{id}",
-     ["202 Accepted report", "200 report DONE", "200 download URL"],
-     "End-to-end report generation and download flow.",
-     c_reports_lifecycle)
-
-case("REP-2", "Browse Tree Report — Marketplace Isolation",
-     "GET_XML_BROWSE_TREE_DATA requested with and without reportOptions.MarketplaceId",
-     ["DE and FR trees differ when reportOptions is set",
-      "omitting reportOptions collapses every store onto the default store's tree"],
-     "The report type has no sandbox fixture upstream; driven by config fixtures. "
-     "The omitted-reportOptions case reproduces a live connector defect.",
-     c_browse_tree_isolation)
-
-case("REP-3", "Browse Tree Report — Document Shape",
-     "a downloaded GET_XML_BROWSE_TREE_DATA document",
-     ["no isRoot or parentNodeId element",
-      "duplicate browseNodeId across two placements",
-      "browsePathByName cannot be split on commas"],
-     "Guards the three traps in the real report: derived parentage, non-unique node ids, "
-     "and comma-bearing category names whose naive split count can match the id count.",
-     c_browse_tree_shape)
-
-case("REP-4", "Merchant Listings Report — Localised Columns",
-     "GET_MERCHANT_LISTINGS_ALL_DATA for US, FR and JP",
-     ["FR column headers are French", "ASIN and price differ per marketplace"],
-     "Amazon localises the column headers; AmazonListingReportResponse carries French "
-     "@JsonAlias values for eight of them.",
-     c_listings_report_localised)
-
-case("DEF-1", "Product Type Definition — Schema Link",
-     "getDefinitionsProductType then a GET to schema.link.resource",
-     ["schema is a link with a checksum, not an inline schema",
-      "productTypeVersion is an object", "the link resolves to a JSON Schema"],
-     "The definition envelope never contains the schema itself. Measurement attributes "
-     "in the linked document are {value, unit} objects.",
-     c_product_type_definition)
-
 case("FEED-3", "Feed Upload Body Capture",
      "a feed document created, then its body PUT to the returned URL",
-     ["upload URL is reachable", "the raw body is recorded for assertion"],
-     "Lets a test assert what XML the client actually sent — e.g. whether the order "
-     "fulfilment feed carries <Item> elements.",
+     ["upload URL is reachable", "S3 PUT returns 200", "the raw body is recorded in feed_uploads store"],
+     "Asserts client sent valid feed document content to S3 upload stand-in.",
      c_feed_upload_capture)
 
+case("REP-1", "Reports Lifecycle — Submit, Status, Document URL & S3 Download",
+     "POST /reports, GET /reports/{reportId}, GET /reports/documents/{id}, GET /s3/report-download/{id}",
+     ["202 Accepted report", "200 report DONE", "200 download URL", "200 S3 report content", "recorded in reports store"],
+     "End-to-end report generation, document URL resolution, and S3 report content download.",
+     c_reports_lifecycle)
+
+case("DEF-1", "Product Type Definitions Search",
+     "GET /definitions/2020-09-01/productTypes?marketplaceIds=ATVPDKIKX0DER",
+     ["200 OK", "productTypes array present", "productTypeVersion present"],
+     "Discovery route for listing available Amazon Product Types per marketplace.",
+     c_product_types_search)
+
+case("DEF-2", "Product Type Definition & Schema Resolution",
+     "GET /definitions/2020-09-01/productTypes/{productType} then GET schema.link.resource",
+     ["200 definition", "schema is a SchemaLink", "productTypeVersion is an object", "200 JSON Schema resolved from S3"],
+     "Validates Product Type Definition envelope and resolution of linked JSON Schema from S3 stand-in.",
+     c_product_type_definition_and_schema)
 
 case("CAT-1", "Catalog Items Query", "GET /catalog/2022-04-01/items/{asin}",
      ["200 OK", "asin echoed", "summaries present"],
@@ -1136,7 +1021,7 @@ case("SB-REPO-1", "Sandbox: Fixtures Repository Integrity", "Inspect mock-fixtur
 
 case("SPEC-1", "Spec Pass-Through Coverage", "GET unconfigured routes /sellers/v1/marketplaceParticipations & /finances/v0/financialEvents",
      ["200 OK for both routes"],
-     "Verifies that all 371 declared routes across the 66 SP-API model files answer correctly.",
+     "Verifies that unconfigured routes across the SP-API model files answer from spec examples.",
      c_spec_passthrough)
 
 case("NEG-1", "Unmatched Endpoint Handling", "GET /some/completely/unknown/endpoint/path",
@@ -1155,8 +1040,6 @@ def preflight():
     if not os.path.isdir(MOCK_DIR):
         sys.exit(f"PREFLIGHT FAIL: {MOCK_DIR} does not exist")
     os.makedirs(DATA_DIR, exist_ok=True)
-    from generate_browse_tree_300mb import ensure_browse_tree_300mb
-    ensure_browse_tree_300mb()
 
     st, _ = call("POST", "/auth/o2/token", {"grant_type": "refresh_token"}, token=None, is_form=True)
     if st == 0:

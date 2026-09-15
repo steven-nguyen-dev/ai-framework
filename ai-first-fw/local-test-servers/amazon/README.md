@@ -11,10 +11,10 @@ python3 portal.py
 # Or start directly
 python3 mock.py amazon
 
-# Validate route table against the consolidated spec (375 routes)
+# Validate route table against the consolidated spec (376 routes)
 python3 mock.py amazon --check
 
-# Run the automated smoke test suite (39 test cases, 152 assertions)
+# Run the automated smoke test suite (37 test cases, 142 checks)
 python3 amazon/suite-smoke.py
 
 # Run the IA-5105 User Story 1 suites -- Marketplace Taxonomy & Store Connect
@@ -22,6 +22,13 @@ python3 amazon/IA-5105-US1/suite-taxonomy.py
 python3 amazon/IA-5105-US1/suite-connect-us.py
 python3 amazon/IA-5105-US1/suite-connect-non-us.py
 python3 amazon/IA-5105-US1/suite-all.py
+
+# Run the IA-5106 User Story 4 suites -- Order Cancellation, Hold, Release & RTS Guard
+python3 amazon/IA-5106-US4/suite-hold.py
+python3 amazon/IA-5106-US4/suite-cancel.py
+python3 amazon/IA-5106-US4/suite-restore.py
+python3 amazon/IA-5106-US4/suite-gate.py
+python3 amazon/IA-5106-US4/suite-all.py
 
 # Run the IA-5109 User Story 3 suites -- Flow 1, the order fulfilment feed
 python3 amazon/IA-5109-US3/suite-feed-submission.py
@@ -40,15 +47,15 @@ python3 amazon/IA-5112-US5/suite-all.py
 
 The IA-5112 suites validate the import and processing of Amazon Seller-Fulfilled Returns (`GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE`),
 OMS write contracts (`POST /rest/v1/orders/return` and `POST /rest/v1/orders/{id}/update_status?new_status=RETURN`),
-the 4 completion paths, 30-day putaway ageing, WMS3 two-condition receipt, authority split, exception matrix, and 4 technical residual probes across **60 automated test cases**.
+the 4 completion paths, 30-day putaway ageing at boundary edges, WMS3 two-condition receipt, authority split, exception matrix, and 4 technical residual probes across **55 automated test cases**.
 The IA-5112 suites live in [`IA-5112-US5/`](IA-5112-US5/). They share [`IA-5112-US5/requirements.py`](IA-5112-US5/requirements.py), which pins every expected value, schema shape, column definition, and transformation rule against the ticket specifications in `jira-workspace/amazon-cross-border/IA-5112`.
 
 | Suite | Focus | Cases | Needs |
 |---|---|---|---|
-| `IA-5112-US5/suite-sync.py` | SP-API reports (`GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE`), wide static 60-day window, rate limits (0.0167 req/s sustained, burst 15), 5-min presigned URL expiry, dynamic decompression, 31-column TSV parsing by header, date conversions, and 4-marketplace isolation (FR, DE, JP, US) | 12 | Amazon mock |
-| `IA-5112-US5/suite-lifecycle.py` | Reconstruction on primary/fallback keys, ASIN+SKU item resolution, `POST /orders/return` (20 ADD + 10 REUSE fields), `new_status=RETURN`, 15 ADD fields, 4 completion paths ("refund confirmed", "timeout", "amazon returnless resolution", "no refund applicable"), canonical `COMPLETE` token, `putawayEnteredAt` 30-day clock, WMS3 2-condition receipt (NO quarantine), authority split, and Mirakl rank checks | 20 | Mocks / contracts |
-| `IA-5112-US5/suite-exceptions.py` | Complete 23 exception matrix scenarios (§8.3), physical arrival flows (6a-6d), cumulative quantity check (§8.5), ambiguous fallback key collisions, and the 4 residual probes (Japan availability, RMA stability, refund signal, duplicate create guard) | 28 | Amazon mock |
-| `IA-5112-US5/suite-all.py` | Master suite consolidating and executing all 60 cases across sync, lifecycle, and exceptions | 60 | Amazon mock |
+| `IA-5112-US5/suite-sync.py` | SP-API reports (`GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE`), wide static 60-day window and boundary cap, rate limits (0.0167 req/s sustained, burst 15, 429 quota handling), 5-min presigned URL expiry boundary, dynamic decompression, 31-column TSV parsing by header, date conversions, and 4-marketplace isolation (FR, DE, JP, US) | 14 | Amazon mock |
+| `IA-5112-US5/suite-lifecycle.py` | Reconstruction on primary/fallback keys, ASIN+SKU item resolution, wire contracts for `POST /rest/v1/orders/return` (20 ADD + 10 REUSE fields), `new_status=RETURN` (15 ADD fields), 4 completion paths ("refund confirmed", "timeout", "amazon returnless resolution", "no refund applicable"), canonical `COMPLETE` token, `putawayEnteredAt` 30-day clock boundary edges (days 29, 30, 31), WMS3 2-condition receipt (NO quarantine), authority split, and multi-return independence | 20 | Both mocks |
+| `IA-5112-US5/suite-exceptions.py` | Exception matrix scenarios (§8.3, 7 duplicate cases retired to companion suites), physical arrival flows (6a-6d), cumulative quantity check (§8.5), ambiguous fallback key collisions, and the 4 residual probes (Japan availability, RMA stability, refund signal switch, and OMS duplicate create wire probe) | 21 | Both mocks |
+| `IA-5112-US5/suite-all.py` | Master suite consolidating and executing all 55 cases across sync, lifecycle, and exceptions | 55 | Both mocks |
 
 ## The IA-5109 User Story 3 Suites
 
@@ -94,17 +101,48 @@ notification carries one scalar tracking number, so `CR-1` and `CR-4` block defi
 `D-3` through `D-7` and `D-13`. No case here pretends otherwise, and none should be added until
 `CR-1` lands.
 
-## The IA-5105 User Story 1 Suites
+## The IA-5106 User Story 4 Suites
 
-The IA-5105 User Story 1 suites validate Amazon Marketplace Taxonomy synchronization, Product Type Definitions discovery across 5+ global markets, schema flattening into Anchanto OMS bulk categories & attributes models, and browse node picker ingestion across **87 automated test cases**.
-The IA-5105 suites live in [`IA-5105-US1/`](IA-5105-US1/). They share [`IA-5105-US1/requirements.py`](IA-5105-US1/requirements.py), which holds every expected value with the document and section it comes from: the IA-5105 browse-node and listing plan (the current amendment), the OMS taxonomy requirements spec, the product-types mapping spec, `anchanto-oms/anchanto-oms-swagger.json`, and Amazon's own captured schemas. **No expected value in it was derived by reading the JPluger Amazon integration**, so a failing check is an argument about the requirement rather than a description of the code.
+The IA-5106 suites validate inbound order cancellation requests, cancellation hold operations (`POST /rest/v1/orders/{id}/cancel_request`), OMS cancellation writebacks (`POST /rest/v1/orders/{id}/cancel`), order hold release and status restoration (`POST /rest/v1/orders/{id}/cancel_request/restore`), pre-RTS order execution guard gating, and comprehensive error matrix handling across **65 automated test cases**.
+
+**Two of those three routes have no OMS contract behind them.** `POST /rest/v1/orders/{id}/cancel_request` and `POST /rest/v1/orders/{id}/cancel_request/restore` are **synthetic**: neither is declared in `anchanto-oms/anchanto-oms-swagger.json`, and the OMS mock's route table serves neither. They are two of the ten values `IA-5106-US4/requirements.py` marks `UNSOURCED` (lines 103 and 129), each needing an OMS API contract before it can be called sourced. `POST /rest/v1/orders/{id}/cancel` is the one of the three the mock actually routes. A green IA-5106 run therefore says the suites and the pinned requirements agree; for the two synthetic routes it cannot say the route exists.
+The IA-5106 suites live in [`IA-5106-US4/`](IA-5106-US4/). They share [`IA-5106-US4/requirements.py`](IA-5106-US4/requirements.py), which pins every expected value, reason code enum, payload contract (CR-1, CR-3, CR-8), and transformation rule against Jira `IA-5106` (FR-1..FR-32, AC-1..AC-25, and Error Matrix scenarios 1..18).
+
+**These suites call the mocks directly and assert against what arrived on the wire.** They do not drive JPluger. A green run means the mocks and the IA-5106 contract specifications agree -- it is not evidence that the integration works. Wire payloads are verified against the OMS mock observed call log (`:23021/log/data`), not in-memory dicts. Each suite records run evidence and explicitly reports what is not proven under `evidence.does_not_prove`.
 
 | Suite | Focus | Cases | Needs |
 |---|---|---|---|
-| `IA-5105-US1/suite-taxonomy.py` | Definitions discovery per market (US, DE, ES, FR, AU), and `POST /rest/v1/bulk_categories` | 15 | OMS mock for the `TAX-CAT-*` cases; without it they are `blocked` |
-| `IA-5105-US1/suite-connect-us.py` | `POST /rest/v1/bulk_categories_attributes` for a US store, absence of browse-node row and of any browse-tree report | 33 | Both mocks |
-| `IA-5105-US1/suite-connect-non-us.py` | Multi-market store connect for DE, ES, FR, AU, GB, JP, and `recommended_browse_nodes` pair in full | 39 | Both mocks |
-| `IA-5105-US1/suite-all.py` | Master suite consolidating and executing all 87 cases across taxonomy and store connect | 87 | Both mocks |
+| `IA-5106-US4/suite-hold.py` | Inbound order cancellation hold requests (`POST /rest/v1/orders/{id}/cancel_request`, synthetic -- no OMS contract), CR-1 hold payload validation on wire log, duplicate idempotency, hold reasons, state handling (`CREATED`, `INVOICED`, `PACKED`, `SHIPPED`), error matrix scenarios (#3, #17), and priority sweep categories | 14 | Both mocks |
+| `IA-5106-US4/suite-cancel.py` | OMS write contracts (`POST /rest/v1/orders/{id}/cancel`), CR-8 cancel payload validation on wire log, line item resolution, missing seller SKU, partial quantity cancellation refusal/tracking, prior partial shipment isolation, and 14 reason code mappings. AC-11 and AC-13 are explicitly marked blocked | 20 | Both mocks |
+| `IA-5106-US4/suite-restore.py` | Order hold release and status restoration (`POST /rest/v1/orders/{id}/cancel_request/restore`, synthetic -- no OMS contract), CR-3 restore payload on wire log, previous status recovery (`PACKED`, `INVOICED`, `CREATED`), terminal status protection, priority sweeps, and mandatory inventory/payment reconciliation prior to resumption (FR-28) | 13 | Both mocks |
+| `IA-5106-US4/suite-gate.py` | Pre-RTS gate evaluation, order cancellation refusal when shipment execution has commenced (`SHIPPED`, `DELIVERED`, `OUT_FOR_DELIVERY`), transient vs terminal pre-RTS validations, invalid state transition rejection, and Japan live seller account validation (blocked on DoD-14 / Question 18) | 18 | Both mocks |
+| `IA-5106-US4/suite-all.py` | Master suite consolidating and executing all 65 cases across hold, cancel, restore, and gate with preflight log clearing, per-child results persistence, and master run summary | 65 | Both mocks |
+
+**Payloads are judged on what arrived, not on what was built.** Each suite clears the OMS mock's call log in preflight, executes, and reads request method, url, query, and bodies out of `:23021/log/data`. A suite asserting on local in-memory dicts proves only that its input is its input.
+
+**What these suites do not prove (`evidence.does_not_prove`):**
+- Live Amazon SP-API connectivity or undocumented SP-API behaviour.
+- Live Anchanto OMS enterprise production routing or database persistence.
+- End-to-end JPluger integration runtime execution (JPluger JUnit suites cover Java-level implementation).
+- Partial sub-line quantity cancellation support for MFN (`CANCEL-16` blocked: Amazon Orders API does not supply partial cancelled quantity on MFN).
+- Forward state handling for cancelled orders (`CANCEL-17` blocked: blocked pending platform support for IA-5109 `mp_fulfilment_state`).
+- Japan live seller account cancellation behaviour (`GATE-16` blocked: requires Japan live seller credentials per DoD-14 / Question 18).
+
+## The IA-5105 User Story 1 Suites
+
+The IA-5105 User Story 1 suites validate Amazon Marketplace Taxonomy synchronization, Product Type Definitions discovery across 5+ global markets, schema flattening into Anchanto OMS bulk categories & attributes models, and browse node picker ingestion.
+
+**Rewritten against the IA-5105 deliverables** (`jpluger-shared/jira-workspace/amazon-cross-border/IA-5105/deliverables/`, which override the Jira ticket; authority order in wiki `plan/amazon-test-suites`). The suite consolidates **47 test cases across four suites** (cut from 87) strictly asserted against `requirements.py`.
+
+**The folder carries its own fixtures.** `IA-5105-US1/` now holds the generators and the captures it depends on rather than borrowing them from `amazon/`: [`build_taxonomy_fixtures.py`](IA-5105-US1/build_taxonomy_fixtures.py), [`generate_browse_tree_300mb.py`](IA-5105-US1/generate_browse_tree_300mb.py), `schemas/product-types/` (the ten Product Type Definition captures) and `mock-data/`.
+The IA-5105 suites live in [`IA-5105-US1/`](IA-5105-US1/). They share [`IA-5105-US1/requirements.py`](IA-5105-US1/requirements.py), which holds every expected value with the document and section it comes from: the IA-5105 coverage matrix (47 rows, plus what must **not** be asserted and what is untestable), the gap report's contract and decisions, the v2 OMS wire spec, the OMS reconciliation answers, the implementation plan, the Jira ticket's FR/AC rows, and Amazon's own captured schemas. **No expected value in it was derived by reading the JPluger Amazon integration**, so a failing check is an argument about the requirement rather than a description of the code.
+
+| Suite | Focus | Cases | Needs |
+|---|---|---|---|
+| `IA-5105-US1/suite-taxonomy.py` | Definitions discovery and request parameters per market, `POST /rest/v1/bulk_categories`, the cross-cutting `bulk_categories_attributes` invariants, the fetch-layer refusals (`TAX-LATEST-1`, `TAX-DL-FAIL-1`, `TAX-NO-LINK-1`), and the `GET_XML_BROWSE_TREE_DATA` report flow | 19 | OMS mock for the `TAX-CAT-*` and `TAX-ATTR-*` cases; without it they are `blocked` |
+| `IA-5105-US1/suite-connect-us.py` | `POST /rest/v1/bulk_categories_attributes` for a US store, absence of browse-node row and of any browse-tree report | 14 | Both mocks |
+| `IA-5105-US1/suite-connect-non-us.py` | Multi-market store connect for DE, ES, FR, AU, GB, JP, and `recommended_browse_nodes` pair in full | 14 | Both mocks |
+| `IA-5105-US1/suite-all.py` | Master suite consolidating and executing all 47 cases across taxonomy and store connect | 47 | Both mocks |
 
 **Payloads are judged on what arrived, not on what was built.** Each suite clears the OMS mock's
 call log in preflight, fires, and reads the bodies back out of `:23001/log/data`. A suite that
@@ -114,6 +152,14 @@ asserts on a dict it still holds in memory proves only that its input is its inp
 Amazon integration, which this harness cannot start -- there is no app under test here the way
 `eton/suite-create-order.py` has one. Where the stand-in and the requirement disagree, the suites
 fail, and that is the report.
+
+It is **two layers**. `build_definition_payload` is the fetch layer: the four gates of
+`AmazonDefinitionsUtility.fetchDefinition`, in that method's own order -- no schema link, then a
+definition Amazon does not mark latest, then a failed download, then bytes that do not match the
+stated checksum -- each answering `FETCH_FAILED` with the reason production emits verbatim.
+`transform_schema_to_oms_attributes` is the flatten layer beneath it. The file header lists what the
+stand-in does **not** model, and `UNAVAILABLE`, the retry budget and every `[JP]`-side behaviour are
+on that list.
 
 ---
 
@@ -212,15 +258,15 @@ The mock server supports both **official Amazon `TEST_CASE_*` parameters** and *
 ### Steering Markers
 | Marker | Location | Behavior / Response |
 |---|---|---|
-| `SERVERERROR` | Query, Path, or Body | Returns `500 InternalServerError` |
-| `RATELIMIT` | Query or Path | Returns `429 QuotaExceeded` (Rate limit exceeded) |
+| `SERVERERROR` | **Per-route, not generic.** Declared on 10 routes only: `/auth/o2/token`, `/tokens/.../restrictedDataToken`, the four `orders/v0` routes, `POST /feeds/.../feeds`, `POST /reports/.../reports`, `PUT /listings/.../{sku}`, `GET /products/pricing/v0/price` | Returns `500 InternalServerError` on those routes. **Neither `/definitions/2020-09-01/productTypes` route declares it**, so a definitions call carrying the marker answers `200` |
+| `RATELIMIT` | **Per-route, not generic.** Declared on `GET /orders/v0/orders` only | Returns `429 QuotaExceeded` on that route. **Neither definitions route declares it**, so a definitions call carrying the marker answers `200` |
 | `NOTFOUND` | `orderId`, `sku`, `asin`, `feedId`, `reportId` | Returns `404 NotFound` / `ResourceNotFound` |
 | `INVALID` | `orderId`, `sku`, `carrierCode`, `feedType`, `reportType` | Returns `400 InvalidInput` / `InvalidParameterValue` |
 | `EMPTY` | `CreatedAfter`, `sellerSkus` | Returns `200 OK` with empty list `[]` (e.g. `Orders: []`) |
 | `PAGE2` / `NextToken` | `query.NextToken` | Returns page 2 cursor paginated orders |
 | `RDT_REQUIRED` | `orderId` in `/address` | Returns `403 Unauthorized` (Restricted Data Token required) |
 | `INPROGRESS` | `feedId`, `reportId` | Returns `200 OK` with `processingStatus: "IN_PROGRESS"` |
-| `FATAL` | `feedId`, `reportId` | Returns `200 OK` with `processingStatus: "FATAL"` |
+| `FATAL` | `feedId` **only** | Returns `200 OK` with `processingStatus: "FATAL"`. **Not implemented for `reportId`**: `GET /reports/2021-06-30/reports/{reportId}` answers `DONE` *with* a `reportDocumentId` for an id carrying the marker -- the one shape a client must never see for a failed report. Use `CANCELLED`, which already serves the terminal-failure contract the requirement names |
 | `CANCELLED` | `reportId` | Returns `200 OK` with `processingStatus: "CANCELLED"` |
 | `BROWSE_TREE` in `reportType` | `POST /reports/2021-06-30/reports` | `reportId` becomes `rep-browsetree-<reportOptions.MarketplaceId>`, or `rep-browsetree-DEFAULTSTORE` when `reportOptions` is absent |
 | `MERCHANT_LISTINGS` in `reportType` | `POST /reports/2021-06-30/reports` | `reportId` becomes `rep-listings-<marketplaceIds[0]>` |
@@ -362,7 +408,7 @@ properties, `unit` carrying its own enum — not a scalar with a separate unit l
 for (suite case `DEF-1`).
 
 Amazon's own sandbox only publishes one product type (`LUGGAGE`, `ATVPDKIKX0DER`) with a
-generic fallback schema for everything else. [`build_taxonomy_fixtures.py`](build_taxonomy_fixtures.py)
+generic fallback schema for everything else. [`build_taxonomy_fixtures.py`](IA-5105-US1/build_taxonomy_fixtures.py)
 layers ten marketplace-specific product types on top, keyed on `(productType, marketplaceId)`. It is
 idempotent — re-run it if the fixtures change.
 

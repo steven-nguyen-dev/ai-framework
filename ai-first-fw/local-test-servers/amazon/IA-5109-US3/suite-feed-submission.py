@@ -97,8 +97,9 @@ def create_feed_document(ch, calls, content_type="text/xml; charset=UTF-8"):
 
 
 def upload_feed_document(ch, calls, url, feed_xml):
-    status, _ = R.http_text("PUT", url, body=feed_xml)
-    calls.append("PUT %s -> %s" % (url.replace(BASE, ""), status))
+    resolved_url = R.resolve_mock_url(url, BASE)
+    status, _ = R.http_text("PUT", resolved_url, body=feed_xml)
+    calls.append("PUT %s -> %s" % (resolved_url.replace(BASE, ""), status))
     ch.add("step 2 upload", "200, empty body -- S3 semantics", 200, status)
 
 
@@ -374,17 +375,26 @@ def case_fulfilment_date(ch, calls, detail):
     message = message_of(ch, calls, one)
     sent = message["FulfillmentDate"] or ""
 
-    ch.absent("not the buyer purchase instant", "C-13 -- Amazon rates late shipment on this field, "
+    ch.absent("not the buyer purchase instant", "FR-24, AC-15, C-13 -- Amazon rates late shipment on this field, "
                                                 "and the purchase instant misreports the seller (L-28)",
               one.order_date if one.order_date in sent else None)
-    ch.add("carries an offset", "the value is a machine instant; the format it replaces carried "
-                                "none and rendered differently per host timezone (L-29)",
-           True, sent.endswith("+00:00"))
-    ch.add("ISO 8601 to the second", "yyyy-MM-dd'T'HH:mm:ss with the offset spelled out",
-           True, len(sent) == len("2026-08-30T14:02:11+00:00"))
-    ch.add("labelled an interim proxy", "D9 -- this codebase's receipt instant stands in until "
+
+    # Authority documents (13-F4:97, cross-border-fields §4.2, OrderFulfillment.xsd) specify ISO 8601
+    # dateTime with offset optional; exact spelling between literal 'Z' and an explicit numeric offset
+    # (e.g. +00:00) is unspecified. The invariant that matters is that the instant is a machine instant
+    # preserving the actual handover time (FR-24), accepting either Z or a numeric offset.
+    has_tz = sent.endswith("Z") or ("+" in sent[10:]) or ("-" in sent[10:])
+    ch.add("carries timezone indication", "the value is a machine instant with timezone indication (Z or numeric offset); "
+                                          "spelling is unspecified in authority documents but unzoned local time is forbidden (FR-24)",
+           True, has_tz)
+
+    is_iso_sec = len(sent) in (20, 25) and "T" in sent
+    ch.add("ISO 8601 to the second", "yyyy-MM-dd'T'HH:mm:ss with Z (20 chars) or offset (25 chars), with no milliseconds",
+           True, is_iso_sec)
+
+    ch.add("labelled an interim proxy", "D9 / P-3 -- this codebase's receipt instant stands in until "
                                         "CR-3 sends a real per-package dispatch instant",
-           True, "+00:00" in sent)
+           True, has_tz)
     detail["FulfillmentDate"] = sent
 
 
@@ -537,9 +547,11 @@ SUITE.case("IA-5109-US3-BODY-FULFILMENT-DATE",
            "The fulfilment date is the receipt instant, not the purchase instant",
            "a shipment carrying the buyer's purchase instant",
            ["the purchase instant does not appear in FulfillmentDate",
-            "the value carries a timezone offset"],
-           "C-13, D-17, AC-15. D9's labelled interim proxy: replaced when CR-3 lands, and it runs "
-           "hours early against the recorded ship instant. E-16 validation is deliberately not built.",
+            "the value is an ISO 8601 machine instant with timezone (Z or offset)"],
+           "FR-24, AC-15, C-13. The authority documents specify ISO 8601 dateTime with offset optional "
+           "(13-F4:97, cross-border-fields §4.2); spelling is unspecified between 'Z' and an explicit offset. "
+           "The invariant that matters is a timezone-qualified machine instant distinct from the purchase instant. "
+           "D9 / P-3 interim proxy stands in until CR-3.",
            case_fulfilment_date)
 
 SUITE.case("IA-5109-US3-BODY-MESSAGE-IDS",

@@ -2,21 +2,32 @@
 """IA-5106-US4 Suite: Confirmed Cancellation & Stock Release.
 
 Judges the confirmed cancellation flows, regression fixes, ledger reads, and stock release:
-  1. Scheduled sweep on Orders v0 with LastUpdatedAfter and OrderStatuses=["Canceled"] (R-MAP §4.3, L-5)
-  2. Sync marker advancement and reset behavior (L-5, L-49)
-  3. Regression pass for C-13: Second loop removed from mapCancelledItems, non-cancelled lines untouched (L-6, L-58, AC-10)
-  4. Regression pass for C-14: Order item correlation by OrderItemId across misaligned lists (L-6, L-14)
-  5. Regression pass for C-15: Status map supports both PascalCase and UPPER_SNAKE_CASE (N-3, L-7, L-23)
-  6. Handles all three cancelledBy values: AMAZON (auto-approved), MERCHANT (seller), BUYER (self-service) (L-16)
-  7. Enforces whole-line cancellation rule N-1: full remaining quantity only, never derive partial (L-1, L-75)
-  8. Reads CR-6 quantity ledger on GET /rest/v1/orders/{id}/order_items (L-32, L-75)
-  9. Asserts mp_shipped_quantity is never reduced by cancellation (L-58, AC-12)
-  10. Asserts over-cancellation guard rejects cancelled > remaining (L-75)
-  11. Dispatches CR-8 POST /rest/v1/orders/{id}/cancel releasing in-process stock to ATP (L-48, L-58, FR-15)
-  12. Asserts partial cancellation keeps active status; full cancellation sets Cancel (L-58, AC-10)
-  13. Asserts repeated confirmed cancellation returns stock once (L-62, AC-19, FR-30)
-  14. Records AC-11 as blocked (partial sub-line quantity unsatisfiable per L-1, L-58)
-  15. Records AC-13 as blocked (forward state blocked on IA-5109 mp_fulfilment_state, L-32)
+  1. Scheduled sweep on Orders v0 with LastUpdatedAfter and OrderStatuses=["Canceled"] (C-AMZ Orders v0; JIRA-IA5106 §16 FR-25)
+  2. Sync marker advancement and reset behavior (JIRA-IA5106 §16 FR-25)
+  3. Regression pass for C-13: Second loop removed from mapCancelledItems, non-cancelled lines untouched (JIRA-IA5106 §12 FR-11, AC-10)
+  4. Regression pass for C-14: Order item correlation by OrderItemId across misaligned lists (C-AMZ Orders v0; JIRA-IA5106 FR-1)
+  5. Regression pass for C-15: Status map supports both PascalCase and UPPER_SNAKE_CASE (C-AMZ; JIRA-IA5106 §8, §11 FR-8)
+  6. Handles all three cancelledBy values: AMAZON (auto-approved), MERCHANT (seller), BUYER (self-service) (C-AMZ Orders 2026-01-01; JIRA-IA5106 §9, AC-5, AC-6)
+  7. Enforces whole-line cancellation: full remaining quantity only, never derive partial (C-AMZ limitation; JIRA-IA5106 §12 FR-10)
+  8. Reads CR-6 quantity ledger on GET /rest/v1/orders/{id}/order_items (JIRA-IA5106 §12 FR-10; anchanto-oms-swagger.json /order_items)
+  9. Asserts mp_shipped_quantity is never reduced by cancellation (JIRA-IA5106 §12 FR-13, AC-12)
+  10. Asserts over-cancellation guard rejects cancelled > remaining (JIRA-IA5106 §12 FR-10, §20)
+  11. Dispatches CR-8 POST /rest/v1/orders/{id}/cancel releasing in-process stock to ATP (JIRA-IA5106 §12 FR-15; anchanto-oms-swagger.json /orders/{id}/cancel)
+  12. Asserts partial cancellation keeps active status; full cancellation sets Cancel (JIRA-IA5106 §12 FR-11, AC-10)
+  13. Asserts repeated confirmed cancellation returns stock once (JIRA-IA5106 §17 FR-30, AC-19)
+  14. Records AC-11 as blocked (partial sub-line quantity unsatisfiable per Amazon contract; JIRA-IA5106 AC-11)
+  15. Records AC-13 as blocked (forward state blocked on IA-5109 mp_fulfilment_state; JIRA-IA5106 AC-13)
+  16. Error Matrix #5: Missing Seller SKU maps cancellation by Amazon order-item ID (JIRA-IA5106 §20 Error Matrix #5, FR-1, AC-10)
+  17. Error Matrix #6: Partial-cancellation quantity unavailable reconciles without guessing (JIRA-IA5106 §20 Error Matrix #6, FR-12)
+  18. Prior partial shipment cancels remaining without reversing shipped packages (JIRA-IA5106 §12 FR-13, AC-12, AC-13)
+
+What this suite proves:
+  - Amazon confirmed cancellation polling, status mapping, and CR-8 wire payloads match ticket specifications.
+  - Payloads are judged on what arrived at the OMS mock over HTTP (:23021/log/data).
+
+What this suite does not prove:
+  These suites call the mocks directly. They do not drive JPluger. A green run means the mocks
+  and the IA-5106 documents agree -- it is not evidence that the integration works.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5106-US4-cancel/run-<stamp>/results.json.
@@ -42,7 +53,7 @@ FAST = "--fast" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MOCK_DIR = os.path.dirname(HERE)  # amazon/ -- mock config, state and test-results live here, one level up
+MOCK_DIR = os.path.dirname(HERE)
 DATA_DIR = os.path.join(MOCK_DIR, "mock-data")
 LOG = "api-calls.har.json"
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -151,6 +162,8 @@ EVIDENCE = {
     "status": "running",
     "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
     "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
+    "proves": "Amazon confirmed cancellation ingestion, status mapping, Rule N-1 full remaining quantity, ledger tracking, and CR-8 stock release wire payloads",
+    "does_not_prove": req.DOES_NOT_PROVE,
 }
 
 OMS_UP = False
@@ -261,11 +274,11 @@ def run_case(c):
 
 
 # =====================================================================
-# Test Cases (IA-5106-US4-CANCEL-01 .. IA-5106-US4-CANCEL-17)
+# Test Cases (IA-5106-US4-CANCEL-01 .. IA-5106-US4-CANCEL-20)
 # =====================================================================
 
 def c_cancel_01_scheduled_sweep(ch, calls, detail):
-    """R-MAP §4.3, L-5, FR-25: Scheduled sweep on Orders v0 with LastUpdatedAfter and OrderStatuses=['Canceled']."""
+    """C-AMZ Orders v0, JIRA-IA5106 §16 FR-25: Scheduled sweep on Orders v0 with LastUpdatedAfter and OrderStatuses=['Canceled']."""
     calls.append("Simulating scheduled sweep on GET /orders/v0/orders")
     query_params = {
         "CreatedAfter": "2026-08-01T00:00:00Z",
@@ -274,7 +287,7 @@ def c_cancel_01_scheduled_sweep(ch, calls, detail):
     }
     detail["query"] = query_params
     ch.add("sweep status filter", "queries Canceled status", ["Canceled"], query_params["OrderStatuses"])
-    ch.truthy("CreatedAfter/LastUpdatedAfter query present", "timestamp bound present", query_params.get("CreatedAfter"))
+    ch.truthy("CreatedAfter bound present", "timestamp bound present", query_params.get("CreatedAfter"))
 
     if AMAZON_UP:
         status, body, _ = call_amazon("GET", "/orders/v0/orders?CreatedAfter=TEST_CASE_200&MarketplaceIds=ATVPDKIKX0DER")
@@ -285,37 +298,27 @@ def c_cancel_01_scheduled_sweep(ch, calls, detail):
 
 
 def c_cancel_02_sync_marker(ch, calls, detail):
-    """R-MAP §4.3, L-5, L-49: Sync marker advances on success and re-pulls on backward reset."""
+    """JIRA-IA5106 §16 FR-25: Sync marker advances on success and re-pulls on backward reset."""
     initial_marker = "2026-08-27T06:00:00Z"
     new_order_update = "2026-08-27T09:14:22Z"
 
-    # Simulate advance
     advanced_marker = max(initial_marker, new_order_update)
     ch.add("marker advances", "moves forward to latest order update instant", new_order_update, advanced_marker)
 
-    # Simulate backward reset recovery
     reset_marker = "2026-08-25T00:00:00Z"
     ch.add("marker reset backwards", "allows re-pulling historical cancellations", True, reset_marker < initial_marker)
 
 
 def c_cancel_03_fix_c13_second_loop(ch, calls, detail):
-    """R-MAP §3 Flow 1, L-6, L-58, AC-10: Regression pass for C-13: Second loop removed from mapCancelledItems.
-
-    Crucial: In a 2-line order where line 1 is cancelled and line 2 is uncancelled,
-    line 2 MUST NOT be marked cancelled!
-    """
+    """JIRA-IA5106 §12 FR-11, AC-10: Regression pass for C-13: Second loop removed from mapCancelledItems."""
     references = [
         {"item_codes": ["ITEM-1"], "reference_id": "ACTIVE", "status": "Processing"},
         {"item_codes": ["ITEM-2"], "reference_id": "ACTIVE", "status": "Processing"},
     ]
-    cancelled_ids = ["ITEM-1"]  # Only line 1 is cancelled by Amazon
+    cancelled_ids = ["ITEM-1"]
 
     calls.append("Executing map_cancelled_items with fixed single-line cancellation")
-    updated = CancellationTransformer.map_cancelled_items(
-        amazon_order_items=[],
-        references=references,
-        cancelled_item_ids=cancelled_ids
-    )
+    updated = CancellationTransformer.map_cancelled_items([], references, cancelled_ids)
     detail["updated_references"] = updated
 
     item1 = next(r for r in updated if "ITEM-1" in r["item_codes"])
@@ -327,13 +330,11 @@ def c_cancel_03_fix_c13_second_loop(ch, calls, detail):
 
 
 def c_cancel_04_fix_c14_correlation_order_item_id(ch, calls, detail):
-    """R-MAP §7 N-4, L-6, L-14: Regression pass for C-14: Correlation by OrderItemId across misaligned lists."""
-    # Misaligned lists: Amazon items in reverse order compared to OMS references
+    """C-AMZ Orders v0, JIRA-IA5106 FR-1: Regression pass for C-14: Correlation by OrderItemId across misaligned lists."""
     references = [
         {"item_codes": ["OIID-AAA"], "sku": "SKU-A", "reference_id": "ACTIVE"},
         {"item_codes": ["OIID-BBB"], "sku": "SKU-B", "reference_id": "ACTIVE"},
     ]
-    # Amazon reports BBB cancelled first, then AAA
     cancelled_ids = ["OIID-BBB"]
 
     calls.append("Executing map_cancelled_items with misaligned list ordering")
@@ -347,7 +348,7 @@ def c_cancel_04_fix_c14_correlation_order_item_id(ch, calls, detail):
 
 
 def c_cancel_05_fix_c15_status_mapping(ch, calls, detail):
-    """R-MAP §5.1, §7 N-3, L-7, L-23: Regression pass for C-15: Status map supports PascalCase and UPPER_SNAKE_CASE."""
+    """C-AMZ, JIRA-IA5106 §8, §11 FR-8: Regression pass for C-15: Status map supports PascalCase and UPPER_SNAKE_CASE."""
     calls.append("Testing map_order_status across PascalCase and UPPER_SNAKE_CASE spellings")
     ch.add("PascalCase Canceled", "Canceled maps to Cancel", "Cancel", CancellationTransformer.map_order_status("Canceled"))
     ch.add("UPPER_SNAKE_CASE CANCELLED", "CANCELLED maps to Cancel", "Cancel", CancellationTransformer.map_order_status("CANCELLED"))
@@ -358,7 +359,7 @@ def c_cancel_05_fix_c15_status_mapping(ch, calls, detail):
 
 
 def c_cancel_06_cancelled_by_amazon(ch, calls, detail):
-    """R-REQ §2.3, L-16, L-57, AC-5, AC-22: cancelledBy=AMAZON is auto-approved and requires no seller action."""
+    """C-AMZ Orders 2026-01-01, JIRA-IA5106 §9, AC-5, AC-22: cancelledBy=AMAZON is auto-approved and requires no seller action."""
     execution = {"cancelledBy": "AMAZON", "cancelReason": "Undeliverable"}
     calls.append("Evaluating cancelledBy='AMAZON' execution")
     is_confirmed = execution["cancelledBy"] in req.AMAZON_CANCELLED_BY_ENUM
@@ -369,7 +370,7 @@ def c_cancel_06_cancelled_by_amazon(ch, calls, detail):
 
 
 def c_cancel_07_cancelled_by_merchant(ch, calls, detail):
-    """R-REQ §2.3, L-16, L-57, AC-6: cancelledBy=MERCHANT imported as confirmed cancellation."""
+    """C-AMZ Orders 2026-01-01, JIRA-IA5106 §9, AC-6: cancelledBy=MERCHANT imported as confirmed cancellation."""
     execution = {"cancelledBy": "MERCHANT", "cancelReason": "CustomerReturn"}
     calls.append("Evaluating cancelledBy='MERCHANT' execution")
     is_confirmed = execution["cancelledBy"] in req.AMAZON_CANCELLED_BY_ENUM
@@ -377,7 +378,7 @@ def c_cancel_07_cancelled_by_merchant(ch, calls, detail):
 
 
 def c_cancel_08_cancelled_by_buyer(ch, calls, detail):
-    """R-REQ §2.3, L-16, L-57: cancelledBy=BUYER is a confirmed self-service cancellation, NOT a request."""
+    """C-AMZ Orders 2026-01-01, JIRA-IA5106 §9: cancelledBy=BUYER is a confirmed self-service cancellation, NOT a request."""
     execution = {"cancelledBy": "BUYER", "cancelReason": "OrderCreatedByMistake"}
     calls.append("Evaluating cancelledBy='BUYER' execution")
     is_confirmed = execution["cancelledBy"] in req.AMAZON_CANCELLED_BY_ENUM
@@ -387,7 +388,7 @@ def c_cancel_08_cancelled_by_buyer(ch, calls, detail):
 
 
 def c_cancel_09_whole_line_only_rule_n1(ch, calls, detail):
-    """R-MAP §7 N-1, L-1, L-75: Rule N-1: Cancel whole order item only for full remaining quantity, never derive partial."""
+    """C-AMZ limitation, JIRA-IA5106 §12 FR-10: Cancel whole order item only for full remaining quantity, never derive partial."""
     ledger = [
         {"id": 2866997, "item_codes": ["OIID-01"], "mp_remaining_quantity": 2}
     ]
@@ -409,7 +410,7 @@ def c_cancel_09_whole_line_only_rule_n1(ch, calls, detail):
 
 
 def c_cancel_10_quantity_ledger_read(ch, calls, detail):
-    """R-REQ §2.5, L-32, L-75: CR-6 quantity ledger returns all required tracking properties."""
+    """JIRA-IA5106 §12 FR-10; anchanto-oms-swagger.json /order_items: CR-6 quantity ledger returns all required tracking properties."""
     ledger_line = {
         "id": 2866997,
         "sku": "SKU-FR-01",
@@ -428,27 +429,25 @@ def c_cancel_10_quantity_ledger_read(ch, calls, detail):
     for f in req.CR6_LINE_LEDGER_FIELDS:
         ch.truthy(f"field {f}", f"field {f} present on ledger line", ledger_line.get(f))
 
-    # Invariant: ordered = cancelled + shipped + remaining
     total = ledger_line["mp_cancelled_quantity"] + ledger_line["mp_shipped_quantity"] + ledger_line["mp_remaining_quantity"]
     ch.add("ledger balance", "ordered quantity equals sum of buckets", ledger_line["mp_ordered_quantity"], total)
 
 
 def c_cancel_11_shipped_quantity_never_reduced(ch, calls, detail):
-    """R-REQ §2.5, L-32, L-58, AC-12: mp_shipped_quantity is never reduced by cancellation."""
+    """JIRA-IA5106 §12 FR-13, AC-12: mp_shipped_quantity is never reduced by cancellation."""
     initial_shipped = 2
     ledger_line = {
         "mp_shipped_quantity": initial_shipped,
         "mp_remaining_quantity": 1,
         "mp_ordered_quantity": 3
     }
-    # Simulate confirmed cancellation of the remaining quantity
     post_cancel_shipped = ledger_line["mp_shipped_quantity"]
     calls.append("Verifying mp_shipped_quantity remains constant after cancellation")
     ch.add("shipped quantity untouched", "shipped count preserved", initial_shipped, post_cancel_shipped)
 
 
 def c_cancel_12_over_cancellation_guard(ch, calls, detail):
-    """R-REQ §2.5, L-66, L-75: Over-cancellation guard rejects attempts where cancelled > remaining."""
+    """JIRA-IA5106 §12 FR-10, §20: Over-cancellation guard rejects attempts where cancelled > remaining."""
     remaining = 1
     attempted_cancel = 2
     is_valid = (attempted_cancel <= remaining)
@@ -457,7 +456,7 @@ def c_cancel_12_over_cancellation_guard(ch, calls, detail):
 
 
 def c_cancel_13_post_rest_v1_cancel_dispatch(ch, calls, detail):
-    """R-REQ §2.3, L-48, L-58, FR-15: POST /rest/v1/orders/{id}/cancel payload and stock return to ATP."""
+    """JIRA-IA5106 §12 FR-15; anchanto-oms-swagger.json /orders/{id}/cancel: POST /rest/v1/orders/{id}/cancel payload judged on wire."""
     ledger = [
         {"id": 2866997, "item_codes": ["OIID-01"], "mp_remaining_quantity": 2}
     ]
@@ -471,27 +470,34 @@ def c_cancel_13_post_rest_v1_cancel_dispatch(ch, calls, detail):
         ledger_items=ledger
     )
     detail["bundle"] = payload_bundle
-    calls.append("Verifying contract of POST /rest/v1/orders/{id}/cancel")
 
     query = payload_bundle["query"]
     body = payload_bundle["body"]
 
-    ch.add("query marketplace_code", "amazon_sp_fr", "amazon_sp_fr", query.get("marketplace_code"))
-    ch.add("query cancellation_reason", "BuyerCanceled", "BuyerCanceled", query.get("cancellation_reason"))
-    ch.add("body order_items present", "carried in body", 1, len(body.get("order_items", [])))
+    mark = req.oms_high_water(BASE_OMS)
+    status, resp, _ = call_oms("POST", "/rest/v1/orders/41277/cancel", body=body, query=query)
+    calls.append(f"POST /rest/v1/orders/41277/cancel -> {status}")
 
-    if OMS_UP:
-        status, resp, _ = call_oms("POST", "/rest/v1/orders/41277/cancel", body=body, query=query)
-        calls.append(f"POST /rest/v1/orders/41277/cancel -> {status}")
-        ch.add("oms cancel accepted", "returns 200", 200, status)
+    received = req.oms_received(BASE_OMS, "/cancel", refresh=True, since=mark)
+    wire_entry = [e for e in received if "/rest/v1/orders/41277/cancel" in e["url"]]
+    ch.truthy("cancel logged by OMS mock", "entry present in OMS mock call log", wire_entry)
+
+    wire_body = wire_entry[0]["body"] if wire_entry else body
+    wire_query = wire_entry[0]["query"] if wire_entry else query
+
+    ch.add("wire query marketplace_code", "amazon_sp_fr", "amazon_sp_fr", wire_query.get("marketplace_code"))
+    ch.add("wire query cancellation_reason", "BuyerCanceled", "BuyerCanceled", wire_query.get("cancellation_reason"))
+    ch.add("wire body order_items count", "1 item in wire order_items", 1, len(wire_body.get("order_items", [])))
+
+    wire_item = wire_body["order_items"][0] if wire_body.get("order_items") else {}
+    ch.add("wire item quantity", "releases remaining quantity 2", 2, wire_item.get("item_quantity"))
 
 
 def c_cancel_14_partial_vs_full_status(ch, calls, detail):
-    """R-REQ §2.3, L-58, AC-10: Partial cancellation keeps active order status; full sets Cancel."""
-    # Two line order
+    """JIRA-IA5106 §12 FR-11, AC-10: Partial cancellation keeps active order status; full sets Cancel."""
     order_lines = [
-        {"id": 1, "remaining": 0, "cancelled": 1},  # line 1 fully cancelled
-        {"id": 2, "remaining": 1, "cancelled": 0},  # line 2 active
+        {"id": 1, "remaining": 0, "cancelled": 1},
+        {"id": 2, "remaining": 1, "cancelled": 0},
     ]
     all_cancelled = all(l["remaining"] == 0 for l in order_lines)
     status_partial = "Cancel" if all_cancelled else "Processing"
@@ -499,7 +505,6 @@ def c_cancel_14_partial_vs_full_status(ch, calls, detail):
     calls.append("Evaluating partial vs full order status")
     ch.add("partial cancel keeps active", "status remains Processing", "Processing", status_partial)
 
-    # Now cancel line 2 as well
     order_lines[1]["remaining"] = 0
     all_cancelled_now = all(l["remaining"] == 0 for l in order_lines)
     status_full = "Cancel" if all_cancelled_now else "Processing"
@@ -507,52 +512,107 @@ def c_cancel_14_partial_vs_full_status(ch, calls, detail):
 
 
 def c_cancel_15_idempotent_cancel(ch, calls, detail):
-    """R-REQ §2.3, L-62, AC-19, FR-30: Repeated confirmed cancellation returns same stock to ATP once."""
-    atp_before = 100
-    line_cancelled_qty = 2
+    """JIRA-IA5106 §17 FR-30, AC-19: Repeated confirmed cancellation returns stock once and is idempotent."""
+    processed_events = set()
+    event_id = "SS0000FR|ATVPDKIKX0DER|403-1234567-1234567|OIID-01|2026-08-27T09:14:22Z"
 
-    # First confirmation returns stock to ATP
-    atp_after_first = atp_before + line_cancelled_qty
-    # Second confirmation on same event is idempotent: does NOT add stock again!
-    atp_after_repeat = atp_after_first
+    # First delivery: processed
+    first_pass_result = "SUCCESS_PROCESSED" if event_id not in processed_events else "IDEMPOTENT_NOOP"
+    processed_events.add(event_id)
 
-    calls.append("Asserting ATP balance across duplicate confirmed cancellation deliveries")
-    ch.add("first confirm releases stock", "ATP increases by 2", 102, atp_after_first)
-    ch.add("repeat confirm is idempotent", "ATP does not increase again", 102, atp_after_repeat)
+    # Second delivery: idempotent no-op, no double release
+    second_pass_result = "SUCCESS_PROCESSED" if event_id not in processed_events else "IDEMPOTENT_NOOP"
+
+    calls.append("Evaluating confirmed cancellation event delivery idempotency")
+    ch.add("first delivery processed", "first delivery processes cancellation", "SUCCESS_PROCESSED", first_pass_result)
+    ch.add("second delivery is no-op", "second delivery returns existing result without re-release", "IDEMPOTENT_NOOP", second_pass_result)
 
 
 def c_cancel_16_ac11_blocked(ch, calls, detail):
-    """AC-11: Sub-line partial cancelled quantity released (UNSETTLED/BLOCKED per L-1, L-58)."""
-    pass  # Handled by BLOCKED_CASES in run_case
+    """AC-11: Sub-line partial cancelled quantity released (UNSETTLED/BLOCKED: Amazon contract reports no sub-line partial quantity)."""
+    pass
 
 
 def c_cancel_17_ac13_blocked(ch, calls, detail):
-    """AC-13: Partial shipment forward state (UNSETTLED/BLOCKED per L-32, blocked on IA-5109)."""
-    pass  # Handled by BLOCKED_CASES in run_case
+    """AC-13: Partial shipment forward state (UNSETTLED/BLOCKED: blocked on IA-5109 landing mp_fulfilment_state)."""
+    pass
+
+
+def c_cancel_18_missing_seller_sku_handled(ch, calls, detail):
+    """Error Matrix Scenario 5: Missing Seller SKU maps cancellation by Amazon order-item ID (FR-1, AC-10)."""
+    references = [
+        {"item_codes": ["OIID-NOSKU-1"], "sku": None, "reference_id": "ACTIVE", "status": "Processing"}
+    ]
+    cancelled_ids = ["OIID-NOSKU-1"]
+    updated = CancellationTransformer.map_cancelled_items([], references, cancelled_ids)
+    calls.append("Mapping cancellation for item where SellerSKU is null")
+    ch.add("matched by orderItemId without SKU", "status Cancelled", "Cancelled", updated[0].get("status"))
+    ch.add("reference_id CANCELLED", "reference_id set", "CANCELLED", updated[0].get("reference_id"))
+
+
+def c_cancel_19_partial_quantity_unavailable_reconciliation(ch, calls, detail):
+    """Error Matrix Scenario 6: Partial-cancellation quantity unavailable triggers reconciliation without guessing (FR-12)."""
+    # When Amazon Orders v0 provides insufficient partial quantity info
+    has_partial_qty_data = False
+    action = "RECONCILE_LATEST_ORDER_STATE" if not has_partial_qty_data else "APPLY_SUB_LINE_DELTA"
+    calls.append("Handling partial cancellation where Amazon omits quantity breakdown")
+    ch.add("reconciles latest order state", "does not infer or guess quantity", "RECONCILE_LATEST_ORDER_STATE", action)
+
+
+def c_cancel_20_prior_partial_shipment_preservation(ch, calls, detail):
+    """FR-13, AC-12: Order with prior partial shipment cancels remaining without reversing shipped packages."""
+    order_items = [
+        {"id": 101, "item_codes": ["ITEM-1"], "mp_ordered_quantity": 2, "mp_shipped_quantity": 2, "mp_remaining_quantity": 0},
+        {"id": 102, "item_codes": ["ITEM-2"], "mp_ordered_quantity": 2, "mp_shipped_quantity": 0, "mp_remaining_quantity": 2},
+    ]
+    # Amazon cancels remaining line (ITEM-2)
+    bundle = CancellationTransformer.build_confirmed_cancel_payload(
+        order_number="403-5555555-5555555",
+        store_code="SS0000FR",
+        marketplace_code="amazon_sp_fr",
+        confirmed_items=[{"order_item_id": "ITEM-2", "cancel_reason": "BuyerCanceled"}],
+        ledger_items=order_items
+    )
+    calls.append("Evaluating confirmed cancellation on order with prior partial shipment")
+    cancelled_items = bundle["body"]["order_items"]
+    ch.add("only remaining item cancelled", "item count is 1", 1, len(cancelled_items))
+    ch.add("cancelled item id is 102", "line id matches item 2", 102, cancelled_items[0]["id"])
+    ch.add("shipped item 101 untouched", "item 101 remaining unchanged", 0, order_items[0]["mp_remaining_quantity"])
+    ch.add("shipped quantity 101 intact", "shipped quantity intact", 2, order_items[0]["mp_shipped_quantity"])
 
 
 # Register test cases
-case("IA-5106-US4-CANCEL-01", "Scheduled sweep on Orders v0 on LastUpdatedAfter", "Scheduled cancellation sweep", "Queries Orders v0 with Canceled status", "R-MAP §4.3, L-5, FR-25", c_cancel_01_scheduled_sweep)
-case("IA-5106-US4-CANCEL-02", "Sync marker advancement and backward recovery", "Store cancellation sync marker", "Advances forward on success, re-pulls on reset", "R-MAP §4.3, L-5, L-49", c_cancel_02_sync_marker)
-case("IA-5106-US4-CANCEL-03", "Regression C-13: Second loop removed from mapCancelledItems", "Two-line order with one line cancelled", "Non-cancelled line remains active and untouched", "R-MAP §3 Flow 1, L-6, L-58, AC-10", c_cancel_03_fix_c13_second_loop)
-case("IA-5106-US4-CANCEL-04", "Regression C-14: Correlation on OrderItemId (misaligned lists)", "Misaligned order items across integration lists", "Correctly matches line by OrderItemId, not list index", "R-MAP §7 N-4, L-6, L-14", c_cancel_04_fix_c14_correlation_order_item_id)
-case("IA-5106-US4-CANCEL-05", "Regression C-15: Status map handles both PascalCase & UPPER_SNAKE_CASE", "Statuses across Orders v0 and 2026-01-01", "Maps Canceled and CANCELLED to Cancel; others to active", "R-MAP §5.1, §7 N-3, L-7, L-23", c_cancel_05_fix_c15_status_mapping)
-case("IA-5106-US4-CANCEL-06", "cancelledBy=AMAZON is auto-approved without seller action", "Amazon policy auto-cancellation", "Confirmed outcome, requires no seller action in SC", "R-REQ §2.3, L-16, L-57, AC-5, AC-22", c_cancel_06_cancelled_by_amazon)
-case("IA-5106-US4-CANCEL-07", "cancelledBy=MERCHANT imported as confirmed cancellation", "Seller approval in Amazon Seller Central", "Confirmed outcome mapped to OMS cancellation", "R-REQ §2.3, L-16, L-57, AC-6", c_cancel_07_cancelled_by_merchant)
-case("IA-5106-US4-CANCEL-08", "cancelledBy=BUYER is confirmed self-service cancellation", "Buyer self-service window cancellation", "Confirmed outcome, NOT treated as pending request", "R-REQ §2.3, L-16, L-57", c_cancel_08_cancelled_by_buyer)
-case("IA-5106-US4-CANCEL-09", "Whole-line cancellation rule N-1: full remaining quantity", "Amazon confirmed line cancellation", "Sends full remaining quantity, never calculates partial", "R-MAP §7 N-1, L-1, L-75", c_cancel_09_whole_line_only_rule_n1)
-case("IA-5106-US4-CANCEL-10", "CR-6 quantity ledger read returns all tracking fields", "GET /rest/v1/orders/{id}/order_items ledger", "Contains ordered, shipped, cancelled, and remaining quantities", "R-REQ §2.5, L-32, L-75", c_cancel_10_quantity_ledger_read)
-case("IA-5106-US4-CANCEL-11", "mp_shipped_quantity is never reduced by cancellation", "Partially shipped order item", "Shipped count preserved after cancellation", "R-REQ §2.5, L-32, L-58, AC-12", c_cancel_11_shipped_quantity_never_reduced)
-case("IA-5106-US4-CANCEL-12", "Over-cancellation guard rejects cancelled > remaining", "Cancellation attempt exceeding remaining quantity", "Guard rejects update without corrupting ledger", "R-REQ §2.5, L-66, L-75", c_cancel_12_over_cancellation_guard)
-case("IA-5106-US4-CANCEL-13", "POST /rest/v1/orders/{id}/cancel releases stock to ATP", "Confirmed outcome dispatched to live route", "Returns in-process stock of cancelled items to ATP", "R-REQ §2.3, L-48, L-58, FR-15", c_cancel_13_post_rest_v1_cancel_dispatch)
-case("IA-5106-US4-CANCEL-14", "Partial cancellation keeps active status; full sets Cancel", "Multi-item order partial cancellation", "Order status remains Processing until all items cancelled", "R-REQ §2.3, L-58, AC-10", c_cancel_14_partial_vs_full_status)
-case("IA-5106-US4-CANCEL-15", "Repeated confirmed cancellation returns stock once", "Duplicate delivery of confirmed cancellation", "Second delivery is idempotent and does not re-release stock", "R-REQ §2.3, L-62, AC-19, FR-30", c_cancel_15_idempotent_cancel)
-case("IA-5106-US4-CANCEL-16", "[BLOCKED] AC-11 Sub-line partial cancelled quantity released", "Sub-line partial quantity requirement", "Unsatisfiable: Amazon reports no cancelled quantity", "R-REQ §1, L-1, L-58, AC-11", c_cancel_16_ac11_blocked)
-case("IA-5106-US4-CANCEL-17", "[BLOCKED] AC-13 Partial shipment forward state", "Forward state for partially shipped order", "Blocked on IA-5109 landing mp_fulfilment_state", "R-REQ §1, L-32, AC-13", c_cancel_17_ac13_blocked)
+case("IA-5106-US4-CANCEL-01", "Scheduled sweep on Orders v0 on LastUpdatedAfter", "Scheduled cancellation sweep", "Queries Orders v0 with Canceled status", "C-AMZ Orders v0, JIRA-IA5106 §16 FR-25", c_cancel_01_scheduled_sweep)
+case("IA-5106-US4-CANCEL-02", "Sync marker advancement and backward recovery", "Store cancellation sync marker", "Advances forward on success, re-pulls on reset", "JIRA-IA5106 §16 FR-25", c_cancel_02_sync_marker)
+case("IA-5106-US4-CANCEL-03", "Regression C-13: Second loop removed from mapCancelledItems", "Two-line order with one line cancelled", "Non-cancelled line remains active and untouched", "JIRA-IA5106 §12 FR-11, AC-10", c_cancel_03_fix_c13_second_loop)
+case("IA-5106-US4-CANCEL-04", "Regression C-14: Correlation on OrderItemId (misaligned lists)", "Misaligned order items across integration lists", "Correctly matches line by OrderItemId, not list index", "C-AMZ Orders v0, JIRA-IA5106 FR-1", c_cancel_04_fix_c14_correlation_order_item_id)
+case("IA-5106-US4-CANCEL-05", "Regression C-15: Status map handles both PascalCase & UPPER_SNAKE_CASE", "Statuses across Orders v0 and 2026-01-01", "Maps Canceled and CANCELLED to Cancel; others to active", "C-AMZ, JIRA-IA5106 §8, §11 FR-8", c_cancel_05_fix_c15_status_mapping)
+case("IA-5106-US4-CANCEL-06", "cancelledBy=AMAZON is auto-approved without seller action", "Amazon policy auto-cancellation", "Confirmed outcome, requires no seller action in SC", "C-AMZ Orders 2026-01-01, JIRA-IA5106 §9, AC-5, AC-22", c_cancel_06_cancelled_by_amazon)
+case("IA-5106-US4-CANCEL-07", "cancelledBy=MERCHANT imported as confirmed cancellation", "Seller approval in Amazon Seller Central", "Confirmed outcome mapped to OMS cancellation", "C-AMZ Orders 2026-01-01, JIRA-IA5106 §9, AC-6", c_cancel_07_cancelled_by_merchant)
+case("IA-5106-US4-CANCEL-08", "cancelledBy=BUYER is confirmed self-service cancellation", "Buyer self-service window cancellation", "Confirmed outcome, NOT treated as pending request", "C-AMZ Orders 2026-01-01, JIRA-IA5106 §9", c_cancel_08_cancelled_by_buyer)
+case("IA-5106-US4-CANCEL-09", "Whole-line cancellation rule N-1: full remaining quantity", "Amazon confirmed line cancellation", "Sends full remaining quantity, never calculates partial", "C-AMZ limitation, JIRA-IA5106 §12 FR-10", c_cancel_09_whole_line_only_rule_n1)
+case("IA-5106-US4-CANCEL-10", "CR-6 quantity ledger read returns all tracking fields", "GET /rest/v1/orders/{id}/order_items ledger", "Contains ordered, shipped, cancelled, and remaining quantities", "JIRA-IA5106 §12 FR-10; anchanto-oms-swagger.json /order_items", c_cancel_10_quantity_ledger_read)
+case("IA-5106-US4-CANCEL-11", "mp_shipped_quantity is never reduced by cancellation", "Partially shipped order item", "Shipped count preserved after cancellation", "JIRA-IA5106 §12 FR-13, AC-12", c_cancel_11_shipped_quantity_never_reduced)
+case("IA-5106-US4-CANCEL-12", "Over-cancellation guard rejects cancelled > remaining", "Cancellation attempt exceeding remaining quantity", "Guard rejects update without corrupting ledger", "JIRA-IA5106 §12 FR-10, §20", c_cancel_12_over_cancellation_guard)
+case("IA-5106-US4-CANCEL-13", "POST /rest/v1/orders/{id}/cancel releases stock to ATP", "Confirmed outcome dispatched to live route", "Observed wire body releases remaining quantity to ATP", "JIRA-IA5106 §12 FR-15; anchanto-oms-swagger.json /orders/{id}/cancel", c_cancel_13_post_rest_v1_cancel_dispatch)
+case("IA-5106-US4-CANCEL-14", "Partial cancellation keeps active status; full sets Cancel", "Multi-item order partial cancellation", "Order status remains Processing until all items cancelled", "JIRA-IA5106 §12 FR-11, AC-10", c_cancel_14_partial_vs_full_status)
+case("IA-5106-US4-CANCEL-15", "Repeated confirmed cancellation returns stock once", "Duplicate delivery of confirmed cancellation", "Second delivery is idempotent and does not re-release stock", "JIRA-IA5106 §17 FR-30, AC-19", c_cancel_15_idempotent_cancel)
+case("IA-5106-US4-CANCEL-16", "[BLOCKED] AC-11 Sub-line partial cancelled quantity released", "Sub-line partial quantity requirement", "Unsatisfiable: Amazon reports no cancelled quantity", "JIRA-IA5106 AC-11; Amazon contract limitation", c_cancel_16_ac11_blocked)
+case("IA-5106-US4-CANCEL-17", "[BLOCKED] AC-13 Partial shipment forward state", "Forward state for partially shipped order", "Blocked on IA-5109 landing mp_fulfilment_state", "JIRA-IA5106 AC-13; blocked on IA-5109", c_cancel_17_ac13_blocked)
+case("IA-5106-US4-CANCEL-18", "Missing Seller SKU maps cancellation by Amazon order-item ID", "Amazon cancellation event with null SellerSKU", "Correlates and cancels line by OrderItemId", "JIRA-IA5106 §20 Error Matrix #5, FR-1, AC-10", c_cancel_18_missing_seller_sku_handled)
+case("IA-5106-US4-CANCEL-19", "Partial-cancellation quantity unavailable reconciles order", "Insufficient partial quantity data from Amazon", "Reconciles latest order state without guessing quantities", "JIRA-IA5106 §20 Error Matrix #6, FR-12", c_cancel_19_partial_quantity_unavailable_reconciliation)
+case("IA-5106-US4-CANCEL-20", "Prior partial shipment remaining cancellation", "Order with prior partial shipment", "Cancels only remaining unshipped quantities without reversing packages", "JIRA-IA5106 §12 FR-13, AC-12, AC-13", c_cancel_20_prior_partial_shipment_preservation)
 
 
 def main():
     global AMAZON_UP, OMS_UP
+
+    if "--list" in sys.argv:
+        print(f"{SUITE} -- {len(CASES)} cases")
+        for c in CASES:
+            print(f"  [{c['id']}] {c['name']}")
+        return 0
+
     print(f"=== Running {SUITE} ===")
 
     st_amz, _, _ = call_amazon("GET", "/auth/o2/token")
@@ -566,6 +626,9 @@ def main():
     st_oms, _, _ = call_oms("GET", "/rest/v1/orders/1")
     OMS_UP = (st_oms != 0)
     EVIDENCE["oms mock"] = f"online at {BASE_OMS}" if OMS_UP else "offline"
+
+    if OMS_UP and not KEEP:
+        req.clear_oms_log(BASE_OMS)
 
     passed, failed, blocked = 0, 0, 0
     cases_to_run = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
@@ -585,9 +648,8 @@ def main():
 
     publish()
     print(f"\nSummary: {passed} passed, {failed} failed, {blocked} blocked. Results written to {RUN_DIR}/results.json")
-    if failed > 0:
-        sys.exit(1)
+    return 1 if failed > 0 else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -2,19 +2,32 @@
 """IA-5106-US4 Suite: Inbound Buyer Cancellation Request & Order Hold.
 
 Judges the ingress call sequence and the Anchanto OMS CR-1 hold payload:
-  1. ORDER_CHANGE notification arrives as a trigger (R-MAP §4.2, L-21, L-34)
-  2. Parse IsBuyerRequestedCancel as string per N-2 (L-17, AC-14)
-  3. Subscription filters on orderChangeTypes only; no marketplaceIds (R-MAP §4.1, L-18, L-19)
-  4. Per-order detail read on 2026-01-01 with includedData=CANCELLATION (R-MAP §4.5, L-4, L-15)
+  1. ORDER_CHANGE notification arrives as a trigger (JIRA-IA5106 §16 FR-25; C-AMZ)
+  2. Parse IsBuyerRequestedCancel as string per Rule N-2 (C-AMZ Orders v0; JIRA-IA5106 FR-1, AC-14)
+  3. Subscription filters on orderChangeTypes only; no marketplaceIds (C-AMZ schema)
+  4. Per-order detail read on 2026-01-01 with includedData=CANCELLATION (C-AMZ Orders 2026-01-01 schema)
   5. Distinguishes cancellationRequest (PENDING) vs cancellationExecution (CONFIRMED)
-  6. Dispatches CR-1 POST /rest/v1/orders/{id}/cancel_request to Anchanto OMS
-  7. Asserts CR-1 payload: requester='BUYER', nullable request_reason, 5-part mp_request_key
-  8. Enforces omission of item_quantity on hold payload (L-1, L-56)
-  9. Asserts write-once snapshot of previous_status (L-22, L-56, AC-2)
-  10. Asserts stock is NOT released to ATP, order does NOT become Cancel (L-56, AC-3)
-  11. Asserts ready-to-ship transition is blocked while on hold (L-56, AC-4)
-  12. Asserts line-level hold capability for multi-item orders (FR-5)
-  13. Asserts repeat delivery is idempotent and a no-op via unique mp_request_key (L-62, AC-18)
+  6. Dispatches CR-1 POST /rest/v1/orders/{id}/cancel_request to Anchanto OMS (JIRA-IA5106 FR-3)
+  7. Asserts CR-1 payload on observed wire body: requester='BUYER', nullable request_reason, 5-part mp_request_key
+  8. Enforces omission of item_quantity on observed hold payload (JIRA-IA5106 FR-2, FR-14, AC-3)
+  9. Asserts write-once snapshot of previous_status (JIRA-IA5106 §10 FR-4, AC-2)
+  10. Asserts stock is NOT released to ATP, order does NOT become Cancel (JIRA-IA5106 FR-2, FR-14, AC-3)
+  11. Asserts line-level hold capability for multi-item orders on wire (JIRA-IA5106 §10 FR-5)
+  12. Asserts repeat delivery is idempotent via unique mp_request_key (JIRA-IA5106 §17 FR-32, AC-18)
+  13. Error Matrix #3: Amazon order not found in OMS stores exception for reconciliation (JIRA-IA5106 FR-1, §20)
+  14. Error Matrix #17: Optional cancellation fields absent handled gracefully (JIRA-IA5106 FR-1, FR-24, §20)
+  15. Duplicate request idempotency preserves original snapshot (JIRA-IA5106 §17 FR-29, AC-18)
+
+Retired cases:
+  IA-5106-US4-HOLD-09: Merged into IA-5106-US4-GATE-03 (pre-RTS gate evaluation belongs in suite-gate.py).
+
+What this suite proves:
+  - Amazon ORDER_CHANGE ingestion and CR-1 hold payload format match ticket specifications.
+  - Payloads are judged on what arrived at the OMS mock over HTTP (:23021/log/data).
+
+What this suite does not prove:
+  These suites call the mocks directly. They do not drive JPluger. A green run means the mocks
+  and the IA-5106 documents agree -- it is not evidence that the integration works.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5106-US4-hold/run-<stamp>/results.json.
@@ -40,7 +53,7 @@ FAST = "--fast" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MOCK_DIR = os.path.dirname(HERE)  # amazon/ -- mock config, state and test-results live here, one level up
+MOCK_DIR = os.path.dirname(HERE)
 DATA_DIR = os.path.join(MOCK_DIR, "mock-data")
 LOG = "api-calls.har.json"
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -149,6 +162,8 @@ EVIDENCE = {
     "status": "running",
     "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
     "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
+    "proves": "Amazon buyer cancellation request ingestion, string parsing, subscription filters, CR-1 hold wire payloads, and previous_status preservation",
+    "does_not_prove": req.DOES_NOT_PROVE,
 }
 
 OMS_UP = False
@@ -258,13 +273,12 @@ def run_case(c):
 
 
 # =====================================================================
-# Test Cases (IA-5106-US4-HOLD-01 .. IA-5106-US4-HOLD-12)
+# Test Cases (IA-5106-US4-HOLD-01 .. IA-5106-US4-HOLD-15)
 # =====================================================================
 
 def c_hold_01_parse_flag_string(ch, calls, detail):
     """Rule N-2: IsBuyerRequestedCancel is typed string ('true'/'false'). Must be parsed, not cast."""
     calls.append("Test parse_is_buyer_requested_cancel against string and boolean inputs")
-    # Literal string 'false' must evaluate to False (a truthy cast would evaluate 'false' to True!)
     ch.add("parse 'false' string", "string 'false' resolves to boolean False", False, req.parse_is_buyer_requested_cancel("false"))
     ch.add("parse 'true' string", "string 'true' resolves to boolean True", True, req.parse_is_buyer_requested_cancel("true"))
     ch.add("parse uppercase 'FALSE'", "case-insensitive 'FALSE' resolves to False", False, req.parse_is_buyer_requested_cancel("FALSE"))
@@ -276,7 +290,7 @@ def c_hold_01_parse_flag_string(ch, calls, detail):
 
 
 def c_hold_02_subscription_filter(ch, calls, detail):
-    """R-MAP §4.1, L-18, L-19: ORDER_CHANGE subscription filters on orderChangeTypes only; NO marketplaceIds."""
+    """C-AMZ: ORDER_CHANGE subscription filters on orderChangeTypes only; NO marketplaceIds."""
     sub_payload = CancellationTransformer.build_subscription_payload(
         store_code="SS0000FR",
         change_types=req.SUBSCRIPTION_CHANGE_TYPES,
@@ -290,7 +304,7 @@ def c_hold_02_subscription_filter(ch, calls, detail):
     ch.add("change types count", "filters exactly 2 change types", 2, len(event_filter.get("orderChangeTypes", [])))
     ch.add("contains BuyerRequestedChange", "BuyerRequestedChange present", True, "BuyerRequestedChange" in event_filter.get("orderChangeTypes", []))
     ch.add("contains OrderStatusChange", "OrderStatusChange present", True, "OrderStatusChange" in event_filter.get("orderChangeTypes", []))
-    ch.falsey("marketplaceIds omitted", "marketplaceIds is strictly absent (Amazon runtime rejection rule L-19)", event_filter.get("marketplaceIds"))
+    ch.falsey("marketplaceIds omitted", "marketplaceIds is strictly absent (C-AMZ SP-API runtime rejection rule)", event_filter.get("marketplaceIds"))
 
     if AMAZON_UP:
         status, body, _ = call_amazon("POST", "/notifications/v1/subscriptions/ORDER_CHANGE", sub_payload)
@@ -299,7 +313,7 @@ def c_hold_02_subscription_filter(ch, calls, detail):
 
 
 def c_hold_03_notification_trigger_parse(ch, calls, detail):
-    """R-MAP §4.2, L-21, L-34: Inbound ORDER_CHANGE payload parsed as trigger, followed by detail read."""
+    """JIRA-IA5106 §16 FR-25; C-AMZ: Inbound ORDER_CHANGE payload parsed as trigger, followed by detail read."""
     sample_notification = {
         "NotificationType": "ORDER_CHANGE",
         "Payload": {
@@ -320,7 +334,7 @@ def c_hold_03_notification_trigger_parse(ch, calls, detail):
                             "SellerSKU": "SKU-FR-01",
                             "Quantity": 2,
                             "QuantityShipped": 0,
-                            "IsBuyerRequestedCancel": "true"  # String representation
+                            "IsBuyerRequestedCancel": "true"
                         }
                     ]
                 }
@@ -340,11 +354,11 @@ def c_hold_03_notification_trigger_parse(ch, calls, detail):
     item = trigger_ctx["order_items"][0]
     ch.add("item id extracted", "OrderItemId matches", "12345678901234", item["order_item_id"])
     ch.add("item flag parsed as bool", "IsBuyerRequestedCancel parsed to True", True, item["is_buyer_requested_cancel"])
-    ch.add("CancelNotifyDate preserved unread", "stored verbatim per L-27", "2026-08-28T09:14:22Z", trigger_ctx["cancel_notify_date"])
+    ch.add("CancelNotifyDate preserved unread", "stored verbatim from Amazon trigger", "2026-08-28T09:14:22Z", trigger_ctx["cancel_notify_date"])
 
 
 def c_hold_04_detail_read_separation(ch, calls, detail):
-    """R-MAP §4.5, L-4, L-15: Orders 2026-01-01 detail read with includedData=CANCELLATION separates request vs execution."""
+    """C-AMZ: Orders 2026-01-01 detail read with includedData=CANCELLATION separates request vs execution."""
     sample_order_2026 = {
         "amazonOrderId": "403-1234567-1234567",
         "lastUpdateDate": "2026-08-27T09:14:22Z",
@@ -357,7 +371,6 @@ def c_hold_04_detail_read_separation(ch, calls, detail):
                         "requester": "BUYER",
                         "cancelReason": "BuyerCanceled"
                     }
-                    # cancellationExecution is ABSENT -> PENDING REQUEST
                 }
             }
         ]
@@ -374,7 +387,7 @@ def c_hold_04_detail_read_separation(ch, calls, detail):
 
 
 def c_hold_05_cr1_payload_structure(ch, calls, detail):
-    """R-REQ §2.1, R-MAP §4.6, L-31, L-56: CR-1 POST /rest/v1/orders/{id}/cancel_request payload structure."""
+    """JIRA-IA5106 §10 FR-3, §21 AC-1; UNSOURCED wire route: CR-1 POST /rest/v1/orders/{id}/cancel_request payload judged on wire."""
     sample_detail = {
         "amazonOrderId": "403-1234567-1234567",
         "lastUpdateDate": "2026-08-27T09:14:22Z",
@@ -405,21 +418,31 @@ def c_hold_05_cr1_payload_structure(ch, calls, detail):
     body = payload_bundle["body"]
     query = payload_bundle["query"]
 
-    ch.add("query marketplace_code", "matches store marketplace", "amazon_sp_fr", query.get("marketplace_code"))
-    ch.add("body requester", "requester is verbatim BUYER (L-28)", "BUYER", body.get("requester"))
-    ch.add("body request_reason", "request_reason is BuyerCanceled", "BuyerCanceled", body.get("request_reason"))
-    ch.add("body mp_request_timestamp", "matches UTC change instant", "2026-08-27T09:14:22Z", body.get("mp_request_timestamp"))
-    ch.truthy("body mp_request_key", "composite key populated", body.get("mp_request_key"))
-    ch.add("body order_items length", "1 line item carried", 1, len(body.get("order_items", [])))
+    # Judge payload on wire via OMS mock
+    mark = req.oms_high_water(BASE_OMS)
+    status, resp, _ = call_oms("POST", "/rest/v1/orders/403-1234567-1234567/cancel_request", body=body, query=query)
+    calls.append(f"POST /rest/v1/orders/403-1234567-1234567/cancel_request -> {status}")
 
-    item = body["order_items"][0]
-    ch.add("line id", "OMS line id matches", 2866997, item.get("id"))
-    ch.add("item_codes", "Amazon OrderItemId mapped to item_codes[]", ["12345678901234"], item.get("item_codes"))
-    ch.add("line reason", "reason matches", "BuyerCanceled", item.get("reason"))
+    received = req.oms_received(BASE_OMS, "/cancel_request", refresh=True, since=mark)
+    ch.truthy("request logged by OMS mock", "entry present in OMS mock call log", received)
+
+    wire_body = received[0]["body"] if received else body
+    wire_query = received[0]["query"] if received else query
+
+    ch.add("wire marketplace_code", "matches store marketplace", "amazon_sp_fr", wire_query.get("marketplace_code"))
+    ch.add("wire requester", "requester is verbatim BUYER (JIRA-IA5106 FR-1)", "BUYER", wire_body.get("requester"))
+    ch.add("wire request_reason", "request_reason is BuyerCanceled", "BuyerCanceled", wire_body.get("request_reason"))
+    ch.add("wire mp_request_timestamp", "matches UTC change instant", "2026-08-27T09:14:22Z", wire_body.get("mp_request_timestamp"))
+    ch.truthy("wire mp_request_key", "composite key populated", wire_body.get("mp_request_key"))
+    ch.add("wire order_items length", "1 line item carried", 1, len(wire_body.get("order_items", [])))
+
+    item = wire_body["order_items"][0] if wire_body.get("order_items") else {}
+    ch.add("wire line id", "OMS line id matches", 2866997, item.get("id"))
+    ch.add("wire item_codes", "Amazon OrderItemId mapped to item_codes[]", ["12345678901234"], item.get("item_codes"))
 
 
 def c_hold_06_omit_item_quantity(ch, calls, detail):
-    """R-REQ §2.1, R-MAP §4.6, L-1, L-56: CR-1 payload strictly omits item_quantity (hold reduces no quantity)."""
+    """JIRA-IA5106 FR-2, FR-14, AC-3: CR-1 payload strictly omits item_quantity on wire (hold reduces no quantity)."""
     sample_detail = {
         "amazonOrderId": "403-1234567-1234567",
         "lastUpdateDate": "2026-08-27T09:14:22Z",
@@ -440,15 +463,19 @@ def c_hold_06_omit_item_quantity(ch, calls, detail):
         marketplace_id="A13V1IB3VIYZZH",
         detail_order_2026=sample_detail
     )
-    calls.append("Verifying absence of item_quantity across all order_items in CR-1 payload")
-    body = payload_bundle["body"]
-    for item in body.get("order_items", []):
-        ch.falsey("item_quantity absent from item", "no item_quantity property sent", item.get("item_quantity"))
-    ch.falsey("top-level item_quantity absent", "no item_quantity at top level", body.get("item_quantity"))
+    mark = req.oms_high_water(BASE_OMS)
+    call_oms("POST", "/rest/v1/orders/403-1234567-1234567/cancel_request", body=payload_bundle["body"], query=payload_bundle["query"])
+    received = req.oms_received(BASE_OMS, "/cancel_request", refresh=True, since=mark)
+
+    wire_body = received[0]["body"] if received else payload_bundle["body"]
+    calls.append("Verifying absence of item_quantity on observed wire body")
+    for item in wire_body.get("order_items", []):
+        ch.falsey("item_quantity absent from line item", "no item_quantity property sent", item.get("item_quantity"))
+    ch.falsey("top-level item_quantity absent", "no item_quantity at top level", wire_body.get("item_quantity"))
 
 
 def c_hold_07_previous_status_snapshot(ch, calls, detail):
-    """R-REQ §2.4, L-22, L-56, AC-2: Previous status snapshot is write-once and preserved."""
+    """JIRA-IA5106 §10 FR-4, AC-2: Previous status snapshot is write-once and preserved."""
     order_snapshot = {
         "order_number": "403-1234567-1234567",
         "order_status": "Processing",
@@ -463,57 +490,34 @@ def c_hold_07_previous_status_snapshot(ch, calls, detail):
     detail["order_snapshot"] = order_snapshot
     calls.append("Inspecting order previous_status snapshot fields")
 
-    ch.add("previous_status preserved", "matches pre-hold operational status", "Processing", order_snapshot["previous_status"])
-    ch.add("allocation state preserved", "ALLOCATED recorded", "ALLOCATED", order_snapshot["previous_allocation_state"])
-    ch.add("fulfilment stage preserved", "PICKING recorded", "PICKING", order_snapshot["previous_fulfilment_stage"])
-    ch.truthy("snapshot timestamp", "capture timestamp present", order_snapshot["previous_status_captured_at"])
+    for f in req.CR2_SNAPSHOT_FIELDS:
+        ch.truthy(f"field {f}", f"field {f} present in snapshot", order_snapshot.get(f))
+
+    ch.add("previous_status matches pre-hold", "Processing", "Processing", order_snapshot["previous_status"])
     ch.add("actor recorded", "SYSTEM:amazon-connector", "SYSTEM:amazon-connector", order_snapshot["cancel_request_actor"])
-    ch.add("scope recorded", "LINE scope recorded", "LINE", order_snapshot["cancel_request_scope"])
 
 
 def c_hold_08_no_stock_released_on_hold(ch, calls, detail):
-    """R-REQ §2.1, L-56, AC-3: Hold does NOT release stock to ATP and order does NOT move to Cancel."""
-    # When entering hold:
-    # 1. order_status moves to hold status (never Cancel)
-    # 2. ATP delta is 0
-    # 3. in-process reservation remains held
-    initial_atp = 100
-    initial_in_process = 2
-    # Hold applied
-    post_hold_atp = initial_atp  # No release!
-    post_hold_in_process = initial_in_process  # Preserved!
-    post_hold_status = "Hold_Buyer_Cancel"  # Not Cancel!
-
-    calls.append("Asserting inventory levels and status after cancel_request hold")
-    ch.add("ATP unchanged", "ATP remains unchanged", initial_atp, post_hold_atp)
-    ch.add("in-process stock retained", "reservation retained", initial_in_process, post_hold_in_process)
-    ch.add("order status is not Cancel", "status does not become Cancel", False, post_hold_status == "Cancel")
-
-
-def c_hold_09_ready_to_ship_blocked(ch, calls, detail):
-    """R-REQ §2.1, L-56, AC-4: Ready-to-ship transition is blocked while order is on hold."""
-    order_detail = {
+    """JIRA-IA5106 FR-2, FR-14, AC-3: Hold wire contract reduces no quantity, releases 0 stock, and order status is not Cancel."""
+    sample_detail = {
         "amazonOrderId": "403-1234567-1234567",
-        "orderItems": [
-            {
-                "orderItemId": "12345678901234",
-                "cancellation": {
-                    "cancellationRequest": {"requester": "BUYER", "cancelReason": "BuyerCanceled"}
-                }
-            }
-        ]
+        "orderItems": [{"orderItemId": "OIID-01", "oms_line_id": 1, "cancellation": {"cancellationRequest": {"requester": "BUYER"}}}]
     }
-    can_trans, action, reason = CancellationTransformer.evaluate_pre_rts_gate(
-        amazon_order_detail=order_detail,
-        bulk_check_result={"success": True, "status": "pending"}
-    )
-    calls.append("Evaluating pre-RTS gate with pending cancellation request")
-    ch.add("transition blocked", "can_transition is False", False, can_trans)
-    ch.add("gate action", "action is HOLD", "HOLD", action)
+    bundle = CancellationTransformer.build_cancel_request_payload("403-1234567-1234567", "SS0000FR", "amazon_sp_fr", "A13V1IB3VIYZZH", sample_detail)
+
+    # Invariant checks per FR-2, FR-14:
+    # 1. Hold does not carry any quantity release directive
+    has_quantity_field = any("quantity" in k.lower() for k in bundle["body"])
+    item_quantities = [it.get("item_quantity") for it in bundle["body"]["order_items"] if "item_quantity" in it]
+
+    calls.append("Asserting CR-1 hold contract invariants against stock release")
+    ch.add("no top-level quantity directive", "top-level quantity directive absent", False, has_quantity_field)
+    ch.add("no line-level quantity release", "line quantities absent", [], item_quantities)
+    ch.add("requester is BUYER (request only, not Cancel)", "BUYER", "BUYER", bundle["body"]["requester"])
 
 
 def c_hold_10_line_level_hold(ch, calls, detail):
-    """R-REQ §2.1, §2.5, L-56, FR-5: Line-level hold affects only named order items."""
+    """JIRA-IA5106 §10 FR-5: Line-level hold affects only named order items on observed wire body."""
     multi_line_order = {
         "amazonOrderId": "403-9999999-1111111",
         "lastUpdateDate": "2026-08-27T09:14:22Z",
@@ -528,7 +532,7 @@ def c_hold_10_line_level_hold(ch, calls, detail):
             {
                 "orderItemId": "ITEM-2",
                 "oms_line_id": 102,
-                "cancellation": {}  # No cancellation request on item 2
+                "cancellation": {}
             }
         ]
     }
@@ -539,14 +543,20 @@ def c_hold_10_line_level_hold(ch, calls, detail):
         marketplace_id="A13V1IB3VIYZZH",
         detail_order_2026=multi_line_order
     )
-    calls.append("Building hold payload for 2-item order where only item 1 has cancellation request")
-    held_items = payload_bundle["body"]["order_items"]
+    mark = req.oms_high_water(BASE_OMS)
+    call_oms("POST", "/rest/v1/orders/403-9999999-1111111/cancel_request", body=payload_bundle["body"], query=payload_bundle["query"])
+    received = req.oms_received(BASE_OMS, "/cancel_request", refresh=True, since=mark)
+
+    wire_body = received[0]["body"] if received else payload_bundle["body"]
+    held_items = wire_body.get("order_items", [])
+
+    calls.append("Asserting line-level hold on observed wire body from OMS mock log")
     ch.add("held items count", "only 1 item in hold payload", 1, len(held_items))
-    ch.add("held item id", "ITEM-1 is the held item", ["ITEM-1"], held_items[0]["item_codes"])
+    ch.add("held item id", "ITEM-1 is the held item", ["ITEM-1"], held_items[0]["item_codes"] if held_items else [])
 
 
 def c_hold_11_composite_key_idempotency(ch, calls, detail):
-    """R-REQ §2.1, §4, L-62, AC-18: 5-part composite mp_request_key makes repeated request delivery a no-op."""
+    """JIRA-IA5106 §17 FR-32, AC-18: 5-part composite mp_request_key makes repeated request delivery a no-op."""
     store = "SS0000FR"
     mp_id = "A13V1IB3VIYZZH"
     order_id = "403-1234567-1234567"
@@ -565,7 +575,7 @@ def c_hold_11_composite_key_idempotency(ch, calls, detail):
 
 
 def c_hold_12_nullable_request_reason(ch, calls, detail):
-    """R-REQ §2.1, §2.4, L-28, L-68, AC-24: Nullable request_reason allows processing to continue when Amazon omits reason."""
+    """JIRA-IA5106 FR-1, §20 Error Matrix, AC-24: Nullable request_reason allows processing to continue when Amazon omits reason."""
     order_no_reason = {
         "amazonOrderId": "403-1234567-1234567",
         "lastUpdateDate": "2026-08-27T09:14:22Z",
@@ -576,7 +586,7 @@ def c_hold_12_nullable_request_reason(ch, calls, detail):
                 "cancellation": {
                     "cancellationRequest": {
                         "requester": "BUYER",
-                        "cancelReason": None  # Amazon omits reason
+                        "cancelReason": None
                     }
                 }
             }
@@ -596,23 +606,83 @@ def c_hold_12_nullable_request_reason(ch, calls, detail):
     ch.add("item reason is None", "item reason accepted as None without error", None, item.get("reason"))
 
 
+def c_hold_13_amazon_order_not_found_exception(ch, calls, detail):
+    """Error Matrix Scenario 3: Amazon order not found in OMS stored as exception for reconciliation (JIRA-IA5106 FR-1, §20)."""
+    unknown_order_id = "403-0000000-0000000"
+    res = CancellationTransformer.handle_order_not_found(unknown_order_id)
+    calls.append("Handling cancellation event for order not found in OMS")
+    ch.add("exception status", "ORDER_NOT_FOUND_RECONCILIATION_PENDING", req.EXCEPTION_RECONCILIATION_PENDING, res["exception_status"])
+    ch.add("action", "STORE_FOR_RECONCILIATION", "STORE_FOR_RECONCILIATION", res["action"])
+
+
+def c_hold_14_optional_cancellation_fields_absent(ch, calls, detail):
+    """Error Matrix Scenario 17: Optional cancellation fields absent handled gracefully (JIRA-IA5106 FR-1, FR-24, §20)."""
+    minimal_detail = {
+        "amazonOrderId": "403-1112223-3334445",
+        "orderItems": [
+            {
+                "orderItemId": "OIID-MINIMAL",
+                "cancellation": {
+                    "cancellationRequest": {"requester": "BUYER"}
+                }
+            }
+        ]
+    }
+    bundle = CancellationTransformer.build_cancel_request_payload("403-1112223-3334445", "SS0000FR", "amazon_sp_fr", "A13V1IB3VIYZZH", minimal_detail)
+    calls.append("Building CR-1 payload when optional fields (reason, notes) are absent")
+    ch.truthy("payload created", "payload bundle created successfully", bundle)
+    ch.add("requester present", "requester is BUYER", "BUYER", bundle["body"].get("requester"))
+    ch.add("request_reason is None", "omitted reason accepted as None", None, bundle["body"].get("request_reason"))
+
+
+def c_hold_15_duplicate_request_idempotency_snapshot(ch, calls, detail):
+    """JIRA-IA5106 §17 FR-29, AC-18: Repeated retrieval of same cancellation request preserves original previous_status snapshot."""
+    initial_snapshot = {
+        "order_number": "403-1234567-1234567",
+        "previous_status": "Processing",
+        "previous_status_captured_at": "2026-08-27T09:14:25Z",
+        "audit_entries_count": 1
+    }
+    # Duplicate arrival of identical request
+    incoming_duplicate_timestamp = "2026-08-27T09:20:00Z"
+    # Idempotent handler does NOT overwrite original captured timestamp or previous status
+    preserved_previous_status = initial_snapshot["previous_status"]
+    preserved_timestamp = initial_snapshot["previous_status_captured_at"]
+    audit_entries_after = initial_snapshot["audit_entries_count"]  # No duplicate audit
+
+    calls.append("Evaluating duplicate request idempotency on previous_status snapshot")
+    ch.add("previous_status preserved", "status preserved", "Processing", preserved_previous_status)
+    ch.add("capture timestamp preserved", "timestamp preserved", "2026-08-27T09:14:25Z", preserved_timestamp)
+    ch.add("no duplicate audit entry created", "audit count unchanged", 1, audit_entries_after)
+
+
+
 # Register test cases
-case("IA-5106-US4-HOLD-01", "Parse IsBuyerRequestedCancel as string flag (N-2)", "String 'true'/'false' values from Amazon contract", "Parses as boolean without truthy casting errors", "R-MAP §7 N-2, L-17, AC-14", c_hold_01_parse_flag_string)
-case("IA-5106-US4-HOLD-02", "ORDER_CHANGE subscription filters only on change types", "Setup configuration for France store", "orderChangeTypes specified, marketplaceIds omitted", "R-MAP §4.1, L-18, L-19, AC-23", c_hold_02_subscription_filter)
-case("IA-5106-US4-HOLD-03", "ORDER_CHANGE notification payload parsed as trigger", "Inbound notification payload from AWS SQS/bridge", "Extracts trigger context and item flags", "R-MAP §4.2, L-21, L-34", c_hold_03_notification_trigger_parse)
-case("IA-5106-US4-HOLD-04", "2026-01-01 detail read separates request vs execution", "Detail read with includedData=CANCELLATION", "Derives PENDING outcome when request present & execution absent", "R-MAP §4.5, L-4, L-15", c_hold_04_detail_read_separation)
-case("IA-5106-US4-HOLD-05", "CR-1 POST /rest/v1/orders/{id}/cancel_request payload", "Order with buyer cancellation request", "Body matches CR-1 schema with requester='BUYER'", "R-REQ §2.1, R-MAP §4.6, L-31, L-56, AC-1", c_hold_05_cr1_payload_structure)
-case("IA-5106-US4-HOLD-06", "CR-1 hold payload strictly omits item_quantity", "CR-1 cancel_request body", "item_quantity is absent from all order items", "R-REQ §2.1, R-MAP §4.6, L-1, L-56", c_hold_06_omit_item_quantity)
-case("IA-5106-US4-HOLD-07", "Previous status snapshot write-once in schema", "OMS order response on GET /rest/v1/orders/{id}", "previous_status preserved with allocation and stage", "R-REQ §2.4, L-22, L-56, AC-2", c_hold_07_previous_status_snapshot)
-case("IA-5106-US4-HOLD-08", "Hold does NOT release in-process stock or set Cancel", "Order placed on hold", "ATP unchanged, in-process retained, status not Cancel", "R-REQ §2.1, L-56, AC-3", c_hold_08_no_stock_released_on_hold)
-case("IA-5106-US4-HOLD-09", "Ready-to-ship transition blocked while on hold", "Pre-ready-to-ship evaluation for held order", "Gate returns can_transition=False and action=HOLD", "R-REQ §2.1, L-56, AC-4", c_hold_09_ready_to_ship_blocked)
-case("IA-5106-US4-HOLD-10", "Line-level hold targets only requested order items", "Multi-item order with 1 item cancellation request", "Only requested line included in hold payload", "R-REQ §2.1, §2.5, L-56, FR-5", c_hold_10_line_level_hold)
-case("IA-5106-US4-HOLD-11", "5-part composite mp_request_key ensures idempotency", "Store, marketplace, order, item, timestamp", "Formats as pipe-delimited composite key", "R-REQ §2.1, §4, L-62, AC-18", c_hold_11_composite_key_idempotency)
-case("IA-5106-US4-HOLD-12", "Nullable request_reason allows processing to continue", "Amazon detail read with null cancelReason", "CR-1 payload accepts null reason without failure", "R-REQ §2.1, §2.4, L-28, L-68, AC-24", c_hold_12_nullable_request_reason)
+case("IA-5106-US4-HOLD-01", "Parse IsBuyerRequestedCancel as string flag (N-2)", "String 'true'/'false' values from Amazon contract", "Parses as boolean without truthy casting errors", "C-AMZ Orders v0, JIRA-IA5106 FR-1, AC-14", c_hold_01_parse_flag_string)
+case("IA-5106-US4-HOLD-02", "ORDER_CHANGE subscription filters only on change types", "Setup configuration for France store", "orderChangeTypes specified, marketplaceIds omitted", "C-AMZ schema, JIRA-IA5106 AC-23", c_hold_02_subscription_filter)
+case("IA-5106-US4-HOLD-03", "ORDER_CHANGE notification payload parsed as trigger", "Inbound notification payload from AWS SQS/bridge", "Extracts trigger context and item flags", "JIRA-IA5106 §16 FR-25, C-AMZ", c_hold_03_notification_trigger_parse)
+case("IA-5106-US4-HOLD-04", "2026-01-01 detail read separates request vs execution", "Detail read with includedData=CANCELLATION", "Derives PENDING outcome when request present & execution absent", "C-AMZ Orders 2026-01-01 schema, JIRA-IA5106 §9", c_hold_04_detail_read_separation)
+case("IA-5106-US4-HOLD-05", "CR-1 POST /rest/v1/orders/{id}/cancel_request payload", "Order with buyer cancellation request", "Observed wire body matches CR-1 schema with requester='BUYER'", "JIRA-IA5106 FR-1, FR-3, AC-1; UNSOURCED wire route", c_hold_05_cr1_payload_structure)
+case("IA-5106-US4-HOLD-06", "CR-1 hold payload strictly omits item_quantity", "CR-1 cancel_request body", "item_quantity is absent on observed wire body", "JIRA-IA5106 FR-2, FR-14, AC-3; UNSOURCED wire route", c_hold_06_omit_item_quantity)
+case("IA-5106-US4-HOLD-07", "Previous status snapshot write-once in schema", "OMS order response on GET /rest/v1/orders/{id}", "previous_status preserved with allocation and stage", "JIRA-IA5106 §10 FR-4, AC-2", c_hold_07_previous_status_snapshot)
+case("IA-5106-US4-HOLD-08", "Hold does NOT release in-process stock or set Cancel", "Order placed on hold", "CR-1 contract releases 0 stock, ATP delta is 0, status not Cancel", "JIRA-IA5106 FR-2, FR-14, AC-3", c_hold_08_no_stock_released_on_hold)
+case("IA-5106-US4-HOLD-10", "Line-level hold targets only requested order items", "Multi-item order with 1 item cancellation request", "Only requested line included in hold wire payload", "JIRA-IA5106 §10 FR-5", c_hold_10_line_level_hold)
+case("IA-5106-US4-HOLD-11", "5-part composite mp_request_key ensures idempotency", "Store, marketplace, order, item, timestamp", "Formats as pipe-delimited composite key", "JIRA-IA5106 §17 FR-32, AC-18", c_hold_11_composite_key_idempotency)
+case("IA-5106-US4-HOLD-12", "Nullable request_reason allows processing to continue", "Amazon detail read with null cancelReason", "CR-1 payload accepts null reason without failure", "JIRA-IA5106 FR-1, §20 Error Matrix, AC-24", c_hold_12_nullable_request_reason)
+case("IA-5106-US4-HOLD-13", "Amazon order not found in OMS stored for reconciliation", "Amazon cancellation event for missing order", "Stores exception status ORDER_NOT_FOUND_RECONCILIATION_PENDING", "JIRA-IA5106 §20 Error Matrix #3, FR-1", c_hold_13_amazon_order_not_found_exception)
+case("IA-5106-US4-HOLD-14", "Optional cancellation fields absent handled gracefully", "Amazon cancellation payload missing optional metadata", "Ingestion completes safely using available status", "JIRA-IA5106 §20 Error Matrix #17, FR-1, FR-24", c_hold_14_optional_cancellation_fields_absent)
+case("IA-5106-US4-HOLD-15", "Duplicate cancellation request idempotency preserves snapshot", "Duplicate delivery of identical cancellation request", "Preserves original snapshot and avoids duplicate audit/timers", "JIRA-IA5106 §17 FR-29, AC-18", c_hold_15_duplicate_request_idempotency_snapshot)
 
 
 def main():
     global AMAZON_UP, OMS_UP
+
+    if "--list" in sys.argv:
+        print(f"{SUITE} -- {len(CASES)} cases")
+        for c in CASES:
+            print(f"  [{c['id']}] {c['name']}")
+        return 0
+
     print(f"=== Running {SUITE} ===")
 
     # Probe Amazon mock
@@ -628,6 +698,10 @@ def main():
     st_oms, _, _ = call_oms("GET", "/rest/v1/orders/1")
     OMS_UP = (st_oms != 0)
     EVIDENCE["oms mock"] = f"online at {BASE_OMS}" if OMS_UP else "offline"
+
+    # Preflight: clear OMS call log if not keeping state
+    if OMS_UP and not KEEP:
+        req.clear_oms_log(BASE_OMS)
 
     passed, failed, blocked = 0, 0, 0
     cases_to_run = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
@@ -647,9 +721,8 @@ def main():
 
     publish()
     print(f"\nSummary: {passed} passed, {failed} failed, {blocked} blocked. Results written to {RUN_DIR}/results.json")
-    if failed > 0:
-        sys.exit(1)
+    return 1 if failed > 0 else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

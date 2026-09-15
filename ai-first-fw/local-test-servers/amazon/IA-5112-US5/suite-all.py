@@ -1,185 +1,156 @@
 #!/usr/bin/env python3
 """Amazon Seller-Fulfilled Returns Master Test Suite (IA-5112-US5).
 
-Consolidated runner for all 60 test cases across:
-  - IA-5112-US5-SYNC (12 cases): Amazon SP-API report synchronization, polling, download, TSV parsing.
-  - IA-5112-US5-LIFE (20 cases): Reconstruction, create/status payloads, 4 completion paths, 30-day ageing.
-  - IA-5112-US5-EXC  (28 cases): 23 exception matrix scenarios, arrivals, cumulative check, and 4 residual probes.
+Consolidated master suite executing all 55 test cases across:
+  - IA-5112-US5-sync       (14 cases): SP-API report synchronization, polling, download, TSV parsing, rate limits, 4-marketplace isolation.
+  - IA-5112-US5-lifecycle  (20 cases): Reconstruction, create/status wire payloads on OMS mock, 4 completion paths, 30-day clock edges.
+  - IA-5112-US5-exceptions (21 cases): Exception matrix scenarios (§8.3), physical arrivals, cumulative limits, and 4 residual probes.
+
+WHAT THIS SUITE PROVES
+  The consolidated behavior of the Amazon SP-API mock and Anchanto OMS mock across the full
+  Seller-Fulfilled Returns specification: report synchronization, end-to-end lifecycle progression,
+  exception branches, and technical residual probes.
+
+WHAT IT DOES NOT PROVE
+  It never starts JPluger. The connector issues these calls in production; these suites post directly
+  at the local mocks against requirements.py, this folder's reference implementation. JPluger JUnit
+  tests prove the connector code.
 
 Source documents:
-  R-SUM: IA-5112-seller-fulfilled-returns-summary.md
-  R-REQ: IA-5112-oms-returns-requirements-spec.md
-  R-MAP: IA-5112-amz-oms-returns-mapping-spec.md
-  R-LIB: IA-5112-seller-fulfilled-returns-library.md
+  R-SUM: jira-workspace/amazon-cross-border/IA-5112/IA-5112-seller-fulfilled-returns-summary.md
+  R-REQ: .../IA-5112-oms-returns-requirements-spec.md
+  R-MAP: .../IA-5112-amz-oms-returns-mapping-spec.md
+  R-LIB: .../IA-5112-seller-fulfilled-returns-library.md
+
+Runner contract: local-test-servers/TESTING.md and plan/amazon-test-suites#01-harness.
 
 Usage:
-  python3 amazon/IA-5112-US5/suite-all.py                    # Run all 60 cases
+  python3 amazon/IA-5112-US5/suite-all.py                    # Run all 55 cases
+  python3 amazon/IA-5112-US5/suite-all.py --list             # List all cases across the three suites
   python3 amazon/IA-5112-US5/suite-all.py --sync             # Run sync cases only
   python3 amazon/IA-5112-US5/suite-all.py --lifecycle        # Run lifecycle cases only
   python3 amazon/IA-5112-US5/suite-all.py --exceptions       # Run exceptions cases only
   python3 amazon/IA-5112-US5/suite-all.py IA-5112-US5-LIFE-04 # Run specific case
 """
 
-import atexit
 import datetime
+import importlib.util
 import json
 import os
 import sys
-import threading
-import time
-import urllib.error
-import urllib.parse
-import urllib.request
-from http.server import ThreadingHTTPServer
-
-import requirements as req
-
-# Import case definitions from the three specialized suite modules
-import importlib.util
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-AMAZON_DIR = os.path.dirname(HERE)  # amazon/ -- test-results live here, one level up
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
 
-def _load_module(mod_name, file_path):
-    spec = importlib.util.spec_from_file_location(mod_name, file_path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
+import runner
 
-mod_sync = _load_module("suite_sync", os.path.join(HERE, "suite-sync.py"))
-mod_life = _load_module("suite_life", os.path.join(HERE, "suite-lifecycle.py"))
-mod_exc = _load_module("suite_exc", os.path.join(HERE, "suite-exceptions.py"))
-
-BASE_AMAZON = os.environ.get("BASE", "http://127.0.0.1:23103").rstrip("/")
-BASE_OMS = os.environ.get("BASE_OMS", "http://127.0.0.1:23001").rstrip("/")
-SUITE = "IA-5112-US5-all"
-STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-RUN_DIR = os.path.join(AMAZON_DIR, "test-results", SUITE, "run-" + STAMP)
-
-# Combine cases
-ALL_CASES = []
-# Sync cases
-for c in mod_sync.CASES:
-    ALL_CASES.append(dict(c))
-# Lifecycle cases
-for c in mod_life.CASES:
-    ALL_CASES.append(dict(c))
-# Exceptions cases
-for c in mod_exc.CASES:
-    ALL_CASES.append(dict(c))
-
-ARG_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
-RUN_SYNC = "--sync" in sys.argv
-RUN_LIFE = "--lifecycle" in sys.argv
-RUN_EXC = "--exceptions" in sys.argv
-
-RESULTS = {}
-EVIDENCE = {
-    "status": "running",
-    "mock call log": "not captured",
-    "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
-    "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
-}
+CHILDREN = [
+    ("sync", "suite-sync.py"),
+    ("lifecycle", "suite-lifecycle.py"),
+    ("exceptions", "suite-exceptions.py"),
+]
 
 
-def publish():
-    cases = []
-    for c in ALL_CASES:
-        cid = c["id"]
-        r = RESULTS.get(cid)
-        e = {
-            "id": cid,
-            "name": c["name"],
-            "given": c["given"],
-            "then": c["then"],
-            "note": c["note"]
-        }
-        if r:
-            e.update(r)
-        else:
-            e.update({
-                "verdict": "skip",
-                "summary": "skipped (not selected)",
-                "detail": {},
-                "checks": [],
-                "calls": []
-            })
-        cases.append(e)
+def _load_module(label, filename):
+    path = os.path.join(HERE, filename)
+    spec = importlib.util.spec_from_file_location("ia5112_us5_" + label, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
-    done = [c for c in cases if c.get("verdict") in ("pass", "fail", "blocked", "skip")]
-    payload = {
-        "suite": SUITE,
-        "title": "Amazon Seller-Fulfilled Returns Master Suite (IA-5112-US5)",
-        "stamp": STAMP,
-        "at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "base_url": BASE_AMAZON,
-        "summary": {
-            "total": len(cases),
-            "pass": sum(1 for c in done if c["verdict"] == "pass"),
-            "fail": sum(1 for c in done if c["verdict"] == "fail"),
-            "blocked": sum(1 for c in done if c["verdict"] == "blocked"),
-            "skip": sum(1 for c in done if c["verdict"] == "skip"),
-        },
-        "cases": cases,
-        "evidence": EVIDENCE
-    }
 
-    os.makedirs(RUN_DIR, exist_ok=True)
-    with open(os.path.join(RUN_DIR, "results.json"), "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
+MODULES = [(label, _load_module(label, filename)) for label, filename in CHILDREN]
+
+SUITE = runner.Suite(
+    "IA-5112-US5-all",
+    "IA-5112-US5: Master Test Suite (Consolidated 55 Cases)",
+    proves="the Amazon SP-API mock and Anchanto OMS mock serve the full Seller-Fulfilled Returns "
+           "contract end-to-end: report sync, lifecycle wire updates, 4 completion paths, and exceptions",
+    does_not_prove="anything about JPluger -- no Java application is started here; JPluger JUnit tests prove connector code",
+    base_url=runner.AMAZON_BASE,
+)
+
+OWNER_OF = {}
+for _label, _module in MODULES:
+    for _case in _module.SUITE.cases:
+        SUITE.cases.append(_case)
+        OWNER_OF[_case["id"]] = (_label, _module)
 
 
 def main():
-    print(f"Amazon Seller-Fulfilled Returns Master Suite (IA-5112-US5) -- {BASE_AMAZON}")
-    print(f"  run dir  : {RUN_DIR}")
-    print(f"  total cases registered: {len(ALL_CASES)}")
+    argv = list(sys.argv[1:])
+    wanted = {arg for arg in argv if not arg.startswith("-")}
+    run_sync_only = "--sync" in argv
+    run_life_only = "--lifecycle" in argv
+    run_exc_only = "--exceptions" in argv
 
-    # Preflight via sync module
-    mod_sync.preflight()
+    if "--list" in argv:
+        print(f"{SUITE.name} -- {len(SUITE.cases)} cases")
+        for label, module in MODULES:
+            print(f"\n  {label.upper()} -- {module.SUITE.name} ({len(module.SUITE.cases)} cases)")
+            for case in module.SUITE.cases:
+                print(f"    [{case['id']}] {case['name']}")
+        return 0
 
-    # Filter cases
-    selected = []
-    for c in ALL_CASES:
-        cid = c["id"]
-        if ARG_CASES:
-            if cid in ARG_CASES:
-                selected.append(c)
-        elif RUN_SYNC or RUN_LIFE or RUN_EXC:
-            if RUN_SYNC and cid.startswith("IA-5112-US5-SYNC"):
-                selected.append(c)
-            elif RUN_LIFE and cid.startswith("IA-5112-US5-LIFE"):
-                selected.append(c)
-            elif RUN_EXC and cid.startswith("IA-5112-US5-EXC"):
-                selected.append(c)
+    print(f"\n{SUITE.name}")
+    print(f"  proves        : {SUITE.proves}")
+    print(f"  does not prove: {SUITE.does_not_prove}")
+    print(f"  base amazon   : {runner.AMAZON_BASE}")
+    print(f"  base oms      : {runner.OMS_BASE}")
+    print(f"  run dir       : {SUITE.run_dir}")
+
+    # Run preflight across all child modules
+    for _label, module in MODULES:
+        module.preflight()
+        SUITE.evidence.update(module.SUITE.evidence)
+
+    # Filter target cases
+    to_run = []
+    for case in SUITE.cases:
+        cid = case["id"]
+        if wanted:
+            if cid in wanted:
+                to_run.append(case)
+        elif run_sync_only or run_life_only or run_exc_only:
+            if run_sync_only and cid.startswith("IA-5112-US5-SYNC"):
+                to_run.append(case)
+            elif run_life_only and cid.startswith("IA-5112-US5-LIFE"):
+                to_run.append(case)
+            elif run_exc_only and cid.startswith("IA-5112-US5-EXC"):
+                to_run.append(case)
         else:
-            selected.append(c)
+            to_run.append(case)
 
-    print(f"\nExecuting {len(selected)} test cases across IA-5112-US5...\n")
-    for c in selected:
-        cid = c["id"]
-        if cid.startswith("IA-5112-US5-SYNC"):
-            v = mod_sync.run_case(c)
-            RESULTS[cid] = mod_sync.RESULTS[cid]
-        elif cid.startswith("IA-5112-US5-LIFE"):
-            v = mod_life.run_case(c)
-            RESULTS[cid] = mod_life.RESULTS[cid]
-        elif cid.startswith("IA-5112-US5-EXC"):
-            v = mod_exc.run_case(c)
-            RESULTS[cid] = mod_exc.RESULTS[cid]
+    print(f"\nExecuting {len(to_run)} cases across {len(MODULES)} suites...\n")
+    for case in to_run:
+        _label, module = OWNER_OF[case["id"]]
+        verdict = module.SUITE.run_case(case)
+        result = module.SUITE.results[case["id"]]
+        SUITE.results[case["id"]] = result
+        mark = "✓" if verdict == "pass" else ("⚠" if verdict == "blocked" else "✗")
+        print(f"  [{verdict.upper():^7}] {mark} {case['id']}: {case['name']} -- {result['summary']}")
 
-        mark = "✓" if v == "pass" else ("⚠" if v == "blocked" else "✗")
-        print(f"  [{v.upper():^7}] {mark} {cid}: {c['name']}")
+    # Publish master results
+    SUITE.evidence["status"] = "complete"
+    SUITE.publish(wanted)
 
-    publish()
-    total = len(selected)
-    passed = sum(1 for r in RESULTS.values() if r["verdict"] == "pass")
-    failed = sum(1 for r in RESULTS.values() if r["verdict"] == "fail")
-    blocked = sum(1 for r in RESULTS.values() if r["verdict"] == "blocked")
-    print(f"\n{SUITE} master run complete: {passed}/{total} passed, {failed} failed, {blocked} blocked.")
-    print(f"Results saved to: {os.path.join(RUN_DIR, 'results.json')}\n")
-    if failed > 0:
-        sys.exit(1)
+    # Also publish child suites
+    for _label, module in MODULES:
+        child_wanted = {c["id"] for c in to_run if c["id"] in module.SUITE.results}
+        if child_wanted:
+            module.SUITE.evidence["status"] = "complete"
+            module.SUITE.publish(child_wanted)
+
+    passed = sum(1 for c in to_run if SUITE.results[c["id"]]["verdict"] == "pass")
+    failed = sum(1 for c in to_run if SUITE.results[c["id"]]["verdict"] == "fail")
+    blocked = sum(1 for c in to_run if SUITE.results[c["id"]]["verdict"] == "blocked")
+    skipped = sum(1 for c in to_run if SUITE.results[c["id"]]["verdict"] == "skip")
+    print(f"\n{SUITE.name} master run complete:")
+    print(f"  {passed}/{len(to_run)} cases passed, {failed} failed, {blocked} blocked, {skipped} skipped.")
+    print(f"  master results: {os.path.join(SUITE.run_dir, 'results.json')}\n")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

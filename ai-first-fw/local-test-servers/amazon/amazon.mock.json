@@ -88,8 +88,8 @@
         "suite-IA-5105-US1",
         "suite-IA-5105-US1-all"
       ],
-      "name": "IA-5105-US1: Master Test Suite (All 87 Cases)",
-      "description": "Consolidated execution of all 87 test cases covering marketplace taxonomy discovery, US store connect, and multi-marketplace synchronization",
+      "name": "IA-5105-US1: Master Test Suite (All 44 Cases)",
+      "description": "Consolidated execution of all 44 test cases covering marketplace taxonomy discovery, US store connect, and multi-marketplace synchronization",
       "estimate": "~15s",
       "command": [
         "python3",
@@ -162,7 +162,7 @@
         "suite-IA-5112-US5-sync"
       ],
       "name": "IA-5112-US5: Seller-Fulfilled Returns Sync",
-      "description": "Validation of Amazon SP-API reports synchronization (GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE), wide static 60-day window, 31-column TSV parsing by header, date parsing, rate limits, and 4-marketplace isolation (FR, DE, JP, US) across 12 cases",
+      "description": "Validation of Amazon SP-API reports synchronization (GET_FLAT_FILE_RETURNS_DATA_BY_RETURN_DATE), wide static 60-day window, 31-column TSV parsing by header, date parsing, rate limits, and 4-marketplace isolation (FR, DE, JP, US) across 14 cases",
       "estimate": "~2s",
       "command": [
         "python3",
@@ -194,7 +194,7 @@
         "suite-IA-5112-US5-exceptions"
       ],
       "name": "IA-5112-US5: Exceptions, Edge Cases & Residuals",
-      "description": "Validation of all 23 exception matrix scenarios, regulated returns, unmatched arrivals, quantity mismatches, cumulative limits, ambiguous key collisions, and the 4 residual probes across 28 cases",
+      "description": "Validation of exception matrix scenarios, regulated returns, unmatched arrivals, quantity mismatches, cumulative limits, ambiguous key collisions, and the 4 residual probes across 21 cases",
       "estimate": "~3s",
       "command": [
         "python3",
@@ -208,8 +208,8 @@
         "suite-IA-5112-US5",
         "suite-IA-5112-US5-all"
       ],
-      "name": "IA-5112-US5: Master Test Suite (All 60 Cases)",
-      "description": "Consolidated execution of all 60 test cases covering seller-fulfilled returns report sync, end-to-end lifecycle progression, exception matrix, and technical residual probes",
+      "name": "IA-5112-US5: Master Test Suite (All 55 Cases)",
+      "description": "Consolidated execution of all 55 test cases covering seller-fulfilled returns report sync, end-to-end lifecycle progression, exception matrix, and technical residual probes",
       "estimate": "~5s",
       "command": [
         "python3",
@@ -222,7 +222,7 @@
         "suite-IA-5106-US4-hold"
       ],
       "name": "IA-5106-US4: Inbound Buyer Cancellation Request & Order Hold",
-      "description": "Validation of buyer cancellation request detection, ORDER_CHANGE notification ingress, 2026-01-01 detail read, string flag parsing (N-2), CR-1 hold payload on OMS, write-once snapshot, and stock preservation across 12 cases",
+      "description": "Validation of buyer cancellation request detection, ORDER_CHANGE notification ingress, 2026-01-01 detail read, string flag parsing (N-2), CR-1 hold payload on OMS, write-once snapshot, and stock preservation across 14 cases",
       "estimate": "~2s",
       "command": [
         "python3",
@@ -241,7 +241,7 @@
         "suite-IA-5106-US4-cancel"
       ],
       "name": "IA-5106-US4: Confirmed Cancellation & Stock Release",
-      "description": "Validation of scheduled cancellation sweep on v0, sync marker, defect fixes C-13/C-14/C-15, all three cancelledBy executors (AMAZON, MERCHANT, BUYER), CR-6 ledger, whole-line cancellation rule N-1, stock return to ATP, and partial vs full status across 17 cases",
+      "description": "Validation of scheduled cancellation sweep on v0, sync marker, defect fixes C-13/C-14/C-15, all three cancelledBy executors (AMAZON, MERCHANT, BUYER), CR-6 ledger, whole-line cancellation rule N-1, stock return to ATP, and partial vs full status across 20 cases",
       "estimate": "~3s",
       "command": [
         "python3",
@@ -254,7 +254,7 @@
         "suite-IA-5106-US4-restore"
       ],
       "name": "IA-5106-US4: Rejection, Expiry & Status Restoration",
-      "description": "Validation of absence-rule detection over two consecutive reads (L-76), handling REJECTED/WITHDRAWN/EXPIRED, CR-3 restore payload on OMS, status restoration, reservation state revalidation, routing stock lapse to out-of-stock problem order, and audit retention across 11 cases",
+      "description": "Validation of absence-rule detection over two consecutive reads (L-76), handling REJECTED/WITHDRAWN/EXPIRED, CR-3 restore payload on OMS, status restoration, reservation state revalidation, routing stock lapse to out-of-stock problem order, and audit retention across 13 cases",
       "estimate": "~2s",
       "command": [
         "python3",
@@ -267,7 +267,7 @@
         "suite-IA-5106-US4-gate"
       ],
       "name": "IA-5106-US4: Pre-Ready-To-Ship Gate, Race Conditions & Resilience",
-      "description": "Validation of pre-ready-to-ship validation gate, bulk cancellation check batching up to 300, post-RTS cancellation problem reason, out-of-order event resolution, cutover date filtering, store credentials isolation across 4 markets (FR, DE, JP, US), and poll failure resilience across 16 cases",
+      "description": "Validation of pre-ready-to-ship validation gate, bulk cancellation check batching up to 300, post-RTS cancellation problem reason, out-of-order event resolution, cutover date filtering, store credentials isolation across 4 markets (FR, DE, JP, US), and poll failure resilience across 18 cases",
       "estimate": "~3s",
       "command": [
         "python3",
@@ -281,8 +281,8 @@
         "suite-IA-5106-US4",
         "suite-IA-5106-US4-all"
       ],
-      "name": "IA-5106-US4: Master Test Suite (All 56 Cases)",
-      "description": "Consolidated execution of all 56 test cases covering inbound hold, confirmed cancellation, rejection/restoration, pre-RTS gating, race conditions, and marketplace isolation",
+      "name": "IA-5106-US4: Master Test Suite (All 65 Cases)",
+      "description": "Consolidated execution of all 65 test cases (62 pass, 3 blocked) covering inbound hold, confirmed cancellation, rejection/restoration, pre-RTS gating, race conditions, and marketplace isolation",
       "estimate": "~5s",
       "command": [
         "python3",
@@ -2823,7 +2823,7 @@
           },
           "respond": {
             "status": 200,
-            "file": "mock-data/browse-tree-de-300mb.xml",
+            "file": "IA-5105-US1/mock-data/browse-tree-de-300mb.xml",
             "headers": {
               "Content-Type": "text/xml; charset=UTF-8"
             }
@@ -2838,7 +2838,7 @@
           },
           "respond": {
             "status": 200,
-            "file": "mock-data/browse-tree-de-300mb.xml",
+            "file": "IA-5105-US1/mock-data/browse-tree-de-300mb.xml",
             "headers": {
               "Content-Type": "text/xml; charset=UTF-8"
             }
@@ -3003,6 +3003,146 @@
                   "message": "Product type ${path.productType} not found."
                 }
               ]
+            }
+          }
+        },
+        {
+          "name": "Amazon SP-API taxonomy fixture -- productTypeVersion.latest is false (A6)",
+          "when": {
+            "path.productType": {
+              "contains": "NOTLATEST"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/${path.productType}",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "requirements": "${query.requirements|LISTING_PRODUCT_ONLY}",
+              "requirementsEnforced": "${query.requirementsEnforced|ENFORCED}",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name"
+                  ]
+                }
+              },
+              "locale": "${query.locale|en_US}",
+              "marketplaceIds": [
+                "${query.marketplaceIds|ATVPDKIKX0DER}"
+              ],
+              "productType": "${path.productType}",
+              "displayName": "${path.productType}",
+              "productTypeVersion": {
+                "version": "not-latest-candidate",
+                "latest": false,
+                "releaseCandidate": true
+              }
+            }
+          }
+        },
+        {
+          "name": "Amazon SP-API taxonomy fixture -- schema link points to unrouted path (C7)",
+          "when": {
+            "path.productType": {
+              "contains": "SCHEMADLFAIL"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "schema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema-unrouted/${path.productType}",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "requirements": "${query.requirements|LISTING_PRODUCT_ONLY}",
+              "requirementsEnforced": "${query.requirementsEnforced|ENFORCED}",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name"
+                  ]
+                }
+              },
+              "locale": "${query.locale|en_US}",
+              "marketplaceIds": [
+                "${query.marketplaceIds|ATVPDKIKX0DER}"
+              ],
+              "productType": "${path.productType}",
+              "displayName": "${path.productType}",
+              "productTypeVersion": {
+                "version": "schema-dl-fail-v1",
+                "latest": true,
+                "releaseCandidate": false
+              }
+            }
+          }
+        },
+        {
+          "name": "Amazon SP-API taxonomy fixture -- definition with no schema link (C8)",
+          "when": {
+            "path.productType": {
+              "contains": "NOSCHEMA"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "metaSchema": {
+                "link": {
+                  "resource": "http://127.0.0.1:23103/s3/ptd-schema/_meta",
+                  "verb": "GET"
+                },
+                "checksum": ""
+              },
+              "requirements": "${query.requirements|LISTING_PRODUCT_ONLY}",
+              "requirementsEnforced": "${query.requirementsEnforced|ENFORCED}",
+              "propertyGroups": {
+                "product_identity": {
+                  "title": "Product Identity",
+                  "description": "Information to uniquely identify your product",
+                  "propertyNames": [
+                    "item_name"
+                  ]
+                }
+              },
+              "locale": "${query.locale|en_US}",
+              "marketplaceIds": [
+                "${query.marketplaceIds|ATVPDKIKX0DER}"
+              ],
+              "productType": "${path.productType}",
+              "displayName": "${path.productType}",
+              "productTypeVersion": {
+                "version": "no-schema-v1",
+                "latest": true,
+                "releaseCandidate": false
+              }
             }
           }
         },
@@ -32113,6 +32253,21 @@
       "method": "GET",
       "_comment": "Search and list available Amazon Product Types per marketplace.",
       "rules": [
+        {
+          "name": "Amazon SP-API taxonomy fixture -- search returns empty product types list (C6)",
+          "when": {
+            "query.marketplaceIds": {
+              "contains": "EMPTY"
+            }
+          },
+          "respond": {
+            "status": 200,
+            "body": {
+              "productTypes": [],
+              "productTypeVersion": "EMPTY_VERSION"
+            }
+          }
+        },
         {
           "name": "Amazon SP-API taxonomy fixture -- search on US (North America) (ATVPDKIKX0DER)",
           "when": {

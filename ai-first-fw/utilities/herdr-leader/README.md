@@ -28,8 +28,8 @@ The skill integrates with the local terminal environment via wrapper binaries in
 | Path | Purpose |
 |---|---|
 | `~/.local/bin/pane-limits` | Main CLI wrapper. Calls `pane-limits.py "$@"`. |
-| `~/.local/bin/clan-leader`<br/>`~/.local/bin/clone-leader` | Swarm Launchers. Parse spawn options (`3`, `4`, `5`), call `pane-limits.py`, inject `--append-system-prompt "$leader_prompt"`, and launch Claude with preflight greeting. |
-| `~/.local/bin/clan-l[3-5]`<br/>`~/.local/bin/clone-l[3-5]` | Convenience shortcuts calling `clan-leader 3`, `clone-leader 4`, etc. |
+| `~/.local/bin/clan-leader`<br/>`~/.local/bin/clone-leader` | Swarm Launchers. Parse spawn options (`3`, `3a`, `4`, `5`), call `pane-limits.py`, inject `--append-system-prompt "$leader_prompt"`, and launch Claude with preflight greeting. |
+| `~/.local/bin/clan-l*`<br/>`~/.local/bin/clone-l*` | Convenience shortcuts calling `clan-leader 3`, `clan-leader 3a`, `clone-leader 4`, etc. |
 | `~/.local/bin/{clan,clone,agp,agr,agg,cus,gpt}` | Agent launcher wrappers (Claude, Gemini Flash, Gemini Pro, Grok, Cursor, GPT). |
 | `jpluger-shared/scripts/herdr-pane-limits.py` | Backward-compatible symlink pointing to `ai-framework/.../scripts/pane-limits.py`. |
 
@@ -53,6 +53,7 @@ The skill integrates with the local terminal environment via wrapper binaries in
 3. Splits the leader pane into the left 50% (`ratio=0.5`).
 4. Iteratively subdivides the right 50% into worker slots:
    - **Option 3 (`clan-l3`)**: `clan` (Opus), `agp` (Gemini), `agr` (Gemini) — 2 Gemini workhorses.
+   - **Option 3a (`clan-l3a`)**: `clan` (Opus), `cus` (Grok), `gpt` (GPT) — 1 Grok, 1 GPT.
    - **Option 4 (`clan-l4`)**: `clan` (Opus), `agp` (Gemini), `agr` (Gemini), `agg` (Gemini) — 3 Gemini workhorses.
    - **Option 5 (`clan-l5`)**: `clan` (Opus), `agp` (Gemini), `agr` (Gemini), `cus` (Grok), `gpt` (GPT) — 2 Gemini, 1 Grok, 1 GPT.
 5. Launches worker agent commands and auto-names all panes.

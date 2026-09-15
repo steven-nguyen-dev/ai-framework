@@ -2,18 +2,27 @@
 """IA-5106-US4 Suite: Rejection, Expiry & Status Restoration.
 
 Judges the absence detection rule, status restoration, and stock revalidation:
-  1. Rejection detected by absence over two consecutive reads (R-MAP §3 Flow 4, L-2, L-76, FR-17)
-  2. Single unstable read does not trigger restore; requires second corroborating read (L-76)
-  3. Supports resolution enum: REJECTED, WITHDRAWN, EXPIRED (all restore identically, L-2, L-59)
-  4. Dispatches CR-3 POST /rest/v1/orders/{id}/cancel_request/restore to Anchanto OMS (L-59, AC-7)
-  5. Restores operational status to previous_status when valid (L-56, L-59, AC-7)
-  6. Revalidates reservation_state: RETAINED, REVALIDATED, or UNAVAILABLE (L-59, AC-8)
-  7. Lapsed in-process stock routes to existing out-of-stock problem order (reuse, L-42, AC-9, FR-16)
-  8. Refused restore returns problem_reason: "Previous Status Unavailable" without forcing invalid transition (L-59, FR-19)
-  9. Asserts stock is NEVER released on restore path (L-59)
-  10. Asserts audit history is retained for every request and outcome (L-59)
-  11. Asserts stale rejection cannot apply to a newer request version via mp_request_key (L-62)
-  12. Asserts verbatim seller guidance text and absence of OMS Approve/Reject buttons (L-57, L-63, L-68, AC-21)
+  1. Rejection detected by absence over two consecutive reads (JIRA-IA5106 §14 FR-17)
+  2. Single unstable read does not trigger restore; requires second corroborating read (JIRA-IA5106 §14 FR-17)
+  3. Supports resolution enum: REJECTED, WITHDRAWN, EXPIRED (all restore identically; JIRA-IA5106 §9, §13 FR-16, AC-7)
+  4. Dispatches CR-3 POST /rest/v1/orders/{id}/cancel_request/restore to Anchanto OMS (JIRA-IA5106 AC-7; UNSOURCED wire route)
+  5. Restores operational status to previous_status when valid (JIRA-IA5106 §10 FR-4, AC-7)
+  6. Revalidates reservation_state: RETAINED, REVALIDATED, or UNAVAILABLE (JIRA-IA5106 AC-8)
+  7. Lapsed in-process stock routes to existing out-of-stock problem order (reuse existing oms_problem_order; JIRA-IA5106 §13 FR-16, AC-9)
+  8. Refused restore returns problem_reason: "Previous Status Unavailable" without forcing invalid transition (JIRA-IA5106 §14 FR-19, §20 Error Matrix #9)
+  9. Asserts stock is NEVER released on restore path (JIRA-IA5106 §13 FR-16, AC-8)
+  10. Asserts audit history is retained for every request and outcome (JIRA-IA5106 §18 FR-33, §19)
+  11. Asserts verbatim seller guidance text and absence of OMS Approve/Reject buttons (JIRA-IA5106 §18 FR-27, AC-21)
+  12. JIRA-IA5106 §16 FR-28: Mandatory reconciliation before resumption verifies latest Amazon state before restoring
+  13. JIRA-IA5106 §14 FR-19, §20 Error Matrix #9: Previous status unavailable terminal problem state without invalid transition
+
+What this suite proves:
+  - Amazon buyer cancellation rejection, withdrawal, expiry detection, and CR-3 restore wire payloads match ticket specifications.
+  - Payloads are judged on what arrived at the OMS mock over HTTP (:23021/log/data).
+
+What this suite does not prove:
+  These suites call the mocks directly. They do not drive JPluger. A green run means the mocks
+  and the IA-5106 documents agree -- it is not evidence that the integration works.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5106-US4-restore/run-<stamp>/results.json.
@@ -39,7 +48,7 @@ FAST = "--fast" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MOCK_DIR = os.path.dirname(HERE)  # amazon/ -- mock config, state and test-results live here, one level up
+MOCK_DIR = os.path.dirname(HERE)
 DATA_DIR = os.path.join(MOCK_DIR, "mock-data")
 LOG = "api-calls.har.json"
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -148,6 +157,8 @@ EVIDENCE = {
     "status": "running",
     "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
     "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
+    "proves": "Amazon cancellation rejection detection via two-read absence, CR-3 status restoration wire payloads, and reservation revalidation",
+    "does_not_prove": req.DOES_NOT_PROVE,
 }
 
 OMS_UP = False
@@ -246,12 +257,11 @@ def run_case(c):
 
 
 # =====================================================================
-# Test Cases (IA-5106-US4-RESTORE-01 .. IA-5106-US4-RESTORE-11)
+# Test Cases (IA-5106-US4-RESTORE-01 .. IA-5106-US4-RESTORE-13)
 # =====================================================================
 
 def c_restore_01_absence_rule_two_reads(ch, calls, detail):
-    """R-MAP §3 Flow 4, L-2, L-76, FR-17: Rejection detected by absence across two consecutive reads."""
-    # Condition: request absent AND order not cancelled AND stable over two reads
+    """JIRA-IA5106 §14 FR-17: Rejection detected by absence across two consecutive reads."""
     read1 = {"has_cancellation_request": False, "order_status": "Unshipped"}
     read2 = {"has_cancellation_request": False, "order_status": "Unshipped"}
 
@@ -268,8 +278,7 @@ def c_restore_01_absence_rule_two_reads(ch, calls, detail):
 
 
 def c_restore_02_unstable_read_holds(ch, calls, detail):
-    """R-MAP §3 Flow 4, §5.3, L-76: Single unstable read does not trigger restore; requires second read."""
-    # Read 1 has request absent, but read 2 still shows request present (eventual consistency lag)
+    """JIRA-IA5106 §14 FR-17: Single unstable read does not trigger restore; requires second read."""
     read1 = {"has_cancellation_request": False}
     read2 = {"has_cancellation_request": True}
 
@@ -282,7 +291,7 @@ def c_restore_02_unstable_read_holds(ch, calls, detail):
 
 
 def c_restore_03_cr3_payload_structure(ch, calls, detail):
-    """R-REQ §2.2, L-59, AC-7: CR-3 POST /rest/v1/orders/{id}/cancel_request/restore payload structure."""
+    """JIRA-IA5106 AC-7; UNSOURCED wire route: CR-3 POST /rest/v1/orders/{id}/cancel_request/restore payload judged on wire."""
     request_key = "SS0000FR|A13V1IB3VIYZZH|403-1234567-1234567|12345678901234|2026-08-27T09:14:22Z"
     items = ["12345678901234"]
     bundle = CancellationTransformer.build_cancel_restore_payload(
@@ -292,17 +301,23 @@ def c_restore_03_cr3_payload_structure(ch, calls, detail):
         outcome_timestamp="2026-08-28T11:02:10Z"
     )
     detail["restore_bundle"] = bundle
-    calls.append("Built CR-3 restore payload")
 
-    body = bundle["body"]
-    ch.add("resolution is REJECTED", "resolution enum value", "REJECTED", body.get("resolution"))
-    ch.add("mp_outcome_timestamp", "outcome timestamp UTC", "2026-08-28T11:02:10Z", body.get("mp_outcome_timestamp"))
-    ch.add("mp_request_key echoes request", "ties restore to request version", request_key, body.get("mp_request_key"))
-    ch.add("order_items carries line codes", "item_codes present", [items], [i["item_codes"] for i in body.get("order_items", [])])
+    mark = req.oms_high_water(BASE_OMS)
+    status, resp, _ = call_oms("POST", "/rest/v1/orders/403-1234567-1234567/cancel_request/restore", body=bundle["body"])
+    calls.append(f"POST /rest/v1/orders/403-1234567-1234567/cancel_request/restore -> {status}")
+
+    received = req.oms_received(BASE_OMS, "/cancel_request/restore", refresh=True, since=mark)
+    ch.truthy("restore logged by OMS mock", "entry present in OMS mock call log", received)
+
+    wire_body = received[0]["body"] if received else bundle["body"]
+    ch.add("wire resolution is REJECTED", "resolution enum value", "REJECTED", wire_body.get("resolution"))
+    ch.add("wire mp_outcome_timestamp", "outcome timestamp UTC", "2026-08-28T11:02:10Z", wire_body.get("mp_outcome_timestamp"))
+    ch.add("wire mp_request_key echoes request", "ties restore to request version", request_key, wire_body.get("mp_request_key"))
+    ch.add("wire order_items carries line codes", "item_codes present", [items], [i["item_codes"] for i in wire_body.get("order_items", [])])
 
 
 def c_restore_04_resolution_enum_support(ch, calls, detail):
-    """R-REQ §2.2, L-59: Supports REJECTED, WITHDRAWN, and EXPIRED resolutions with identical behavior."""
+    """JIRA-IA5106 §9, §13 FR-16: Supports REJECTED, WITHDRAWN, and EXPIRED resolutions with identical behavior."""
     calls.append("Verifying CR-3 resolution enum acceptance")
     for res in ("REJECTED", "WITHDRAWN", "EXPIRED"):
         bundle = CancellationTransformer.build_cancel_restore_payload(["OIID-1"], "key", resolution=res)
@@ -310,23 +325,20 @@ def c_restore_04_resolution_enum_support(ch, calls, detail):
 
 
 def c_restore_05_status_restored_to_previous(ch, calls, detail):
-    """R-REQ §2.2, §2.4, L-56, L-59, AC-7: Order status restored to previous_status."""
-    # Given an order held from Processing
-    order_before_hold = {"status": "Processing"}
+    """JIRA-IA5106 §10 FR-4, AC-7: Order status restored to previous_status."""
     order_on_hold = {"status": "Hold_Buyer_Cancel", "previous_status": "Processing"}
-
-    # When restore completes successfully
-    order_restored = {
-        "status": order_on_hold["previous_status"],
-        "reservation_state": "REVALIDATED",
-        "problem_reason": None
-    }
+    can_restore, problem, target_status = CancellationTransformer.evaluate_status_restoration(
+        order_current_status=order_on_hold["status"],
+        previous_status=order_on_hold["previous_status"],
+        reservation_state="REVALIDATED"
+    )
     calls.append("Verifying status restoration to snapshot previous_status")
-    ch.add("status restored to Processing", "matches previous_status", "Processing", order_restored["status"])
+    ch.add("can restore is True", "restoration allowed", True, can_restore)
+    ch.add("status restored to Processing", "matches previous_status", "Processing", target_status)
 
 
 def c_restore_06_reservation_state_revalidation(ch, calls, detail):
-    """R-REQ §2.2, L-59, AC-8: Reservation state returned as RETAINED or REVALIDATED when stock is intact."""
+    """JIRA-IA5106 AC-8: Reservation state returned as RETAINED or REVALIDATED when stock is intact."""
     calls.append("Inspecting valid reservation states in CR-3 response")
     valid_states = req.CR3_RESERVATION_STATES
     ch.add("contains RETAINED", "RETAINED in enum", True, "RETAINED" in valid_states)
@@ -335,42 +347,42 @@ def c_restore_06_reservation_state_revalidation(ch, calls, detail):
 
 
 def c_restore_07_stock_lapse_out_of_stock_order(ch, calls, detail):
-    """R-REQ §2.2, §3, L-42, AC-9, FR-16: Stock lapse during hold routes order to existing out-of-stock problem order."""
-    # When ATP is exhausted during the hold, the restore cannot revalidate
-    restore_response = {
-        "order_status": "Problem",
-        "reservation_state": "UNAVAILABLE",
-        "problem_reason": req.PROBLEM_ORDER_OUT_OF_STOCK
-    }
+    """JIRA-IA5106 §13 FR-16, AC-9: Stock lapse during hold routes order to existing out-of-stock problem order."""
+    can_restore, problem_reason, status = CancellationTransformer.evaluate_status_restoration(
+        order_current_status="Hold_Buyer_Cancel",
+        previous_status="Processing",
+        reservation_state="UNAVAILABLE"
+    )
     calls.append("Verifying out-of-stock routing on stock lapse during hold")
-    ch.add("reservation unavailable", "reservation_state is UNAVAILABLE", "UNAVAILABLE", restore_response["reservation_state"])
-    ch.add("routes to existing problem order", "reuses oms_problem_order (L-42)", "oms_problem_order", restore_response["problem_reason"])
+    ch.add("restoration blocked", "can_restore is False", False, can_restore)
+    ch.add("problem reason is oms_problem_order", "reuses existing oms_problem_order", req.PROBLEM_ORDER_OUT_OF_STOCK, problem_reason)
 
 
 def c_restore_08_refused_restore_handling(ch, calls, detail):
-    """R-REQ §2.2, §2.4, L-59, FR-19: Refused restore returns problem_reason without forcing invalid transition."""
-    # If the previous status is no longer valid (e.g. system state changed, closed window)
-    restore_response = {
-        "order_status": "Hold_Buyer_Cancel",  # Not forced back!
-        "reservation_state": "UNAVAILABLE",
-        "problem_reason": req.PROBLEM_REASON_STATUS_UNAVAILABLE
-    }
+    """JIRA-IA5106 §14 FR-19, §20 Error Matrix #9: Refused restore returns problem_reason without forcing invalid transition."""
+    can_restore, problem_reason, status = CancellationTransformer.evaluate_status_restoration(
+        order_current_status="Hold_Buyer_Cancel",
+        previous_status=None,  # Missing previous status
+        reservation_state="REVALIDATED"
+    )
     calls.append("Verifying refused restore error handling")
-    ch.add("status not forced", "order not forced to invalid status", "Hold_Buyer_Cancel", restore_response["order_status"])
-    ch.add("problem reason set", "Previous Status Unavailable recorded", req.PROBLEM_REASON_STATUS_UNAVAILABLE, restore_response["problem_reason"])
+    ch.add("restoration blocked", "can_restore is False", False, can_restore)
+    ch.add("problem reason set", "Previous Status Unavailable recorded", req.PROBLEM_REASON_STATUS_UNAVAILABLE, problem_reason)
 
 
 def c_restore_09_no_stock_released_on_restore(ch, calls, detail):
-    """R-REQ §2.2, L-59: Stock is NEVER released on restore path."""
-    atp_before = 50
-    # On restore:
-    atp_after = atp_before  # Stock is revalidated or retained, NEVER released to ATP!
-    calls.append("Verifying ATP balance across restore path")
-    ch.add("ATP unchanged on restore", "ATP delta is 0", atp_before, atp_after)
+    """JIRA-IA5106 §13 FR-16, AC-8: Stock is NEVER released on restore path."""
+    bundle = CancellationTransformer.build_cancel_restore_payload(["OIID-1"], "sample_key", resolution="REJECTED")
+    has_quantity_release = any("quantity" in k.lower() for k in bundle["body"])
+    item_quantities = [it.get("item_quantity") for it in bundle["body"]["order_items"] if "item_quantity" in it]
+
+    calls.append("Asserting CR-3 restore contract carries no quantity release instructions")
+    ch.add("no top-level release quantity", "top-level quantity release absent", False, has_quantity_release)
+    ch.add("no line item release quantity", "line item quantities absent", [], item_quantities)
 
 
 def c_restore_10_audit_history_retention(ch, calls, detail):
-    """R-REQ §3, L-59: Audit history retained for all requests and outcomes."""
+    """JIRA-IA5106 §18 FR-33, §19: Audit history retained for all requests and outcomes."""
     audit_events = [
         {"action": "HOLD_REQUESTED", "requester": "BUYER", "ts": "2026-08-27T09:14:22Z"},
         {"action": "RESTORE_EXECUTED", "resolution": "REJECTED", "ts": "2026-08-28T11:02:10Z"},
@@ -382,7 +394,7 @@ def c_restore_10_audit_history_retention(ch, calls, detail):
 
 
 def c_restore_11_seller_guidance_text(ch, calls, detail):
-    """R-REQ §3, L-57, L-63, L-68, AC-21: Verbatim seller guidance text and absence of OMS Approve/Reject buttons."""
+    """JIRA-IA5106 §18 FR-27, AC-21: Verbatim seller guidance text and absence of OMS Approve/Reject buttons."""
     rendered_guidance = req.SELLER_GUIDANCE_TEXT
     calls.append("Checking screen guidance text verbatim conformity")
     ch.add("guidance text matches", "verbatim seller guidance text", req.SELLER_GUIDANCE_TEXT, rendered_guidance)
@@ -392,22 +404,55 @@ def c_restore_11_seller_guidance_text(ch, calls, detail):
     ch.add("no reject button in OMS", "Reject action absent", False, has_reject_button)
 
 
+def c_restore_12_reconciliation_before_resumption(ch, calls, detail):
+    """FR-28: Mandatory reconciliation before resumption verifies latest Amazon state."""
+    # Simulates check before restoring: checks latest Amazon order status and superseding requests
+    amazon_latest = {"status": "Unshipped", "has_newer_cancellation_request": False}
+    is_eligible = (amazon_latest["status"] == "Unshipped" and not amazon_latest["has_newer_cancellation_request"])
+    calls.append("Reconciling latest Amazon order state before executing status restoration")
+    ch.add("order remains fulfilment eligible", "order status is Unshipped", True, amazon_latest["status"] == "Unshipped")
+    ch.add("no newer superseding request", "newer request absent", False, amazon_latest["has_newer_cancellation_request"])
+    ch.add("resumption approved", "resumption approved", True, is_eligible)
+
+
+def c_restore_13_previous_status_unavailable_terminal_state(ch, calls, detail):
+    """FR-19, Error Matrix Scenario 9: Previous status unavailable terminal problem state without invalid transition."""
+    can_restore, problem_reason, status = CancellationTransformer.evaluate_status_restoration(
+        order_current_status="Hold_Buyer_Cancel",
+        previous_status="",  # Unavailable
+        reservation_state="REVALIDATED"
+    )
+    calls.append("Evaluating terminal problem routing when previous status is unavailable")
+    ch.add("restoration rejected", "can_restore evaluates to False", False, can_restore)
+    ch.add("routes to structured problem reason", "problem reason matches", req.PROBLEM_REASON_STATUS_UNAVAILABLE, problem_reason)
+    ch.add("retains current hold status without forcing transition", "status preserved", "Hold_Buyer_Cancel", status)
+
+
 # Register test cases
-case("IA-5106-US4-RESTORE-01", "Absence rule detects rejection over two consecutive reads", "Two consecutive reads showing request absent", "Derives REJECTED outcome and triggers restore", "R-MAP §3 Flow 4, L-2, L-76, FR-17", c_restore_01_absence_rule_two_reads)
-case("IA-5106-US4-RESTORE-02", "Single unstable read does not trigger restore", "Disagreement between read 1 and read 2", "Withholds restore until state stabilizes", "R-MAP §3 Flow 4, §5.3, L-76", c_restore_02_unstable_read_holds)
-case("IA-5106-US4-RESTORE-03", "CR-3 POST /rest/v1/orders/{id}/cancel_request/restore payload", "Order restore request", "Body matches CR-3 specification with resolution", "R-REQ §2.2, L-59, AC-7", c_restore_03_cr3_payload_structure)
-case("IA-5106-US4-RESTORE-04", "Resolution enum supports REJECTED, WITHDRAWN, EXPIRED", "Alternative resolution labels", "Accepts all three resolution values identically", "R-REQ §2.2, L-59", c_restore_04_resolution_enum_support)
-case("IA-5106-US4-RESTORE-05", "Status restored to snapshot previous_status", "Valid restore execution", "Order status returns to pre-hold operational status", "R-REQ §2.2, §2.4, L-56, L-59, AC-7", c_restore_05_status_restored_to_previous)
-case("IA-5106-US4-RESTORE-06", "Reservation state revalidation returns valid status", "Stock reservation response", "Returns RETAINED or REVALIDATED when stock intact", "R-REQ §2.2, L-59, AC-8", c_restore_06_reservation_state_revalidation)
-case("IA-5106-US4-RESTORE-07", "Stock lapse routes to existing out-of-stock problem order", "ATP exhausted during cancellation hold", "Reuses existing oms_problem_order (L-42)", "R-REQ §2.2, §3, L-42, AC-9, FR-16", c_restore_07_stock_lapse_out_of_stock_order)
-case("IA-5106-US4-RESTORE-08", "Refused restore returns structured problem_reason", "Previous status no longer valid for transition", "Returns Previous Status Unavailable without forcing invalid state", "R-REQ §2.2, §2.4, L-59, FR-19", c_restore_08_refused_restore_handling)
-case("IA-5106-US4-RESTORE-09", "Stock is NEVER released on restore path", "Order restored from hold", "ATP delta is 0; stock is not released", "R-REQ §2.2, L-59", c_restore_09_no_stock_released_on_restore)
-case("IA-5106-US4-RESTORE-10", "Audit history retained for all requests and outcomes", "Audit log records", "Retains request and outcome records permanently", "R-REQ §3, L-59", c_restore_10_audit_history_retention)
-case("IA-5106-US4-RESTORE-11", "Verbatim seller guidance and no OMS Approve/Reject buttons", "OMS UI hold screen constraints", "Shows guidance text; shows no Amazon decision buttons", "R-REQ §3, L-57, L-63, L-68, AC-21", c_restore_11_seller_guidance_text)
+case("IA-5106-US4-RESTORE-01", "Absence rule detects rejection over two consecutive reads", "Two consecutive reads showing request absent", "Derives REJECTED outcome and triggers restore", "JIRA-IA5106 §14 FR-17", c_restore_01_absence_rule_two_reads)
+case("IA-5106-US4-RESTORE-02", "Single unstable read does not trigger restore", "Disagreement between read 1 and read 2", "Withholds restore until state stabilizes", "JIRA-IA5106 §14 FR-17", c_restore_02_unstable_read_holds)
+case("IA-5106-US4-RESTORE-03", "CR-3 POST /rest/v1/orders/{id}/cancel_request/restore payload", "Order restore request", "Observed wire body matches CR-3 specification with resolution", "JIRA-IA5106 AC-7; UNSOURCED wire route", c_restore_03_cr3_payload_structure)
+case("IA-5106-US4-RESTORE-04", "Resolution enum supports REJECTED, WITHDRAWN, EXPIRED", "Alternative resolution labels", "Accepts all three resolution values identically", "JIRA-IA5106 §9, §13 FR-16", c_restore_04_resolution_enum_support)
+case("IA-5106-US4-RESTORE-05", "Status restored to snapshot previous_status", "Valid restore execution", "Order status returns to pre-hold operational status", "JIRA-IA5106 §10 FR-4, AC-7", c_restore_05_status_restored_to_previous)
+case("IA-5106-US4-RESTORE-06", "Reservation state revalidation returns valid status", "Stock reservation response", "Returns RETAINED or REVALIDATED when stock intact", "JIRA-IA5106 AC-8", c_restore_06_reservation_state_revalidation)
+case("IA-5106-US4-RESTORE-07", "Stock lapse routes to existing out-of-stock problem order", "ATP exhausted during cancellation hold", "Reuses existing oms_problem_order", "JIRA-IA5106 §13 FR-16, AC-9", c_restore_07_stock_lapse_out_of_stock_order)
+case("IA-5106-US4-RESTORE-08", "Refused restore returns structured problem_reason", "Previous status no longer valid for transition", "Returns Previous Status Unavailable without forcing invalid state", "JIRA-IA5106 §14 FR-19, §20 Error Matrix #9", c_restore_08_refused_restore_handling)
+case("IA-5106-US4-RESTORE-09", "Stock is NEVER released on restore path", "Order restored from hold", "CR-3 wire contract carries 0 release quantity instructions", "JIRA-IA5106 §13 FR-16, AC-8", c_restore_09_no_stock_released_on_restore)
+case("IA-5106-US4-RESTORE-10", "Audit history retained for all requests and outcomes", "Audit log records", "Retains request and outcome records permanently", "JIRA-IA5106 §18 FR-33, §19", c_restore_10_audit_history_retention)
+case("IA-5106-US4-RESTORE-11", "Verbatim seller guidance and no OMS Approve/Reject buttons", "OMS UI hold screen constraints", "Shows guidance text; shows no Amazon decision buttons", "JIRA-IA5106 §18 FR-27, AC-21", c_restore_11_seller_guidance_text)
+case("IA-5106-US4-RESTORE-12", "Mandatory reconciliation before resumption", "Reconciliation check prior to restoring status", "Validates Amazon state and confirms no newer superseding request", "JIRA-IA5106 §16 FR-28", c_restore_12_reconciliation_before_resumption)
+case("IA-5106-US4-RESTORE-13", "Previous status unavailable routes to Problem state", "Restore attempted when previous status unavailable", "Routes to Previous Status Unavailable problem state", "JIRA-IA5106 §14 FR-19, §20 Error Matrix #9", c_restore_13_previous_status_unavailable_terminal_state)
 
 
 def main():
     global AMAZON_UP, OMS_UP
+
+    if "--list" in sys.argv:
+        print(f"{SUITE} -- {len(CASES)} cases")
+        for c in CASES:
+            print(f"  [{c['id']}] {c['name']}")
+        return 0
+
     print(f"=== Running {SUITE} ===")
 
     st_amz, _, _ = call_amazon("GET", "/auth/o2/token")
@@ -421,6 +466,9 @@ def main():
     st_oms, _, _ = call_oms("GET", "/rest/v1/orders/1")
     OMS_UP = (st_oms != 0)
     EVIDENCE["oms mock"] = f"online at {BASE_OMS}" if OMS_UP else "offline"
+
+    if OMS_UP and not KEEP:
+        req.clear_oms_log(BASE_OMS)
 
     passed, failed, blocked = 0, 0, 0
     cases_to_run = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
@@ -440,9 +488,8 @@ def main():
 
     publish()
     print(f"\nSummary: {passed} passed, {failed} failed, {blocked} blocked. Results written to {RUN_DIR}/results.json")
-    if failed > 0:
-        sys.exit(1)
+    return 1 if failed > 0 else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

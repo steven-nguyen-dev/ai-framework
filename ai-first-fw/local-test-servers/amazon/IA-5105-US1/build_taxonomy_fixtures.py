@@ -2,7 +2,7 @@
 """Wires official Amazon Product Type Definitions fixtures into amazon.mock.json.
 
 Reads the 10 official and rich definition fixtures checked into:
-  local-test-servers/amazon/schemas/product-types/
+  local-test-servers/amazon/IA-5105-US1/schemas/product-types/
 
 And automatically populates:
   1. GET /definitions/2020-09-01/productTypes (search) route, branching per marketplace
@@ -18,7 +18,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMAS_DIR = os.path.join(HERE, "schemas", "product-types")
-MOCK_JSON = os.path.join(HERE, "amazon.mock.json")
+MOCK_JSON = os.path.join(os.path.dirname(HERE), "amazon.mock.json")
 BASE = "http://127.0.0.1:23103"
 
 GENERATED_TAG = "Amazon SP-API taxonomy fixture"

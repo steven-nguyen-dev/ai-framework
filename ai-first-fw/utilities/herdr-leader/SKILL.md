@@ -1,7 +1,7 @@
 ---
 name: herdr-leader
 description: Nominate this agent as the Herdr swarm leader for its current tab. Use on /herdr-leader, /lead, or /leader.
-version: 1.8.0
+version: 1.10.0
 disable-model-invocation: true
 ---
 
@@ -13,13 +13,14 @@ Orchestrates worker panes inside the active Herdr tab (`$HERDR_TAB_ID`) via the 
 
 - **Roster** — live tab worker table from `pane-limits --init-leader`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
-- **Coordinator** — swarm-coordinator MCP: session log, task briefs, results, scratch payloads.
-- **Wiki** — wiki MCP: plans, specs, mappings, traps, decisions.
+- **Coordinator** — swarm-coordinator MCP: session log, task briefs, execution plans, results, scratch payloads.
+- **Wiki** — wiki MCP: durable domain knowledge, specs, mappings, traps, decisions. Read with `search`/`get`/`render`; write only with `note`, which files to the inbox for human review.
 
 ## Rapid Swarm Launchers
 
 To close existing panes and spawn a fresh, balanced team automatically:
 - `clan-l3` / `clone-l3`: 3 workers (`clan` [Opus], `agp` [Gemini], `agr` [Gemini]).
+- `clan-l3a` / `clone-l3a`: 3 workers (`clan` [Opus], `cus` [Grok], `gpt` [GPT]).
 - `clan-l4` / `clone-l4`: 4 workers (`clan` [Opus], `agp` [Gemini], `agr` [Gemini], `agg` [Gemini]).
 - `clan-l5` / `clone-l5`: 5 workers (`clan` [Opus], `agp` [Gemini], `agr` [Gemini], `cus` [Grok], `gpt` [GPT]).
 
@@ -62,9 +63,13 @@ Keep the swarm pane count fixed; allocate all briefs across existing panes.
 
 Open every turn with `swarm-coordinator.session_log()`. It returns the roster and a bounded tail of recent delegations and completions. This is what survives compaction — the roster lives in Redis, not in the context window.
 
-Upsert the plan before delegating: `wiki.upsert("plan/<ticket>", "<step>", body, summary, expected_version)`. A brief then carries `wiki_refs=["plan/<ticket>#<step>"]` and the worker fetches its own section. The brief itself stays short; the plan section carries the detail.
-
+Consult the wiki for domain knowledge ahead of dispatch: use `wiki.search` to locate relevant specs, architecture, and traps.
 **When `wiki.search` returns nothing useful, rephrase and retry.** The wiki ranks English full text with a trigram fallback — there is no query expansion, no synonym list and no embedding. You are the expansion: try the domain term instead of the generic one, the external system's own vocabulary instead of ours, a distinctive noun instead of a sentence, and the CJK value itself where one exists. Two or three rephrasings before concluding the wiki does not hold something. A search that returns nothing is a miss to work, not an answer.
+
+Formulate the task for the coordinator:
+- **Standard brief**: Pass directly in the `brief` argument of `delegate()`.
+- **Large / multi-step plan**: Write the plan into Redis scratch via `swarm-coordinator.put("plan:<step>", plan_markdown)` and reference the key in the brief text (e.g. `Read detailed plan via swarm-coordinator.get("<key>")`). **Never write task plans into the wiki** — the wiki stores durable domain knowledge, while Redis handles ephemeral execution communication with automatic TTL.
+- **`wiki_refs`**: Pass only durable domain knowledge chunks the worker needs to consult (e.g. `["standard-flows#4-5-parcel"]`), or `[]` if none.
 
 Dispatch with `swarm-coordinator.delegate(target, brief, wiki_refs)`. One call writes the task, appends the session log and prompts the target pane. It returns the task id.
 
@@ -74,7 +79,12 @@ Every brief template ends with this line, verbatim:
 
 Before dispatch, check capacity with `pane-limits <target>`. Split the brief if the verdict is `HIGH` or `BREACH`. Interrupt a runaway task with `herdr agent send-keys <target> ctrl+c`.
 
-**Completion:** every brief is delegated through `delegate`, each carrying its plan section and the `complete` line. The turn ends. **Do not wait.**
+**Read what `delegate` returns.** It reports whether the prompt actually reached the pane:
+- `delivery: "confirmed"` — Herdr observed the pane start working. The task is running.
+- `delivery: "unconfirmed"` — the command ran; nothing verified it arrived. Treat as sent, but expect Step 4 to catch it if it was not.
+- `ok: false` with `herdr_code: "agent_prompt_stalled"` or `"agent_blocked"` — the submission reached no pane. The task is already written to Redis, so **re-prompt that pane; never delegate the same work twice.**
+
+**Completion:** every brief is delegated through `delegate`, referencing relevant domain knowledge in `wiki_refs` and Redis scratch keys for large plans, ending with the `complete` line, and every return value has been read. The turn ends. **Do not wait.**
 
 ### Step 4 — Let the completions come to you
 
@@ -84,9 +94,27 @@ A new turn opens with `session_log()`, then `swarm-coordinator.get("result:<id>"
 
 Three workers finishing together send three prompts, so you take three turns. That is expected.
 
-**The one failure mode:** a worker sometimes ends its turn without calling `complete`. It sends no prompt, so you do not wake. Redis still holds the task and `session_log()` still shows it outstanding — you will see it on your next turn, whatever wakes you. Prompt that worker once.
+#### Reconcile every turn — before reading any result
 
-**Completion:** every task reaches a `result:<id>`, read on the turn its completion prompted.
+`session_log()` returns every `delegate` and every `complete`. **Pair them.** For any delegate with no matching complete, check that pane before assuming it is still working:
+
+```
+herdr agent get <pane>
+```
+
+Two different failures leave identical traces in the log, and only the pane tells them apart:
+
+| What you see | What happened | What to do |
+|---|---|---|
+| Idle, tokens **grew**, files changed | The worker finished and forgot to call `complete` | Prompt that worker once to call `complete` |
+| Idle, tokens **unchanged**, tree clean | The dispatch never arrived — it never started | Re-prompt with `Task <id> — call swarm-coordinator.get("task:<id>")` |
+| Working, tokens climbing | Still running | Nothing |
+
+Say in your report which you found and what you did about it.
+
+Do this on every turn, including turns that a completion woke you for. A dispatch that silently never started is the failure that costs a whole session, because nothing will ever report it — the write succeeded, the log looks normal, and the pane simply sits there. The user asking "what's happening?" is not a monitoring system.
+
+**Completion:** every task reaches a `result:<id>`, and every turn has paired the log's delegates against its completes before doing anything else.
 
 ### Step 5 — Exchange payloads through Redis, not files
 
@@ -97,7 +125,7 @@ A `complete` summary runs to three lines, so a 900-line test dump or ELK extract
 
 `.scratchpads/` is retired. Do not create it, and do not pass file paths where a key belongs.
 
-Scratch stays out of the wiki. A scratch payload holds true for twenty minutes; the wiki keeps what it stores.
+Scratch payloads and task execution plans stay out of the wiki. A task plan or scratch payload holds true for twenty minutes or one session; the wiki keeps durable domain knowledge. Writing execution plans or payloads into the wiki pollutes embeddings, changelog records, and domain search results.
 
 **Completion:** no inter-agent payload touches the filesystem.
 
@@ -105,12 +133,16 @@ Scratch stays out of the wiki. A scratch payload holds true for twenty minutes; 
 
 Zero blind trust is unchanged. A worker's `complete` is a claim, not evidence. Verify with `git diff`, `ls -la`, `wc -l`, compilers and test suites before accepting anything. Re-delegate immediately if a worker claims success without changing disk or test outcomes.
 
-Durable learning found along the way goes back to the wiki — a trap, a decision, a verified mapping — via `wiki.upsert`. A trap the wiki holds that a worker just disproved gets `wiki.retire`, with the evidence in `note`, in the same turn. A live wrong chunk misleads every later search.
+Durable learning found along the way goes to the wiki's **inbox** — a trap, a decision, a verified mapping — via `wiki.note(slug, body, summary)`, which files it at `inbox/<pane>/<slug>`. Carry the evidence in the body: the file and line, the count, the query, the payload that settles it.
+
+A trap the wiki holds that a worker disproved becomes `wiki.note("<trap-slug>-disproved", …)` with the falsifying observation. You cannot retire the curated chunk — `upsert` and `retire` are not registered on the wiki server, by design. Promotion and retirement are the user's call, and they need your evidence to make it.
+
+**The ticket's deliverable is a file, never a wiki entry.** A plan, an analysis, an implementation contract belongs under `jira-workspace/`. What goes to the inbox is only the fact that outlives the ticket. `search` ignores the inbox, so nothing you file there can mislead a later worker.
 
 Clearing context:
 
 - **Stateless:** `herdr agent prompt <target> "/clear "` (trailing space), then delegate the next brief.
-- **Stateful:** delegate a brief asking the worker to `put()` its handoff and report the key; verify the key reads back; `/clear `; then delegate the next brief carrying that key in `wiki_refs` or in the brief text.
+- **Stateful:** delegate a brief asking the worker to `put()` its handoff and report the key; verify the key reads back; `/clear `; then delegate the next brief referencing that key in the brief text (never in `wiki_refs`, which is reserved for wiki chunk IDs only).
 
 **Completion:** every accepted task is corroborated on disk, and every resumed worker resumes from a key that reads back.
 
@@ -125,6 +157,9 @@ Clearing context:
 - The token limit is treated as a pre-dispatch target — clear when `current + predicted > limit` (700K big pool, 210K default), done before the next instruction rather than after a finished task.
 - Inter-agent payloads travel through `put`/`get`; `.scratchpads/` is never created.
 - Every turn opens with `session_log()`; every brief ends with the `complete` line.
+- Every turn pairs the log's delegates against its completes, and checks the pane for any delegate without one, before reading results.
+- Every `delegate` return value is read; a stalled delivery is re-prompted, never re-delegated.
+- Durable learning goes to the wiki inbox via `note`, with its evidence; deliverables stay files.
 - The leader never waits on a worker. Completions arrive as prompts.
 - All completed work is verified on disk.
 - Every step terminates on a checkable completion criterion.

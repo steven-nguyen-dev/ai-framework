@@ -230,6 +230,34 @@ PROBLEM_REASONS_CLOSED_SET = [
     "Stock adjustment failed",
 ]
 
+# R-MAP §8.3: The 23 exception matrix scenarios in specification order
+EXCEPTION_MATRIX_23 = [
+    {"row": 1, "trigger": "Report generation unavailable / 500", "expected": "Retain previous sync state, schedule retry", "problem_reason": None},
+    {"row": 2, "trigger": "Report processing cancelled / fatal", "expected": "Retain previous sync state, schedule retry", "problem_reason": None},
+    {"row": 3, "trigger": "Malformed record in report", "expected": "Skip row, log in failedRecords[], continue batch", "problem_reason": "Order not found"},
+    {"row": 4, "trigger": "Duplicate return request", "expected": "Idempotent update, never duplicate OMS return shipment", "problem_reason": None},
+    {"row": 5, "trigger": "Original order not found", "expected": "Retain reconciliation exception, retry later polls", "problem_reason": "Order not found"},
+    {"row": 6, "trigger": "Order item not found", "expected": "Reject line item, withhold stock adjustment", "problem_reason": "Order item not found"},
+    {"row": 7, "trigger": "Unknown seller SKU", "expected": "Reject line item, creates no stock", "problem_reason": "Unknown seller SKU"},
+    {"row": 8, "trigger": "Missing Amazon RMA", "expected": "Fallback key used, processable with flag", "problem_reason": "Amazon RMA unavailable"},
+    {"row": 9, "trigger": "Missing return quantity", "expected": "Creates no warehouse receipt expectation", "problem_reason": "Missing return quantity"},
+    {"row": 10, "trigger": "Missing return address", "expected": "Set return_address_status unavailable", "problem_reason": None},
+    {"row": 11, "trigger": "Missing tracking number", "expected": "Flagged only when physical return movement is asserted", "problem_reason": "Missing tracking"},
+    {"row": 12, "trigger": "Rejected return physically received", "expected": "Goods win: accept receipt, move to PUTAWAY, claim no refund", "problem_reason": "Rejected return received"},
+    {"row": 13, "trigger": "Auto-rejected return physically received", "expected": "Goods win: accept receipt, move to PUTAWAY, claim no refund", "problem_reason": "Rejected return received"},
+    {"row": 14, "trigger": "Received quantity mismatch", "expected": "Signed diff recorded, blocks putaway completion", "problem_reason": "Received quantity mismatch"},
+    {"row": 15, "trigger": "Lost return in transit", "expected": "No putaway, no timer, no restock; arrival recovery allowed", "problem_reason": None},
+    {"row": 16, "trigger": "Regulated / hazardous item return", "expected": "No carrier/receipt expectation; held for seller central resolution", "problem_reason": "Regulated Item Return"},
+    {"row": 17, "trigger": "Returnless resolution approved", "expected": "Straight-through completion without warehouse receipt", "problem_reason": None},
+    {"row": 18, "trigger": "Amazon refund status unavailable", "expected": "Falls back to 30-day putaway timeout path", "problem_reason": None},
+    {"row": 19, "trigger": "Late report update after completion", "expected": "Audit log refreshed, never reopen completed return", "problem_reason": None},
+    {"row": 20, "trigger": "Marketplace mismatch against store", "expected": "Reject row before OMS call", "problem_reason": "Marketplace mismatch"},
+    {"row": 21, "trigger": "WMS3 stock condition missing", "expected": "Remain in putaway, withhold stock adjustment", "problem_reason": "WMS3 stock condition missing"},
+    {"row": 22, "trigger": "Stock adjustment failed", "expected": "Remain in putaway for retry, putaway not complete", "problem_reason": "Stock adjustment failed"},
+    {"row": 23, "trigger": "Stale synchronization threshold exceeded", "expected": "Trigger synchronization panel stale alert", "problem_reason": None},
+]
+
+
 # =====================================================================
 # 4. Status Model & Mirakl Ranking (R-MAP §6.1, §8.2, claim L-9, L-53)
 # =====================================================================

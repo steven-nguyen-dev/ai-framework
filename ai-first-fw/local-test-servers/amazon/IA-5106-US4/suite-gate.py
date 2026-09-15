@@ -2,22 +2,31 @@
 """IA-5106-US4 Suite: Pre-Ready-To-Ship Gate, Race Conditions & Resilience.
 
 Judges pre-ready-to-ship validation, race conditions, store isolation, and error resilience:
-  1. Pre-ready-to-ship validation gates update_status(READY_TO_SHIP) (R-MAP §3 Flow 5, L-20, L-60, AC-15, FR-20, FR-21)
-  2. bulk_cancellation_check chunks up to 300 orders per batch (R-REQ §2.6, R-MAP §4.9, L-20)
-  3. Pending cancellation request halts transition to ready to ship (L-20, L-60, AC-15)
-  4. Unreachable Amazon during pre-RTS check raises Marketplace Validation Pending (L-60, AC-16, FR-22)
-  5. Post-RTS confirmation raises Cancellation After Ready To Ship alongside order_status (L-60, AC-17, FR-23)
-  6. Post-RTS cancellation routes to Cancel in Process / putaway, preserving parcel/package info (L-48, L-52)
-  7. Post-shipment cancellation left to returns flow of IA-5112 (L-68, AC-25, FR-24)
-  8. Out-of-order resolution: newer confirmed beats older request by TimeOfOrderChange (L-62, AC-20, FR-31)
-  9. Older request never returns a cancelled order to the hold (L-62, AC-20)
-  10. Store isolation across all 4 target markets: FR, DE, JP, US (L-19, L-62, AC-23)
-  11. Mismatched store/marketplace on update is rejected and alerted on integration dashboard (L-53, L-62)
-  12. Orders before store cutover date do not trigger mapping failures (L-50)
-  13. Unresolvable Amazon order-item id raises Cancellation Mapping Failure (L-66)
-  14. Repeated poll failure keeps order held, never auto-releases (L-45, L-49)
-  15. FR-26 priority sweep prioritises all five named categories (L-61)
-  16. Records DoD bullet 14 / Question 18 Japan live acceptance pass as blocked (L-67)
+  1. Pre-ready-to-ship validation gates update_status(READY_TO_SHIP) (JIRA-IA5106 §15 FR-20, FR-21, AC-15)
+  2. bulk_cancellation_check chunks up to 300 orders per batch (JIRA-IA5106 §15 FR-20, §23; anchanto-oms-swagger.json /bulk_cancellation_check)
+  3. Pending cancellation request halts transition to ready to ship (JIRA-IA5106 §15 FR-20, AC-15, absorbs HOLD-09)
+  4. Unreachable Amazon during pre-RTS check raises Marketplace Validation Pending (JIRA-IA5106 §15 FR-22, §20 Error Matrix #11, AC-16)
+  5. Post-RTS confirmation raises Cancellation After RFP alongside order_status (JIRA-IA5106 §15 FR-23, §26 Discovery Item 11, AC-17)
+  6. Post-RTS cancellation routes to Cancel in Process / putaway, preserving parcel/package info (JIRA-IA5106 §15 FR-23)
+  7. Post-shipment cancellation left to returns flow of IA-5112 (JIRA-IA5106 §15 FR-24, AC-25)
+  8. Out-of-order resolution: newer confirmed beats older request by TimeOfOrderChange (JIRA-IA5106 §17 FR-31, AC-20)
+  9. Older request never returns a cancelled order to the hold (JIRA-IA5106 §17 FR-31, AC-20)
+  10. Store isolation across all 4 target markets: FR, DE, JP, US (JIRA-IA5106 §2 AC-23)
+  11. Mismatched store/marketplace on update is rejected and alerted on integration dashboard (JIRA-IA5106 §17 FR-32, §20)
+  12. Orders before store cutover date do not trigger mapping failures (JIRA-IA5106 §20 Error Matrix #1)
+  13. Unresolvable Amazon order-item id raises Cancellation Mapping Failure (JIRA-IA5106 §20 Error Matrix #5, #7)
+  14. Repeated poll failure keeps order held, never auto-releases (JIRA-IA5106 §16 FR-25, §20 Error Matrix #12)
+  15. Priority sweep prioritises all five named categories (JIRA-IA5106 §16 FR-26)
+  16. Records DoD bullet 14 / Question 18 Japan live acceptance pass as blocked (JIRA-IA5106 DoD #14, Q18)
+  17. Transient retryable vs terminal pre-RTS validation failure (JIRA-IA5106 §15 FR-22, §20 Error Matrix #11)
+  18. State transitions the gate must refuse (JIRA-IA5106 §15 FR-20, FR-24)
+
+What this suite proves:
+  - Pre-ready-to-ship validation gating, bulk cancellation chunking, post-RTS race problem states, and store isolation match ticket specifications.
+
+What this suite does not prove:
+  These suites call the mocks directly. They do not drive JPluger. A green run means the mocks
+  and the IA-5106 documents agree -- it is not evidence that the integration works.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5106-US4-gate/run-<stamp>/results.json.
@@ -43,7 +52,7 @@ FAST = "--fast" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MOCK_DIR = os.path.dirname(HERE)  # amazon/ -- mock config, state and test-results live here, one level up
+MOCK_DIR = os.path.dirname(HERE)
 DATA_DIR = os.path.join(MOCK_DIR, "mock-data")
 LOG = "api-calls.har.json"
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -152,6 +161,8 @@ EVIDENCE = {
     "status": "running",
     "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
     "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
+    "proves": "Pre-ready-to-ship validation gating, bulk cancellation chunking, post-RTS race problem states, and store isolation",
+    "does_not_prove": req.DOES_NOT_PROVE,
 }
 
 OMS_UP = False
@@ -261,12 +272,11 @@ def run_case(c):
 
 
 # =====================================================================
-# Test Cases (IA-5106-US4-GATE-01 .. IA-5106-US4-GATE-16)
+# Test Cases (IA-5106-US4-GATE-01 .. IA-5106-US4-GATE-18)
 # =====================================================================
 
 def c_gate_01_pre_rts_gate_evaluation(ch, calls, detail):
-    """R-MAP §3 Flow 5, L-20, L-60, AC-15, FR-20, FR-21: Integration gates its own update_status(READY_TO_SHIP)."""
-    # Order clean in Amazon and clean in bulk check -> can transition
+    """JIRA-IA5106 §15 FR-20, FR-21, AC-15: Integration gates its own update_status(READY_TO_SHIP)."""
     clean_order = {"orderItems": [{"orderItemId": "OIID-1", "cancellation": {}}]}
     bulk_result = {"success": True, "status": "active"}
 
@@ -277,9 +287,8 @@ def c_gate_01_pre_rts_gate_evaluation(ch, calls, detail):
 
 
 def c_gate_02_bulk_check_batching_cap_300(ch, calls, detail):
-    """R-REQ §2.6, R-MAP §4.9, L-20: bulk_cancellation_check caps batch at 300 orders."""
+    """JIRA-IA5106 §15 FR-20, §23; anchanto-oms-swagger.json /bulk_cancellation_check: bulk_cancellation_check caps batch at 300 orders."""
     order_ids = list(range(1, 651))
-    # Chunking logic
     cap = req.BULK_CANCELLATION_CHECK_MAX_BATCH
     chunks = [order_ids[i:i + cap] for i in range(0, len(order_ids), cap)]
 
@@ -291,7 +300,7 @@ def c_gate_02_bulk_check_batching_cap_300(ch, calls, detail):
 
 
 def c_gate_03_pending_cancellation_halts_rts(ch, calls, detail):
-    """R-MAP §3 Flow 5, L-20, L-60, AC-15: Pending cancellation halts transition to ready to ship."""
+    """JIRA-IA5106 §15 FR-20, AC-15: Pending cancellation halts transition to ready to ship (absorbs HOLD-09)."""
     order_pending = {
         "orderItems": [
             {
@@ -311,7 +320,7 @@ def c_gate_03_pending_cancellation_halts_rts(ch, calls, detail):
 
 
 def c_gate_04_unreachable_amazon_validation_pending(ch, calls, detail):
-    """R-REQ §2.4, R-MAP §3 Flow 5, L-60, AC-16, FR-22: Unreachable Amazon raises Marketplace Validation Pending."""
+    """JIRA-IA5106 §15 FR-22, §20 Error Matrix #11, AC-16: Unreachable Amazon raises Marketplace Validation Pending."""
     order_unreachable = {"orderItems": [{"orderItemId": "OIID-1"}]}
     bulk_result = {"success": False, "error_message": "Amazon Gateway 504 Timeout"}
 
@@ -323,7 +332,7 @@ def c_gate_04_unreachable_amazon_validation_pending(ch, calls, detail):
 
 
 def c_gate_05_post_rts_problem_reason(ch, calls, detail):
-    """R-REQ §2.4, §3, L-60, AC-17, FR-23: Post-RTS confirmation raises Cancellation After Ready To Ship alongside order_status."""
+    """JIRA-IA5106 §15 FR-23, §26 Discovery Item 11, AC-17: Post-RTS confirmation raises Cancellation After RFP alongside order_status."""
     order_post_rts = {
         "order_number": "403-1234567-1234567",
         "order_status": "Ready_To_Ship",
@@ -334,11 +343,11 @@ def c_gate_05_post_rts_problem_reason(ch, calls, detail):
     calls.append("Checking post-RTS problem reason alongside operational status")
     ch.add("operational status maintained", "order_status remains Ready_To_Ship", "Ready_To_Ship", order_post_rts["order_status"])
     ch.add("problem state active", "problem_state is True", True, order_post_rts["problem_state"])
-    ch.add("problem reason matches", "Cancellation After Ready To Ship", req.PROBLEM_REASON_POST_RTS, order_post_rts["problem_reason"])
+    ch.add("problem reason matches", "problem reason matches constant", req.PROBLEM_REASON_POST_RTS, order_post_rts["problem_reason"])
 
 
 def c_gate_06_post_rts_parcel_preservation(ch, calls, detail):
-    """R-REQ §2.3, §3, L-48, L-52: Post-RTS cancellation routes to Cancel in Process / putaway, preserving parcel/shipment info."""
+    """JIRA-IA5106 §15 FR-23: Post-RTS cancellation routes to Cancel in Process / putaway, preserving parcel/shipment info."""
     order_with_parcel = {
         "order_status": "Cancel in Process",
         "shipment_id": "SH-99001",
@@ -353,65 +362,75 @@ def c_gate_06_post_rts_parcel_preservation(ch, calls, detail):
 
 
 def c_gate_07_post_shipment_to_returns(ch, calls, detail):
-    """R-MAP §1, L-68, AC-25, FR-24: Post-shipment cancellation left to returns flow of IA-5112 (not pre-RTS)."""
+    """JIRA-IA5106 §15 FR-24, AC-25: Post-shipment cancellation left to returns flow of IA-5112 (not pre-RTS)."""
     order_shipped = {"order_status": "Shipped", "buyer_cancellation_received": True}
-    # Shipped orders do not enter pre-RTS cancellation; routed to returns (IA-5112)
     handled_by_returns = (order_shipped["order_status"] == "Shipped")
     calls.append("Routing post-shipment cancellation attempt to IA-5112 returns flow")
     ch.add("routed to returns", "post-shipment routed to IA-5112 returns", True, handled_by_returns)
 
 
 def c_gate_08_out_of_order_newer_confirmed_beats_older_request(ch, calls, detail):
-    """R-MAP §6, L-62, AC-20, FR-31: Newer confirmed cancellation beats older request by TimeOfOrderChange."""
+    """JIRA-IA5106 §17 FR-31, AC-20: Newer confirmed cancellation beats older request by TimeOfOrderChange."""
     event_confirmed = {"type": "CONFIRMED", "timestamp": "2026-08-27T10:00:00Z"}
     event_request = {"type": "REQUEST", "timestamp": "2026-08-27T09:00:00Z"}
 
-    # Order arrived out-of-order: request arrives AFTER confirmed cancellation
     effective_state = "CONFIRMED" if event_confirmed["timestamp"] > event_request["timestamp"] else "HOLD"
     calls.append("Evaluating out-of-order precedence (newer confirmed vs older request)")
     ch.add("newer confirmed wins", "order remains CONFIRMED", "CONFIRMED", effective_state)
 
 
 def c_gate_09_older_request_never_uncancels(ch, calls, detail):
-    """R-MAP §6, L-62, AC-20: Older request NEVER moves an already cancelled order back to hold."""
+    """JIRA-IA5106 §17 FR-31, AC-20: Older request NEVER moves an already cancelled order back to hold."""
     current_status = "Cancel"
     incoming_event = {"type": "BUYER_REQUEST", "timestamp": "2026-08-27T08:00:00Z"}
 
-    # An order that is Cancel CANNOT be moved to hold by an older request
     can_revert_to_hold = False if current_status == "Cancel" else True
     calls.append("Testing guard: older request cannot revert cancelled order to hold")
     ch.add("revert blocked", "cancelled order cannot return to hold", False, can_revert_to_hold)
 
 
 def c_gate_10_marketplace_and_store_isolation(ch, calls, detail):
-    """R-MAP §1, §4.1, L-19, L-62, AC-23: Store credentials isolation across FR, DE, JP, US."""
-    calls.append("Verifying store configurations across all 4 target marketplaces")
+    """JIRA-IA5106 §2 AC-23: Store credentials isolation across FR, DE, JP, US."""
     markets = req.TARGET_MARKETPLACES
+    calls.append("Verifying cross-border marketplace isolation rules")
 
-    for code, info in markets.items():
-        ch.truthy(f"marketplace {code} code", "marketplace_code present", info.get("marketplace_code"))
-        ch.truthy(f"marketplace {code} id", "marketplace_id present", info.get("marketplace_id"))
-        ch.truthy(f"marketplace {code} store", "default_store_code present", info.get("default_store_code"))
-        ch.truthy(f"marketplace {code} region", "region present", info.get("region"))
+    # France order cannot update Germany store
+    is_fr_de_valid, alert = CancellationTransformer.validate_store_marketplace(
+        order_store_code="SS0000FR",
+        order_marketplace_code="amazon_sp_fr",
+        update_store_code="SS0000DE",
+        update_marketplace_code="amazon_sp_de"
+    )
+    ch.add("cross-border update rejected", "mismatch between FR and DE rejected", False, is_fr_de_valid)
+    ch.add("alert raised", "alert directed to dashboard", req.ALERT_INTEGRATION_DASHBOARD, alert)
+
+    # Valid matching store passes
+    is_fr_fr_valid, _ = CancellationTransformer.validate_store_marketplace(
+        order_store_code="SS0000FR",
+        order_marketplace_code="amazon_sp_fr",
+        update_store_code="SS0000FR",
+        update_marketplace_code="amazon_sp_fr"
+    )
+    ch.add("matching store passes", "FR update on FR store accepted", True, is_fr_fr_valid)
 
 
 def c_gate_11_mismatched_store_rejected_and_alerted(ch, calls, detail):
-    """R-MAP §6, L-53, L-62: Mismatched store/marketplace on update is rejected and alerted on integration dashboard."""
-    order_meta = {"store_code": "SS0000FR", "marketplace_code": "amazon_sp_fr"}
-    update_meta = {"store_code": "SS0000DE", "marketplace_code": "amazon_sp_de"}
-
-    is_match = (order_meta["store_code"] == update_meta["store_code"]) and (order_meta["marketplace_code"] == update_meta["marketplace_code"])
-    alert_target = "INTEGRATION_DASHBOARD"  # Not unsynchronised-order tab (L-53)
-
+    """JIRA-IA5106 §17 FR-32, §20: Mismatched store/marketplace on update is rejected and alerted on integration dashboard."""
+    is_match, alert_target = CancellationTransformer.validate_store_marketplace(
+        order_store_code="SS0000FR",
+        order_marketplace_code="amazon_sp_fr",
+        update_store_code="SS0000DE",
+        update_marketplace_code="amazon_sp_de"
+    )
     calls.append("Evaluating mismatched store security rejection")
     ch.add("mismatch rejected", "is_match evaluates to False", False, is_match)
-    ch.add("alert destination", "alerts on INTEGRATION_DASHBOARD (L-53)", "INTEGRATION_DASHBOARD", alert_target)
+    ch.add("alert destination", "alerts on INTEGRATION_DASHBOARD", req.ALERT_INTEGRATION_DASHBOARD, alert_target)
 
 
 def c_gate_12_cutover_date_filtering(ch, calls, detail):
-    """R-MAP §6, L-50: Amazon orders placed before store cutover date do not trigger mapping failures."""
+    """JIRA-IA5106 §20 Error Matrix #1: Amazon orders placed before store cutover date do not trigger mapping failures."""
     store_cutover_date = "2026-08-01T00:00:00Z"
-    order_purchase_date = "2026-07-15T00:00:00Z"  # Pre-cutover
+    order_purchase_date = "2026-07-15T00:00:00Z"
 
     is_pre_cutover = order_purchase_date < store_cutover_date
     action = "IGNORE_WORKING_AS_SET" if is_pre_cutover else "PROCESS"
@@ -422,23 +441,21 @@ def c_gate_12_cutover_date_filtering(ch, calls, detail):
 
 
 def c_gate_13_unresolvable_order_item_id_mapping_failure(ch, calls, detail):
-    """R-MAP §6, L-66: Unresolvable Amazon order-item id raises Cancellation Mapping Failure without guessing."""
-    known_order_item_ids = {"OIID-VALID-1", "OIID-VALID-2"}
-    incoming_item_id = "OIID-UNKNOWN-999"
+    """JIRA-IA5106 §20 Error Matrix #5, #7: Unresolvable Amazon order-item id raises Cancellation Mapping Failure without guessing."""
+    references = [{"item_codes": ["OIID-VALID-1", "OIID-VALID-2"]}]
+    incoming_item_ids = ["OIID-UNKNOWN-999"]
 
-    resolves = incoming_item_id in known_order_item_ids
-    problem_reason = req.PROBLEM_REASON_MAPPING_FAILURE if not resolves else None
-
+    is_valid, missing, problem_reason = CancellationTransformer.validate_cancellation_mapping(references, incoming_item_ids)
     calls.append("Evaluating unresolvable order-item id mapping exception")
-    ch.add("resolution fails", "item id not found in order", False, resolves)
+    ch.add("resolution fails", "item id not found in order", False, is_valid)
+    ch.add("missing items identified", "missing id captured", ["OIID-UNKNOWN-999"], missing)
     ch.add("problem reason set", "Cancellation Mapping Failure raised", req.PROBLEM_REASON_MAPPING_FAILURE, problem_reason)
 
 
 def c_gate_14_poll_failure_keeps_hold(ch, calls, detail):
-    """R-MAP §6, L-45, L-49: Repeated poll failure keeps order held, never auto-releases hold."""
+    """JIRA-IA5106 §16 FR-25, §20 Error Matrix #12: Repeated poll failure keeps order held, never auto-releases hold."""
     is_poll_failed = True
     current_state = "HOLD"
-    # Never release hold due to transport or poll failure
     new_state = "RELEASED" if not is_poll_failed else current_state
 
     calls.append("Verifying hold retention during poll transport failure")
@@ -446,46 +463,89 @@ def c_gate_14_poll_failure_keeps_hold(ch, calls, detail):
 
 
 def c_gate_15_priority_sweep_categories(ch, calls, detail):
-    """R-MAP §3 Flow 6, L-61, FR-26, FR-27: FR-26 priority sweep prioritises all five named categories."""
-    sweep_categories = [
-        "HELD_ORDERS",
-        "APPROACHING_READY_TO_SHIP",
-        "CANCELLATION_AFTER_READY_TO_SHIP",
-        "PARTIALLY_SHIPPED_WITH_REMAINING",
-        "INCOMPLETE_CANCELLATION_DATA"
-    ]
+    """JIRA-IA5106 §16 FR-26, FR-27: Priority sweep prioritises all five named categories."""
+    sweep_categories = req.PRIORITY_SWEEP_CATEGORIES
     calls.append("Verifying all 5 priority order sweep categories from FR-26")
     ch.add("categories count", "exactly 5 categories prioritised", 5, len(sweep_categories))
     ch.add("contains HELD_ORDERS", "held orders included", True, "HELD_ORDERS" in sweep_categories)
     ch.add("contains APPROACHING_READY_TO_SHIP", "approaching RTS included", True, "APPROACHING_READY_TO_SHIP" in sweep_categories)
+    ch.add("contains CANCELLATION_AFTER_READY_TO_SHIP", "cancellation after RTS included", True, "CANCELLATION_AFTER_READY_TO_SHIP" in sweep_categories)
 
 
 def c_gate_16_japan_dod14_blocked(ch, calls, detail):
-    """DoD bullet 14 / Question 18: Live Japan acceptance pass (UNSETTLED/BLOCKED per L-67)."""
-    pass  # Handled by BLOCKED_CASES in run_case
+    """DoD bullet 14 / Question 18: Live Japan acceptance pass (UNSETTLED/BLOCKED: pending live Japan seller account pass)."""
+    pass
+
+
+def c_gate_17_transient_vs_terminal_pre_rts_failure(ch, calls, detail):
+    """FR-22, Error Matrix Scenario 11: Transient retryable network failure vs terminal problem state."""
+    # Transient network timeout -> retryable, holds current pre-RTS state
+    can_trans_retry, action_retry, reason_retry = CancellationTransformer.evaluate_pre_rts_gate(
+        amazon_order_detail={"orderItems": [{"orderItemId": "OIID-1"}]},
+        bulk_check_result={"success": False, "is_transient": True}
+    )
+    calls.append("Evaluating transient retryable validation failure")
+    ch.add("transient blocks transition", "blocks transition", False, can_trans_retry)
+    ch.add("raises validation pending problem", "problem is validation pending", req.PROBLEM_REASON_VALIDATION_PENDING, reason_retry)
+
+    # Permanent confirmed cancellation discovered during pre-RTS
+    can_trans_term, action_term, _ = CancellationTransformer.evaluate_pre_rts_gate(
+        amazon_order_detail={"orderItems": [{"orderItemId": "OIID-1", "cancellation": {"cancellationExecution": {"cancelledBy": "BUYER"}}}]},
+        bulk_check_result={"success": True}
+    )
+    ch.add("confirmed cancellation blocks RTS", "blocks transition", False, can_trans_term)
+    ch.add("action is CANCEL", "routes directly to Cancel", "CANCEL", action_term)
+
+
+def c_gate_18_state_transitions_refused(ch, calls, detail):
+    """FR-20, FR-24: Gate explicitly refuses illegal state transitions."""
+    calls.append("Testing state transitions the gate must refuse")
+    # Refuse transition from Cancel back to Hold
+    ok_cancel_to_hold, reason1 = CancellationTransformer.evaluate_state_transition("Cancel", "Cancel_in_process")
+    ch.add("cannot uncancel cancelled order", "transition refused", False, ok_cancel_to_hold)
+    ch.add("refusal reason matches", "reason is already cancelled", "REFUSED_ALREADY_CANCELLED", reason1)
+
+    # Refuse transition from Shipped to Cancel_in_process (must use returns)
+    ok_shipped_to_hold, reason2 = CancellationTransformer.evaluate_state_transition("Shipped", "Cancel_in_process")
+    ch.add("cannot hold shipped order", "transition refused", False, ok_shipped_to_hold)
+    ch.add("refusal reason matches shipped", "reason is already shipped", "REFUSED_ALREADY_SHIPPED", reason2)
+
+    # Refuse transition to Ready_To_Ship when on hold
+    ok_hold_to_rts, reason3 = CancellationTransformer.evaluate_state_transition("Cancel_in_process", "READY_TO_SHIP")
+    ch.add("cannot RTS order on hold", "transition refused", False, ok_hold_to_rts)
+    ch.add("refusal reason matches hold", "reason is on hold", "REFUSED_ON_HOLD", reason3)
 
 
 # Register test cases
-case("IA-5106-US4-GATE-01", "Pre-ready-to-ship validation gates update_status", "Clean order pre-RTS gate evaluation", "Gate returns can_transition=True and action=TRANSITION", "R-MAP §3 Flow 5, L-20, L-60, AC-15, FR-20, FR-21", c_gate_01_pre_rts_gate_evaluation)
-case("IA-5106-US4-GATE-02", "bulk_cancellation_check batch capped at 300 orders", "Batch of 650 order IDs", "Chunks requests to max 300 IDs per call", "R-REQ §2.6, R-MAP §4.9, L-20", c_gate_02_bulk_check_batching_cap_300)
-case("IA-5106-US4-GATE-03", "Pending cancellation halts ready-to-ship transition", "Order with active buyer cancellation request", "Gate blocks transition and sets action=HOLD", "R-MAP §3 Flow 5, L-20, L-60, AC-15", c_gate_03_pending_cancellation_halts_rts)
-case("IA-5106-US4-GATE-04", "Unreachable Amazon raises Marketplace Validation Pending", "Failed pre-RTS validation check", "Blocks transition and sets Marketplace Validation Pending", "R-REQ §2.4, R-MAP §3 Flow 5, L-60, AC-16, FR-22", c_gate_04_unreachable_amazon_validation_pending)
-case("IA-5106-US4-GATE-05", "Post-RTS confirmation raises Cancellation After Ready To Ship", "Cancellation confirmed after order reached RTS", "Sets problem_reason alongside operational order_status", "R-REQ §2.4, §3, L-60, AC-17, FR-23", c_gate_05_post_rts_problem_reason)
-case("IA-5106-US4-GATE-06", "Post-RTS cancellation routes to putaway preserving parcel info", "Post-RTS cancellation execution", "Preserves parcel tracking and shipment while entering putaway", "R-REQ §2.3, §3, L-48, L-52", c_gate_06_post_rts_parcel_preservation)
-case("IA-5106-US4-GATE-07", "Post-shipment cancellation left to returns flow of IA-5112", "Order already in Shipped status", "Leaves post-shipment request to IA-5112 returns flow", "R-MAP §1, L-68, AC-25, FR-24", c_gate_07_post_shipment_to_returns)
-case("IA-5106-US4-GATE-08", "Out-of-order: newer confirmed beats older request", "Out-of-order delivery with older request arriving second", "Orders by TimeOfOrderChange; newer confirmed wins", "R-MAP §6, L-62, AC-20, FR-31", c_gate_08_out_of_order_newer_confirmed_beats_older_request)
-case("IA-5106-US4-GATE-09", "Older request NEVER moves cancelled order back to hold", "Cancelled order receiving duplicate older request", "Guard prevents reversion from Cancel to hold", "R-MAP §6, L-62, AC-20", c_gate_09_older_request_never_uncancels)
-case("IA-5106-US4-GATE-10", "Store isolation across FR, DE, JP, US marketplaces", "Store credentials configuration across 4 marketplaces", "Isolates credentials per marketplace without marketplaceIds filter", "R-MAP §1, §4.1, L-19, L-62, AC-23", c_gate_10_marketplace_and_store_isolation)
-case("IA-5106-US4-GATE-11", "Mismatched store/marketplace rejected and alerted on dashboard", "Update targeting wrong store or marketplace code", "Rejects update and alerts on INTEGRATION_DASHBOARD", "R-MAP §6, L-53, L-62", c_gate_11_mismatched_store_rejected_and_alerted)
-case("IA-5106-US4-GATE-12", "Orders before store cutover date do not trigger failures", "Historical cancellation before store cutover date", "Treated as configuration working as set; mapping failure avoided", "R-MAP §6, L-50", c_gate_12_cutover_date_filtering)
-case("IA-5106-US4-GATE-13", "Unresolvable order-item id raises Cancellation Mapping Failure", "Amazon order-item id not resolving to OMS line", "Raises Cancellation Mapping Failure without guessing line", "R-MAP §6, L-66", c_gate_13_unresolvable_order_item_id_mapping_failure)
-case("IA-5106-US4-GATE-14", "Repeated poll failure keeps order held, never auto-releases", "Repeated poll transport errors", "Maintains hold state; never releases on failure", "R-MAP §6, L-45, L-49", c_gate_14_poll_failure_keeps_hold)
-case("IA-5106-US4-GATE-15", "FR-26 priority sweep prioritises all five named categories", "Priority sweep scheduler", "Prioritises all five specified exception categories", "R-MAP §3 Flow 6, L-61, FR-26, FR-27", c_gate_15_priority_sweep_categories)
-case("IA-5106-US4-GATE-16", "[BLOCKED] DoD bullet 14 / Q18: Japan Far East live acceptance pass", "Japan Far East marketplace validation", "Blocked pending live Japan seller account acceptance pass", "R-REQ Appendix D, L-67", c_gate_16_japan_dod14_blocked)
+case("IA-5106-US4-GATE-01", "Pre-ready-to-ship validation gates update_status", "Clean order pre-RTS gate evaluation", "Gate returns can_transition=True and action=TRANSITION", "JIRA-IA5106 §15 FR-20, FR-21, AC-15", c_gate_01_pre_rts_gate_evaluation)
+case("IA-5106-US4-GATE-02", "bulk_cancellation_check batch capped at 300 orders", "Batch of 650 order IDs", "Chunks requests to max 300 IDs per call", "JIRA-IA5106 §15 FR-20, §23; anchanto-oms-swagger.json /bulk_cancellation_check", c_gate_02_bulk_check_batching_cap_300)
+case("IA-5106-US4-GATE-03", "Pending cancellation halts ready-to-ship transition", "Order with active buyer cancellation request", "Gate blocks transition and sets action=HOLD", "JIRA-IA5106 §15 FR-20, AC-15", c_gate_03_pending_cancellation_halts_rts)
+case("IA-5106-US4-GATE-04", "Unreachable Amazon raises Marketplace Validation Pending", "Failed pre-RTS validation check", "Blocks transition and sets Marketplace Validation Pending", "JIRA-IA5106 §15 FR-22, §20 Error Matrix #11, AC-16", c_gate_04_unreachable_amazon_validation_pending)
+case("IA-5106-US4-GATE-05", "Post-RTS confirmation raises Cancellation After RFP", "Cancellation confirmed after order reached RTS", "Sets problem_reason alongside operational order_status", "JIRA-IA5106 §15 FR-23, §26 Discovery Item 11, AC-17", c_gate_05_post_rts_problem_reason)
+case("IA-5106-US4-GATE-06", "Post-RTS cancellation routes to putaway preserving parcel info", "Post-RTS cancellation execution", "Preserves parcel tracking and shipment while entering putaway", "JIRA-IA5106 §15 FR-23", c_gate_06_post_rts_parcel_preservation)
+case("IA-5106-US4-GATE-07", "Post-shipment cancellation left to returns flow of IA-5112", "Order already in Shipped status", "Leaves post-shipment request to IA-5112 returns flow", "JIRA-IA5106 §15 FR-24, AC-25", c_gate_07_post_shipment_to_returns)
+case("IA-5106-US4-GATE-08", "Out-of-order: newer confirmed beats older request", "Out-of-order delivery with older request arriving second", "Orders by TimeOfOrderChange; newer confirmed wins", "JIRA-IA5106 §17 FR-31, AC-20", c_gate_08_out_of_order_newer_confirmed_beats_older_request)
+case("IA-5106-US4-GATE-09", "Older request NEVER moves cancelled order back to hold", "Cancelled order receiving duplicate older request", "Guard prevents reversion from Cancel to hold", "JIRA-IA5106 §17 FR-31, AC-20", c_gate_09_older_request_never_uncancels)
+case("IA-5106-US4-GATE-10", "Store isolation across FR, DE, JP, US marketplaces", "Store credentials configuration across 4 marketplaces", "Isolates credentials per marketplace without marketplaceIds filter", "JIRA-IA5106 §2 AC-23", c_gate_10_marketplace_and_store_isolation)
+case("IA-5106-US4-GATE-11", "Mismatched store/marketplace rejected and alerted on dashboard", "Update targeting wrong store or marketplace code", "Rejects update and alerts on INTEGRATION_DASHBOARD", "JIRA-IA5106 §17 FR-32, §20", c_gate_11_mismatched_store_rejected_and_alerted)
+case("IA-5106-US4-GATE-12", "Orders before store cutover date do not trigger failures", "Historical cancellation before store cutover date", "Treated as configuration working as set; mapping failure avoided", "JIRA-IA5106 §20 Error Matrix #1", c_gate_12_cutover_date_filtering)
+case("IA-5106-US4-GATE-13", "Unresolvable order-item id raises Cancellation Mapping Failure", "Amazon order-item id not resolving to OMS line", "Raises Cancellation Mapping Failure without guessing line", "JIRA-IA5106 §20 Error Matrix #5, #7", c_gate_13_unresolvable_order_item_id_mapping_failure)
+case("IA-5106-US4-GATE-14", "Repeated poll failure keeps order held, never auto-releases", "Repeated poll transport errors", "Maintains hold state; never releases on failure", "JIRA-IA5106 §16 FR-25, §20 Error Matrix #12", c_gate_14_poll_failure_keeps_hold)
+case("IA-5106-US4-GATE-15", "FR-26 priority sweep prioritises all five named categories", "Priority sweep scheduler", "Prioritises all five specified exception categories", "JIRA-IA5106 §16 FR-26, FR-27", c_gate_15_priority_sweep_categories)
+case("IA-5106-US4-GATE-16", "[BLOCKED] DoD bullet 14 / Q18: Japan Far East live acceptance pass", "Japan Far East marketplace validation", "Blocked pending live Japan seller account acceptance pass", "JIRA-IA5106 DoD #14, Q18", c_gate_16_japan_dod14_blocked)
+case("IA-5106-US4-GATE-17", "Transient retryable vs terminal pre-RTS validation failure", "Pre-RTS check with transient timeout vs terminal cancellation", "Transient keeps pre-RTS with retry; cancellation moves to Cancel", "JIRA-IA5106 §15 FR-22, §20 Error Matrix #11", c_gate_17_transient_vs_terminal_pre_rts_failure)
+case("IA-5106-US4-GATE-18", "State transitions the gate must explicitly refuse", "Illegal status transitions (Cancel to Hold, Shipped to Hold, Hold to RTS)", "Gate refuses invalid transitions with clear rejection reason", "JIRA-IA5106 §15 FR-20, FR-24", c_gate_18_state_transitions_refused)
 
 
 def main():
     global AMAZON_UP, OMS_UP
+
+    if "--list" in sys.argv:
+        print(f"{SUITE} -- {len(CASES)} cases")
+        for c in CASES:
+            print(f"  [{c['id']}] {c['name']}")
+        return 0
+
     print(f"=== Running {SUITE} ===")
 
     st_amz, _, _ = call_amazon("GET", "/auth/o2/token")
@@ -499,6 +559,9 @@ def main():
     st_oms, _, _ = call_oms("GET", "/rest/v1/orders/1")
     OMS_UP = (st_oms != 0)
     EVIDENCE["oms mock"] = f"online at {BASE_OMS}" if OMS_UP else "offline"
+
+    if OMS_UP and not KEEP:
+        req.clear_oms_log(BASE_OMS)
 
     passed, failed, blocked = 0, 0, 0
     cases_to_run = [c for c in CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
@@ -518,9 +581,8 @@ def main():
 
     publish()
     print(f"\nSummary: {passed} passed, {failed} failed, {blocked} blocked. Results written to {RUN_DIR}/results.json")
-    if failed > 0:
-        sys.exit(1)
+    return 1 if failed > 0 else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

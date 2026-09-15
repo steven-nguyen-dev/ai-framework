@@ -19,6 +19,7 @@ import socket
 import sys
 import threading
 import time
+import urllib.parse
 from http.server import ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,9 +31,12 @@ AMAZON_DATA_DIR = os.path.join(AMAZON_DIR, "mock-data")
 RESULTS_ROOT = os.path.join(AMAZON_DIR, "test-results")
 LOG_FILE = "api-calls.har.json"
 
-AMAZON_HOST = "127.0.0.1"
-AMAZON_PORT = 23103
-AMAZON_BASE = os.environ.get("BASE", "http://%s:%d" % (AMAZON_HOST, AMAZON_PORT)).rstrip("/")
+AMAZON_BASE = os.environ.get("BASE_AMAZON", os.environ.get("BASE", "http://127.0.0.1:23103")).rstrip("/")
+OMS_BASE = os.environ.get("BASE_OMS", "http://127.0.0.1:23001").rstrip("/")
+
+_parsed_amz = urllib.parse.urlparse(AMAZON_BASE)
+AMAZON_HOST = _parsed_amz.hostname or "127.0.0.1"
+AMAZON_PORT = _parsed_amz.port or 23103
 
 for _path in (HERE, SERVERS_DIR):
     if _path not in sys.path:

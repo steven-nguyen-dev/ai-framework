@@ -86,8 +86,9 @@ def get_feed_document(ch, calls, document_id, expect=200):
 
 
 def download_report(ch, calls, url, expect=200):
-    status, text = R.http_text("GET", url)
-    calls.append("GET %s -> %s" % (url.replace(BASE, ""), status))
+    resolved_url = R.resolve_mock_url(url, BASE)
+    status, text = R.http_text("GET", resolved_url)
+    calls.append("GET %s -> %s" % (resolved_url.replace(BASE, ""), status))
     ch.add("report downloaded", "%d, the processing report body" % expect, expect, status)
     return text
 

@@ -2,13 +2,8 @@
 """Amazon SP-API to Anchanto OMS Cancellation Transformer (IA-5106 User Story 4).
 
 A local stand-in for the JPluger Amazon integration, implementing the mappings,
-defect fixes, and validations specified in:
-  R-MAP    IA-5106-buyer-cancellation-mapping-spec.md
-  R-REQ    IA-5106-oms-buyer-cancellation-requirements-spec.md
-  R-SUM    IA-5106-buyer-cancellation-summary.md
-  R-LIB    IA-5106-buyer-cancellation-library.md
-
-Cites every rule and claim key from the library (L-1..L-80).
+defect fixes, and validations specified in Jira IA-5106, Anchanto OMS Swagger,
+and Amazon Selling Partner API specifications.
 """
 
 import copy
@@ -30,16 +25,16 @@ class CancellationTransformer:
     """Implements all ingress and egress transformations for Amazon Buyer Cancellation."""
 
     # -----------------------------------------------------------------
-    # Ingress 1: Subscription Setup (R-MAP §4.1, L-18, L-19)
+    # Ingress 1: Subscription Setup (C-AMZ OrderChangeNotification; JIRA-IA5106 FR-25)
     # -----------------------------------------------------------------
     @staticmethod
     def build_subscription_payload(store_code, change_types=None, include_marketplace_ids=False):
         """Builds Amazon POST /notifications/v1/subscriptions payload.
 
         Enforces:
-          - notificationType is 'ORDER_CHANGE' (L-18)
-          - orderChangeTypes filter includes BuyerRequestedChange and OrderStatusChange (L-18, L-34)
-          - marketplaceIds filter is OMITTED (L-19)
+          - notificationType is 'ORDER_CHANGE' (JIRA-IA5106 FR-25; C-AMZ)
+          - orderChangeTypes filter includes BuyerRequestedChange and OrderStatusChange (C-AMZ schema)
+          - marketplaceIds filter is OMITTED (C-AMZ SP-API notifications contract)
         """
         if change_types is None:
             change_types = list(req.SUBSCRIPTION_CHANGE_TYPES)
@@ -55,19 +50,19 @@ class CancellationTransformer:
             }
         }
         if include_marketplace_ids:
-            # Strictly forbidden by Amazon at runtime for ORDER_CHANGE (L-19)
+            # Strictly forbidden by Amazon at runtime for ORDER_CHANGE (C-AMZ)
             payload["processingDirective"]["eventFilter"]["marketplaceIds"] = ["ATVPDKIKX0DER"]
         return payload
 
     # -----------------------------------------------------------------
-    # Ingress 2: Notification Trigger Parser (R-MAP §4.2, L-17, L-21)
+    # Ingress 2: Notification Trigger Parser (JIRA-IA5106 FR-1, FR-25; C-AMZ)
     # -----------------------------------------------------------------
     @staticmethod
     def parse_notification_trigger(notification_doc):
         """Parses inbound ORDER_CHANGE notification doc into trigger context.
 
-        Treated as a trigger, never as a source of record (L-34).
-        Parses IsBuyerRequestedCancel as string per N-2 (L-17).
+        Treated as a trigger, never as a source of record (JIRA-IA5106 §16 FR-25).
+        Parses IsBuyerRequestedCancel as string per Rule N-2 (C-AMZ Orders v0 schema; JIRA-IA5106 FR-1, FR-2).
         """
         payload = notification_doc.get("Payload", {}).get("OrderChangeNotification", {})
         trigger = payload.get("OrderChangeTrigger", {})
@@ -100,7 +95,7 @@ class CancellationTransformer:
         }
 
     # -----------------------------------------------------------------
-    # Defect Fix C-15: Status Mapping (R-MAP §5.1, §7 N-3, L-7, L-23)
+    # Defect Fix C-15: Status Mapping (Amazon Orders v0 & 2026-01-01; JIRA-IA5106 §9, §19; CTX-NOTE)
     # -----------------------------------------------------------------
     @staticmethod
     def map_order_status(source_status):
@@ -114,7 +109,7 @@ class CancellationTransformer:
         return req.ORDER_STATUS_MAP.get(source_status, "active")
 
     # -----------------------------------------------------------------
-    # Defect Fixes C-13 & C-14: Line Cancellation Mapping (R-MAP §4.4, L-6, L-14)
+    # Defect Fixes C-13 & C-14: Line Cancellation Mapping (JIRA-IA5106 §12 FR-11, FR-12, AC-10; CTX-NOTE lines 27-29)
     # -----------------------------------------------------------------
     @staticmethod
     def map_cancelled_items(amazon_order_items, references, cancelled_item_ids):
@@ -148,7 +143,7 @@ class CancellationTransformer:
         return updated_refs
 
     # -----------------------------------------------------------------
-    # Egress 1: CR-1 Hold Payload Builder (R-REQ §2.1, R-MAP §4.6, L-56, L-62)
+    # Egress 1: CR-1 Hold Payload Builder (JIRA-IA5106 FR-1, FR-3, FR-32, AC-1)
     # -----------------------------------------------------------------
     @staticmethod
     def build_cancel_request_payload(order_number, store_code, marketplace_code, marketplace_id,
@@ -156,10 +151,10 @@ class CancellationTransformer:
         """Builds POST /rest/v1/orders/{id}/cancel_request payload.
 
         Enforces:
-          - requester is 'BUYER' (L-28)
-          - request_reason is nullable (L-68)
-          - mp_request_key is 5-part composite key (L-62)
-          - item_quantity is OMITTED (L-1, L-56)
+          - requester is 'BUYER' (JIRA-IA5106 FR-1)
+          - request_reason is nullable (JIRA-IA5106 FR-1, §20, AC-24)
+          - mp_request_key is 5-part composite key (JIRA-IA5106 §17 FR-32)
+          - item_quantity is OMITTED (JIRA-IA5106 FR-2, FR-14, AC-3)
         """
         order_items = []
         raw_items = detail_order_2026.get("orderItems", [])
@@ -205,7 +200,7 @@ class CancellationTransformer:
         }
 
     # -----------------------------------------------------------------
-    # Egress 2: CR-3 Restore Payload Builder (R-REQ §2.2, R-MAP §4.7, L-59)
+    # Egress 2: CR-3 Restore Payload Builder (JIRA-IA5106 §14 FR-17, FR-18, AC-7)
     # -----------------------------------------------------------------
     @staticmethod
     def build_cancel_restore_payload(order_items_to_restore, request_key, resolution="REJECTED",
@@ -213,7 +208,7 @@ class CancellationTransformer:
         """Builds POST /rest/v1/orders/{id}/cancel_request/restore payload.
 
         Enforces:
-          - resolution in REJECTED, WITHDRAWN, EXPIRED (L-59)
+          - resolution in REJECTED, WITHDRAWN, EXPIRED (JIRA-IA5106 §9, FR-17, FR-18)
           - echoes mp_request_key
           - carries item_codes of lines to restore
         """
@@ -237,14 +232,14 @@ class CancellationTransformer:
         }
 
     # -----------------------------------------------------------------
-    # Egress 3: CR-8 / Live Confirmed Cancellation Builder (R-REQ §2.3, R-MAP §4.8, L-75)
+    # Egress 3: CR-8 / Live Confirmed Cancellation Builder (C-OMS /rest/v1/orders/{id}/cancel; JIRA-IA5106 FR-10, FR-15)
     # -----------------------------------------------------------------
     @staticmethod
     def build_confirmed_cancel_payload(order_number, store_code, marketplace_code,
                                       confirmed_items, ledger_items):
         """Builds POST /rest/v1/orders/{id}/cancel payload.
 
-        Rule N-1 (L-75): Only cancels full remaining quantity (mp_remaining_quantity).
+        Rule N-1 (JIRA-IA5106 FR-12): Only cancels full remaining quantity (mp_remaining_quantity).
         Never calculates or derives a partial sub-line quantity.
         """
         ledger_by_code = {}
@@ -285,7 +280,7 @@ class CancellationTransformer:
         }
 
     # -----------------------------------------------------------------
-    # Flow 5: Pre-Ready-to-Ship Gate Evaluator (R-MAP §3 Flow 5, L-20, L-60)
+    # Flow 5: Pre-Ready-to-Ship Gate Evaluator (JIRA-IA5106 §15 FR-20, FR-21, FR-22, AC-15, AC-16)
     # -----------------------------------------------------------------
     @staticmethod
     def evaluate_pre_rts_gate(amazon_order_detail, bulk_check_result):
@@ -295,15 +290,21 @@ class CancellationTransformer:
         """
         # 1. Check Amazon order detail for active cancellation request
         has_pending_request = False
+        has_execution = False
         for it in amazon_order_detail.get("orderItems", []):
             cancellation = it.get("cancellation", {})
             if cancellation.get("cancellationRequest") and not cancellation.get("cancellationExecution"):
                 has_pending_request = True
-                break
+            if cancellation.get("cancellationExecution"):
+                has_execution = True
 
         if has_pending_request:
             # Hold order, block RTS transition (AC-15, FR-20)
             return False, "HOLD", None
+
+        if has_execution:
+            # Confirmed cancellation discovered during pre-RTS check
+            return False, "CANCEL", None
 
         # 2. Check bulk_cancellation_check result
         if not bulk_check_result or not bulk_check_result.get("success", True):
@@ -315,3 +316,66 @@ class CancellationTransformer:
             return False, "HOLD", None
 
         return True, "TRANSITION", None
+
+    # -----------------------------------------------------------------
+    # Exception & Boundary Validations (JIRA-IA5106 §20 Error Matrix)
+    # -----------------------------------------------------------------
+    @staticmethod
+    def validate_cancellation_mapping(references, cancelled_item_ids):
+        """Validates that all cancelled item IDs correlate to known OMS ItemReferences.
+
+        If unresolvable, returns (False, missing_ids, PROBLEM_REASON_MAPPING_FAILURE).
+        """
+        known_codes = set()
+        for r in references:
+            for c in r.get("item_codes", []):
+                known_codes.add(str(c))
+
+        missing = [str(cid) for cid in cancelled_item_ids if str(cid) not in known_codes]
+        if missing:
+            return False, missing, req.PROBLEM_REASON_MAPPING_FAILURE
+        return True, [], None
+
+    @staticmethod
+    def validate_store_marketplace(order_store_code, order_marketplace_code,
+                                   update_store_code, update_marketplace_code):
+        """Enforces store and marketplace isolation (JIRA-IA5106 §17 FR-32, §21 AC-23)."""
+        is_match = (
+            order_store_code == update_store_code
+            and order_marketplace_code == update_marketplace_code
+        )
+        alert_target = req.ALERT_INTEGRATION_DASHBOARD if not is_match else None
+        return is_match, alert_target
+
+    @staticmethod
+    def handle_order_not_found(amazon_order_id):
+        """Error Matrix Scenario 3: Amazon order not found in OMS."""
+        return {
+            "amazon_order_id": amazon_order_id,
+            "exception_status": req.EXCEPTION_RECONCILIATION_PENDING,
+            "action": "STORE_FOR_RECONCILIATION",
+        }
+
+    @staticmethod
+    def evaluate_status_restoration(order_current_status, previous_status, reservation_state):
+        """Evaluates whether previous status can be restored or routes to Problem state (FR-19)."""
+        if reservation_state == "UNAVAILABLE":
+            return False, req.PROBLEM_ORDER_OUT_OF_STOCK, order_current_status
+        if not previous_status:
+            return False, req.PROBLEM_REASON_STATUS_UNAVAILABLE, order_current_status
+        return True, None, previous_status
+
+    @staticmethod
+    def evaluate_state_transition(current_status, requested_transition):
+        """Evaluates state transitions the gate must refuse (FR-20, FR-24)."""
+        # Transitions from Cancel to anything else are refused
+        if current_status == "Cancel":
+            return False, "REFUSED_ALREADY_CANCELLED"
+        # Transitions to Hold from Shipped are refused (handled by returns)
+        if current_status == "Shipped" and requested_transition == "Cancel_in_process":
+            return False, "REFUSED_ALREADY_SHIPPED"
+        # Transitions to Ready_To_Ship when order is on hold are refused
+        if current_status in ("Cancel_in_process", "Hold_Buyer_Cancel") and requested_transition == "READY_TO_SHIP":
+            return False, "REFUSED_ON_HOLD"
+        return True, "ALLOWED"
+

@@ -22,6 +22,7 @@ env/
 .backups/
 _to_delete/
 *.bak
+*.corrupt
 test-results/
 
 # Archives & packages

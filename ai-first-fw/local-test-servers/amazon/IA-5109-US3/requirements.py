@@ -25,6 +25,7 @@ import datetime
 import hashlib
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 
@@ -187,14 +188,19 @@ def merchant_fulfilment_id(shipment):
 
 
 def receipt_instant(now=None):
-    """This codebase's own receipt instant, ISO 8601 in UTC with the offset spelled out.
+    """This codebase's own receipt instant, ISO 8601 in UTC.
 
-    `D9`'s clearly labelled interim proxy, sent as the fulfilment date until `CR-3` lands: not the
-    buyer's purchase instant, not silence. Amazon rates late shipment on this field, and the
-    notification carries no fulfilment instant at all (L-100, L-125, L-126).
+    `D9`'s clearly labelled interim proxy (investigation/elk-traces/17-F8-branch.md §Decisions on record
+    row 1 P-3), sent as the fulfilment date until `CR-3` lands: not the buyer's purchase instant,
+    not silence. Amazon rates late shipment on this field, and the OMS notification carries no
+    fulfilment instant at all (ticket FR-24, AC-15).
+
+    The authority documents (cross-border-fulfillment-data-fields.md §4.2; 13-F4-mp-to-amz.md line 97
+    citing OrderFulfillment.xsd) specify ISO 8601 dateTime with offset optional. This reference builder
+    formats as UTC ending with 'Z'; the suite accepts either 'Z' or an explicit offset.
     """
     moment = now or datetime.datetime.now(datetime.timezone.utc)
-    return moment.strftime(FULFILMENT_DATE_FORMAT) + "+00:00"
+    return moment.strftime(FULFILMENT_DATE_FORMAT) + "Z"
 
 
 # ===================================================================== The feed document (MAP 4.2)
@@ -526,3 +532,19 @@ def http_text(method, url, body=None, content_type="text/xml", token=None, timeo
         return error.code, error.read().decode("utf-8", errors="replace")
     except Exception as error:  # noqa: BLE001
         return 0, str(error)
+
+
+def resolve_mock_url(url, base_url):
+    """Re-bases a mock-returned URL onto the suite's configured base_url.
+
+    The Amazon mock hardcodes `http://127.0.0.1:23103` into `url` fields.
+    When running against a different port (e.g. 23113), the path must be followed
+    against base_url.
+    """
+    if not url:
+        return url
+    parsed = urllib.parse.urlparse(str(url))
+    if parsed.path:
+        path = parsed.path + (("?" + parsed.query) if parsed.query else "")
+        return base_url.rstrip("/") + path
+    return url

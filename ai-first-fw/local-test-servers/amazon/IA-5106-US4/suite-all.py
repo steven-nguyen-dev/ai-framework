@@ -1,17 +1,30 @@
 #!/usr/bin/env python3
 """suite-all (IA-5106-US4): Complete Buyer Cancellation Verification Master Suite.
 
-Runs the entire test matrix (56 cases) across all four functional domains:
-  1. Hold & Ingress (suite-hold: IA-5106-US4-HOLD-01..12)
-  2. Confirmed Cancellation & Release (suite-cancel: IA-5106-US4-CANCEL-01..17)
-  3. Rejection & Restoration (suite-restore: IA-5106-US4-RESTORE-01..11)
-  4. Pre-RTS Gate, Race Conditions & Resilience (suite-gate: IA-5106-US4-GATE-01..16)
+Runs the entire test matrix (65 cases: 62 active, 3 blocked) across all four functional domains:
+  1. Hold & Ingress (suite-hold: IA-5106-US4-HOLD-01..08, 10..15 -- 14 cases)
+  2. Confirmed Cancellation & Release (suite-cancel: IA-5106-US4-CANCEL-01..20 -- 20 cases)
+  3. Rejection & Restoration (suite-restore: IA-5106-US4-RESTORE-01..13 -- 13 cases)
+  4. Pre-RTS Gate, Race Conditions & Resilience (suite-gate: IA-5106-US4-GATE-01..18 -- 18 cases)
+
+Retired cases:
+  IA-5106-US4-HOLD-09: Merged into IA-5106-US4-GATE-03 (pre-RTS gate evaluation belongs in suite-gate.py).
+
+What this suite proves:
+  - Wire contracts, status mapping, Rule N-1, two-read rejection detection, pre-RTS gating,
+    and store isolation agree with ticket specifications across all 4 target markets.
+  - Payloads are judged on what arrived at the OMS mock over HTTP (:23021/log/data).
+
+What this suite does not prove:
+  These suites call the mocks directly. They do not drive JPluger. A green run means the mocks
+  and the IA-5106 documents agree -- it is not evidence that the integration works.
 
 Runner contract: TESTING.md.
 Publishes live status to amazon/test-results/IA-5106-US4-all/run-<stamp>/results.json.
 
 Usage:
   python3 amazon/IA-5106-US4/suite-all.py
+  python3 amazon/IA-5106-US4/suite-all.py --list
   python3 amazon/IA-5106-US4/suite-all.py IA-5106-US4-HOLD-01
 """
 
@@ -26,7 +39,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from http.server import ThreadingHTTPServer
 
 BASE_AMAZON = os.environ.get("BASE_AMAZON", os.environ.get("BASE", "http://127.0.0.1:23103")).rstrip("/")
 BASE_OMS = os.environ.get("BASE_OMS", "http://127.0.0.1:23001").rstrip("/")
@@ -36,7 +48,7 @@ FAST = "--fast" in sys.argv
 WANTED_CASES = set(a for a in sys.argv[1:] if not a.startswith("-"))
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MOCK_DIR = os.path.dirname(HERE)  # amazon/ -- mock config, state and test-results live here, one level up
+MOCK_DIR = os.path.dirname(HERE)
 DATA_DIR = os.path.join(MOCK_DIR, "mock-data")
 LOG = "api-calls.har.json"
 STAMP = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -54,7 +66,6 @@ suite_cancel = importlib.import_module("suite-cancel")
 suite_restore = importlib.import_module("suite-restore")
 suite_gate = importlib.import_module("suite-gate")
 
-# Aggregate all test cases
 ALL_CASES = suite_hold.CASES + suite_cancel.CASES + suite_restore.CASES + suite_gate.CASES
 
 CASES, RESULTS = [], {}
@@ -62,6 +73,8 @@ EVIDENCE = {
     "status": "running",
     "amazon mock": f"Amazon SP-API mock at {BASE_AMAZON}",
     "oms mock": f"Anchanto OMS mock at {BASE_OMS}",
+    "proves": "Full end-to-end buyer cancellation lifecycle (hold, cancel, restore, gate) across France, Germany, Japan, and United States",
+    "does_not_prove": req.DOES_NOT_PROVE,
 }
 
 
@@ -105,7 +118,13 @@ def publish():
 
 
 def main():
-    print(f"=== Running {SUITE} (Master Suite: 56 Cases) ===")
+    if "--list" in sys.argv:
+        print(f"{SUITE} -- {len(ALL_CASES)} cases across 4 domains")
+        for c in ALL_CASES:
+            print(f"  [{c['id']}] {c['name']}")
+        return 0
+
+    print(f"=== Running {SUITE} (Master Suite: {len(ALL_CASES)} Cases) ===")
 
     # Probe mocks via suite_hold
     st_amz, _, _ = suite_hold.call_amazon("GET", "/auth/o2/token")
@@ -126,6 +145,9 @@ def main():
     suite_gate.OMS_UP = (st_oms != 0)
     EVIDENCE["oms mock"] = f"online at {BASE_OMS}" if (st_oms != 0) else "offline"
 
+    if suite_hold.OMS_UP and not KEEP:
+        req.clear_oms_log(BASE_OMS)
+
     passed, failed, blocked = 0, 0, 0
     cases_to_run = [c for c in ALL_CASES if not WANTED_CASES or c["id"] in WANTED_CASES]
 
@@ -136,7 +158,6 @@ def main():
             current_group = group
             print(f"\n--- Group {current_group} ---")
 
-        # Pick appropriate run_case function based on case origin
         if c["id"].startswith("IA-5106-US4-HOLD"):
             v = suite_hold.run_case(c)
             RESULTS[c["id"]] = suite_hold.RESULTS[c["id"]]
@@ -168,9 +189,8 @@ def main():
     print(f"Master Run Complete: {passed} passed, {failed} failed, {blocked} blocked (Total {len(cases_to_run)})")
     print(f"Results written to {RUN_DIR}/results.json")
     print(f"=======================================================")
-    if failed > 0:
-        sys.exit(1)
+    return 1 if failed > 0 else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

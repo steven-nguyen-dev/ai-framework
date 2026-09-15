@@ -1,1 +1,572 @@
-[]
+[
+  {
+    "kind": "return_create",
+    "return_order_number": "RET-TEST-001",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": "Wireless Mouse"
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-FR-88213",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 2,
+        "reason": "Damaged",
+        "shipping_name": "La Poste",
+        "shipping_type": "Standard",
+        "tracking_number": "8Q123456789FR",
+        "asin": "B0B2SH4CN6",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-VERY-LONG-IDENTIFIER-THAT-COULD-POTENTIALLY-EX",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1001"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  },
+  {
+    "kind": "return_create",
+    "return_order_number": "IA5112-FR-RMA-ADDR-1",
+    "order_id": "41277",
+    "items": [
+      {
+        "line_item_id": "811",
+        "item_codes": [
+          "SKU-1"
+        ],
+        "quantity": 1,
+        "reason": "Item Defective",
+        "shipping_name": null,
+        "shipping_type": "Standard",
+        "tracking_number": null,
+        "asin": "",
+        "product_title": null
+      }
+    ]
+  }
+]
