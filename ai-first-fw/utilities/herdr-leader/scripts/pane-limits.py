@@ -107,34 +107,58 @@ def get_space_tag(tab_id=None, ws_id=None):
         clean = "s" + clean
     return clean[:3]
 
-def get_model_target_limit(name, kind, tail_lines=""):
+def get_model_target_limit(name, kind, tail_lines="", prefix=None):
     """
     Determines explicit token target limit based on model:
     - Big pool (Gemini, Claude, GPT): 700k tokens (<700K)
     - Default (all others / Grok / Unknown): 210k tokens (<210K)
     Returns: (limit_tokens_k, limit_str, high_tokens_k)
     """
+    if prefix:
+        p = prefix.lower()
+        if p in ("grok", "agent"):
+            return DEFAULT_LIMIT_K, "<210K>", DEFAULT_HIGH_K
+        if p in ("opus", "gemini", "gpt"):
+            return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
+
     combined = f"{name} {kind}".lower()
+    if any(m in combined for m in ["grok", "cursor"]):
+        return DEFAULT_LIMIT_K, "<210K>", DEFAULT_HIGH_K
+
     if any(m in combined for m in ["gemini", "agy", "claude", "opus", "sonnet", "gpt", "codex"]):
         return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
 
-    tail = tail_lines.lower()
-    if any(m in tail for m in ["gemini", "agy", "claude", "opus", "sonnet", "gpt", "codex"]):
+    # Clean tail_lines: ignore environment variables and startup command echoes
+    clean_lines = [
+        line for line in tail_lines.splitlines()
+        if not any(k in line for k in ["SWARM_ROSTER", "SWARM_LEADER", "SWARM_SESSION_ID", "SWARM_PANE", "export "])
+    ]
+    tail = "\n".join(clean_lines).lower()
+
+    if any(m in tail for m in ["grok", "cursor agent"]):
+        return DEFAULT_LIMIT_K, "<210K>", DEFAULT_HIGH_K
+
+    if any(m in tail for m in ["gemini", "antigravity", "claude", "opus", "sonnet", "codex", "gpt"]):
         return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
 
-    return DEFAULT_LIMIT_K, "<210K", DEFAULT_HIGH_K
+    return DEFAULT_LIMIT_K, "<210K>", DEFAULT_HIGH_K
 
-def parse_usage(text):
+def parse_usage(text, prefix=None):
     """
     Parses usage from agent pane output.
     Returns: (usage_display_str, pct_float, used_k_float)
     """
+    is_256k = (prefix in ("grok", "agent"))
+
     # 1. Main format: Main: 166.3K/1.00M (17%), Main: 0/1.05M tok (0%), or Main: 73.6K/1.00M (…
     m = re.search(r'Main:\s*([0-9.]+[KkMm]?)\s*/\s*([0-9.]+[KkMm]?)(?:[^\n0-9]*([0-9.]+)%)?', text)
     if m:
         u_str, t_str = m.group(1), m.group(2)
         u_k, t_k = to_tokens_k(u_str), to_tokens_k(t_str)
-        if m.group(3):
+        if is_256k:
+            t_k = 256.0
+            t_str = "256K"
+        if m.group(3) and not is_256k:
             pct = float(m.group(3))
         elif u_k is not None and t_k:
             pct = round(u_k / t_k * 100.0, 1)
@@ -149,9 +173,11 @@ def parse_usage(text):
     if m_codex_used:
         pct = float(m_codex_used.group(1))
         m_win = re.search(r'([0-9.]+[KkMm]?)\s*window', text, re.IGNORECASE)
-        t_k = to_tokens_k(m_win.group(1)) if m_win else 1000.0
+        default_win = 256.0 if is_256k else 1000.0
+        default_disp = "256K" if is_256k else "1.00M"
+        t_k = to_tokens_k(m_win.group(1)) if m_win else default_win
+        tot_disp = m_win.group(1) if m_win else default_disp
         u_k = (t_k * pct / 100.0) if t_k else None
-        tot_disp = m_win.group(1) if m_win else "1.00M"
         return f"{u_k:.1f}K/{tot_disp} ({pct:.0f}%)", pct, u_k
 
     # "Context left: 68%"
@@ -160,15 +186,20 @@ def parse_usage(text):
         left_pct = float(m_codex_left.group(1))
         pct = 100.0 - left_pct
         m_win = re.search(r'([0-9.]+[KkMm]?)\s*window', text, re.IGNORECASE)
-        t_k = to_tokens_k(m_win.group(1)) if m_win else 1000.0
+        default_win = 256.0 if is_256k else 1000.0
+        default_disp = "256K" if is_256k else "1.00M"
+        t_k = to_tokens_k(m_win.group(1)) if m_win else default_win
+        tot_disp = m_win.group(1) if m_win else default_disp
         u_k = (t_k * pct / 100.0) if t_k else None
-        tot_disp = m_win.group(1) if m_win else "1.00M"
         return f"{u_k:.1f}K/{tot_disp} ({pct:.0f}%)", pct, u_k
 
     # 3. Main format without total: Main: 150K (15%) or Main: (15%)
     m_pct = re.search(r'Main:[^(\n]+\(\s*([0-9.]+)%\s*\)', text)
     if m_pct:
         pct = float(m_pct.group(1))
+        if is_256k:
+            u_k = 256.0 * (pct / 100.0)
+            return f"{u_k:.1f}K/256K ({pct:.0f}%)", pct, u_k
         return f"{pct:.0f}%", pct, None
 
     # 4. Fallback for Cursor/Grok format: Cursor Grok 4.6 High · 38.4%
@@ -474,11 +505,11 @@ def generate_leader_prompt(tab_id=None, leader_pane_id=None):
 
         pane_out, _, _ = run_cmd(["herdr", "pane", "read", pane_id, "--source", "visible"])
         tail_lines = "\n".join(pane_out.splitlines()[-15:])
-        usage_str, pct, used_k = parse_usage(tail_lines)
-
-        limit_tokens_k, limit_str, _ = get_model_target_limit(name, kind, tail_lines)
         prefix, display_model = detect_model(p_info if p_info else {"pane_id": pane_id, "agent": kind, "label": name})
         role_str = get_model_role(prefix)
+
+        limit_tokens_k, limit_str, _ = get_model_target_limit(name, kind, tail_lines, prefix=prefix)
+        usage_str, pct, used_k = parse_usage(tail_lines, prefix=prefix)
 
         worker_rows.append((name, pane_id, display_model, role_str, limit_str, status, usage_str))
 
@@ -829,12 +860,12 @@ def main():
 
         pane_out, _, _ = run_cmd(["herdr", "pane", "read", pane_id, "--source", "visible"])
         tail_lines = "\n".join(pane_out.splitlines()[-15:])
-        usage_str, pct, used_k = parse_usage(tail_lines)
-
-        limit_tokens_k, limit_str, high_tokens_k = get_model_target_limit(name, kind, tail_lines)
         prefix, _ = detect_model({"pane_id": pane_id, "agent": kind, "label": name})
         role_desc = get_model_role(prefix)
         role_tag = role_desc.split("(")[0].strip()
+
+        limit_tokens_k, limit_str, high_tokens_k = get_model_target_limit(name, kind, tail_lines, prefix=prefix)
+        usage_str, pct, used_k = parse_usage(tail_lines, prefix=prefix)
 
         if used_k is not None:
             if used_k >= limit_tokens_k:
