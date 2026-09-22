@@ -1,29 +1,29 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ai-framework",
-  "description": "AI-First Software Engineering Framework: Lifecycle Skills, Standalone Utilities, MCPs, and Test Suites",
+  "description": "AI-First Software Engineering Framework: MCP Servers, Lifecycle Skills, and Standalone Utilities",
   "owner": {
     "name": "Steven Nguyen",
     "email": "steven-nguyen-dev@users.noreply.github.com"
   },
   "plugins": [
     {
-      "name": "ai-first-fw-skills",
+      "name": "lv1-mcps",
+      "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
+      "version": "1.0.0",
+      "source": "./lv1-mcp"
+    },
+    {
+      "name": "lv1-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: write-analysis, implementation-planner, specs-builder, and review-code.",
       "version": "2.1.5",
-      "source": "./ai-first-fw/skills"
+      "source": "./lv1-fw-skills"
     },
     {
-      "name": "ai-first-fw-utilities",
-      "description": "Standalone engineering utility skills: draw-diagram, herdr-leader, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
+      "name": "lv1-utilities",
+      "description": "Standalone engineering utility skills: draw-diagram, lead, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
       "version": "2.4.6",
-      "source": "./ai-first-fw/utilities"
-    },
-    {
-      "name": "ai-first-fw-mcps",
-      "description": "Local stdio MCP servers: jira-reader (issue metadata, ADF descriptions, attachment downloads) and kibana-explorer (enterprise log search via KQL). Auto-prompts for setup when unconfigured.",
-      "version": "1.1.2",
-      "source": "./ai-first-fw/local-mcps"
+      "source": "./lv1-utilities"
     }
   ]
 }

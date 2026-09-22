@@ -1,10 +1,10 @@
 {
   "entries": [
     {
-      "path": "ai-first-fw/skills"
+      "path": "lv1-fw-skills"
     },
     {
-      "path": "ai-first-fw/utilities"
+      "path": "lv1-utilities"
     }
   ]
 }
