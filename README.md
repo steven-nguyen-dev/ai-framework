@@ -54,17 +54,16 @@ ai-framework/
 │   ├── implementation-planner/
 │   ├── specs-builder/
 │   └── review-code/
-├── lv1-utilities/               # Plugin 3: Standalone Utilities (lv1-utilities)
-│   ├── draw-diagram/
-│   ├── lead/
-│   ├── make-it-short/
-│   ├── sync-pr/
-│   ├── write-docs/
-│   ├── write-pr-desc/
-│   ├── write-skill/
-│   ├── naver-api-extractor/
-│   └── lotteon-api-extractor/
-└── research/                    # Audits, guides, and assets
+└── lv1-utilities/               # Plugin 3: Standalone Utilities (lv1-utilities)
+    ├── draw-diagram/
+    ├── lead/
+    ├── make-it-short/
+    ├── sync-pr/
+    ├── write-docs/
+    ├── write-pr-desc/
+    ├── write-skill/
+    ├── naver-api-extractor/
+    └── lotteon-api-extractor/
 ```
 
 ---

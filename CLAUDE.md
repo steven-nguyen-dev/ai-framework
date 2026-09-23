@@ -25,7 +25,6 @@ This workspace manages two repositories:
 - `lv1-mcp/` — Local stdio MCP servers plugin (`lv1-mcps`): `jira-reader`, `kibana-explorer`, `wiki`, `coordinator`.
 - `lv1-fw-skills/` — Core lifecycle skills plugin (`lv1-fw-skills`): `write-analysis`, `implementation-planner`, `specs-builder`, `review-code`.
 - `lv1-utilities/` — Standalone engineering utilities plugin (`lv1-utilities`): diagrams, extractors, PR sync, etc.
-- `research/` — Research documents, audits, and asset files.
 
 ## Versioning Policy
 - **Skill Version**: Every skill declares a `version` (e.g. `1.0.0`) in its `SKILL.md` frontmatter, versioning independently.

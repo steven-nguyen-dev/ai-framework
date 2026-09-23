@@ -28,7 +28,7 @@ Each server manages its own isolated configuration and environment:
 
 ## 🚀 Plugin Registration
 
-This plugin is registered with Claude Code and Google Antigravity via `plugin.json` at the root of this folder:
+This plugin is registered with Claude Code and Google Antigravity via `.claude-plugin/plugin.json`:
 
 ```json
 {
