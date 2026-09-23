@@ -10,19 +10,19 @@
     {
       "name": "lv1-mcps",
       "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./lv1-mcp"
     },
     {
       "name": "lv1-fw-skills",
       "description": "Core AI-First Framework lifecycle skills: write-analysis, implementation-planner, specs-builder, and review-code.",
-      "version": "2.1.5",
+      "version": "2.1.6",
       "source": "./lv1-fw-skills"
     },
     {
       "name": "lv1-utilities",
       "description": "Standalone engineering utility skills: draw-diagram, lead, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.4.6",
+      "version": "2.4.7",
       "source": "./lv1-utilities"
     }
   ]
