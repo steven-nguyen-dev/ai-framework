@@ -1,4 +1,4 @@
-"""Redis access for the coordinator: keys, TTLs, the task sequence and the session stream.
+"""Redis access for the coordinator: keys, TTLs, runs, the task sequence and the session stream.
 
 Every key name, every TTL and every stream shape lives here, in one place, so ``tools.py``
 never touches a redis client directly and stays testable against a plain dict-backed fake if
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import functools
 import json
+import re
 from typing import Any
 
 from .common import BackendError, NotFoundError, ValidationError, now_iso
@@ -21,6 +22,14 @@ from .config import Config
 # 500-entry ceiling `session_log` clamps to, so nothing that calls this method can pull an
 # unbounded stream into memory.
 _STREAM_READ_MAX = 500
+
+_RUN_TASK_ID = re.compile(r"^R(\d+)-T\d+$")
+
+
+def run_of(task_id: str) -> int | None:
+    """Returns the run a task id belongs to (``R4-T1`` -> 4), or ``None`` for a pre-run ``T7``."""
+    match = _RUN_TASK_ID.match(task_id)
+    return int(match.group(1)) if match else None
 
 
 def make_redis_client(config: Config) -> Any:
@@ -145,18 +154,57 @@ class TaskStore:
                 parsed[pane] = value
         return parsed
 
+    # -- runs ---------------------------------------------------------------
+    #
+    # A run is one objective. ``run`` holds the current run number for the session (the tab);
+    # ``taskseq:r<N>`` and ``session:r<N>`` belong to run N. Task ids carry their run
+    # (``R4-T1``), so ``task:R4-T1`` / ``result:R4-T1`` never collide with an earlier run's and a
+    # late ``complete`` from run 3 lands on run 3's task. A run nothing touches expires on the
+    # normal TTL clock.
+
+    @_reraise_as_backend
+    def current_run(self) -> int:
+        """Returns the current run number, materialising ``run = 1`` on first use."""
+        run_key = self.full("run")
+        self._r.set(run_key, 1, nx=True)
+        return int(self._r.get(run_key) or 1)
+
+    @_reraise_as_backend
+    def start_run(self) -> int:
+        """Opens the next run and returns its number.
+
+        The first run of a fresh session is 1; ``SET NX`` claims it. Otherwise ``INCR``. Either
+        way a single atomic write, so two callers never get the same run.
+        """
+        run_key = self.full("run")
+        if self._r.set(run_key, 1, nx=True):
+            n = 1
+        else:
+            n = int(self._r.incr(run_key))
+        self.touch_ttls()
+        return n
+
+    def run_keys(self, run: int) -> tuple[str, str]:
+        """Returns the qualified ``(taskseq, session)`` keys of ``run``."""
+        return self.full(f"taskseq:r{run}"), self.full(f"session:r{run}")
+
     # -- ttl ---------------------------------------------------------------
 
     @_reraise_as_backend
     def touch_ttls(self, *keys: str) -> None:
-        """Refreshes the TTL clock: the given keys, plus ``session``, ``roster``, ``taskseq``.
+        """Refreshes the TTL clock: the given keys, plus ``run``, ``roster`` and the current
+        run's ``taskseq`` and ``session``.
 
-        ``EXPIRE`` on an absent key is a no-op in Redis, so calling this before those three
-        keys exist is harmless. One clock, 7 days, no exceptions, on every write regardless of
-        which key it touched (CONTRACT §4).
+        ``EXPIRE`` on an absent key is a no-op in Redis, so calling this before those keys
+        exist is harmless. One clock, 7 days, on every write regardless of which key it
+        touched (CONTRACT §4). Earlier runs are left out on purpose: once nothing writes to
+        them they age out.
         """
         ttl = self._config.limits.ttl_seconds
-        targets = set(keys) | {self.full("session"), self.full("roster"), self.full("taskseq")}
+        run_raw = self._r.get(self.full("run"))
+        targets = set(keys) | {self.full("run"), self.full("roster")}
+        if run_raw is not None:
+            targets |= set(self.run_keys(int(run_raw)))
         for target in targets:
             self._r.expire(target, ttl)
 
@@ -164,11 +212,12 @@ class TaskStore:
 
     @_reraise_as_backend
     def next_task_id(self) -> str:
-        """Allocates the next id via ``INCR taskseq``. Ids run ``T1``, ``T2``, ... per session."""
-        seq_key = self.full("taskseq")
+        """Allocates the next id in the current run: ``R<run>-T<n>``, ``n`` restarting per run."""
+        run = self.current_run()
+        seq_key, _session_key = self.run_keys(run)
         n = self._r.incr(seq_key)
         self._r.expire(seq_key, self._config.limits.ttl_seconds)
-        return f"T{n}"
+        return f"R{run}-T{n}"
 
     @_reraise_as_backend
     def task_exists(self, task_id: str) -> bool:
@@ -229,26 +278,50 @@ class TaskStore:
 
     # -- session stream ---------------------------------------------------------------
 
+    def _session_key(self, run: int | None) -> str:
+        """Returns run ``run``'s stream key; ``None`` names the pre-run legacy ``session``."""
+        return self.full("session") if run is None else self.run_keys(run)[1]
+
     @_reraise_as_backend
-    def append_session_event(self, fields: dict[str, str]) -> str:
-        """Appends one entry to the session stream and refreshes its TTL. Returns its key."""
-        session_key = self.full("session")
+    def append_session_event(self, fields: dict[str, str], run: int | None) -> str:
+        """Appends one entry to run ``run``'s stream and refreshes its TTL. Returns its key.
+
+        The caller passes the run of the task the event is about (``run_of``), so a late
+        ``complete`` for an earlier run's task is logged beside that task's ``delegate``.
+        """
+        session_key = self._session_key(run)
         self._r.xadd(session_key, fields)
         self.touch_ttls(session_key)
         return session_key
 
     @_reraise_as_backend
-    def session_entries(self, limit: int) -> list[dict[str, Any]]:
-        """Returns up to ``limit`` session entries, oldest-first.
+    def session_entries(self, limit: int, run: int | None) -> list[dict[str, Any]]:
+        """Returns up to ``limit`` entries of run ``run``'s stream, oldest-first.
 
         Reads with ``XREVRANGE ... COUNT limit`` - newest-first, bounded without scanning the
         whole stream - then reverses in Python, because ``session_log``'s contract is
         oldest-first (CONTRACT §4). An absent stream returns ``[]``, not an error.
         """
-        raw = self._r.xrevrange(self.full("session"), "+", "-", count=limit)
+        raw = self._r.xrevrange(self._session_key(run), "+", "-", count=limit)
         entries = [{"id": entry_id, **fields} for entry_id, fields in raw]
         entries.reverse()
         return entries
+
+    @_reraise_as_backend
+    def open_tasks(self, run: int) -> list[dict[str, str]]:
+        """Returns run ``run``'s delegated tasks with no ``complete`` entry, oldest-first.
+
+        Reads at most `_STREAM_READ_MAX` entries, the same ceiling as every other stream read.
+        """
+        raw = self._r.xrange(self._session_key(run), "-", "+", count=_STREAM_READ_MAX)
+        delegated: dict[str, dict[str, str]] = {}
+        for _entry_id, fields in raw:
+            task = fields.get("task", "")
+            if fields.get("event") == "delegate":
+                delegated[task] = {"task": task, "target": fields.get("target", "")}
+            elif fields.get("event") == "complete":
+                delegated.pop(task, None)
+        return list(delegated.values())
 
     # -- generic get/put ---------------------------------------------------------------
 

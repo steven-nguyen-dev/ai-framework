@@ -420,6 +420,7 @@ def load_lead_skill_directives():
 
 ### Step 1 — Claim leadership and retrieve live capacity
 Run `pane-limits --init-leader` to claim leadership, auto-name workers in `$HERDR_TAB_ID`, and retrieve capacity. Print the returned worker table and ask the user for the objective. Lead only worker panes in `$HERDR_TAB_ID`; leave panes in other tabs to their own sessions.
+On each new objective, call `swarm-coordinator.start_run()` before the first delegate: task ids restart at `R<run>-T1`. Report any `open_tasks` it returns from the previous run.
 
 ### Step 2 — Size and assign tasks by model tier
 Break the objective into bounded, self-contained briefs. Assign each brief by recommended role:
@@ -444,6 +445,7 @@ Every brief ends with:
 Your turn ends after delegating. A worker's `complete` call prompts this pane and starts a new turn. Do not poll.
 A new turn opens with `swarm-coordinator.session_log()`, then `swarm-coordinator.get("result:<id>")` for the task that woke you.
 Reconcile every turn before reading results: pair delegates against completes in the log. If missing, check pane with `herdr agent get <pane>`.
+A completion whose id carries an earlier run (`R3-T2` while the current run is 4) is a leftover: verify it, reconcile with `session_log(run=3)`, never fold it into the current objective unasked.
 
 ### Step 5 — Exchange payloads through Redis, not files
 `swarm-coordinator.put(name, value)` writes a scratch payload and returns its key.

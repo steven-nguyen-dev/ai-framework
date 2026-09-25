@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current tab. Use on /lead.
-version: 1.10.0
+version: 1.11.0
 disable-model-invocation: true
 ---
 
@@ -30,8 +30,10 @@ Orchestrates worker panes inside the active Herdr tab (`$HERDR_TAB_ID`) via the 
      > No workers detected in this tab. To spawn a swarm team, specify the commands you want:
      > `/lead clan, cus, agg, agr` (or any custom combination of agents)
 3. Lead only worker panes in `$HERDR_TAB_ID`; leave panes in other tabs to their own sessions. All coordination automatically uses `$HERDR_TAB_ID` for Redis key isolation without needing external environment variable injection.
+4. **On each new objective, open a run** with `swarm-coordinator.start_run()` before the first `delegate`. Task ids restart at `R<run>-T1`; the log `session_log()` returns starts empty. A follow-up on the same objective stays in the current run.
+   - `open_tasks` non-empty — the previous run left delegates with no `complete`. List them to the user. They keep their ids; a late `complete` still lands on its own run.
 
-**Completion:** the leader prints the active worker table with pane IDs, models, recommended roles, and token limits, then awaits the objective.
+**Completion:** the leader prints the active worker table with pane IDs, models, recommended roles, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number.
 
 ### Step 2 — Size and assign tasks by model tier
 
@@ -62,7 +64,7 @@ There is no warning band between OK and BREACH: a band cannot know how big the n
 
 Keep the swarm pane count fixed; allocate all briefs across existing panes.
 
-Open every turn with `swarm-coordinator.session_log()`. It returns the roster and a bounded tail of recent delegations and completions. This is what survives compaction — the roster lives in Redis, not in the context window.
+Open every turn with `swarm-coordinator.session_log()`. It returns the roster, the current `run`, and a bounded tail of that run's delegations and completions. This is what survives compaction — the roster and run live in Redis, not in the context window.
 
 Consult the wiki for domain knowledge ahead of dispatch: use `wiki.search` to locate relevant specs, architecture, and traps.
 **When `wiki.search` returns nothing useful, rephrase and retry.** The wiki ranks English full text with a trigram fallback — there is no query expansion, no synonym list and no embedding. You are the expansion: try the domain term instead of the generic one, the external system's own vocabulary instead of ours, a distinctive noun instead of a sentence, and the CJK value itself where one exists. Two or three rephrasings before concluding the wiki does not hold something. A search that returns nothing is a miss to work, not an answer.
@@ -113,6 +115,8 @@ Two different failures leave identical traces in the log, and only the pane tell
 
 Say in your report which you found and what you did about it.
 
+A completion whose id carries an earlier run (`R3-T2` while `session_log()` shows run 4) is a leftover from the previous objective. Verify it on disk like any other, reconcile it with `session_log(run=3)`, and report it separately; never fold it into the current objective unasked.
+
 Do this on every turn, including turns that a completion woke you for. A dispatch that silently never started is the failure that costs a whole session, because nothing will ever report it — the write succeeded, the log looks normal, and the pane simply sits there. The user asking "what's happening?" is not a monitoring system.
 
 **Completion:** every task reaches a `result:<id>`, and every turn has paired the log's delegates against its completes before doing anything else.
@@ -157,6 +161,7 @@ Clearing context:
 - Swarm pane count remains fixed with sequential queueing instead of ad-hoc splitting.
 - The token limit is treated as a pre-dispatch target — clear when `current + predicted > limit` (700K big pool, 210K default), done before the next instruction rather than after a finished task.
 - Inter-agent payloads travel through `put`/`get`; `.scratchpads/` is never created.
+- Every new objective opens a run with `start_run()` before its first `delegate`; leftover `open_tasks` are reported, not re-delegated.
 - Every turn opens with `session_log()`; every brief ends with the `complete` line.
 - Every turn pairs the log's delegates against its completes, and checks the pane for any delegate without one, before reading results.
 - Every `delegate` return value is read; a stalled delivery is re-prompted, never re-delegated.

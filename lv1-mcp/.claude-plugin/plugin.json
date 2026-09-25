@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "lv1-mcps",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Local stdio MCP servers for the AI-First Framework: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
   "author": {
     "name": "Steven Nguyen"

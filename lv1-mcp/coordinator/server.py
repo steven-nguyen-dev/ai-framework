@@ -80,10 +80,17 @@ async def put(key: str, value: str) -> dict[str, Any]:
 
 
 @mcp.tool()
-async def session_log(limit: int = 20) -> dict[str, Any]:
-    """Returns the roster plus the last `limit` session entries, oldest-first."""
+async def session_log(limit: int = 20, run: int | None = None) -> dict[str, Any]:
+    """Returns the roster plus the last `limit` entries of `run` (default: current), oldest-first."""
     store, _config = _get_state()
-    return await anyio.to_thread.run_sync(tools.session_log, store, limit)
+    return await anyio.to_thread.run_sync(tools.session_log, store, limit, run)
+
+
+@mcp.tool()
+async def start_run() -> dict[str, Any]:
+    """Opens a new run for a new objective; task ids restart at `R<run>-T1`. Leader only."""
+    store, _config = _get_state()
+    return await anyio.to_thread.run_sync(tools.start_run, store)
 
 
 def main() -> None:

@@ -1,4 +1,4 @@
-"""The five coordinator tools as plain functions over a `TaskStore` - testable without MCP.
+"""The six coordinator tools as plain functions over a `TaskStore` - testable without MCP.
 
 Each function is the tool boundary named in CONTRACT.md §3: it catches every `ToolError`
 raised beneath it and returns `.to_dict()`, so the function's return value is always the JSON
@@ -26,7 +26,7 @@ from .common import (
 from .config import Config
 
 from .prompt import send_prompt
-from .store import TaskStore
+from .store import TaskStore, run_of
 
 _STATUSES = ("done", "failed", "blocked")
 _SCRATCH_NAME = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
@@ -97,7 +97,8 @@ def delegate(
                 "status": "",
                 "summary": first_line[:200],
                 "at": now_iso(),
-            }
+            },
+            run_of(task_id),
         )
         prompt_text = f'Task {task_id} — call swarm-coordinator.get("task:{task_id}")'
         try:
@@ -169,7 +170,8 @@ def complete(
                     "status": status,
                     "summary": summary,
                     "at": now_iso(),
-                }
+                },
+                run_of(task_id),
             )
         # [ADD] CONTRACT §4: non-"done" statuses read "<status>", never "done", in the prompt.
         prompt_text = f'Task {task_id} {status} — call swarm-coordinator.get("result:{task_id}")'
@@ -195,9 +197,9 @@ def get(store: TaskStore, key: str) -> dict[str, Any]:
     try:
         _seed_roster(store)
         short = strip_prefix(key)
-        if short == "session":
+        if short == "session" or short.startswith("session:"):
             raise ValidationError(
-                'get("session") would return the whole stream, unbounded. Use session_log() '
+                f'get("{short}") would return a whole stream, unbounded. Use session_log() '
                 "instead - it clamps to 1..500 entries.",
                 field="key",
                 limit="session_log",
@@ -240,20 +242,49 @@ def put(store: TaskStore, config: Config, key: str, value: str) -> dict[str, Any
         return exc.to_dict()
 
 
-def session_log(store: TaskStore, limit: int = 20) -> dict[str, Any]:
-    """Returns the roster plus the last `limit` session entries, oldest-first.
+def session_log(store: TaskStore, limit: int = 20, run: int | None = None) -> dict[str, Any]:
+    """Returns the roster plus the last `limit` entries of one run, oldest-first.
 
     See CONTRACT.md §4: `limit` clamps to 1..500; an absent stream returns `entries: []`, not
-    an error - a fresh session is not a failure.
+    an error - a fresh session is not a failure. `run` defaults to the current run; pass an
+    earlier number to reconcile a late completion from that run.
     """
     try:
         _seed_roster(store)
         clamped = min(max(int(limit), 1), 500)
+        current = store.current_run()
+        shown = current if run is None else int(run)
+        if shown < 1 or shown > current:
+            raise ValidationError(
+                f"run must be between 1 and the current run, {current}.",
+                field="run",
+                limit=[1, current],
+                actual=shown,
+            )
         return ok(
             session_id=session_id(),
             leader=leader_name(),
+            run=shown,
+            current_run=current,
             roster=store.roster(),
-            entries=store.session_entries(clamped),
+            entries=store.session_entries(clamped, shown),
         )
+    except ToolError as exc:
+        return exc.to_dict()
+
+
+def start_run(store: TaskStore) -> dict[str, Any]:
+    """Opens a new run for a new objective: task ids restart at `R<run>-T1`.
+
+    Returns `{ok, run, previous_run, open_tasks}`. `open_tasks` lists the previous run's
+    delegates with no complete - a warning, never a refusal: those tasks keep their ids, and a
+    late `complete` for one still lands on it. `previous_run` is `null` on a session's first run.
+    """
+    try:
+        _seed_roster(store)
+        run = store.start_run()
+        previous = run - 1 if run > 1 else None
+        open_tasks = store.open_tasks(previous) if previous else []
+        return ok(run=run, previous_run=previous, open_tasks=open_tasks)
     except ToolError as exc:
         return exc.to_dict()

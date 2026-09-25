@@ -56,4 +56,9 @@ swarm-coordinator-mcp
 | `complete` | `task_id`, `status`, `summary`, `result` | Concludes a task (`done`, `failed`, `blocked`), stores `result:<id>`, and prompts the leader. |
 | `get` | `key` | Reads any key in the current session (`task:*`, `result:*`, `scratch:*`, `roster`). |
 | `put` | `key`, `value` | Writes or updates a shared scratchpad payload accessible by session agents. |
-| `session_log` | `limit` | Returns the team roster and the latest chronological session activity entries. |
+| `session_log` | `limit`, `run` | Returns the roster and the latest entries of `run` (default: current run), oldest-first. |
+| `start_run` | — | Opens a new run for a new objective. Task ids restart at `R<run>-T1`. Returns the previous run's open tasks as a warning. Leader only. |
+
+## Runs
+
+A run is one objective. Session-wide keys: `run` (current run number), `roster`, `scratch:*`. Per-run keys: `taskseq:r<N>`, `session:r<N>`. Task ids carry their run (`R4-T1`), so `task:R4-T1` / `result:R4-T1` never collide across runs, and a late `complete` from an earlier run lands on its own task and its own run's log. Only the current run's keys get their TTL refreshed; earlier runs expire 7 days after their last write. Pre-run ids (`T7`) still resolve until they expire.

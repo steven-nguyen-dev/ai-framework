@@ -10,7 +10,7 @@
     {
       "name": "lv1-mcps",
       "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "source": "./lv1-mcp"
     },
     {
@@ -22,7 +22,7 @@
     {
       "name": "lv1-utilities",
       "description": "Standalone engineering utility skills: draw-diagram, lead, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.4.7",
+      "version": "2.4.8",
       "source": "./lv1-utilities"
     }
   ]
