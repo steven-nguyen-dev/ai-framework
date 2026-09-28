@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 SERVER_NAME = "jira-reader"
-SERVER_VERSION = "1.1.0"
+SERVER_VERSION = "1.2.0"
 MCP_PROTOCOL_VERSION = "2024-11-05"
 
 # ---------------------------------------------------------------------------
@@ -508,19 +508,51 @@ def _format_comment(c: Dict[str, Any]) -> Dict[str, Any]:
 # Jira Tools Implementation
 # ---------------------------------------------------------------------------
 
+def _clean_jira_field_value(val: Any) -> Any:
+    """Recursively converts Jira field values, ADF nodes, options, and lists into clean primitives."""
+    if val is None:
+        return None
+    if isinstance(val, dict):
+        if val.get("type") == "doc":
+            text = _extract_adf_text(val).strip()
+            return text if text else None
+        if "value" in val and isinstance(val["value"], str):
+            return val["value"]
+        if "displayName" in val and isinstance(val["displayName"], str):
+            return val["displayName"]
+        if "name" in val and isinstance(val["name"], str):
+            return val["name"]
+        cleaned_dict = {}
+        for k, v in val.items():
+            if k in ("self", "iconUrl", "avatarUrls"):
+                continue
+            cleaned = _clean_jira_field_value(v)
+            if cleaned is not None:
+                cleaned_dict[k] = cleaned
+        return cleaned_dict if cleaned_dict else None
+    if isinstance(val, list):
+        cleaned_list = [_clean_jira_field_value(item) for item in val]
+        filtered = [item for item in cleaned_list if item is not None and item != ""]
+        return filtered if filtered else None
+    return val
+
+
 def jira_get_issue(issue_key: str) -> Dict[str, Any]:
     """
-    Fetch details for a Jira issue by its key (e.g. 'PROJ-123'), including
-    summary, description (ADF parsed), status, assignee, reporter, comments,
-    and all attachment metadata.
+    Fetch complete details for a Jira issue by its key (e.g. 'PROJ-123'), including
+    summary, description (ADF parsed), status, assignee, reporter, parent,
+    subtasks, issue links, custom fields, screen fields, comments, and attachments.
     """
     config = _get_config()
     v = config["api_version"]
     key = str(issue_key).strip().upper()
     
-    _, content, _ = _make_request("GET", f"/rest/api/{v}/issue/{urllib.parse.quote(key)}")
+    # Request issue with editmeta and names expanded in a single call
+    _, content, _ = _make_request("GET", f"/rest/api/{v}/issue/{urllib.parse.quote(key)}?expand=editmeta,names")
     data = json.loads(content.decode("utf-8"))
     fields = data.get("fields", {})
+    names = data.get("names", {})
+    editmeta = data.get("editmeta", {}).get("fields", {})
 
     raw_desc = fields.get("description")
     if isinstance(raw_desc, dict):
@@ -564,16 +596,105 @@ def jira_get_issue(issue_key: str) -> Dict[str, Any]:
 
     comments = [_format_comment(c) for c in raw_comments]
 
+    # Parent issue (for subtasks or nested issues)
+    parent = None
+    parent_obj = fields.get("parent")
+    if parent_obj and isinstance(parent_obj, dict):
+        parent = {
+            "key": parent_obj.get("key"),
+            "summary": parent_obj.get("fields", {}).get("summary"),
+            "status": parent_obj.get("fields", {}).get("status", {}).get("name"),
+            "issue_type": parent_obj.get("fields", {}).get("issuetype", {}).get("name"),
+        }
+
+    # Subtasks
+    subtasks = []
+    for st in fields.get("subtasks", []):
+        if isinstance(st, dict):
+            subtasks.append({
+                "key": st.get("key"),
+                "summary": st.get("fields", {}).get("summary"),
+                "status": st.get("fields", {}).get("status", {}).get("name"),
+                "priority": st.get("fields", {}).get("priority", {}).get("name") if st.get("fields", {}).get("priority") else None,
+                "issue_type": st.get("fields", {}).get("issuetype", {}).get("name"),
+            })
+
+    # Issue links
+    issue_links = []
+    for link in fields.get("issuelinks", []):
+        link_type = link.get("type", {})
+        if "outwardIssue" in link:
+            out_issue = link["outwardIssue"]
+            issue_links.append({
+                "relationship": link_type.get("outward", link_type.get("name")),
+                "direction": "outward",
+                "key": out_issue.get("key"),
+                "summary": out_issue.get("fields", {}).get("summary"),
+                "status": out_issue.get("fields", {}).get("status", {}).get("name"),
+            })
+        elif "inwardIssue" in link:
+            in_issue = link["inwardIssue"]
+            issue_links.append({
+                "relationship": link_type.get("inward", link_type.get("name")),
+                "direction": "inward",
+                "key": in_issue.get("key"),
+                "summary": in_issue.get("fields", {}).get("summary"),
+                "status": in_issue.get("fields", {}).get("status", {}).get("name"),
+            })
+
+    # Screen fields & required fields (from editmeta)
+    screen_fields = []
+    required_fields = []
+    for fid, finfo in editmeta.items():
+        fname = finfo.get("name", names.get(fid, fid))
+        is_req = finfo.get("required", False)
+        if is_req:
+            required_fields.append(fname)
+        screen_fields.append({
+            "id": fid,
+            "name": fname,
+            "required": is_req,
+            "value": _clean_jira_field_value(fields.get(fid)),
+        })
+
+    # Populated custom fields (mapped by human-readable display name)
+    custom_fields = {}
+    for fid, raw_val in fields.items():
+        if fid.startswith("customfield_"):
+            display_name = names.get(fid, fid)
+            cleaned = _clean_jira_field_value(raw_val)
+            if cleaned is not None and cleaned != "" and cleaned != []:
+                custom_fields[display_name] = cleaned
+
+    issue_type_obj = fields.get("issuetype", {})
+    project_obj = fields.get("project", {})
+
     return {
         "key": data.get("key"),
         "summary": fields.get("summary"),
         "status": fields.get("status", {}).get("name"),
+        "issue_type": issue_type_obj.get("name"),
+        "is_subtask": issue_type_obj.get("subtask", False),
         "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
         "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
         "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
         "created": fields.get("created"),
         "updated": fields.get("updated"),
+        "due_date": fields.get("duedate"),
+        "project": {
+            "key": project_obj.get("key"),
+            "name": project_obj.get("name"),
+        } if project_obj else None,
+        "parent": parent,
+        "subtasks": subtasks,
+        "issue_links": issue_links,
+        "labels": fields.get("labels", []),
+        "components": [c.get("name") for c in fields.get("components", []) if isinstance(c, dict) and "name" in c],
+        "fix_versions": [v.get("name") for v in fields.get("fixVersions", []) if isinstance(v, dict) and "name" in v],
         "description": description,
+        "required_fields": required_fields,
+        "custom_fields": custom_fields,
+        "screen_fields": screen_fields,
         "comment_count": len(comments),
         "comments": comments,
         "attachment_count": len(attachments),
@@ -777,7 +898,7 @@ def jira_search_issues(
     params: Dict[str, Any] = {
         "jql": jql,
         "maxResults": max_results,
-        "fields": "summary,status,priority,assignee,reporter,attachment,comment,created,updated",
+        "fields": "summary,status,priority,assignee,reporter,attachment,comment,created,updated,issuetype,parent,duedate,labels",
     }
     if start_at is not None:
         params["startAt"] = start_at
@@ -804,13 +925,27 @@ def jira_search_issues(
         att_list = fields.get("attachment", [])
         comment_obj = fields.get("comment", {})
         comment_count = comment_obj.get("total", len(comment_obj.get("comments", [])))
+        
+        parent_obj = fields.get("parent")
+        parent = None
+        if parent_obj and isinstance(parent_obj, dict):
+            parent = {
+                "key": parent_obj.get("key"),
+                "summary": parent_obj.get("fields", {}).get("summary"),
+            }
+
         issues.append({
             "key": item.get("key"),
             "summary": fields.get("summary"),
+            "issue_type": fields.get("issuetype", {}).get("name"),
+            "is_subtask": fields.get("issuetype", {}).get("subtask", False),
             "status": fields.get("status", {}).get("name") if fields.get("status") else None,
             "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
             "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
             "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
+            "parent": parent,
+            "due_date": fields.get("duedate"),
+            "labels": fields.get("labels", []),
             "comment_count": comment_count,
             "attachment_count": len(att_list),
             "attachments": [
@@ -967,7 +1102,7 @@ TOOLS_SPEC = [
     },
     {
         "name": "jira_get_issue",
-        "description": "Fetch complete details for a Jira issue by its key (e.g. 'PROJ-123'), including summary, description (ADF parsed), status, assignee, reporter, comments list with author details, and metadata of all attachments.",
+        "description": "Fetch complete details for a Jira issue by its key (e.g. 'PROJ-123'), including summary, description (ADF parsed), status, assignee, reporter, parent, subtasks, issue links, custom fields, screen fields with required flags, comments list with author details, and metadata of all attachments.",
         "inputSchema": {
             "type": "object",
             "properties": {

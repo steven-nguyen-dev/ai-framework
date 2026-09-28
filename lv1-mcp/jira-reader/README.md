@@ -42,7 +42,7 @@ python3 server.py
 
 | Tool | Parameters | Description |
 | :--- | :--- | :--- |
-| `jira_get_issue` | `issue_key`, `expand` | Complete issue details: status, summary, assignee, description, comments thread, and attachment metadata. |
+| `jira_get_issue` | `issue_key` | Complete issue details: summary, description (ADF parsed), status, assignee, parent, subtasks, issue links, custom fields, screen fields (with required flags), comments, and attachments. |
 | `jira_get_comments` | `issue_key`, `start_at`, `max_results`, `order_by` | Paginated comments with author details and timestamps. |
 | `jira_search_issues` | `jql`, `max_results`, `start_at` | JQL search query returning matching issues with comment/attachment counts. |
 | `jira_list_attachments` | `issue_key` | Lists attachment filenames, sizes, MIME types, and download URLs. |

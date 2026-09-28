@@ -10,7 +10,7 @@
     {
       "name": "lv1-mcps",
       "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "source": "./lv1-mcp"
     },
     {
