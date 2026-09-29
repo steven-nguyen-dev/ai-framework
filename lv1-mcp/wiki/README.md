@@ -1,6 +1,6 @@
-# Wiki & Cloud Files MCP Server (`wiki`)
+# Wiki & Knowledge Base MCP Server (`wiki`)
 
-Engineering knowledge base, architecture documentation retrieval, and cloud storage server. Connects over secure HTTPS to the Central Brain knowledge base and Cloud Files drive at `wiki.concavoi.com`.
+Engineering knowledge base and architecture documentation retrieval server. Connects over secure HTTPS to the PostgreSQL/pgvector Central Brain knowledge base at `wiki.concavoi.com`.
 
 ---
 
@@ -8,7 +8,6 @@ Engineering knowledge base, architecture documentation retrieval, and cloud stor
 
 - **Endpoint**: `https://wiki.concavoi.com/api/mcp`
 - **Transport**: JSON-RPC 2.0 via `mcp-remote` stdio proxy
-- **Cloud Files**: `https://files.concavoi.com`
 
 ### Credentials Setup
 Create `~/.mcp/.wiki.env` with restricted permissions (`chmod 600`):
@@ -34,9 +33,8 @@ bash launch.sh
 
 ---
 
-## 🛠 Available MCP Tools (12 Tools)
+## 🛠 Available MCP Tools (7 Tools)
 
-### 🧠 Knowledge Base & Wiki Tools
 | Tool | Parameters | Description |
 | :--- | :--- | :--- |
 | `search` | `query`, `source_prefix`, `include_inbox`, `limit` | Hybrid RRF vector + keyword search. Returns snippet cards. |
@@ -46,13 +44,3 @@ bash launch.sh
 | `ingest_file` | `filename`, `content`, `tags`, `destination` | Ingests text/markdown files into inbox drafts or core articles. |
 | `list_articles`| `source_prefix`, `include_inbox`, `tag`, `limit` | Discovers available articles and tags. |
 | `changelog` | `since`, `limit` | Lists article modifications since an ISO 8601 timestamp. |
-
-### 📁 Cloud Files & Drive Tools
-| Tool | Parameters | Description |
-| :--- | :--- | :--- |
-| `list_files` | `directory` | Lists files and folders with download URLs. |
-| `read_file` | `path` | Reads text content of files in the cloud drive. |
-| `write_file` | `path`, `content`, `is_base64` | Saves files directly to cloud storage and returns direct URL. |
-| `delete_file` | `path` | Deletes a file or directory from the cloud drive. |
-| `get_file_link` | `path` | Returns direct public link on `https://files.concavoi.com`. |
-
