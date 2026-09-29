@@ -1,36 +1,78 @@
 #!/usr/bin/env bash
-# Launcher for the Wiki MCP Server
-# Stdio JSON-RPC transport for Claude and Antigravity.
+# Launcher for the Central Brain & Cloud Files Wiki MCP Server
+# Connects over HTTPS via mcp-remote stdio proxy.
+#
+# Credentials:
+#   Reads from ~/.mcp/.wiki.env, with fallbacks to environment variables:
+#     WIKI_HOST="https://wiki.concavoi.com/api/mcp"
+#     WIKI_API_TOKEN="<token>"
+#
+# Diagnostics:
+#   bash launch.sh --selftest
+#
 set -euo pipefail
 
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do
-    DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
-    SOURCE="$(readlink "$SOURCE")"
-    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-done
-DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
-VENV="${HOME}/.local/share/wiki-mcp/venv"
-PY="${VENV}/bin/python3"
-
-needs_bootstrap() {
-    [ -x "$PY" ] || return 0
-    "$PY" -c 'import mcp, psycopg' >/dev/null 2>&1 || return 0
-    return 1
-}
-
-if needs_bootstrap; then
-    echo "[wiki] bootstrapping venv at $VENV ..." >&2
-    mkdir -p "$(dirname "$VENV")"
-    rm -rf "$VENV"
-    python3 -m venv --clear "$VENV" >&2
-    "$VENV/bin/pip" install --quiet --upgrade pip >&2
-    "$VENV/bin/pip" install --quiet -r "$DIR/requirements.txt" >&2
-    echo "[wiki] dependencies installed" >&2
+# 1. Load credentials from ~/.mcp/.wiki.env if present
+ENV_FILE="${HOME}/.mcp/.wiki.env"
+if [ -f "$ENV_FILE" ]; then
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
 fi
 
-# Add parent directory to PYTHONPATH so `wiki` package imports resolve cleanly
-PARENT_DIR="$(cd "$DIR/.." && pwd)"
-export PYTHONPATH="${PARENT_DIR}:${PYTHONPATH:-}"
+WIKI_HOST="${WIKI_HOST:-https://wiki.concavoi.com/api/mcp}"
+WIKI_API_TOKEN="${WIKI_API_TOKEN:-}"
 
-exec "$PY" -m wiki.server "$@"
+if [ -z "$WIKI_API_TOKEN" ]; then
+    echo "[wiki] ERROR: WIKI_API_TOKEN is not set. Create ~/.mcp/.wiki.env with WIKI_API_TOKEN=<token>" >&2
+    exit 1
+fi
+
+# 2. Diagnostics mode (--selftest)
+if [ "${1:-}" = "--selftest" ] || [ "${1:-}" = "--test" ]; then
+    echo "=== Wiki MCP Server Selftest ==="
+    echo "Endpoint: $WIKI_HOST"
+
+    # Test initialize handshake
+    echo -n "Testing MCP handshake (initialize)... "
+    INIT_RESP=$(curl -s -X POST "$WIKI_HOST" \
+        -H "Authorization: Bearer $WIKI_API_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"selftest","version":"1.0.0"}}}')
+
+    SERVER_NAME=$(echo "$INIT_RESP" | grep -o '"name":"[^"]*"' | head -n 1 | cut -d'"' -f4 || echo "")
+    if [ "$SERVER_NAME" = "wiki" ]; then
+        echo "OK (serverInfo.name: $SERVER_NAME)"
+    else
+        echo "FAILED"
+        echo "Response: $INIT_RESP"
+        exit 1
+    fi
+
+    # Test tools/list
+    echo -n "Testing tool discovery (tools/list)... "
+    TOOLS_RESP=$(curl -s -X POST "$WIKI_HOST" \
+        -H "Authorization: Bearer $WIKI_API_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","id":2,"method":"tools/list"}')
+
+    TOOL_NAMES=$(echo "$TOOLS_RESP" | grep -o '"name":"[^"]*"' | cut -d'"' -f4 | sort -u | tr '\n' ' ')
+    TOOL_COUNT=$(echo "$TOOLS_RESP" | grep -o '"name":"[^"]*"' | wc -l | tr -d ' ')
+
+    if [ "$TOOL_COUNT" -gt 0 ]; then
+        echo "OK ($TOOL_COUNT tools available)"
+        echo "Registered tools: $TOOL_NAMES"
+    else
+        echo "FAILED (no tools found)"
+        exit 1
+    fi
+
+    echo "=== All Selftests Passed ==="
+    exit 0
+fi
+
+# 3. Normal stdio execution via mcp-remote
+exec npx -y mcp-remote@latest \
+    "$WIKI_HOST" \
+    --transport http-only \
+    --header "Authorization:Bearer ${WIKI_API_TOKEN}" \
+    "$@"
