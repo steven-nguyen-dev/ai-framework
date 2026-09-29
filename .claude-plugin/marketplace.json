@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "lv1-mcps",
-      "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, and swarm-coordinator.",
-      "version": "1.0.4",
+      "description": "Local stdio MCP servers: jira-reader, kibana-explorer, wiki, drive, and swarm-coordinator.",
+      "version": "1.0.5",
       "source": "./lv1-mcp"
     },
     {
