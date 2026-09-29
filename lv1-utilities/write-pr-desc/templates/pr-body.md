@@ -1,6 +1,9 @@
 <!-- The shape of a pull request description in this repo, and every rule the filled body satisfies.
      `write-pr-desc` is the process that fills it; this file is the shape and the rules.
 
+  Title — `<ticket id> <what now holds>`, 72 characters at most: the ticket id from 1. Context,
+    then the capability a reviewer must grasp first, in the same tone as the body.
+
   Boundaries — the description covers this branch and stands alone for its reader.
 
   Tone — whatever changed is the grammatical subject, in the present tense, stating what now holds
@@ -31,6 +34,10 @@
                                  introduced and then fixed belongs in 2. Changes. Name the blast
                                  radius where it is wider than the feature.
 
+  #### 2.3 Database changes — required wherever the branch adds a migration, query, entity or table.
+                              Every query in one ```sql fence, in run order. Under it, one bullet
+                              per new table or entity and per schema change, naming the table.
+
   Optional, add under 4.2 Proof where behaviour changed:
 
   | Use case | Expected |   — one case per row: what is sent, what has to be true. Where many cases
@@ -38,11 +45,17 @@
 -->
 
 ### 1. Context
-- Jira: 
-<!-- the ticket id, or the link -->
+- Reference: 
+<!-- New development: the Jira ticket link. L3 bug fix: the Zendesk ticket link. Both where both exist. -->
+
+- Summary: 
+<!-- one sentence: what the branch delivers -->
 
 - Problem: 
 <!-- what was broken or missing, and what it cost -->
+
+- Scope: 
+<!-- what this PR covers, and what it leaves to other work -->
 
 ### 2. Changes
 <!-- One bullet per capability the branch adds or alters, the one a reviewer must grasp first
@@ -61,9 +74,11 @@
 
 #### 4.1 How to test
 <!-- Commands a reviewer can run, and what has to be running first. Repeat what the developer said
-     about testing; where the changes touch tests, "run the unit tests" says it. -->
+     about testing, each specific test scenario named; where the changes touch tests, "run the unit
+     tests" says it. -->
 -
 
 #### 4.2 Proof
-<!-- Test counts, and what was exercised end to end. -->
+<!-- Build result — the `gh pr checks` status, or the developer's local build. Test counts, and what
+     was exercised end to end. -->
 -
