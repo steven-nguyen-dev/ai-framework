@@ -4,7 +4,7 @@
 #
 # Credentials:
 #   Reads from ~/.mcp/.drive.env, with fallbacks to environment variables:
-#     DRIVE_HOST="https://files.concavoi.com/api/mcp"
+#     DRIVE_HOST="https://drive.concavoi.com/api/mcp"
 #     DRIVE_API_TOKEN="<token>"
 #
 # Diagnostics:
@@ -19,7 +19,7 @@ if [ -f "$ENV_FILE" ]; then
     source "$ENV_FILE"
 fi
 
-DRIVE_HOST="${DRIVE_HOST:-https://files.concavoi.com/api/mcp}"
+DRIVE_HOST="${DRIVE_HOST:-https://drive.concavoi.com/api/mcp}"
 DRIVE_API_TOKEN="${DRIVE_API_TOKEN:-}"
 
 if [ -z "$DRIVE_API_TOKEN" ]; then

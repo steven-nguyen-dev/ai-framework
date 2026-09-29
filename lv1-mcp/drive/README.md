@@ -1,20 +1,20 @@
 # Cloud Drive MCP Server (`drive`)
 
-Personal cloud drive, file storage, asset management, and direct download link server. Connects over secure HTTPS to the CloudDrive vault at `files.concavoi.com`.
+Personal cloud drive, file storage, asset management, and direct download link server. Connects over secure HTTPS to the CloudDrive vault at `drive.concavoi.com`.
 
 ---
 
 ## ⚙️ Configuration & Transport
 
-- **Endpoint**: `https://files.concavoi.com/api/mcp`
+- **Endpoint**: `https://drive.concavoi.com/api/mcp`
 - **Transport**: JSON-RPC 2.0 via `mcp-remote` stdio proxy
-- **Web Interface**: `https://files.concavoi.com` (FileBrowser)
+- **Web Interface**: `https://drive.concavoi.com` (FileBrowser)
 
 ### Credentials Setup
 Create `~/.mcp/.drive.env` with restricted permissions (`chmod 600`):
 
 ```bash
-DRIVE_HOST=https://files.concavoi.com/api/mcp
+DRIVE_HOST=https://drive.concavoi.com/api/mcp
 DRIVE_API_TOKEN=concobebe!123
 ```
 
