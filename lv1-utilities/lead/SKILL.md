@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
-version: 1.12.1
+version: 1.13.0
 disable-model-invocation: true
 ---
 
@@ -14,7 +14,7 @@ Orchestrates worker panes across every tab of the active Herdr workspace (`$HERD
 - **Roster** — live workspace worker table from `pane-limits --init-leader` or `pane-limits --spawn <commands...>`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
 - **Coordinator** — swarm-coordinator MCP: session log, task briefs, execution plans, results, scratch payloads.
-- **Wiki** — wiki MCP: durable domain knowledge, specs, mappings, traps, decisions. Read with `search`/`get`/`render`; write only with `note`, which files to the inbox for human review.
+- **Wiki** — wiki MCP: durable domain knowledge, specs, mappings, traps, decisions. Read with `search`/`get`/`render`; write only with `note`, which files to the inbox for human review; Step 6 says what qualifies.
 
 ## Standing Orchestrator Directives
 
@@ -75,7 +75,7 @@ Consult the wiki for domain knowledge ahead of dispatch: use `wiki.search` to lo
 
 Formulate the task for the coordinator:
 - **Standard brief**: Pass directly in the `brief` argument of `delegate()`.
-- **Large / multi-step plan**: Write the plan into Redis scratch via `swarm-coordinator.put("plan:<step>", plan_markdown)` and reference the key in the brief text (e.g. `Read detailed plan via swarm-coordinator.get("<key>")`). **Never write task plans into the wiki** — the wiki stores durable domain knowledge, while Redis handles ephemeral execution communication with automatic TTL.
+- **Large / multi-step plan**: Write the plan into Redis scratch via `swarm-coordinator.put("plan:<step>", plan_markdown)` and reference the key in the brief text (e.g. `Read detailed plan via swarm-coordinator.get("<key>")`). **Never write task plans into the wiki** — the wiki holds only the facts Step 6 files, while Redis handles ephemeral execution communication with automatic TTL.
 - **`wiki_refs`**: Pass only durable domain knowledge chunks the worker needs to consult (e.g. `["standard-flows#4-5-parcel"]`), or `[]` if none.
 
 Dispatch with `swarm-coordinator.delegate(target, brief, wiki_refs)`. One call writes the task, appends the session log and prompts the target pane. It returns the task id.
@@ -134,7 +134,7 @@ A `complete` summary runs to three lines, so a 900-line test dump or ELK extract
 
 `.scratchpads/` is retired. Do not create it, and do not pass file paths where a key belongs.
 
-Scratch payloads and task execution plans stay out of the wiki. A task plan or scratch payload holds true for twenty minutes or one session; the wiki keeps durable domain knowledge. Writing execution plans or payloads into the wiki pollutes embeddings, changelog records, and domain search results.
+Scratch payloads and task execution plans stay out of the wiki. A task plan or scratch payload holds true for twenty minutes or one session; the wiki keeps only the facts Step 6 files. Writing execution plans or payloads into the wiki pollutes embeddings, changelog records, and domain search results.
 
 **Completion:** no inter-agent payload touches the filesystem.
 
@@ -142,18 +142,30 @@ Scratch payloads and task execution plans stay out of the wiki. A task plan or s
 
 Zero blind trust is unchanged. A worker's `complete` is a claim, not evidence. Verify with `git diff`, `ls -la`, `wc -l`, compilers and test suites before accepting anything. Re-delegate immediately if a worker claims success without changing disk or test outcomes.
 
-Durable learning found along the way goes to the wiki's **inbox** — a trap, a decision, a verified mapping — via `wiki.note(slug, body, summary)`, which files it at `inbox/<pane>/<slug>`. Carry the evidence in the body: the file and line, the count, the query, the payload that settles it.
+**Durable learning.** File to the wiki inbox (`wiki.note(slug, body, summary)`, filed at `inbox/<pane>/<slug>`) only facts about the business or an external partner that **stay true when our code changes**:
 
-A trap the wiki holds that a worker disproved becomes `wiki.note("<trap-slug>-disproved", …)` with the falsifying observation. You cannot retire the curated chunk — `upsert` and `retire` are not registered on the wiki server, by design. Promotion and retirement are the user's call, and they need your evidence to make it.
+- a partner API behaviour, for example "the UPS ship response carries no paperless status field"
+- a business rule or domain definition, for example "a commercial invoice number is assigned by the exporter"
+- a verified field meaning between two systems
 
-**The ticket's deliverable is a file, never a wiki entry.** A plan, an analysis, an implementation contract belongs under `jira-workspace/`. What goes to the inbox is only the fact that outlives the ticket. `search` ignores the inbox, so nothing you file there can mislead a later worker.
+Put the evidence in the body (the partner spec line, the doc section, the Jira comment), and mark any part not verified as such.
+
+Route every other finding to its own home:
+
+- a defect in our code → a Jira ticket
+- a constraint the implementation must follow → the ticket's contract
+- a code or config observation → the ticket's investigation notes
+
+A wiki fact that a worker disproved becomes `wiki.note("<slug>-disproved", …)` with the falsifying observation. Promotion and retirement of the curated chunk are the user's call — `upsert` and `retire` are not registered on the wiki server, by design — and they need your evidence to make it.
+
+**The ticket's deliverable is a file under `jira-workspace/`**: a plan, an analysis, an implementation contract. `search` ignores the inbox, so nothing you file there can mislead a later worker.
 
 Clearing context:
 
 - **Stateless:** `herdr agent prompt <target> "/clear "` (trailing space), then delegate the next brief.
 - **Stateful:** delegate a brief asking the worker to `put()` its handoff and report the key; verify the key reads back; `/clear `; then delegate the next brief referencing that key in the brief text (never in `wiki_refs`, which is reserved for wiki chunk IDs only).
 
-**Completion:** every accepted task is corroborated on disk, and every resumed worker resumes from a key that reads back.
+**Completion:** every accepted task is corroborated on disk, every finding sits in its home, and every resumed worker resumes from a key that reads back.
 
 ## The bar
 
@@ -169,7 +181,7 @@ Clearing context:
 - Every turn opens with `session_log()`; every brief ends with the `complete` line.
 - Every turn pairs the log's delegates against its completes, and checks the pane for any delegate without one, before reading results.
 - Every `delegate` return value is read; a stalled delivery is re-prompted, never re-delegated.
-- Durable learning goes to the wiki inbox via `note`, with its evidence; deliverables stay files.
+- The wiki inbox receives only verified business and partner facts, each with its evidence. Code findings go to Jira, the contract or the investigation notes.
 - The leader never waits on a worker. Completions arrive as prompts.
 - All completed work is verified on disk.
 - Every step terminates on a checkable completion criterion.
