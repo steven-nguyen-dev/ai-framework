@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
-version: 1.12.0
+version: 1.12.1
 disable-model-invocation: true
 ---
 

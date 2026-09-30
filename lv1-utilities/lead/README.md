@@ -50,16 +50,16 @@ The skill operates entirely within Claude Code via its slash command and calls `
 ### A. Geometric Sorting & Per-Model Renaming (`auto_name_panes()`)
 1. Retrieves layout coordinates from `herdr pane layout --pane <leader_pane>`.
 2. Sorts worker panes: leader's tab first by screen position (top-to-bottom, left-to-right), then the workspace's other tabs.
-3. Detects model family via Herdr agent kind, terminal titles, or terminal buffer inspection.
+3. Detects model family via Herdr agent kind, terminal titles, or terminal buffer inspection. A Claude pane is `sonnet` when "sonnet" is in its title or is the later of "sonnet"/"opus" on its visible screen (`claude_variant()`); otherwise `opus`.
 4. Generates name as `<space_tag>-<model>-<n>`:
    - `space_tag` is the 3-letter prefix of the Herdr workspace (e.g. `one`, `zer`, `two`, `aif`).
    - Counter resets from `1` per model prefix strictly within the active workspace (all tabs).
-   - Example: `one-opus-1`, `one-gemini-1`, `one-gemini-2`, `one-gpt-1`.
+   - Example: `one-opus-1`, `one-sonnet-1`, `one-gemini-1`, `one-gemini-2`, `one-gpt-1`.
    - Leader is renamed to `<space_tag>-opus-leader`.
 
 ### B. Model Token Limits (Big Pool + Default Architecture)
 Token limits are evaluated in `get_model_target_limit()`:
-- **1M+ Big Pool (`gemini`, `claude`, `gpt`/`codex`)**:
+- **1M+ Big Pool (`gemini`, `claude`/`opus`/`sonnet`, `gpt`/`codex`)**:
   - Target ceiling: `<700K` (`BIG_POOL_LIMIT_K = 700.0`).
 - **Default Fallback (All other models & unknown)**:
   - Target ceiling: `<210K` (`DEFAULT_LIMIT_K = 210.0`).

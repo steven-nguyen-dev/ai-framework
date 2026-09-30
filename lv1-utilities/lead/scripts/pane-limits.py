@@ -118,7 +118,7 @@ def get_model_target_limit(name, kind, tail_lines="", prefix=None):
         p = prefix.lower()
         if p in ("grok", "agent"):
             return DEFAULT_LIMIT_K, "<210K>", DEFAULT_HIGH_K
-        if p in ("opus", "gemini", "gpt"):
+        if p in ("opus", "sonnet", "gemini", "gpt"):
             return BIG_POOL_LIMIT_K, "<700K", BIG_POOL_HIGH_K
 
     combined = f"{name} {kind}".lower()
@@ -216,6 +216,24 @@ def parse_usage(text, prefix=None):
 
     return "?", None, None
 
+def claude_variant(pane_id, title=""):
+    """
+    Tells Sonnet from Opus for a Claude pane. The terminal title decides first; otherwise the
+    word ('sonnet' / 'opus') appearing LAST in the visible screen wins, since the status line
+    sits at the bottom. The pane's own label is skipped: it holds the name this script assigned.
+    Defaults to Opus when neither word is found.
+    """
+    if "sonnet" in title:
+        return "sonnet", "Sonnet"
+    if "opus" in title:
+        return "opus", "Claude"
+    if pane_id:
+        out, _, _ = run_cmd(["herdr", "pane", "read", pane_id, "--source", "visible"])
+        tail = "\n".join(out.splitlines()[-15:]).lower()
+        if tail.rfind("sonnet") > tail.rfind("opus"):
+            return "sonnet", "Sonnet"
+    return "opus", "Claude"
+
 def detect_model(pane_info):
     """
     Detects the model running in a pane using Herdr metadata, terminal titles,
@@ -229,7 +247,7 @@ def detect_model(pane_info):
 
     # 1. Direct Herdr agent kind match
     if "claude" in agent_kind:
-        return "opus", "Claude"
+        return claude_variant(pane_id, title)
     if "agy" in agent_kind or "gemini" in agent_kind:
         return "gemini", "Gemini"
     if "cursor" in agent_kind or "grok" in agent_kind:
@@ -238,9 +256,9 @@ def detect_model(pane_info):
         return "gpt", "GPT"
 
     # 2. Match from existing model in label
-    for m in ["opus", "grok", "gpt", "gemini"]:
+    for m in ["sonnet", "opus", "grok", "gpt", "gemini"]:
         if m in label:
-            disp = {"opus": "Claude", "grok": "Grok", "gpt": "GPT", "gemini": "Gemini"}[m]
+            disp = {"sonnet": "Sonnet", "opus": "Claude", "grok": "Grok", "gpt": "GPT", "gemini": "Gemini"}[m]
             return m, disp
 
     # 3. Terminal title match
@@ -248,8 +266,10 @@ def detect_model(pane_info):
         return "gemini", "Gemini"
     if any(k in title for k in ["cus", "cursor", "grok"]):
         return "grok", "Grok"
+    if "sonnet" in title:
+        return "sonnet", "Sonnet"
     if any(k in title for k in ["clan", "clone", "claude"]):
-        return "opus", "Claude"
+        return claude_variant(pane_id, title)
     if any(k in title for k in ["codex", "gpt"]):
         return "gpt", "GPT"
 
@@ -258,7 +278,7 @@ def detect_model(pane_info):
         out, _, _ = run_cmd(["herdr", "pane", "read", pane_id, "--source", "visible"])
         tail = "\n".join(out.splitlines()[-15:]).lower()
         if any(k in tail for k in ["claude", "opus 5", "sonnet"]):
-            return "opus", "Claude"
+            return ("sonnet", "Sonnet") if tail.rfind("sonnet") > tail.rfind("opus") else ("opus", "Claude")
         if any(k in tail for k in ["grok", "cursor agent"]):
             return "grok", "Grok"
         if any(k in tail for k in ["openai codex", "ask codex", "gpt-"]):
@@ -359,7 +379,7 @@ def auto_name_panes(workspace_id=None, leader_pane_id=None):
     workers.sort(key=worker_sort_key)
 
     # Reset model counters from 1 strictly for this workspace
-    model_counts = {"opus": 0, "gemini": 0, "grok": 0, "gpt": 0, "agent": 0}
+    model_counts = {"opus": 0, "sonnet": 0, "gemini": 0, "grok": 0, "gpt": 0, "agent": 0}
     renamed = {}
 
     for p in workers:
