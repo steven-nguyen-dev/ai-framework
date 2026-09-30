@@ -156,7 +156,7 @@ class TaskStore:
 
     # -- runs ---------------------------------------------------------------
     #
-    # A run is one objective. ``run`` holds the current run number for the session (the tab);
+    # A run is one objective. ``run`` holds the current run number for the session (the workspace);
     # ``taskseq:r<N>`` and ``session:r<N>`` belong to run N. Task ids carry their run
     # (``R4-T1``), so ``task:R4-T1`` / ``result:R4-T1`` never collide with an earlier run's and a
     # late ``complete`` from run 3 lands on run 3's task. A run nothing touches expires on the

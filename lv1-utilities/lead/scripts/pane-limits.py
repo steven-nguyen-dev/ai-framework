@@ -3,12 +3,12 @@
 herdr-pane-limits.py
 
 Optimized, token-efficient capacity checker and pane namer for herdr.
-- Confined strictly to the current tab ($HERDR_TAB_ID)
+- Confined strictly to the current workspace ($HERDR_WORKSPACE_ID); spans every tab in it
 - Explicit model token limits:
   - Big pool (Gemini, Claude, GPT): 700k tokens (<700K)
   - Default (all other models & unknown): 210k tokens (<210K)
-- Auto-names unnamed panes in the current tab as <model>-<number>
-- Supports checking a single target (1 line) or all panes in the tab (compact table)
+- Auto-names worker panes in the current workspace as <space_tag>-<model>-<number>
+- Supports checking a single target (1 line) or all panes in the workspace (compact table)
 
 Usage:
   herdr-pane-limits.py          # compact summary of panes in current tab
@@ -270,26 +270,43 @@ def detect_model(pane_info):
 
 def get_model_role(prefix):
     """
-    Returns the recommended tier and role description for a model:
-    - Opus: Top tier, smartest worker (High-complexity tasks)
-    - Gemini: Core workhorse, smart worker (Normal complexity & below, bulk of work)
-    - Default (all others: GPT, Grok, etc.): Simple worker (Fire & forget tasks)
+    Returns the worker category for a model prefix:
+    - smart-agent: Opus (orchestration, decision advice)
+    - power-worker: Sonnet (coding first, extends to general tasks)
+    - general-worker: Gemini Flash (any task)
+    - quick-worker: GPT, Grok and all others (fire & forget)
     """
     p = (prefix or "").lower()
+    if "sonnet" in p:
+        return "power-worker (Coding & general)"
     if "opus" in p or "claude" in p:
-        return "Top tier (High complexity)"
+        return "smart-agent (Orchestrator & advisor)"
     if "gemini" in p or "agy" in p:
-        return "Workhorse (Normal & bulk work)"
-    return "Simple (Fire & forget)"
+        return "general-worker (Any task)"
+    return "quick-worker (Fire & forget)"
 
-def auto_name_panes(tab_id=None, workspace_id=None, leader_pane_id=None):
+def in_workspace(item, workspace_id, pane_map=None):
+    """True when a pane or agent record belongs to workspace_id (via workspace_id, tab_id prefix or pane_map)."""
+    if not workspace_id:
+        return True
+    ws = item.get("workspace_id")
+    if not ws and pane_map is not None:
+        ws = (pane_map.get(item.get("pane_id"), {}) or {}).get("workspace_id")
+    if not ws:
+        tab = item.get("tab_id") or ""
+        if not tab and pane_map is not None:
+            tab = (pane_map.get(item.get("pane_id"), {}) or {}).get("tab_id") or ""
+        ws = tab.split(":")[0] if ":" in tab else None
+    return ws == workspace_id
+
+def auto_name_panes(workspace_id=None, leader_pane_id=None):
     """
-    Detects worker panes in current tab and renames them to <space_tag>-<model>-<n>.
+    Detects worker panes in the current workspace (every tab) and renames them to <space_tag>-<model>-<n>.
     Also renames the leader pane to <space_tag>-opus-leader.
-    Numbering for each model prefix ALWAYS resets from 1 strictly within the tab!
+    Numbering for each model prefix ALWAYS resets from 1 strictly within the workspace!
     Space tag is the first 3 letters of the space name (e.g. 'one', 'zer', 'two', 'aif').
     """
-    space_tag = get_space_tag(tab_id=tab_id, ws_id=workspace_id)
+    space_tag = get_space_tag(ws_id=workspace_id)
     caller_pane = leader_pane_id or get_current_pane()
 
     if caller_pane:
@@ -305,15 +322,15 @@ def auto_name_panes(tab_id=None, workspace_id=None, leader_pane_id=None):
     except Exception:
         return {}
 
-    # Scoped strictly to the current tab
-    if tab_id:
-        target_panes = [p for p in all_panes if p.get("tab_id") == tab_id]
-    elif workspace_id:
-        target_panes = [p for p in all_panes if p.get("workspace_id") == workspace_id]
-    else:
-        target_panes = all_panes
+    # Scoped strictly to the current workspace (all its tabs)
+    target_panes = [p for p in all_panes if in_workspace(p, workspace_id)]
 
-    # Fetch geometry layout to sort workers top-to-bottom, left-to-right
+    leader_tab = None
+    for p in all_panes:
+        if p.get("pane_id") == caller_pane:
+            leader_tab = p.get("tab_id")
+
+    # Fetch geometry layout to sort the leader tab's workers top-to-bottom, left-to-right
     pane_rects = {}
     if caller_pane:
         layout_out, _, l_rc = run_cmd(["herdr", "pane", "layout", "--pane", caller_pane])
@@ -333,14 +350,15 @@ def auto_name_panes(tab_id=None, workspace_id=None, leader_pane_id=None):
             continue
         workers.append(p)
 
-    # Sort workers geometrically: top-to-bottom, then left-to-right
+    # Sort: leader's tab first (geometrically), then other tabs by tab id
     def worker_sort_key(p):
         rect = pane_rects.get(p.get("pane_id"), {})
-        return (rect.get("y", 0), rect.get("x", 0), p.get("pane_id", ""))
+        other_tab = 0 if p.get("tab_id") == leader_tab else 1
+        return (other_tab, p.get("tab_id") or "", rect.get("y", 0), rect.get("x", 0), p.get("pane_id", ""))
 
     workers.sort(key=worker_sort_key)
 
-    # Reset model counters from 1 strictly for this tab
+    # Reset model counters from 1 strictly for this workspace
     model_counts = {"opus": 0, "gemini": 0, "grok": 0, "gpt": 0, "agent": 0}
     renamed = {}
 
@@ -355,6 +373,33 @@ def auto_name_panes(tab_id=None, workspace_id=None, leader_pane_id=None):
         renamed[pane_id] = new_name
 
     return renamed
+
+def get_current_workspace():
+    """Resolves caller Herdr workspace ID: $HERDR_WORKSPACE_ID, the caller pane's record, or the tab id prefix."""
+    ws_id = os.environ.get("HERDR_WORKSPACE_ID")
+    if ws_id:
+        return ws_id
+    pane_id = os.environ.get("HERDR_PANE_ID")
+    cmds = []
+    if pane_id:
+        cmds.append(["herdr", "pane", "get", pane_id])
+    cmds.append(["herdr", "pane", "current", "--current"])
+    for cmd in cmds:
+        out, _, rc = run_cmd(cmd)
+        if rc == 0:
+            try:
+                pane = json.loads(out).get("result", {}).get("pane", {})
+                ws = pane.get("workspace_id")
+                if not ws and ":" in (pane.get("tab_id") or ""):
+                    ws = pane["tab_id"].split(":")[0]
+                if ws:
+                    return ws
+            except Exception:
+                pass
+    tab_id = get_current_tab()
+    if tab_id and ":" in tab_id:
+        return tab_id.split(":")[0]
+    return None
 
 def get_current_tab():
     """Resolves caller Herdr tab ID from environment or Herdr CLI"""
@@ -419,14 +464,16 @@ def load_lead_skill_directives():
         return """## Standing Orchestrator Directives
 
 ### Step 1 — Claim leadership and retrieve live capacity
-Run `pane-limits --init-leader` to claim leadership, auto-name workers in `$HERDR_TAB_ID`, and retrieve capacity. Print the returned worker table and ask the user for the objective. Lead only worker panes in `$HERDR_TAB_ID`; leave panes in other tabs to their own sessions.
+Run `pane-limits --init-leader` to claim leadership, auto-name workers across every tab of `$HERDR_WORKSPACE_ID`, and retrieve capacity. Print the returned worker table and ask the user for the objective. Lead only worker panes in `$HERDR_WORKSPACE_ID`; leave panes in other workspaces to their own sessions. One leader per workspace.
 On each new objective, call `swarm-coordinator.start_run()` before the first delegate: task ids restart at `R<run>-T1`. Report any `open_tasks` it returns from the previous run.
 
-### Step 2 — Size and assign tasks by model tier
-Break the objective into bounded, self-contained briefs. Assign each brief by recommended role:
-- Opus (Top Tier / Smartest Worker): High-complexity tasks — architecture design, intricate cross-system refactorings, deep spec/contract synthesis, and hardest root-cause debugging.
-- Gemini (Core Workhorse / Smart Worker — Bulk of Work): Normal complexity and below — feature implementation, unit/integration test suites, multi-file code editing, routine audits, and specs building. Gemini panes form the backbone of the swarm and handle the lion's share of tasks.
-- Default / All Others (Simple Worker / Fire & Forget): Small, self-contained single-pass units — isolated utility scripts, syntax/formatting/lint cleanup, quick regex, repetitive boilerplate, and localized single-file fixes (e.g. Grok, GPT).
+### Step 2 — Size and assign tasks by category
+Break the objective into bounded, self-contained briefs. Assign each brief to a category:
+- smart-agent — Opus: smart, top-tier work: orchestration, decision advice.
+- power-worker — Sonnet: coding first; extends to general tasks.
+- general-worker — Gemini Flash (agg, agp, agr): any task.
+- quick-worker — GPT, Grok (gpt, cus): quick fire-and-forget tasks.
+Treat categories as soft; when a target worker is busy, overflow to a capable idle worker.
 
 The token limit is a pre-dispatch target: clear when `current + predicted > limit` (700K big pool: Claude/Gemini/GPT, 210K default for all others). Run `pane-limits <target>` immediately before every dispatch. Check headroom (`limit - current`).
 
@@ -472,23 +519,23 @@ Clearing context:
             return parts[2].strip()
     return raw.strip()
 
-def generate_leader_prompt(tab_id=None, leader_pane_id=None):
+def generate_leader_prompt(workspace_id=None, leader_pane_id=None):
     """
-    Scans and auto-names all worker panes in the current tab,
+    Scans and auto-names all worker panes in the current workspace (every tab),
     reads their capacity, and formats a complete Leader Orchestrator prompt
     using directives loaded dynamically from lead SKILL.md.
     """
-    if not tab_id:
-        tab_id = get_current_tab()
+    if not workspace_id:
+        workspace_id = get_current_workspace()
     if not leader_pane_id:
         leader_pane_id = get_current_pane()
 
-    space_tag = get_space_tag(tab_id=tab_id)
+    space_tag = get_space_tag(ws_id=workspace_id)
 
-    # 1. Rename leader and auto-name workers in tab
-    auto_name_panes(tab_id=tab_id, leader_pane_id=leader_pane_id)
+    # 1. Rename leader and auto-name workers in workspace
+    auto_name_panes(workspace_id=workspace_id, leader_pane_id=leader_pane_id)
 
-    # 2. Read live pane & agent info in this tab
+    # 2. Read live pane & agent info in this workspace
     pane_out, _, _ = run_cmd(["herdr", "pane", "list"])
     pane_map = {}
     try:
@@ -507,8 +554,7 @@ def generate_leader_prompt(tab_id=None, leader_pane_id=None):
     except Exception:
         return "ERR: failed parsing herdr agent list"
 
-    if tab_id:
-        agents = [a for a in agents if a.get("tab_id") == tab_id]
+    agents = [a for a in agents if in_workspace(a, workspace_id, pane_map)]
 
     caller_pane = leader_pane_id or os.environ.get("HERDR_PANE_ID")
     worker_rows = []
@@ -535,20 +581,20 @@ def generate_leader_prompt(tab_id=None, leader_pane_id=None):
 
     if worker_rows:
         table_lines = [
-            "| Target Name | Pane ID | Model | Recommended Role | Explicit Limit | Status | Current Usage |",
+            "| Target Name | Pane ID | Model | Category | Explicit Limit | Status | Current Usage |",
             "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
         ]
         for name, pane_id, model, role_str, limit_str, status, usage_str in worker_rows:
             table_lines.append(f"| `{name}` | `{pane_id}` | {model} | {role_str} | {limit_str} | {status} | {usage_str} |")
         roster_md = "\n".join(table_lines)
     else:
-        roster_md = "*No worker panes detected in this tab yet.*"
+        roster_md = "*No worker panes detected in this workspace yet.*"
 
     leader_name = f"{space_tag}-opus-leader"
     directives = load_lead_skill_directives()
 
-    prompt = f"""# Swarm Leader: {leader_name} [Tab: {tab_id or 'current'} | Space: {space_tag.upper()}]
-You lead ONLY these worker panes in this tab:
+    prompt = f"""# Swarm Leader: {leader_name} [Workspace: {workspace_id or 'current'} | Space: {space_tag.upper()}]
+You lead ONLY these worker panes in this workspace (all tabs):
 {roster_md}
 
 {directives}"""
@@ -558,7 +604,8 @@ def spawn_workers(agent_commands):
     """
     Dynamically partitions the tab and spawns worker panes.
     - Caller pane (leader) stays on the left half (50% width).
-    - If any non-leader panes already exist in this tab, they are closed first to ensure a clean layout.
+    - If any non-leader panes already exist in the leader's tab, they are closed first to ensure a clean layout.
+      Panes in the workspace's other tabs are kept and join the roster.
     - Right half is dynamically split into N vertical slots for the N agent commands.
     - Executes each agent command in its assigned pane via `herdr pane run`.
     - Auto-names the leader (<space_tag>-opus-leader) and worker panes (<space_tag>-<model>-<n>).
@@ -566,13 +613,14 @@ def spawn_workers(agent_commands):
     """
     caller_pane = get_current_pane()
     current_tab = get_current_tab()
+    current_ws = get_current_workspace()
     if not caller_pane or not current_tab:
         print("ERR: cannot determine current Herdr pane or tab. Ensure this is run inside a Herdr pane.", file=sys.stderr)
         sys.exit(1)
 
-    space_tag = get_space_tag(tab_id=current_tab)
+    space_tag = get_space_tag(tab_id=current_tab, ws_id=current_ws)
 
-    # 1. Close any existing non-leader panes in this tab for a clean slate
+    # 1. Close any existing non-leader panes in the leader's tab for a clean slate (other tabs untouched)
     pane_out, _, rc = run_cmd(["herdr", "pane", "list"])
     if rc == 0:
         try:
@@ -648,7 +696,7 @@ def spawn_workers(agent_commands):
     time.sleep(1.0)
 
     # 5. Generate and print the leader prompt
-    prompt = generate_leader_prompt(tab_id=current_tab, leader_pane_id=caller_pane)
+    prompt = generate_leader_prompt(workspace_id=current_ws, leader_pane_id=caller_pane)
     print(prompt)
 
 def main():
@@ -673,28 +721,29 @@ def main():
         sys.exit(0)
 
     if "--init-leader" in sys.argv or "--leader-prompt" in sys.argv:
-        current_tab = get_current_tab()
+        current_ws = get_current_workspace()
         current_pane = get_current_pane()
-        prompt = generate_leader_prompt(tab_id=current_tab, leader_pane_id=current_pane)
+        prompt = generate_leader_prompt(workspace_id=current_ws, leader_pane_id=current_pane)
         print(prompt)
         sys.exit(0)
 
     target = sys.argv[1].strip() if len(sys.argv) > 1 else None
 
-    current_tab = get_current_tab()
     current_pane = get_current_pane()
-    current_ws = os.environ.get("HERDR_WORKSPACE_ID")
+    current_ws = get_current_workspace()
 
-    # Auto-name any unnamed panes strictly within the current tab
-    auto_name_panes(tab_id=current_tab, workspace_id=(current_ws if not current_tab else None), leader_pane_id=current_pane)
+    # Auto-name worker panes strictly within the current workspace (every tab)
+    auto_name_panes(workspace_id=current_ws, leader_pane_id=current_pane)
 
     # Get pane labels for fallback display
     pane_out, _, _ = run_cmd(["herdr", "pane", "list"])
     pane_labels = {}
+    pane_map = {}
     try:
         for p in json.loads(pane_out).get("result", {}).get("panes", []):
             if p.get("pane_id"):
                 pane_labels[p["pane_id"]] = p.get("label")
+                pane_map[p["pane_id"]] = p
     except Exception:
         pass
 
@@ -710,25 +759,22 @@ def main():
         print("ERR: failed parsing json", file=sys.stderr)
         sys.exit(1)
 
-    # Filter agents strictly to the current tab only
-    if current_tab:
-        agents = [a for a in agents if a.get("tab_id") == current_tab]
-    elif current_ws:
-        agents = [a for a in agents if a.get("workspace_id") == current_ws]
+    # Filter agents strictly to the current workspace only
+    agents = [a for a in agents if in_workspace(a, current_ws, pane_map)]
 
     if target:
         agents = [a for a in agents if a.get("name") == target or a.get("pane_id") == target or pane_labels.get(a.get("pane_id")) == target]
         if not agents:
-            tab_msg = f" in tab '{current_tab}'. Leader can only lead panes within its own tab." if current_tab else "."
-            print(f"NOT_FOUND: target '{target}' not found{tab_msg}")
+            ws_msg = f" in workspace '{current_ws}'. Leader can only lead panes within its own workspace." if current_ws else "."
+            print(f"NOT_FOUND: target '{target}' not found{ws_msg}")
             sys.exit(1)
 
-    space_tag = get_space_tag(tab_id=current_tab, ws_id=current_ws)
+    space_tag = get_space_tag(ws_id=current_ws)
 
     if not target:
-        header = f"PANES IN TAB [{current_tab}] (SPACE: {space_tag.upper()}):" if current_tab else f"PANES (SPACE: {space_tag.upper()}):"
+        header = f"PANES IN WORKSPACE [{current_ws}] (SPACE: {space_tag.upper()}):" if current_ws else f"PANES (SPACE: {space_tag.upper()}):"
         print(header)
-        print(f"{'TARGET':<17} {'PANE':<6} {'ROLE':<11} {'STATUS':<8} {'USAGE':<21} {'LIMIT':<8} {'VERDICT'}")
+        print(f"{'TARGET':<17} {'PANE':<6} {'ROLE':<14} {'STATUS':<8} {'USAGE':<21} {'LIMIT':<8} {'VERDICT'}")
         print("-" * 88)
 
     for ag in agents:
@@ -765,7 +811,7 @@ def main():
             print(f"{name} ({pane_id}) [{role_desc}]: {usage_str} / {limit_str} [{verdict}] ({status})")
             return
 
-        print(f"{name:<17} {pane_id:<6} {role_tag:<11} {status:<8} {usage_str:<21} {limit_str:<8} {verdict}")
+        print(f"{name:<17} {pane_id:<6} {role_tag:<14} {status:<8} {usage_str:<21} {limit_str:<8} {verdict}")
 
 if __name__ == "__main__":
     main()

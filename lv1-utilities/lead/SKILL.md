@@ -1,17 +1,17 @@
 ---
 name: lead
-description: Nominate this agent as the Herdr swarm leader for its current tab. Use on /lead.
-version: 1.11.0
+description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
+version: 1.12.0
 disable-model-invocation: true
 ---
 
 # lead
 
-Orchestrates worker panes inside the active Herdr tab (`$HERDR_TAB_ID`) via the `herdr` CLI without directly editing code.
+Orchestrates worker panes across every tab of the active Herdr workspace (`$HERDR_WORKSPACE_ID`) via the `herdr` CLI without directly editing code.
 
 ## Inputs
 
-- **Roster** — live tab worker table from `pane-limits --init-leader` or `pane-limits --spawn <commands...>`.
+- **Roster** — live workspace worker table from `pane-limits --init-leader` or `pane-limits --spawn <commands...>`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
 - **Coordinator** — swarm-coordinator MCP: session log, task briefs, execution plans, results, scratch payloads.
 - **Wiki** — wiki MCP: durable domain knowledge, specs, mappings, traps, decisions. Read with `search`/`get`/`render`; write only with `note`, which files to the inbox for human review.
@@ -22,27 +22,31 @@ Orchestrates worker panes inside the active Herdr tab (`$HERDR_TAB_ID`) via the 
 
 1. **If invoked with a list of child agent commands** (e.g. `/lead clan, cus, agg, agr`):
    Run `pane-limits --spawn <commands...>` (e.g. `pane-limits --spawn clan,cus,agg,agr`).
-   This automatically cleans any stale non-leader panes in the tab, splits the tab layout (leader on left half, $N$ workers stacked on right half), launches each agent command in its assigned pane, auto-names the panes, and prints the live worker table.
+   This automatically cleans any stale non-leader panes in the leader's tab (other tabs keep theirs), splits that tab's layout (leader on left half, $N$ workers stacked on right half), launches each agent command in its assigned pane, auto-names the panes, and prints the live worker table.
 2. **If invoked with no arguments** (bare `/lead`):
-   Run `pane-limits --init-leader` to claim leadership, auto-name workers in `$HERDR_TAB_ID`, and retrieve capacity.
+   Run `pane-limits --init-leader` to claim leadership, auto-name workers across `$HERDR_WORKSPACE_ID`, and retrieve capacity.
    - If worker panes already exist: Print the returned worker table and ask the user for the objective.
    - If no worker panes exist yet: Prompt the user to supply the agent commands they want to spawn:
-     > No workers detected in this tab. To spawn a swarm team, specify the commands you want:
+     > No workers detected in this workspace. To spawn a swarm team, specify the commands you want:
      > `/lead clan, cus, agg, agr` (or any custom combination of agents)
-3. Lead only worker panes in `$HERDR_TAB_ID`; leave panes in other tabs to their own sessions. All coordination automatically uses `$HERDR_TAB_ID` for Redis key isolation without needing external environment variable injection.
+3. Lead only worker panes in `$HERDR_WORKSPACE_ID`, whichever tab holds them; leave panes in other workspaces to their own sessions. One leader per workspace. Every pane in the workspace shares one coordinator session (`swarm:ws-<workspace>:`), resolved from Herdr without environment variable injection.
 4. **On each new objective, open a run** with `swarm-coordinator.start_run()` before the first `delegate`. Task ids restart at `R<run>-T1`; the log `session_log()` returns starts empty. A follow-up on the same objective stays in the current run.
    - `open_tasks` non-empty — the previous run left delegates with no `complete`. List them to the user. They keep their ids; a late `complete` still lands on its own run.
 
-**Completion:** the leader prints the active worker table with pane IDs, models, recommended roles, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number.
+**Completion:** the leader prints the active worker table with pane IDs, models, categories, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number.
 
-### Step 2 — Size and assign tasks by model tier
+### Step 2 — Size and assign tasks by category
 
-Break the objective into bounded, self-contained briefs. Assign each brief by recommended role:
-- **Opus (Top Tier / Smartest Worker)**: High-complexity tasks — architecture design, intricate cross-system refactorings, deep spec/contract synthesis, and hardest root-cause debugging.
-- **Gemini (Core Workhorse / Smart Worker — Bulk of Work)**: Normal complexity and below — feature implementation, unit/integration test suites, multi-file code editing, routine audits, and specs building. Gemini panes form the backbone of the swarm and handle the lion's share of tasks.
-- **Default / All Others (Simple Worker / Fire & Forget)**: Small, self-contained single-pass units — isolated utility scripts, syntax/formatting/lint cleanup, quick regex, repetitive boilerplate, and localized single-file fixes (e.g. Grok, GPT).
+Break the objective into bounded, self-contained briefs. Assign each brief to a category:
 
-Treat tier roles as soft recommendations; when a target worker is busy, overflow flexibly to capable idle workers.
+| Category | Model (launchers) | Takes |
+|---|---|---|
+| **smart-agent** | Opus | Smart, top-tier work: orchestration, decision advice |
+| **power-worker** | Sonnet | Coding first; extends to general tasks |
+| **general-worker** | Gemini Flash (`agg`, `agp`, `agr`) | Any task |
+| **quick-worker** | GPT, Grok (`gpt`, `cus`) | Quick fire-and-forget tasks |
+
+Treat categories as soft; when a target worker is busy, overflow to a capable idle worker.
 
 The token limit is a **pre-dispatch target**: the figure the pane must be under **at the moment the instruction is sent**, not a ceiling to notice after the fact.
 
@@ -155,9 +159,9 @@ Clearing context:
 
 - The frontmatter carries `disable-model-invocation: true` and a one-liner description for human invocation.
 - The `## Standing Orchestrator Directives` heading is preserved for extraction by `pane-limits --init-leader`.
-- Swarm leader operations are strictly confined to `$HERDR_TAB_ID`.
+- Swarm leader operations are strictly confined to `$HERDR_WORKSPACE_ID`, across all its tabs.
 - Implementation code is never written by the leader; all work is delegated.
-- Task complexity matches recommended model tiers with Gemini absorbing the bulk of work.
+- Every brief goes to its category: smart-agent, power-worker, general-worker or quick-worker.
 - Swarm pane count remains fixed with sequential queueing instead of ad-hoc splitting.
 - The token limit is treated as a pre-dispatch target — clear when `current + predicted > limit` (700K big pool, 210K default), done before the next instruction rather than after a finished task.
 - Inter-agent payloads travel through `put`/`get`; `.scratchpads/` is never created.

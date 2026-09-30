@@ -87,9 +87,49 @@ _RESOLVED_HERDR_LEADERS: dict[str, str] = {}
 _RESOLVED_HERDR_PANES: dict[str, str] = {}
 
 
-def _resolve_herdr_leader(tab_id: str) -> str | None:
-    if tab_id in _RESOLVED_HERDR_LEADERS:
-        return _RESOLVED_HERDR_LEADERS[tab_id]
+def _pane_workspace(pane: dict[str, Any]) -> str | None:
+    ws = (pane.get("workspace_id") or "").strip()
+    if ws:
+        return ws
+    tab = (pane.get("tab_id") or "").strip()
+    return tab.split(":")[0] if ":" in tab else None
+
+
+_RESOLVED_WORKSPACE: list[str] = []
+
+
+def workspace_id() -> str | None:
+    """Returns this pane's Herdr workspace: ``HERDR_WORKSPACE_ID``, the pane's own record, or the ``HERDR_TAB_ID`` prefix."""
+    value = os.environ.get("HERDR_WORKSPACE_ID", "").strip()
+    if value:
+        return value
+    if _RESOLVED_WORKSPACE:
+        return _RESOLVED_WORKSPACE[0]
+    pane_id = os.environ.get("HERDR_PANE_ID", "").strip()
+    if pane_id:
+        try:
+            res = subprocess.run(
+                ["herdr", "pane", "get", pane_id],
+                capture_output=True,
+                text=True,
+                timeout=3,
+            )
+            if res.returncode == 0:
+                ws = _pane_workspace(json.loads(res.stdout).get("result", {}).get("pane", {}))
+                if ws:
+                    _RESOLVED_WORKSPACE.append(ws)
+                    return ws
+        except Exception:
+            pass
+    tab_id = os.environ.get("HERDR_TAB_ID", "").strip()
+    if ":" in tab_id:
+        return tab_id.split(":")[0]
+    return None
+
+
+def _resolve_herdr_leader(ws_id: str) -> str | None:
+    if ws_id in _RESOLVED_HERDR_LEADERS:
+        return _RESOLVED_HERDR_LEADERS[ws_id]
     try:
         res = subprocess.run(
             ["herdr", "pane", "list"],
@@ -100,10 +140,10 @@ def _resolve_herdr_leader(tab_id: str) -> str | None:
         if res.returncode == 0:
             panes = json.loads(res.stdout).get("result", {}).get("panes", [])
             for p in panes:
-                if p.get("tab_id") == tab_id:
+                if _pane_workspace(p) == ws_id:
                     lbl = (p.get("label") or "").strip()
                     if "leader" in lbl.lower():
-                        _RESOLVED_HERDR_LEADERS[tab_id] = lbl
+                        _RESOLVED_HERDR_LEADERS[ws_id] = lbl
                         return lbl
     except Exception:
         pass
@@ -132,31 +172,32 @@ def _resolve_herdr_pane_name(pane_id: str) -> str | None:
 
 
 def session_id() -> str:
-    """Returns ``SWARM_SESSION_ID``, falling back to ``tab-<tab_id>`` from ``HERDR_TAB_ID``.
+    """Returns ``SWARM_SESSION_ID``, falling back to ``ws-<workspace_id>`` from the pane's Herdr workspace.
 
-    @raises EnvError if neither variable is set.
+    Every tab of one workspace shares this session, so the swarm spans the workspace.
+    @raises EnvError if neither is available.
     """
     value = os.environ.get("SWARM_SESSION_ID", "").strip()
     if value:
         return value
-    tab_id = os.environ.get("HERDR_TAB_ID", "").strip()
-    if tab_id:
-        return f"tab-{tab_id.replace(':', '-')}"
+    ws_id = workspace_id()
+    if ws_id:
+        return f"ws-{ws_id.replace(':', '-')}"
     raise EnvError("SWARM_SESSION_ID")
 
 
 def leader_name() -> str:
     """Returns ``SWARM_LEADER`` - the pane ``complete`` prompts.
 
-    Falls back to resolving the leader pane in ``HERDR_TAB_ID`` if unset.
+    Falls back to resolving the leader pane in this pane's workspace if unset.
     @raises EnvError if neither is available.
     """
     value = os.environ.get("SWARM_LEADER", "").strip()
     if value:
         return value
-    tab_id = os.environ.get("HERDR_TAB_ID", "").strip()
-    if tab_id:
-        resolved = _resolve_herdr_leader(tab_id)
+    ws_id = workspace_id()
+    if ws_id:
+        resolved = _resolve_herdr_leader(ws_id)
         if resolved:
             return resolved
     raise EnvError("SWARM_LEADER")

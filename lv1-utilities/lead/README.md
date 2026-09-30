@@ -10,7 +10,7 @@ The `lead` utility skill resides in `ai-framework/lv1-utilities/lead/`:
 
 ```
 lead/
-├── SKILL.md                  # Orchestrator directives, tiered roles, and operational steps
+├── SKILL.md                  # Orchestrator directives, worker categories, and operational steps
 ├── README.md                 # This technical reference and maintenance manual
 └── scripts/
     └── pane-limits.py        # Core CLI engine (spawning, auto-naming, token limits, pre-flight prompt)
@@ -49,11 +49,11 @@ The skill operates entirely within Claude Code via its slash command and calls `
 
 ### A. Geometric Sorting & Per-Model Renaming (`auto_name_panes()`)
 1. Retrieves layout coordinates from `herdr pane layout --pane <leader_pane>`.
-2. Sorts worker panes strictly by visual screen position: top-to-bottom, then left-to-right.
+2. Sorts worker panes: leader's tab first by screen position (top-to-bottom, left-to-right), then the workspace's other tabs.
 3. Detects model family via Herdr agent kind, terminal titles, or terminal buffer inspection.
 4. Generates name as `<space_tag>-<model>-<n>`:
    - `space_tag` is the 3-letter prefix of the Herdr workspace (e.g. `one`, `zer`, `two`, `aif`).
-   - Counter resets from `1` per model prefix strictly within the active tab.
+   - Counter resets from `1` per model prefix strictly within the active workspace (all tabs).
    - Example: `one-opus-1`, `one-gemini-1`, `one-gemini-2`, `one-gpt-1`.
    - Leader is renamed to `<space_tag>-opus-leader`.
 
@@ -64,13 +64,14 @@ Token limits are evaluated in `get_model_target_limit()`:
 - **Default Fallback (All other models & unknown)**:
   - Target ceiling: `<210K` (`DEFAULT_LIMIT_K = 210.0`).
 
-### C. Model Roles (`get_model_role()`)
-- `opus` / `claude` $\rightarrow$ `Top tier (High complexity)`
-- `gemini` / `agy` $\rightarrow$ `Workhorse (Normal & bulk work)`
-- All other models $\rightarrow$ `Simple (Fire & forget)`
+### C. Worker Categories (`get_model_role()`)
+- `sonnet` $\rightarrow$ `power-worker (Coding & general)`
+- `opus` / `claude` $\rightarrow$ `smart-agent (Orchestrator & advisor)`
+- `gemini` / `agy` $\rightarrow$ `general-worker (Any task)`
+- All other models (GPT, Grok) $\rightarrow$ `quick-worker (Fire & forget)`
 
 ### D. Leader Pre-flight Injection (`generate_leader_prompt()`)
-1. Formats the live active worker roster table including Target Name, Pane ID, Model, Recommended Role, Explicit Limit, Status, and Current Usage.
+1. Formats the live active worker roster table including Target Name, Pane ID, Model, Category, Explicit Limit, Status, and Current Usage.
 2. Dynamically loads `## Standing Orchestrator Directives` from `SKILL.md` (or embedded self-contained fallback with hardcoded `swarm-coordinator` and `wiki` MCPs).
 3. Injected into Claude Code on startup via `--append-system-prompt "$leader_prompt"`.
 
