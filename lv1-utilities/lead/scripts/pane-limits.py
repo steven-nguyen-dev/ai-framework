@@ -521,7 +521,7 @@ Scratch payloads and task execution plans stay out of the wiki. No inter-agent p
 
 ### Step 6 — Verify on disk, then clear or hand off
 Zero blind trust. Verify with `git diff`, `ls -la`, `wc -l`, compilers and test suites before accepting anything.
-Durable learning — a finding that stays true when our code changes (partner system behaviour, business rule, verified cross-system field meaning) — goes to the wiki inbox with its evidence, unverified parts marked. Code defect → task report for the user to raise; implementation constraint → the ticket's contract via a delegated brief; code/config observation → its `complete` summary or `put()` key. Deliverables stay files in `jira-workspace/`.
+Durable learning — a finding that stays true when our code changes (partner system behaviour, business rule, verified cross-system field meaning) — goes to the wiki inbox with its evidence, unverified parts marked. Code defect → task report for the user to raise; implementation constraint → the ticket's contract via a delegated brief; code/config observation → its `complete` summary or `put()` key. Deliverables are files in the deliverable folder: the one the session names, else ask the user before the first delegate.
 Clearing context:
 - Stateless: `herdr agent prompt <target> "/clear "` (trailing space), then delegate next brief.
 - Stateful: delegate brief asking worker to `swarm-coordinator.put()` its handoff and report key; verify read back; `/clear `; delegate next brief referencing that key."""

@@ -22,7 +22,7 @@
     {
       "name": "lv1-utilities",
       "description": "Standalone engineering utility skills: draw-diagram, lead, make-it-short, sync-context, sync-pr, lotteon-api-extractor, lv1-architecture-review, naver-api-extractor, write-docs, write-pr-desc, and write-skill.",
-      "version": "2.4.13",
+      "version": "2.4.14",
       "source": "./lv1-utilities"
     }
   ]

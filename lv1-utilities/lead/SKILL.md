@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
-version: 1.13.1
+version: 1.13.2
 disable-model-invocation: true
 ---
 
@@ -13,6 +13,7 @@ Orchestrates worker panes across every tab of the active Herdr workspace (`$HERD
 
 - **Roster** — live workspace worker table from `pane-limits --init-leader` or `pane-limits --spawn <commands...>`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
+- **Deliverable folder** — where the ticket's files go. Use the folder the session already names (the objective, the repo's context files, an earlier turn); otherwise ask the user.
 - **Coordinator** — swarm-coordinator MCP: session log, task briefs, execution plans, results, scratch payloads.
 - **Wiki** — wiki MCP: curated domain knowledge, plus an inbox the user reviews. Read with its search and fetch tools; write to its inbox, with what qualifies set in Step 6.
 
@@ -32,8 +33,9 @@ Orchestrates worker panes across every tab of the active Herdr workspace (`$HERD
 3. Lead only worker panes in `$HERDR_WORKSPACE_ID`, whichever tab holds them; leave panes in other workspaces to their own sessions. One leader per workspace. Every pane in the workspace shares one coordinator session (`swarm:ws-<workspace>:`), resolved from Herdr without environment variable injection.
 4. **On each new objective, open a run** with `swarm-coordinator.start_run()` before the first `delegate`. Task ids restart at `R<run>-T1`; the log `session_log()` returns starts empty. A follow-up on the same objective stays in the current run.
    - `open_tasks` non-empty — the previous run left delegates with no `complete`. List them to the user. They keep their ids; a late `complete` still lands on its own run.
+5. **Settle the deliverable folder** (see Inputs) before the first `delegate`.
 
-**Completion:** the leader prints the active worker table with pane IDs, models, categories, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number.
+**Completion:** the leader prints the active worker table with pane IDs, models, categories, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number and the deliverable folder is named.
 
 ### Step 2 — Size and assign tasks by category
 
@@ -152,7 +154,7 @@ Every other finding goes to its home:
 
 A curated wiki fact a worker disproved is durable learning too: file the falsifying observation to the inbox, naming the article it contradicts. Publishing and retiring curated articles is the user's call, made from your evidence.
 
-**The ticket's deliverable is a file under `jira-workspace/`**: a plan, an analysis, an implementation contract. Wiki search leaves the inbox out by default, so an inbox entry stays out of later workers' searches until the user promotes it.
+**The ticket's deliverable is a file in the deliverable folder**: a plan, an analysis, an implementation contract. Wiki search leaves the inbox out by default, so an inbox entry stays out of later workers' searches until the user promotes it.
 
 Clearing context:
 
