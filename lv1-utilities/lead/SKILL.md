@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
-version: 1.13.0
+version: 1.13.1
 disable-model-invocation: true
 ---
 
@@ -14,7 +14,7 @@ Orchestrates worker panes across every tab of the active Herdr workspace (`$HERD
 - **Roster** — live workspace worker table from `pane-limits --init-leader` or `pane-limits --spawn <commands...>`.
 - **Objective** — user's goal, ticket, or problem brief to drive.
 - **Coordinator** — swarm-coordinator MCP: session log, task briefs, execution plans, results, scratch payloads.
-- **Wiki** — wiki MCP: durable domain knowledge, specs, mappings, traps, decisions. Read with `search`/`get`/`render`; write only with `note`, which files to the inbox for human review; Step 6 says what qualifies.
+- **Wiki** — wiki MCP: curated domain knowledge, plus an inbox the user reviews. Read with its search and fetch tools; write to its inbox, with what qualifies set in Step 6.
 
 ## Standing Orchestrator Directives
 
@@ -142,23 +142,17 @@ Scratch payloads and task execution plans stay out of the wiki. A task plan or s
 
 Zero blind trust is unchanged. A worker's `complete` is a claim, not evidence. Verify with `git diff`, `ls -la`, `wc -l`, compilers and test suites before accepting anything. Re-delegate immediately if a worker claims success without changing disk or test outcomes.
 
-**Durable learning.** File to the wiki inbox (`wiki.note(slug, body, summary)`, filed at `inbox/<pane>/<slug>`) only facts about the business or an external partner that **stay true when our code changes**:
+**Durable learning** is a finding that stays true when our code changes: how an external partner's system behaves, a business rule or domain definition, or a verified field meaning between two systems. File it to the wiki inbox with the wiki's inbox tool, carrying the evidence that settles it — the partner doc section, the spec line, the ticket comment — and marking any part not verified as such.
 
-- a partner API behaviour, for example "the UPS ship response carries no paperless status field"
-- a business rule or domain definition, for example "a commercial invoice number is assigned by the exporter"
-- a verified field meaning between two systems
+Every other finding goes to its home:
 
-Put the evidence in the body (the partner spec line, the doc section, the Jira comment), and mark any part not verified as such.
+- a defect in our code → the task report, for the user to raise as a ticket
+- a constraint the implementation must follow → the ticket's contract, amended through a delegated brief
+- a code or config observation → the result it came from: the `complete` summary or its `put()` key
 
-Route every other finding to its own home:
+A curated wiki fact a worker disproved is durable learning too: file the falsifying observation to the inbox, naming the article it contradicts. Publishing and retiring curated articles is the user's call, made from your evidence.
 
-- a defect in our code → a Jira ticket
-- a constraint the implementation must follow → the ticket's contract
-- a code or config observation → the ticket's investigation notes
-
-A wiki fact that a worker disproved becomes `wiki.note("<slug>-disproved", …)` with the falsifying observation. Promotion and retirement of the curated chunk are the user's call — `upsert` and `retire` are not registered on the wiki server, by design — and they need your evidence to make it.
-
-**The ticket's deliverable is a file under `jira-workspace/`**: a plan, an analysis, an implementation contract. `search` ignores the inbox, so nothing you file there can mislead a later worker.
+**The ticket's deliverable is a file under `jira-workspace/`**: a plan, an analysis, an implementation contract. Wiki search leaves the inbox out by default, so an inbox entry stays out of later workers' searches until the user promotes it.
 
 Clearing context:
 
@@ -181,7 +175,7 @@ Clearing context:
 - Every turn opens with `session_log()`; every brief ends with the `complete` line.
 - Every turn pairs the log's delegates against its completes, and checks the pane for any delegate without one, before reading results.
 - Every `delegate` return value is read; a stalled delivery is re-prompted, never re-delegated.
-- The wiki inbox receives only verified business and partner facts, each with its evidence. Code findings go to Jira, the contract or the investigation notes.
+- Every finding sits in its Step 6 home; each inbox entry passes the stays-true test and carries its evidence.
 - The leader never waits on a worker. Completions arrive as prompts.
 - All completed work is verified on disk.
 - Every step terminates on a checkable completion criterion.
