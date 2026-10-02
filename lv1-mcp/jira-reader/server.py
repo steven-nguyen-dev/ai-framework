@@ -7,7 +7,8 @@
 Jira Reader Model Context Protocol (MCP) Server
 -----------------------------------------------
 A zero-dependency, universal MCP server providing full Jira issue inspection,
-JQL search, board and sprint reads (Agile API), attachment downloads, and
+JQL search, board and sprint reads (Agile API), dashboard and gadget reads,
+attachment downloads, and
 in-memory text/log streaming for AI agents.
 
 Runs out-of-the-box on Python 3 standard library on any machine (macOS, Linux, Windows).
@@ -28,7 +29,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 SERVER_NAME = "jira-reader"
-SERVER_VERSION = "1.3.0"
+SERVER_VERSION = "1.4.0"
 MCP_PROTOCOL_VERSION = "2024-11-05"
 
 # ---------------------------------------------------------------------------
@@ -1163,6 +1164,163 @@ def jira_sprint_issues(
     return res
 
 
+# ---------------------------------------------------------------------------
+# Jira Dashboards — gadgets and their saved settings (/rest/api/{v}/dashboard)
+# ---------------------------------------------------------------------------
+
+def _parse_dashboard_id(dashboard: Any) -> str:
+    """Accept a numeric dashboard ID or a dashboard URL (…/dashboards/12634, ?selectPageId=12634)."""
+    raw = str(dashboard).strip()
+    if raw.isdigit():
+        return raw
+    match = re.search(r"/dashboards?/(\d+)", raw) or re.search(r"[?&]selectPageId=(\d+)", raw)
+    if match:
+        return match.group(1)
+    raise ValueError(f"Cannot read a dashboard ID from '{dashboard}'. Pass the number or the dashboard URL.")
+
+
+def _api_get(path: str, params: Optional[Dict[str, Any]] = None) -> Any:
+    v = _get_config()["api_version"]
+    _, content, _ = _make_request("GET", f"/rest/api/{v}{path}", params=params)
+    return json.loads(content.decode("utf-8")) if content else {}
+
+
+def _find_gadget_source(props: Any) -> Optional[Dict[str, str]]:
+    """Find the filter, project or JQL a gadget reads from inside its saved properties."""
+    if isinstance(props, dict):
+        for k, val in props.items():
+            lk = k.lower()
+            if isinstance(val, str) and lk == "jql" and val.strip():
+                return {"type": "jql", "value": val.strip()}
+            if lk in ("filterid", "savedfilterid") and str(val).strip().isdigit():
+                return {"type": "filter", "value": str(val).strip()}
+        for val in props.values():
+            found = _find_gadget_source(val)
+            if found:
+                return found
+        return None
+    if isinstance(props, list):
+        for val in props:
+            found = _find_gadget_source(val)
+            if found:
+                return found
+        return None
+    if isinstance(props, str):
+        s = props.strip()
+        if s.startswith("{") or s.startswith("["):
+            try:
+                return _find_gadget_source(json.loads(s))
+            except ValueError:
+                pass
+        m = re.fullmatch(r"(filter|project|jql)-(.+)", s)
+        if m:
+            value = urllib.parse.unquote_plus(m.group(2)) if m.group(1) == "jql" else m.group(2)
+            return {"type": m.group(1), "value": value}
+    return None
+
+
+def _gadget_properties(dashboard_id: str, gadget_id: str) -> Dict[str, Any]:
+    keys = _api_get(f"/dashboard/{dashboard_id}/items/{gadget_id}/properties").get("keys", [])
+    props: Dict[str, Any] = {}
+    for k in keys:
+        key = k.get("key")
+        if not key:
+            continue
+        try:
+            props[key] = _api_get(
+                f"/dashboard/{dashboard_id}/items/{gadget_id}/properties/{urllib.parse.quote(key)}"
+            ).get("value")
+        except Exception as exc:
+            props[key] = f"<unreadable: {type(exc).__name__}>"
+    return props
+
+
+def jira_get_dashboard(
+    dashboard: str,
+    include_issues: bool = False,
+    max_issues_per_gadget: int = 10,
+) -> Dict[str, Any]:
+    """Dashboard details, every gadget with its saved settings and data source, and optionally each source's issues."""
+    dashboard_id = _parse_dashboard_id(dashboard)
+    meta = _api_get(f"/dashboard/{dashboard_id}")
+
+    try:
+        raw_gadgets = _api_get(f"/dashboard/{dashboard_id}/gadget").get("gadgets", [])
+        gadget_error = None
+    except FileNotFoundError:
+        raw_gadgets = []
+        gadget_error = "Gadget listing not available on this Jira version (needs Jira Cloud)."
+
+    filter_cache: Dict[str, Dict[str, Any]] = {}
+    gadgets = []
+    for g in sorted(raw_gadgets, key=lambda x: ((x.get("position") or {}).get("column", 0), (x.get("position") or {}).get("row", 0))):
+        gid = str(g.get("id"))
+        entry: Dict[str, Any] = {
+            "id": gid,
+            "title": g.get("title"),
+            "type": g.get("moduleKey") or g.get("uri"),
+            "position": g.get("position"),
+        }
+        try:
+            props = _gadget_properties(dashboard_id, gid)
+        except Exception as exc:
+            props = {}
+            entry["properties_error"] = f"{type(exc).__name__}: {exc}"[:200]
+        entry["properties"] = props
+
+        source = _find_gadget_source(props)
+        jql = None
+        if source:
+            if source["type"] == "filter":
+                fid = source["value"]
+                if fid not in filter_cache:
+                    try:
+                        f = _api_get(f"/filter/{fid}")
+                        filter_cache[fid] = {"id": fid, "name": f.get("name"), "jql": f.get("jql")}
+                    except Exception as exc:
+                        filter_cache[fid] = {"id": fid, "error": f"Filter not readable: {type(exc).__name__}"}
+                entry["source"] = {"type": "filter", **filter_cache[fid]}
+                jql = filter_cache[fid].get("jql")
+            elif source["type"] == "project":
+                jql = f"project = {source['value']}"
+                entry["source"] = {"type": "project", "id": source["value"], "jql": jql}
+            else:
+                jql = source["value"]
+                entry["source"] = {"type": "jql", "jql": jql}
+
+        if include_issues and jql:
+            try:
+                found = jira_search_issues(jql=jql, max_results=max_issues_per_gadget)
+                entry["issues"] = {
+                    "returned": found["returned"],
+                    "is_last": found.get("is_last"),
+                    "items": [
+                        {k: i.get(k) for k in ("key", "summary", "status", "assignee", "priority", "updated")}
+                        for i in found["issues"]
+                    ],
+                }
+            except Exception as exc:
+                entry["issues"] = {"error": f"{type(exc).__name__}: {exc}"[:300]}
+        gadgets.append(entry)
+
+    res: Dict[str, Any] = {
+        "id": meta.get("id"),
+        "name": meta.get("name"),
+        "description": meta.get("description") or None,
+        "owner": (meta.get("owner") or {}).get("displayName"),
+        "view_url": meta.get("view"),
+        "share_permissions": [
+            p.get("type") + (f":{(p.get('project') or p.get('group') or {}).get('name')}" if (p.get("project") or p.get("group")) else "")
+            for p in meta.get("sharePermissions", []) if p.get("type")
+        ],
+        "gadget_count": len(gadgets),
+        "gadgets": gadgets,
+    }
+    if gadget_error:
+        res["gadget_error"] = gadget_error
+    return res
+
+
 def jira_search_issues(
     jql: str,
     max_results: int = 10,
@@ -1603,6 +1761,31 @@ TOOLS_SPEC = [
             "required": ["sprint_id"],
         },
         "handler": jira_sprint_issues,
+    },
+    {
+        "name": "jira_get_dashboard",
+        "description": "Read a Jira dashboard: name, owner, sharing, and every gadget with its title, type, position, saved settings and data source (filter name + JQL, project, or JQL). Set include_issues=true to also run each gadget's JQL and return its issues. Rendered chart values are not available through the API.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "dashboard": {
+                    "type": "string",
+                    "description": "Dashboard ID (e.g. '12634') or dashboard URL (e.g. 'https://anchantoplan.atlassian.net/jira/dashboards/12634').",
+                },
+                "include_issues": {
+                    "type": "boolean",
+                    "description": "Run each gadget's JQL and include its issues (default: false).",
+                    "default": False,
+                },
+                "max_issues_per_gadget": {
+                    "type": "integer",
+                    "description": "Issues per gadget when include_issues is true (default: 10).",
+                    "default": 10,
+                },
+            },
+            "required": ["dashboard"],
+        },
+        "handler": jira_get_dashboard,
     },
 ]
 

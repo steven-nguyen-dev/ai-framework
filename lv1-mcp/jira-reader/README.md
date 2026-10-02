@@ -1,6 +1,6 @@
 # Jira Reader MCP Server (`jira-reader`)
 
-Zero-dependency universal MCP server for Jira issue inspection, comments retrieval, JQL searches, board and sprint reads (Agile API `/rest/agile/1.0`), attachment downloads, and text/log streaming. Uses Python 3 standard library only.
+Zero-dependency universal MCP server for Jira issue inspection, comments retrieval, JQL searches, board and sprint reads (Agile API `/rest/agile/1.0`), dashboard and gadget reads, attachment downloads, and text/log streaming. Uses Python 3 standard library only.
 
 ---
 
@@ -49,6 +49,7 @@ python3 server.py
 | `jira_board_issues` | `board`, `scope`, `jql`, `max_results`, `start_at` | Board issues in rank order, tagged with column, sprint, epic, flag. `scope`: `board` or `backlog`. |
 | `jira_board_sprints` | `board`, `state`, `max_results`, `start_at` | Sprints on a scrum board (`active`, `future`, `closed`). Kanban → `supports_sprints: false`. |
 | `jira_sprint_issues` | `sprint_id`, `board`, `jql`, `max_results`, `start_at` | Issues in one sprint; `board` adds column mapping. |
+| `jira_get_dashboard` | `dashboard`, `include_issues`, `max_issues_per_gadget` | Dashboard name, owner, sharing, and each gadget's title, type, position, saved settings and source (filter + JQL, project, or JQL). `include_issues` runs each gadget's JQL. Chart values not exposed by the API. |
 | `jira_list_attachments` | `issue_key` | Lists attachment filenames, sizes, MIME types, and download URLs. |
 | `jira_read_text_attachment` | `attachment_id`, `max_chars` | Streams log, CSV, JSON, or text attachments directly into model context. |
 | `jira_download_attachment` | `attachment_id`, `filename`, `output_dir` | Downloads a specific attachment file to local disk. |
