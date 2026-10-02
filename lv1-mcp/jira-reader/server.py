@@ -7,7 +7,8 @@
 Jira Reader Model Context Protocol (MCP) Server
 -----------------------------------------------
 A zero-dependency, universal MCP server providing full Jira issue inspection,
-JQL search, attachment downloads, and in-memory text/log streaming for AI agents.
+JQL search, board and sprint reads (Agile API), attachment downloads, and
+in-memory text/log streaming for AI agents.
 
 Runs out-of-the-box on Python 3 standard library on any machine (macOS, Linux, Windows).
 """
@@ -16,6 +17,7 @@ import argparse
 import base64
 import json
 import os
+import re
 import ssl
 import sys
 import tempfile
@@ -26,7 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 SERVER_NAME = "jira-reader"
-SERVER_VERSION = "1.2.0"
+SERVER_VERSION = "1.3.0"
 MCP_PROTOCOL_VERSION = "2024-11-05"
 
 # ---------------------------------------------------------------------------
@@ -883,6 +885,284 @@ def jira_read_text_attachment(
     }
 
 
+SEARCH_FIELDS = "summary,status,priority,assignee,reporter,attachment,comment,created,updated,issuetype,parent,duedate,labels"
+
+
+def _format_issue_summary(item: Dict[str, Any]) -> Dict[str, Any]:
+    """Format one issue from a search or Agile issue list into a compact dictionary."""
+    fields = item.get("fields", {}) or {}
+    att_list = fields.get("attachment", []) or []
+    comment_obj = fields.get("comment", {}) or {}
+    comment_count = comment_obj.get("total", len(comment_obj.get("comments", [])))
+
+    parent_obj = fields.get("parent")
+    parent = None
+    if parent_obj and isinstance(parent_obj, dict):
+        parent = {
+            "key": parent_obj.get("key"),
+            "summary": parent_obj.get("fields", {}).get("summary"),
+        }
+
+    return {
+        "key": item.get("key"),
+        "summary": fields.get("summary"),
+        "issue_type": (fields.get("issuetype") or {}).get("name"),
+        "is_subtask": (fields.get("issuetype") or {}).get("subtask", False),
+        "status": fields.get("status", {}).get("name") if fields.get("status") else None,
+        "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
+        "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
+        "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
+        "parent": parent,
+        "due_date": fields.get("duedate"),
+        "labels": fields.get("labels", []),
+        "comment_count": comment_count,
+        "attachment_count": len(att_list),
+        "attachments": [
+            {
+                "id": str(a.get("id")),
+                "filename": a.get("filename"),
+                "size_human": _format_size(a.get("size", 0)),
+            }
+            for a in att_list
+        ],
+        "created": fields.get("created"),
+        "updated": fields.get("updated"),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Jira Agile (Boards & Sprints) — /rest/agile/1.0, same path on Cloud and Server/DC
+# ---------------------------------------------------------------------------
+
+AGILE_BASE = "/rest/agile/1.0"
+
+
+def _parse_board_id(board: Any) -> str:
+    """Accept a numeric board ID or any Jira board URL (…/boards/579, ?rapidView=579)."""
+    raw = str(board).strip()
+    if raw.isdigit():
+        return raw
+    match = re.search(r"/boards?/(\d+)", raw) or re.search(r"[?&]rapidView=(\d+)", raw)
+    if match:
+        return match.group(1)
+    raise ValueError(f"Cannot read a board ID from '{board}'. Pass the number or the board URL.")
+
+
+def _agile_get(path: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    _, content, _ = _make_request("GET", f"{AGILE_BASE}{path}", params=params)
+    return json.loads(content.decode("utf-8")) if content else {}
+
+
+def _board_columns(board_id: str) -> Tuple[Dict[str, Any], List[Dict[str, Any]], Dict[str, str]]:
+    """Return (raw configuration, columns, status_id -> column name)."""
+    config = _agile_get(f"/board/{board_id}/configuration")
+    columns = []
+    status_to_column: Dict[str, str] = {}
+    for col in (config.get("columnConfig") or {}).get("columns", []):
+        status_ids = [str(s.get("id")) for s in col.get("statuses", []) if s.get("id") is not None]
+        entry: Dict[str, Any] = {"name": col.get("name"), "status_ids": status_ids}
+        if col.get("min") is not None:
+            entry["min"] = col["min"]
+        if col.get("max") is not None:
+            entry["max"] = col["max"]
+        columns.append(entry)
+        for sid in status_ids:
+            status_to_column[sid] = col.get("name")
+    return config, columns, status_to_column
+
+
+def _format_board_issue(item: Dict[str, Any], status_to_column: Dict[str, str]) -> Dict[str, Any]:
+    """Issue summary plus the board column, sprint, epic and flag that the Agile API adds."""
+    res = _format_issue_summary(item)
+    fields = item.get("fields", {}) or {}
+    status_id = str((fields.get("status") or {}).get("id", ""))
+    if status_to_column:
+        res["column"] = status_to_column.get(status_id)
+    sprint = fields.get("sprint")
+    if isinstance(sprint, dict):
+        res["sprint"] = {"id": sprint.get("id"), "name": sprint.get("name"), "state": sprint.get("state")}
+    epic = fields.get("epic")
+    if isinstance(epic, dict):
+        res["epic"] = {"key": epic.get("key"), "name": epic.get("name") or epic.get("summary")}
+    if fields.get("flagged"):
+        res["flagged"] = True
+    return res
+
+
+def _paged_issue_result(data: Dict[str, Any], issues: List[Dict[str, Any]]) -> Dict[str, Any]:
+    res: Dict[str, Any] = {
+        "total": data.get("total"),
+        "start_at": data.get("startAt"),
+        "max_results": data.get("maxResults"),
+        "returned": len(issues),
+        "issues": issues,
+    }
+    if data.get("isLast") is not None:
+        res["is_last"] = data["isLast"]
+    return res
+
+
+def jira_get_board(board: str) -> Dict[str, Any]:
+    """Board metadata, its saved filter (ID and JQL), columns with status mapping, and sprint support."""
+    board_id = _parse_board_id(board)
+    meta = _agile_get(f"/board/{board_id}")
+    config, columns, _ = _board_columns(board_id)
+
+    # Resolve column status IDs to names for readability.
+    v = _get_config()["api_version"]
+    status_names: Dict[str, str] = {}
+    try:
+        _, s_content, _ = _make_request("GET", f"/rest/api/{v}/status")
+        for s in json.loads(s_content.decode("utf-8")):
+            status_names[str(s.get("id"))] = s.get("name")
+    except Exception:
+        pass
+    for col in columns:
+        col["statuses"] = [status_names.get(sid, sid) for sid in col["status_ids"]]
+
+    filter_obj = config.get("filter") or {}
+    filter_info: Dict[str, Any] = {"id": str(filter_obj.get("id")) if filter_obj.get("id") else None}
+    if filter_info["id"]:
+        try:
+            _, f_content, _ = _make_request("GET", f"/rest/api/{v}/filter/{filter_info['id']}")
+            f_data = json.loads(f_content.decode("utf-8"))
+            filter_info["name"] = f_data.get("name")
+            filter_info["jql"] = f_data.get("jql")
+        except Exception as exc:
+            filter_info["error"] = f"Filter not readable: {type(exc).__name__}"
+
+    sub_query = (config.get("subQuery") or {}).get("query")
+    location = meta.get("location") or {}
+    estimation = config.get("estimation") or {}
+
+    return {
+        "id": meta.get("id"),
+        "name": meta.get("name"),
+        "type": meta.get("type"),
+        "supports_sprints": meta.get("type") == "scrum",
+        "location": {
+            k: location.get(k)
+            for k in ("type", "projectKey", "projectName", "displayName", "name")
+            if location.get(k)
+        } or None,
+        "filter": filter_info,
+        "sub_query": sub_query,
+        "columns": columns,
+        "estimation_field": (estimation.get("field") or {}).get("displayName"),
+        "ranking_field_id": (config.get("ranking") or {}).get("rankCustomFieldId"),
+    }
+
+
+def jira_board_issues(
+    board: str,
+    scope: str = "board",
+    jql: Optional[str] = None,
+    max_results: int = 50,
+    start_at: int = 0,
+) -> Dict[str, Any]:
+    """Issues on a board in rank order, each tagged with its board column."""
+    board_id = _parse_board_id(board)
+    scope_paths = {"board": "issue", "backlog": "backlog"}
+    if scope not in scope_paths:
+        raise ValueError("scope must be 'board' or 'backlog'.")
+
+    try:
+        _, _, status_to_column = _board_columns(board_id)
+    except Exception:
+        status_to_column = {}
+
+    data = _agile_get(
+        f"/board/{board_id}/{scope_paths[scope]}",
+        params={
+            "startAt": start_at,
+            "maxResults": max_results,
+            "jql": jql,
+            "fields": SEARCH_FIELDS + ",sprint,epic,flagged",
+        },
+    )
+    issues = [_format_board_issue(i, status_to_column) for i in data.get("issues", [])]
+    res = _paged_issue_result(data, issues)
+    res["board_id"] = board_id
+    res["scope"] = scope
+    return res
+
+
+def jira_board_sprints(
+    board: str,
+    state: str = "active,future",
+    max_results: int = 50,
+    start_at: int = 0,
+) -> Dict[str, Any]:
+    """Sprints on a scrum board, filtered by state."""
+    board_id = _parse_board_id(board)
+    try:
+        data = _agile_get(
+            f"/board/{board_id}/sprint",
+            params={"state": state or None, "startAt": start_at, "maxResults": max_results},
+        )
+    except RuntimeError as exc:
+        if "HTTP Error 400" in str(exc):
+            return {
+                "board_id": board_id,
+                "supports_sprints": False,
+                "message": "This board does not support sprints (kanban). Use jira_board_issues instead.",
+            }
+        raise
+
+    sprints = [
+        {
+            "id": s.get("id"),
+            "name": s.get("name"),
+            "state": s.get("state"),
+            "goal": s.get("goal") or None,
+            "start_date": s.get("startDate"),
+            "end_date": s.get("endDate"),
+            "complete_date": s.get("completeDate"),
+        }
+        for s in data.get("values", [])
+    ]
+    return {
+        "board_id": board_id,
+        "supports_sprints": True,
+        "start_at": data.get("startAt"),
+        "max_results": data.get("maxResults"),
+        "is_last": data.get("isLast"),
+        "returned": len(sprints),
+        "sprints": sprints,
+    }
+
+
+def jira_sprint_issues(
+    sprint_id: str,
+    board: Optional[str] = None,
+    jql: Optional[str] = None,
+    max_results: int = 50,
+    start_at: int = 0,
+) -> Dict[str, Any]:
+    """Issues in one sprint; pass the board to tag each issue with its column."""
+    sid = str(sprint_id).strip()
+    status_to_column: Dict[str, str] = {}
+    if board:
+        try:
+            _, _, status_to_column = _board_columns(_parse_board_id(board))
+        except Exception:
+            pass
+
+    data = _agile_get(
+        f"/sprint/{sid}/issue",
+        params={
+            "startAt": start_at,
+            "maxResults": max_results,
+            "jql": jql,
+            "fields": SEARCH_FIELDS + ",sprint,epic,flagged",
+        },
+    )
+    issues = [_format_board_issue(i, status_to_column) for i in data.get("issues", [])]
+    res = _paged_issue_result(data, issues)
+    res["sprint_id"] = sid
+    return res
+
+
 def jira_search_issues(
     jql: str,
     max_results: int = 10,
@@ -898,7 +1178,7 @@ def jira_search_issues(
     params: Dict[str, Any] = {
         "jql": jql,
         "maxResults": max_results,
-        "fields": "summary,status,priority,assignee,reporter,attachment,comment,created,updated,issuetype,parent,duedate,labels",
+        "fields": SEARCH_FIELDS,
     }
     if start_at is not None:
         params["startAt"] = start_at
@@ -919,46 +1199,7 @@ def jira_search_issues(
 
     data = json.loads(content.decode("utf-8"))
 
-    issues = []
-    for item in data.get("issues", []):
-        fields = item.get("fields", {})
-        att_list = fields.get("attachment", [])
-        comment_obj = fields.get("comment", {})
-        comment_count = comment_obj.get("total", len(comment_obj.get("comments", [])))
-        
-        parent_obj = fields.get("parent")
-        parent = None
-        if parent_obj and isinstance(parent_obj, dict):
-            parent = {
-                "key": parent_obj.get("key"),
-                "summary": parent_obj.get("fields", {}).get("summary"),
-            }
-
-        issues.append({
-            "key": item.get("key"),
-            "summary": fields.get("summary"),
-            "issue_type": fields.get("issuetype", {}).get("name"),
-            "is_subtask": fields.get("issuetype", {}).get("subtask", False),
-            "status": fields.get("status", {}).get("name") if fields.get("status") else None,
-            "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
-            "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
-            "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
-            "parent": parent,
-            "due_date": fields.get("duedate"),
-            "labels": fields.get("labels", []),
-            "comment_count": comment_count,
-            "attachment_count": len(att_list),
-            "attachments": [
-                {
-                    "id": str(a.get("id")),
-                    "filename": a.get("filename"),
-                    "size_human": _format_size(a.get("size", 0)),
-                }
-                for a in att_list
-            ],
-            "created": fields.get("created"),
-            "updated": fields.get("updated"),
-        })
+    issues = [_format_issue_summary(item) for item in data.get("issues", [])]
 
     res: Dict[str, Any] = {
         "returned": len(issues),
@@ -1249,6 +1490,119 @@ TOOLS_SPEC = [
             "required": ["jql"],
         },
         "handler": jira_search_issues,
+    },
+    {
+        "name": "jira_get_board",
+        "description": "Read a Jira board's setup: name, type (scrum/kanban), location, saved filter ID and JQL, sub-query, columns with their statuses, and estimation field. Accepts the board ID or any board URL.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "board": {
+                    "type": "string",
+                    "description": "Board ID (e.g. '579') or board URL (e.g. 'https://anchantoplan.atlassian.net/jira/people/<id>/boards/579').",
+                }
+            },
+            "required": ["board"],
+        },
+        "handler": jira_get_board,
+    },
+    {
+        "name": "jira_board_issues",
+        "description": "List issues on a Jira board in board rank order, each tagged with its board column, sprint, epic and flag. scope='board' returns everything on the board; scope='backlog' returns only backlog issues (scrum).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "board": {
+                    "type": "string",
+                    "description": "Board ID or board URL.",
+                },
+                "scope": {
+                    "type": "string",
+                    "enum": ["board", "backlog"],
+                    "description": "'board' (default) or 'backlog'.",
+                    "default": "board",
+                },
+                "jql": {
+                    "type": "string",
+                    "description": "(Optional) Extra JQL to narrow the board's issues, e.g. 'assignee = currentUser()'.",
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "Maximum issues to return (default: 50).",
+                    "default": 50,
+                },
+                "start_at": {
+                    "type": "integer",
+                    "description": "Index of the first issue (pagination, default: 0).",
+                    "default": 0,
+                },
+            },
+            "required": ["board"],
+        },
+        "handler": jira_board_issues,
+    },
+    {
+        "name": "jira_board_sprints",
+        "description": "List sprints on a scrum board with state, goal and dates. Returns supports_sprints=false for kanban boards.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "board": {
+                    "type": "string",
+                    "description": "Board ID or board URL.",
+                },
+                "state": {
+                    "type": "string",
+                    "description": "Comma-separated states: active, future, closed (default: 'active,future').",
+                    "default": "active,future",
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "Maximum sprints to return (default: 50).",
+                    "default": 50,
+                },
+                "start_at": {
+                    "type": "integer",
+                    "description": "Index of the first sprint (pagination, default: 0).",
+                    "default": 0,
+                },
+            },
+            "required": ["board"],
+        },
+        "handler": jira_board_sprints,
+    },
+    {
+        "name": "jira_sprint_issues",
+        "description": "List issues in one sprint. Pass the board to tag each issue with its board column.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "sprint_id": {
+                    "type": "string",
+                    "description": "Sprint ID from jira_board_sprints.",
+                },
+                "board": {
+                    "type": "string",
+                    "description": "(Optional) Board ID or URL, used only to map statuses to columns.",
+                },
+                "jql": {
+                    "type": "string",
+                    "description": "(Optional) Extra JQL to narrow the sprint's issues.",
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "Maximum issues to return (default: 50).",
+                    "default": 50,
+                },
+                "start_at": {
+                    "type": "integer",
+                    "description": "Index of the first issue (pagination, default: 0).",
+                    "default": 0,
+                },
+            },
+            "required": ["sprint_id"],
+        },
+        "handler": jira_sprint_issues,
     },
 ]
 
