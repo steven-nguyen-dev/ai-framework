@@ -7,7 +7,8 @@
 Jira Reader Model Context Protocol (MCP) Server
 -----------------------------------------------
 A zero-dependency, universal MCP server providing full Jira issue inspection,
-JQL search, board and sprint reads (Agile API), dashboard and gadget reads,
+JQL search and counts, JQL validation, statuses, saved filters, board and sprint
+reads (Agile API), dashboard and gadget reads, changelogs, worklogs,
 attachment downloads, and
 in-memory text/log streaming for AI agents.
 
@@ -29,7 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 SERVER_NAME = "jira-reader"
-SERVER_VERSION = "1.4.0"
+SERVER_VERSION = "1.5.0"
 MCP_PROTOCOL_VERSION = "2024-11-05"
 
 # ---------------------------------------------------------------------------
@@ -245,8 +246,12 @@ def _make_request(
     params: Optional[Dict[str, Any]] = None,
     headers: Optional[Dict[str, str]] = None,
     timeout: int = 60,
+    body: Optional[Any] = None,
 ) -> Tuple[int, bytes, Dict[str, str]]:
-    """Execute an authenticated HTTP request to Jira using standard library urllib."""
+    """Execute an authenticated HTTP request to Jira using standard library urllib.
+
+    `body`, when given, is sent as JSON.
+    """
     config = _get_config()
     
     if path_or_url.startswith("http://") or path_or_url.startswith("https://"):
@@ -261,9 +266,12 @@ def _make_request(
             sep = "&" if "?" in full_url else "?"
             full_url = f"{full_url}{sep}{query_string}"
 
-    req = urllib.request.Request(full_url, method=method.upper())
+    data = json.dumps(body).encode("utf-8") if body is not None else None
+    req = urllib.request.Request(full_url, data=data, method=method.upper())
     req.add_header("Accept", "application/json")
     req.add_header("User-Agent", f"{SERVER_NAME}/{SERVER_VERSION}")
+    if data is not None:
+        req.add_header("Content-Type", "application/json")
 
     if config["pat"]:
         req.add_header("Authorization", f"Bearer {config['pat']}")
@@ -888,9 +896,116 @@ def jira_read_text_attachment(
 
 SEARCH_FIELDS = "summary,status,priority,assignee,reporter,attachment,comment,created,updated,issuetype,parent,duedate,labels"
 
+# Time tracking: the issue's own values and the Σ values (issue + its sub-tasks), in seconds.
+TIME_FIELDS = {
+    "timeoriginalestimate": "original_estimate_h",
+    "timeestimate": "remaining_h",
+    "timespent": "time_spent_h",
+    "aggregatetimeoriginalestimate": "sum_original_estimate_h",
+    "aggregatetimeestimate": "sum_remaining_h",
+    "aggregatetimespent": "sum_time_spent_h",
+}
 
-def _format_issue_summary(item: Dict[str, Any]) -> Dict[str, Any]:
-    """Format one issue from a search or Agile issue list into a compact dictionary."""
+_FIELD_INDEX_CACHE: Optional[Dict[str, Any]] = None
+
+
+def _field_index() -> Dict[str, Any]:
+    """Map field names, IDs and JQL clause names (lower-cased) to field IDs, from GET /field. Cached per process."""
+    global _FIELD_INDEX_CACHE
+    if _FIELD_INDEX_CACHE is not None:
+        return _FIELD_INDEX_CACHE
+    by_key: Dict[str, str] = {}
+    names: Dict[str, str] = {}
+    sprint_id: Optional[str] = None
+    try:
+        for f in _api_get("/field"):
+            fid = f.get("id")
+            if not fid:
+                continue
+            names[fid] = f.get("name") or fid
+            for alias in [fid, f.get("key"), f.get("name"), *(f.get("clauseNames") or [])]:
+                if alias:
+                    by_key.setdefault(str(alias).strip().lower(), fid)
+            schema = f.get("schema") or {}
+            if sprint_id is None and str(schema.get("custom", "")).endswith(":gh-sprint"):
+                sprint_id = fid
+    except Exception as exc:
+        sys.stderr.write(f"[{SERVER_NAME}] Warning: field list unavailable: {exc}\n")
+    _FIELD_INDEX_CACHE = {"by_key": by_key, "names": names, "sprint": sprint_id}
+    return _FIELD_INDEX_CACHE
+
+
+def _resolve_fields(requested: Optional[List[str]]) -> Tuple[Dict[str, str], List[str]]:
+    """Resolve field names or IDs (e.g. 'Estimated Delivery Date', 'customfield_10050') to {id: display name}."""
+    if not requested:
+        return {}, []
+    if isinstance(requested, str):
+        requested = [p for p in requested.split(",")]
+    idx = _field_index()
+    resolved: Dict[str, str] = {}
+    unknown: List[str] = []
+    for raw in requested:
+        name = str(raw).strip()
+        if not name:
+            continue
+        fid = idx["by_key"].get(name.lower())
+        if fid:
+            resolved[fid] = idx["names"].get(fid, name)
+        else:
+            unknown.append(name)
+    return resolved, unknown
+
+
+def _issue_field_list(extra: Optional[Dict[str, str]] = None) -> str:
+    parts = SEARCH_FIELDS.split(",") + list(TIME_FIELDS)
+    sprint = _field_index().get("sprint")
+    if sprint:
+        parts.append(sprint)
+    parts.extend((extra or {}).keys())
+    return ",".join(dict.fromkeys(parts))
+
+
+_CATEGORY = {"new": "TODO", "indeterminate": "IN_PROGRESS", "done": "DONE", "undefined": "UNDEFINED"}
+
+
+def _category(cat: Any) -> Optional[str]:
+    """Normalise status category to TODO / IN_PROGRESS / DONE (the issue API uses new / indeterminate / done)."""
+    if isinstance(cat, dict):
+        cat = cat.get("key") or cat.get("name")
+    if not cat:
+        return None
+    return _CATEGORY.get(str(cat).lower(), str(cat).upper())
+
+
+def _hours(seconds: Any) -> Optional[float]:
+    return round(seconds / 3600.0, 2) if isinstance(seconds, (int, float)) else None
+
+
+def _format_sprints(val: Any) -> Optional[List[Dict[str, Any]]]:
+    if not val:
+        return None
+    items = val if isinstance(val, list) else [val]
+    out = []
+    for s in items:
+        if isinstance(s, dict):
+            out.append({"id": s.get("id"), "name": s.get("name"), "state": s.get("state")})
+        elif isinstance(s, str):
+            # Server/DC legacy string: com.atlassian.greenhopper.service.sprint.Sprint@x[id=1,state=ACTIVE,name=S1,...]
+            m = {k: v for k, v in re.findall(r"(id|state|name)=([^,\]]*)", s)}
+            out.append({"id": m.get("id"), "name": m.get("name"), "state": m.get("state")})
+    return out or None
+
+
+def _format_issue_summary(
+    item: Dict[str, Any],
+    extra: Optional[Dict[str, str]] = None,
+    compact: bool = True,
+) -> Dict[str, Any]:
+    """Format one issue from a search or Agile issue list into a compact dictionary.
+
+    Always carries status ID and category, time tracking (own and Σ) and sprints.
+    `extra` maps requested field IDs to display names; `compact` drops the attachment list.
+    """
     fields = item.get("fields", {}) or {}
     att_list = fields.get("attachment", []) or []
     comment_obj = fields.get("comment", {}) or {}
@@ -904,12 +1019,17 @@ def _format_issue_summary(item: Dict[str, Any]) -> Dict[str, Any]:
             "summary": parent_obj.get("fields", {}).get("summary"),
         }
 
-    return {
+    status_obj = fields.get("status") or {}
+    category = status_obj.get("statusCategory") or {}
+
+    res: Dict[str, Any] = {
         "key": item.get("key"),
         "summary": fields.get("summary"),
         "issue_type": (fields.get("issuetype") or {}).get("name"),
         "is_subtask": (fields.get("issuetype") or {}).get("subtask", False),
-        "status": fields.get("status", {}).get("name") if fields.get("status") else None,
+        "status": status_obj.get("name"),
+        "status_id": str(status_obj["id"]) if status_obj.get("id") is not None else None,
+        "status_category": _category(category),
         "priority": fields.get("priority", {}).get("name") if fields.get("priority") else None,
         "assignee": fields.get("assignee", {}).get("displayName") if fields.get("assignee") else "Unassigned",
         "reporter": fields.get("reporter", {}).get("displayName") if fields.get("reporter") else None,
@@ -917,18 +1037,34 @@ def _format_issue_summary(item: Dict[str, Any]) -> Dict[str, Any]:
         "due_date": fields.get("duedate"),
         "labels": fields.get("labels", []),
         "comment_count": comment_count,
-        "attachment_count": len(att_list),
-        "attachments": [
-            {
-                "id": str(a.get("id")),
-                "filename": a.get("filename"),
-                "size_human": _format_size(a.get("size", 0)),
-            }
-            for a in att_list
-        ],
         "created": fields.get("created"),
         "updated": fields.get("updated"),
     }
+
+    time_tracking = {label: _hours(fields.get(fid)) for fid, label in TIME_FIELDS.items() if fields.get(fid) is not None}
+    if time_tracking:
+        res["time_tracking"] = time_tracking
+
+    sprint_field = _FIELD_INDEX_CACHE.get("sprint") if _FIELD_INDEX_CACHE else None
+    if sprint_field and sprint_field in fields:
+        res["sprints"] = _format_sprints(fields.get(sprint_field))
+
+    if "attachment" in fields:
+        res["attachment_count"] = len(att_list)
+        if not compact:
+            res["attachments"] = [
+                {
+                    "id": str(a.get("id")),
+                    "filename": a.get("filename"),
+                    "size_human": _format_size(a.get("size", 0)),
+                }
+                for a in att_list
+            ]
+
+    if extra:
+        res["fields"] = {name: _clean_jira_field_value(fields.get(fid)) for fid, name in extra.items()}
+
+    return res
 
 
 # ---------------------------------------------------------------------------
@@ -972,9 +1108,14 @@ def _board_columns(board_id: str) -> Tuple[Dict[str, Any], List[Dict[str, Any]],
     return config, columns, status_to_column
 
 
-def _format_board_issue(item: Dict[str, Any], status_to_column: Dict[str, str]) -> Dict[str, Any]:
+def _format_board_issue(
+    item: Dict[str, Any],
+    status_to_column: Dict[str, str],
+    extra: Optional[Dict[str, str]] = None,
+    compact: bool = True,
+) -> Dict[str, Any]:
     """Issue summary plus the board column, sprint, epic and flag that the Agile API adds."""
-    res = _format_issue_summary(item)
+    res = _format_issue_summary(item, extra=extra, compact=compact)
     fields = item.get("fields", {}) or {}
     status_id = str((fields.get("status") or {}).get("id", ""))
     if status_to_column:
@@ -1036,6 +1177,22 @@ def jira_get_board(board: str) -> Dict[str, Any]:
     location = meta.get("location") or {}
     estimation = config.get("estimation") or {}
 
+    quick_filters: Any = []
+    try:
+        qf_start = 0
+        while True:
+            qf = _agile_get(f"/board/{board_id}/quickfilter", params={"startAt": qf_start, "maxResults": 50})
+            values = qf.get("values", [])
+            quick_filters.extend(
+                {"id": q.get("id"), "name": q.get("name"), "jql": q.get("jql"), "description": q.get("description") or None}
+                for q in values
+            )
+            qf_start += len(values)
+            if qf.get("isLast", True) or not values:
+                break
+    except Exception as exc:
+        quick_filters = {"error": f"Quick filters not readable: {type(exc).__name__}"}
+
     return {
         "id": meta.get("id"),
         "name": meta.get("name"),
@@ -1049,6 +1206,7 @@ def jira_get_board(board: str) -> Dict[str, Any]:
         "filter": filter_info,
         "sub_query": sub_query,
         "columns": columns,
+        "quick_filters": quick_filters,
         "estimation_field": (estimation.get("field") or {}).get("displayName"),
         "ranking_field_id": (config.get("ranking") or {}).get("rankCustomFieldId"),
     }
@@ -1060,6 +1218,8 @@ def jira_board_issues(
     jql: Optional[str] = None,
     max_results: int = 50,
     start_at: int = 0,
+    fields: Optional[List[str]] = None,
+    compact: bool = True,
 ) -> Dict[str, Any]:
     """Issues on a board in rank order, each tagged with its board column."""
     board_id = _parse_board_id(board)
@@ -1072,19 +1232,22 @@ def jira_board_issues(
     except Exception:
         status_to_column = {}
 
+    extra, unknown = _resolve_fields(fields)
     data = _agile_get(
         f"/board/{board_id}/{scope_paths[scope]}",
         params={
             "startAt": start_at,
             "maxResults": max_results,
             "jql": jql,
-            "fields": SEARCH_FIELDS + ",sprint,epic,flagged",
+            "fields": _issue_field_list(extra) + ",sprint,epic,flagged",
         },
     )
-    issues = [_format_board_issue(i, status_to_column) for i in data.get("issues", [])]
+    issues = [_format_board_issue(i, status_to_column, extra, compact) for i in data.get("issues", [])]
     res = _paged_issue_result(data, issues)
     res["board_id"] = board_id
     res["scope"] = scope
+    if unknown:
+        res["unknown_fields"] = unknown
     return res
 
 
@@ -1139,6 +1302,8 @@ def jira_sprint_issues(
     jql: Optional[str] = None,
     max_results: int = 50,
     start_at: int = 0,
+    fields: Optional[List[str]] = None,
+    compact: bool = True,
 ) -> Dict[str, Any]:
     """Issues in one sprint; pass the board to tag each issue with its column."""
     sid = str(sprint_id).strip()
@@ -1149,18 +1314,21 @@ def jira_sprint_issues(
         except Exception:
             pass
 
+    extra, unknown = _resolve_fields(fields)
     data = _agile_get(
         f"/sprint/{sid}/issue",
         params={
             "startAt": start_at,
             "maxResults": max_results,
             "jql": jql,
-            "fields": SEARCH_FIELDS + ",sprint,epic,flagged",
+            "fields": _issue_field_list(extra) + ",sprint,epic,flagged",
         },
     )
-    issues = [_format_board_issue(i, status_to_column) for i in data.get("issues", [])]
+    issues = [_format_board_issue(i, status_to_column, extra, compact) for i in data.get("issues", [])]
     res = _paged_issue_result(data, issues)
     res["sprint_id"] = sid
+    if unknown:
+        res["unknown_fields"] = unknown
     return res
 
 
@@ -1219,6 +1387,16 @@ def _find_gadget_source(props: Any) -> Optional[Dict[str, str]]:
     return None
 
 
+# Keys some built-in gadgets answer to without listing them (community-observed, not documented).
+UNLISTED_GADGET_KEYS = ("id", "filterId", "config")
+
+
+def _gadget_property(dashboard_id: str, gadget_id: str, key: str) -> Any:
+    return _api_get(
+        f"/dashboard/{dashboard_id}/items/{gadget_id}/properties/{urllib.parse.quote(key)}"
+    ).get("value")
+
+
 def _gadget_properties(dashboard_id: str, gadget_id: str) -> Dict[str, Any]:
     keys = _api_get(f"/dashboard/{dashboard_id}/items/{gadget_id}/properties").get("keys", [])
     props: Dict[str, Any] = {}
@@ -1227,11 +1405,19 @@ def _gadget_properties(dashboard_id: str, gadget_id: str) -> Dict[str, Any]:
         if not key:
             continue
         try:
-            props[key] = _api_get(
-                f"/dashboard/{dashboard_id}/items/{gadget_id}/properties/{urllib.parse.quote(key)}"
-            ).get("value")
+            props[key] = _gadget_property(dashboard_id, gadget_id, key)
         except Exception as exc:
             props[key] = f"<unreadable: {type(exc).__name__}>"
+
+    # Listed keys may hold no source (e.g. only 'itemkey'); probe the unlisted ones.
+    if not _find_gadget_source(props):
+        for key in UNLISTED_GADGET_KEYS:
+            if key in props:
+                continue
+            try:
+                props[key] = _gadget_property(dashboard_id, gadget_id, key)
+            except Exception:
+                pass
     return props
 
 
@@ -1269,6 +1455,10 @@ def jira_get_dashboard(
         entry["properties"] = props
 
         source = _find_gadget_source(props)
+        bare_id = str(props.get("id", "")).strip()
+        if not source and bare_id.isdigit():
+            # A bare numeric 'id' is a filter or a project ID; try filter first.
+            source = {"type": "filter", "value": bare_id, "fallback_project": True}
         jql = None
         if source:
             if source["type"] == "filter":
@@ -1279,6 +1469,10 @@ def jira_get_dashboard(
                         filter_cache[fid] = {"id": fid, "name": f.get("name"), "jql": f.get("jql")}
                     except Exception as exc:
                         filter_cache[fid] = {"id": fid, "error": f"Filter not readable: {type(exc).__name__}"}
+                if source.get("fallback_project") and filter_cache[fid].get("error"):
+                    source = {"type": "project", "value": fid}
+            if source["type"] == "filter":
+                fid = source["value"]
                 entry["source"] = {"type": "filter", **filter_cache[fid]}
                 jql = filter_cache[fid].get("jql")
             elif source["type"] == "project":
@@ -1291,7 +1485,12 @@ def jira_get_dashboard(
         if include_issues and jql:
             try:
                 found = jira_search_issues(jql=jql, max_results=max_issues_per_gadget)
+                try:
+                    count = jira_count(jql).get("count")
+                except Exception:
+                    count = None
                 entry["issues"] = {
+                    "count": count,
                     "returned": found["returned"],
                     "is_last": found.get("is_last"),
                     "items": [
@@ -1326,17 +1525,21 @@ def jira_search_issues(
     max_results: int = 10,
     start_at: Optional[int] = None,
     next_page_token: Optional[str] = None,
+    fields: Optional[List[str]] = None,
+    compact: bool = True,
 ) -> Dict[str, Any]:
     """
     Search Jira issues using JQL (Jira Query Language).
     Supports both Jira Cloud (/search/jql with nextPageToken) and Jira Server/DC (/search with startAt).
+    `fields` adds named fields (names or IDs, resolved via GET /field); `compact` drops attachment lists.
     """
     config = _get_config()
     v = config["api_version"]
+    extra, unknown = _resolve_fields(fields)
     params: Dict[str, Any] = {
         "jql": jql,
         "maxResults": max_results,
-        "fields": SEARCH_FIELDS,
+        "fields": _issue_field_list(extra),
     }
     if start_at is not None:
         params["startAt"] = start_at
@@ -1357,12 +1560,14 @@ def jira_search_issues(
 
     data = json.loads(content.decode("utf-8"))
 
-    issues = [_format_issue_summary(item) for item in data.get("issues", [])]
+    issues = [_format_issue_summary(item, extra=extra, compact=compact) for item in data.get("issues", [])]
 
     res: Dict[str, Any] = {
         "returned": len(issues),
         "issues": issues,
     }
+    if unknown:
+        res["unknown_fields"] = unknown
     if "total" in data and data["total"] is not None:
         res["total"] = data["total"]
     if "startAt" in data and data["startAt"] is not None:
@@ -1373,6 +1578,378 @@ def jira_search_issues(
         res["is_last"] = data["isLast"]
 
     return res
+
+
+# ---------------------------------------------------------------------------
+# Query helpers: count, JQL validation, statuses, saved filters
+# ---------------------------------------------------------------------------
+
+def jira_count(jql: str) -> Dict[str, Any]:
+    """Number of issues matching a JQL query, without fetching them."""
+    v = _get_config()["api_version"]
+    try:
+        _, content, _ = _make_request("POST", f"/rest/api/{v}/search/approximate-count", body={"jql": jql})
+        return {"jql": jql, "count": json.loads(content.decode("utf-8")).get("count"), "approximate": True}
+    except FileNotFoundError:
+        # Server / Data Center: legacy search returns an exact total.
+        _, content, _ = _make_request("GET", f"/rest/api/{v}/search", params={"jql": jql, "maxResults": 0, "fields": "id"})
+        return {"jql": jql, "count": json.loads(content.decode("utf-8")).get("total"), "approximate": False}
+
+
+def jira_validate_jql(jql: Any) -> Dict[str, Any]:
+    """Check one or more JQL queries for syntax and validation errors (strict)."""
+    queries = [jql] if isinstance(jql, str) else list(jql)
+    v = _get_config()["api_version"]
+    try:
+        _, content, _ = _make_request(
+            "POST", f"/rest/api/{v}/jql/parse", params={"validation": "strict"}, body={"queries": queries}
+        )
+    except FileNotFoundError:
+        return {"error": "JQL parse endpoint not available on this Jira version (needs Jira Cloud)."}
+    except RuntimeError as exc:
+        if "HTTP Error 400" not in str(exc):
+            raise
+        body = str(exc).split("\n", 1)[-1]
+        try:
+            errs = json.loads(body).get("errorMessages") or [body]
+        except ValueError:
+            errs = [body]
+        return {"results": [{"jql": q, "valid": False, "errors": errs, "warnings": []} for q in queries], "all_valid": False}
+    parsed = json.loads(content.decode("utf-8")).get("queries", [])
+    results = []
+    for i, q in enumerate(parsed):
+        errors = q.get("errors") or []
+        results.append({
+            "jql": q.get("query", queries[i] if i < len(queries) else None),
+            "valid": not errors,
+            "errors": errors,
+            "warnings": q.get("warnings") or [],
+        })
+    return {"results": results, "all_valid": all(r["valid"] for r in results)}
+
+
+def _format_status(s: Dict[str, Any]) -> Dict[str, Any]:
+    cat = _category(s.get("statusCategory"))
+    scope = s.get("scope") or {}
+    out: Dict[str, Any] = {"id": str(s.get("id")), "name": s.get("name"), "category": cat}
+    if scope:
+        out["scope"] = scope.get("type")
+        if (scope.get("project") or {}).get("id"):
+            out["scope_project_id"] = scope["project"]["id"]
+    return out
+
+
+def jira_list_statuses(project: Optional[str] = None, name: Optional[str] = None) -> Dict[str, Any]:
+    """Statuses with ID, category and scope. With `project`: the statuses its issue types use. Flags duplicate names."""
+    statuses: Dict[str, Dict[str, Any]] = {}
+
+    if project:
+        key = str(project).strip()
+        for it in _api_get(f"/project/{urllib.parse.quote(key)}/statuses"):
+            for s in it.get("statuses", []):
+                entry = statuses.setdefault(str(s.get("id")), _format_status(s))
+                entry.setdefault("issue_types", []).append(it.get("name"))
+        # Enrich with scope (GLOBAL = company-managed, PROJECT = team-managed); Cloud only.
+        ids = list(statuses)
+        for i in range(0, len(ids), 50):
+            try:
+                v = _get_config()["api_version"]
+                query = urllib.parse.urlencode([("id", sid) for sid in ids[i:i + 50]])
+                _, content, _ = _make_request("GET", f"/rest/api/{v}/statuses?{query}")
+                for s in json.loads(content.decode("utf-8")):
+                    sid = str(s.get("id"))
+                    if sid in statuses:
+                        full = _format_status(s)
+                        for k in ("scope", "scope_project_id"):
+                            if k in full:
+                                statuses[sid][k] = full[k]
+            except Exception:
+                break
+        if name:
+            statuses = {k: s for k, s in statuses.items() if name.lower() in str(s.get("name", "")).lower()}
+    else:
+        start = 0
+        while True:
+            page = _api_get("/statuses/search", params={"searchString": name, "startAt": start, "maxResults": 200})
+            values = page.get("values", [])
+            for s in values:
+                statuses[str(s.get("id"))] = _format_status(s)
+            start += len(values)
+            if page.get("isLast", True) or not values or start >= 1000:
+                break
+
+    by_name: Dict[str, List[str]] = {}
+    for sid, s in statuses.items():
+        by_name.setdefault(str(s.get("name", "")).strip().lower(), []).append(sid)
+    duplicates = {
+        statuses[ids[0]]["name"]: ids for ids in by_name.values() if len(ids) > 1
+    }
+
+    res: Dict[str, Any] = {"project": project, "count": len(statuses), "statuses": list(statuses.values())}
+    if duplicates:
+        res["duplicate_names"] = duplicates
+        res["note"] = "Same name, different status IDs: filter by status ID or category, not by name."
+    return res
+
+
+def jira_search_filters(
+    name: Optional[str] = None,
+    filter_id: Optional[str] = None,
+    owner_account_id: Optional[str] = None,
+    max_results: int = 20,
+) -> Dict[str, Any]:
+    """Find saved filters with their JQL, owner, sharing, edit rights and subscriptions."""
+    params: Dict[str, Any] = {
+        "filterName": name,
+        "id": str(filter_id).strip() if filter_id else None,
+        "accountId": owner_account_id,
+        "maxResults": max_results,
+        "expand": "description,jql,owner,sharePermissions,editPermissions,isWritable,subscriptions,viewUrl,favourite",
+    }
+    data = _api_get("/filter/search", params=params)
+
+    def _perm(p: Dict[str, Any]) -> str:
+        target = p.get("project") or p.get("group") or p.get("user") or {}
+        label = target.get("name") or target.get("displayName") or target.get("key")
+        return f"{p.get('type')}:{label}" if label else str(p.get("type"))
+
+    filters = []
+    for f in data.get("values", []):
+        subs = (f.get("subscriptions") or {}).get("items", [])
+        filters.append({
+            "id": f.get("id"),
+            "name": f.get("name"),
+            "description": f.get("description") or None,
+            "jql": f.get("jql"),
+            "owner": (f.get("owner") or {}).get("displayName"),
+            "view_url": f.get("viewUrl"),
+            "favourite": f.get("favourite"),
+            "you_can_edit": f.get("isWritable"),
+            "share_permissions": [_perm(p) for p in f.get("sharePermissions", [])],
+            "edit_permissions": [_perm(p) for p in f.get("editPermissions", [])],
+            "subscriptions": [
+                {
+                    "user": (s.get("user") or {}).get("displayName"),
+                    "group": (s.get("group") or {}).get("name"),
+                }
+                for s in subs
+            ],
+        })
+    return {
+        "total": data.get("total"),
+        "returned": len(filters),
+        "is_last": data.get("isLast"),
+        "filters": filters,
+    }
+
+
+# ---------------------------------------------------------------------------
+# History: changelog and worklogs
+# ---------------------------------------------------------------------------
+
+def _to_iso(ts: Any) -> Any:
+    """Bulk changelog may return epoch milliseconds; normalise to ISO-8601 UTC."""
+    if isinstance(ts, (int, float)):
+        import datetime as _dt
+        return _dt.datetime.fromtimestamp(ts / 1000.0, tz=_dt.timezone.utc).isoformat()
+    return ts
+
+
+def _parse_since(value: Optional[str]) -> Optional[int]:
+    """'2026-09-01', ISO datetime, or relative '7d' / '24h' → epoch milliseconds."""
+    if not value:
+        return None
+    import datetime as _dt
+    raw = str(value).strip()
+    m = re.fullmatch(r"(\d+)([dh])", raw)
+    if m:
+        delta = _dt.timedelta(days=int(m.group(1))) if m.group(2) == "d" else _dt.timedelta(hours=int(m.group(1)))
+        return int((_dt.datetime.now(_dt.timezone.utc) - delta).timestamp() * 1000)
+    dt = _dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=_dt.timezone.utc)
+    return int(dt.timestamp() * 1000)
+
+
+def _issues_for(issue_key: Optional[str], jql: Optional[str], max_issues: int) -> List[Dict[str, Any]]:
+    """Resolve an issue key or a JQL query to [{id, key, created, status}]."""
+    if issue_key:
+        data = _api_get(f"/issue/{urllib.parse.quote(issue_key.strip().upper())}", params={"fields": "created,status,summary"})
+        return [{"id": str(data.get("id")), "key": data.get("key"), "summary": data["fields"].get("summary"),
+                 "created": data["fields"].get("created"), "status": (data["fields"].get("status") or {}).get("name")}]
+    if not jql:
+        raise ValueError("Pass issue_key or jql.")
+    v = _get_config()["api_version"]
+    params = {"jql": jql, "maxResults": max_issues, "fields": "created,status,summary"}
+    try:
+        _, content, _ = _make_request("GET", f"/rest/api/{v}/search/jql", params=params)
+    except FileNotFoundError:
+        _, content, _ = _make_request("GET", f"/rest/api/{v}/search", params=params)
+    return [
+        {"id": str(i.get("id")), "key": i.get("key"), "summary": i["fields"].get("summary"),
+         "created": i["fields"].get("created"), "status": (i["fields"].get("status") or {}).get("name")}
+        for i in json.loads(content.decode("utf-8")).get("issues", [])
+    ]
+
+
+def _format_history(h: Dict[str, Any], field_filter: Optional[set]) -> Optional[Dict[str, Any]]:
+    items = []
+    for it in h.get("items", []):
+        fname = str(it.get("field") or it.get("fieldId") or "")
+        if field_filter and fname.lower() not in field_filter and str(it.get("fieldId", "")).lower() not in field_filter:
+            continue
+        items.append({"field": fname, "from": it.get("fromString", it.get("from")), "to": it.get("toString", it.get("to"))})
+    if not items:
+        return None
+    return {"at": _to_iso(h.get("created")), "by": (h.get("author") or {}).get("displayName"), "changes": items}
+
+
+def _status_timeline(issue: Dict[str, Any], history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Time spent in each status, from status changes (oldest first)."""
+    import datetime as _dt
+
+    def _dt_of(s: Any) -> Optional[_dt.datetime]:
+        if not s:
+            return None
+        s = str(s).replace("Z", "+00:00")
+        s = re.sub(r"([+-]\d{2})(\d{2})$", r"\1:\2", s)
+        try:
+            return _dt.datetime.fromisoformat(s)
+        except ValueError:
+            return None
+
+    moves = [(h["at"], c) for h in history for c in h["changes"] if c["field"].lower() == "status"]
+    if not moves:
+        return []
+    timeline = []
+    start = _dt_of(issue.get("created"))
+    for at, c in moves:
+        end = _dt_of(at)
+        timeline.append({"status": c["from"], "from": start.isoformat() if start else None, "to": at,
+                         "hours": round((end - start).total_seconds() / 3600, 1) if start and end else None})
+        start = end
+    now = _dt.datetime.now(_dt.timezone.utc)
+    timeline.append({"status": moves[-1][1]["to"], "from": start.isoformat() if start else None, "to": None,
+                     "hours": round((now - start).total_seconds() / 3600, 1) if start else None})
+    return timeline
+
+
+def jira_get_changelog(
+    issue_key: Optional[str] = None,
+    jql: Optional[str] = None,
+    fields: Optional[List[str]] = None,
+    max_issues: int = 20,
+) -> Dict[str, Any]:
+    """Change history for one issue or a JQL set, oldest first, with time spent in each status."""
+    issues = _issues_for(issue_key, jql, max_issues)
+    if isinstance(fields, str):
+        fields = fields.split(",")
+    field_filter = {f.strip().lower() for f in fields} if fields else None
+    histories: Dict[str, List[Dict[str, Any]]] = {i["id"]: [] for i in issues}
+
+    v = _get_config()["api_version"]
+    bulk_ok = False
+    if len(issues) > 1:
+        try:
+            token = None
+            while True:
+                body: Dict[str, Any] = {"issueIdsOrKeys": list(histories), "maxResults": 1000}
+                if token:
+                    body["nextPageToken"] = token
+                _, content, _ = _make_request("POST", f"/rest/api/{v}/changelog/bulkfetch", body=body)
+                data = json.loads(content.decode("utf-8"))
+                for log in data.get("issueChangeLogs", []):
+                    histories.setdefault(str(log.get("issueId")), []).extend(log.get("changeHistories", []))
+                token = data.get("nextPageToken")
+                if not token:
+                    break
+            bulk_ok = True
+        except FileNotFoundError:
+            bulk_ok = False
+
+    if not bulk_ok:
+        for iss in issues:
+            start = 0
+            while True:
+                try:
+                    page = _api_get(f"/issue/{iss['key']}/changelog", params={"startAt": start, "maxResults": 100})
+                    values = page.get("values", [])
+                    last = page.get("isLast", True)
+                except FileNotFoundError:
+                    # Server / Data Center
+                    page = _api_get(f"/issue/{iss['key']}", params={"expand": "changelog", "fields": "created"})
+                    values = (page.get("changelog") or {}).get("histories", [])
+                    last = True
+                histories[iss["id"]].extend(values)
+                start += len(values)
+                if last or not values:
+                    break
+
+    out = []
+    for iss in issues:
+        raw = sorted(histories.get(iss["id"], []), key=lambda h: str(_to_iso(h.get("created"))))
+        all_hist = [x for x in (_format_history(h, None) for h in raw) if x]
+        shown = all_hist if not field_filter else [x for x in (_format_history(h, field_filter) for h in raw) if x]
+        out.append({
+            "key": iss["key"],
+            "summary": iss["summary"],
+            "status": iss["status"],
+            "created": iss["created"],
+            "status_timeline": _status_timeline(iss, all_hist),
+            "history": shown,
+        })
+    return {"returned": len(out), "issues": out}
+
+
+def jira_get_worklogs(
+    issue_key: Optional[str] = None,
+    jql: Optional[str] = None,
+    since: Optional[str] = None,
+    until: Optional[str] = None,
+    max_issues: int = 20,
+) -> Dict[str, Any]:
+    """Worklogs for one issue or a JQL set, filtered by start date, with totals per author per day."""
+    issues = _issues_for(issue_key, jql, max_issues)
+    after, before = _parse_since(since), _parse_since(until)
+
+    by_author_day: Dict[str, Dict[str, float]] = {}
+    out = []
+    for iss in issues:
+        logs = []
+        start = 0
+        while True:
+            page = _api_get(
+                f"/issue/{iss['key']}/worklog",
+                params={"startAt": start, "maxResults": 1000, "startedAfter": after, "startedBefore": before},
+            )
+            values = page.get("worklogs", [])
+            for w in values:
+                author = (w.get("author") or {}).get("displayName") or "Unknown"
+                hours = _hours(w.get("timeSpentSeconds")) or 0.0
+                started = w.get("started")
+                comment = w.get("comment")
+                logs.append({
+                    "author": author,
+                    "started": started,
+                    "hours": hours,
+                    "comment": (_extract_adf_text(comment).strip() if isinstance(comment, dict) else comment) or None,
+                })
+                day = str(started)[:10]
+                by_author_day.setdefault(author, {})
+                by_author_day[author][day] = round(by_author_day[author].get(day, 0.0) + hours, 2)
+            start += len(values)
+            if start >= page.get("total", 0) or not values:
+                break
+        out.append({"key": iss["key"], "summary": iss["summary"], "status": iss["status"],
+                    "total_hours": round(sum(l["hours"] for l in logs), 2), "worklogs": logs})
+
+    return {
+        "since": since,
+        "until": until,
+        "returned": len(out),
+        "by_author_day": {a: dict(sorted(d.items())) for a, d in by_author_day.items()},
+        "issues": out,
+    }
 
 
 def jira_configure(
@@ -1623,7 +2200,7 @@ TOOLS_SPEC = [
     },
     {
         "name": "jira_search_issues",
-        "description": "Search Jira issues using JQL (Jira Query Language).",
+        "description": "Search Jira issues using JQL. Each issue carries status ID and category (TODO/IN_PROGRESS/DONE), time tracking in hours (own and Σ incl. sub-tasks: original estimate, remaining, spent) and sprints. Add any field by name via `fields`.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -1644,6 +2221,16 @@ TOOLS_SPEC = [
                     "type": "string",
                     "description": "(Optional) Cursor pagination token returned from previous search call (used by Jira Cloud).",
                 },
+                "fields": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "(Optional) Extra fields by name or ID, e.g. ['Estimated Delivery Date', 'customfield_10050']. Returned under 'fields'; unknown names under 'unknown_fields'.",
+                },
+                "compact": {
+                    "type": "boolean",
+                    "description": "Omit attachment lists, keep attachment_count (default: true).",
+                    "default": True,
+                },
             },
             "required": ["jql"],
         },
@@ -1651,7 +2238,7 @@ TOOLS_SPEC = [
     },
     {
         "name": "jira_get_board",
-        "description": "Read a Jira board's setup: name, type (scrum/kanban), location, saved filter ID and JQL, sub-query, columns with their statuses, and estimation field. Accepts the board ID or any board URL.",
+        "description": "Read a Jira board's setup: name, type (scrum/kanban), location, saved filter ID and JQL, sub-query, columns with their statuses, quick filters (name + JQL), and estimation field. Swimlanes and card colours are not in the public API. Accepts the board ID or any board URL.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -1693,6 +2280,16 @@ TOOLS_SPEC = [
                     "type": "integer",
                     "description": "Index of the first issue (pagination, default: 0).",
                     "default": 0,
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "(Optional) Extra fields by name or ID, e.g. ['Estimated Delivery Date', 'customfield_10050']. Returned under 'fields'; unknown names under 'unknown_fields'.",
+                },
+                "compact": {
+                    "type": "boolean",
+                    "description": "Omit attachment lists, keep attachment_count (default: true).",
+                    "default": True,
                 },
             },
             "required": ["board"],
@@ -1757,6 +2354,16 @@ TOOLS_SPEC = [
                     "description": "Index of the first issue (pagination, default: 0).",
                     "default": 0,
                 },
+                "fields": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "(Optional) Extra fields by name or ID, e.g. ['Estimated Delivery Date', 'customfield_10050']. Returned under 'fields'; unknown names under 'unknown_fields'.",
+                },
+                "compact": {
+                    "type": "boolean",
+                    "description": "Omit attachment lists, keep attachment_count (default: true).",
+                    "default": True,
+                },
             },
             "required": ["sprint_id"],
         },
@@ -1764,7 +2371,7 @@ TOOLS_SPEC = [
     },
     {
         "name": "jira_get_dashboard",
-        "description": "Read a Jira dashboard: name, owner, sharing, and every gadget with its title, type, position, saved settings and data source (filter name + JQL, project, or JQL). Set include_issues=true to also run each gadget's JQL and return its issues. Rendered chart values are not available through the API.",
+        "description": "Read a Jira dashboard: name, owner, sharing, and every gadget with its title, type, position, saved settings and data source (filter name + JQL, project, or JQL). Set include_issues=true to also run each gadget's JQL and return its match count and issues. Rendered chart values are not available through the API.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -1786,6 +2393,93 @@ TOOLS_SPEC = [
             "required": ["dashboard"],
         },
         "handler": jira_get_dashboard,
+    },
+    {
+        "name": "jira_count",
+        "description": "Count issues matching a JQL query without fetching them. Use for yes/no and how-many checks. Cloud count is approximate and needs a bounded query.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "jql": {"type": "string", "description": "The JQL query."},
+            },
+            "required": ["jql"],
+        },
+        "handler": jira_count,
+    },
+    {
+        "name": "jira_validate_jql",
+        "description": "Validate one or more JQL queries (strict) before running them: syntax errors, unknown fields, functions or values. Valid JQL can still return the wrong set — check status IDs with jira_list_statuses.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "jql": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "JQL queries to validate.",
+                },
+            },
+            "required": ["jql"],
+        },
+        "handler": jira_validate_jql,
+    },
+    {
+        "name": "jira_list_statuses",
+        "description": "List statuses with ID, name, category (TODO/IN_PROGRESS/DONE) and scope (GLOBAL = company-managed, PROJECT = team-managed). With `project`: only statuses its issue types use. Flags names shared by several status IDs.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "project": {"type": "string", "description": "(Optional) Project key or ID, e.g. 'IA'."},
+                "name": {"type": "string", "description": "(Optional) Filter by status name (substring), e.g. 'Cancelled'."},
+            },
+        },
+        "handler": jira_list_statuses,
+    },
+    {
+        "name": "jira_search_filters",
+        "description": "Find saved filters by name or ID, with JQL, owner, sharing, edit permissions, whether you can edit it, and subscriptions.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "(Optional) Filter name (substring match)."},
+                "filter_id": {"type": "string", "description": "(Optional) Filter ID, e.g. '15558'."},
+                "owner_account_id": {"type": "string", "description": "(Optional) Owner's Atlassian account ID."},
+                "max_results": {"type": "integer", "description": "Maximum filters to return (default: 20).", "default": 20},
+            },
+        },
+        "handler": jira_search_filters,
+    },
+    {
+        "name": "jira_get_changelog",
+        "description": "Change history for one issue or up to max_issues issues from JQL, oldest first: who changed what, when. Each issue also gets a status_timeline with hours spent in each status. Use `fields` (e.g. ['status', 'assignee', 'Estimated Delivery Date']) to narrow the history.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "issue_key": {"type": "string", "description": "(Optional) Issue key, e.g. 'IA-5831'."},
+                "jql": {"type": "string", "description": "(Optional) JQL selecting the issues instead of issue_key."},
+                "fields": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "(Optional) Only show changes to these fields (names as shown in history, or field IDs).",
+                },
+                "max_issues": {"type": "integer", "description": "Maximum issues when using jql (default: 20).", "default": 20},
+            },
+        },
+        "handler": jira_get_changelog,
+    },
+    {
+        "name": "jira_get_worklogs",
+        "description": "Worklogs for one issue or up to max_issues issues from JQL, filtered by start time, with hours per author per day.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "issue_key": {"type": "string", "description": "(Optional) Issue key."},
+                "jql": {"type": "string", "description": "(Optional) JQL selecting the issues instead of issue_key."},
+                "since": {"type": "string", "description": "(Optional) Worklogs started on/after: '2026-09-28', ISO datetime, or relative '7d' / '24h'."},
+                "until": {"type": "string", "description": "(Optional) Worklogs started before (same formats)."},
+                "max_issues": {"type": "integer", "description": "Maximum issues when using jql (default: 20).", "default": 20},
+            },
+        },
+        "handler": jira_get_worklogs,
     },
 ]
 
