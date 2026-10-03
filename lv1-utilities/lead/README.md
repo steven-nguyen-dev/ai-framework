@@ -30,7 +30,7 @@ The skill operates entirely within Claude Code via its slash command and calls `
 | `/lead` | Native slash command in Claude Code to claim leadership, spawn workers, and load directives. |
 | `/lead <agent1, agent2, ...>` | Slash command with manual agent list (e.g. `/lead clan, cus, agg, agr`) to dynamically partition and spawn. |
 | `~/.local/bin/pane-limits` | Main CLI helper. Checks token usage/headroom, initializes leader, or spawns dynamic swarm teams. |
-| `pane-limits --spawn <cmd1,cmd2...>` | Partitions the tab (leader 50% left, $N$ workers right), launches agents, and outputs leader prompt. |
+| `pane-limits --spawn <cmd1,cmd2...>` | Places workers at most 4 panes per tab (`MAX_PANES_PER_TAB`): leader tab = leader 50% left + 3 workers stacked right; each further 4 workers get a background tab `<space>-swarm-<n>` as a 2x2 grid. Launches agents and outputs leader prompt. |
 | `~/.local/bin/{clan,clone,agp,agr,agg,cus,gpt}` | Standard agent launchers (Claude, Gemini Flash, Gemini Pro, Grok, Cursor, GPT). |
 
 ---
@@ -56,6 +56,11 @@ The skill operates entirely within Claude Code via its slash command and calls `
    - Counter resets from `1` per model prefix strictly within the active workspace (all tabs).
    - Example: `one-opus-1`, `one-sonnet-1`, `one-gemini-1`, `one-gemini-2`, `one-gpt-1`.
    - Leader is renamed to `<space_tag>-opus-leader`.
+
+### A2. Tab Overflow (`spawn_workers()`, `crowded_tabs()`)
+- `MAX_PANES_PER_TAB = 4`, leader included.
+- `--spawn` closes the leader tab's other panes and earlier `<space>-swarm-*` tabs (`herdr tab list` / `tab close`), then fills the leader tab (`stack_right()`) and creates overflow tabs with `herdr tab create --workspace --cwd --label --no-focus` (`grid_2x2()`).
+- Live panes are never moved: `herdr pane move` can kill the agent in the moved pane ([herdrdev/herdr#4864](https://github.com/herdrdev/herdr/issues/4864)). `crowded_tabs()` reports any tab over the cap in the summary and the leader prompt instead.
 
 ### B. Model Token Limits (Big Pool + Default Architecture)
 Token limits are evaluated in `get_model_target_limit()`:

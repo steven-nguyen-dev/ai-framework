@@ -23,6 +23,9 @@ import subprocess
 import sys
 import time
 
+# Most panes one tab holds, leader included. Workers past the cap spill into new tabs.
+MAX_PANES_PER_TAB = 4
+
 # Explicit token limits in thousands (K)
 BIG_POOL_LIMIT_K = 700.0
 DEFAULT_LIMIT_K = 210.0
@@ -539,6 +542,30 @@ Clearing context:
             return parts[2].strip()
     return raw.strip()
 
+def crowded_tabs(workspace_id=None):
+    """Returns [(tab_id, pane_count)] for tabs in the workspace holding more than MAX_PANES_PER_TAB panes."""
+    out, _, rc = run_cmd(["herdr", "pane", "list"])
+    if rc != 0:
+        return []
+    try:
+        panes = json.loads(out).get("result", {}).get("panes", [])
+    except Exception:
+        return []
+    counts = {}
+    for p in panes:
+        if in_workspace(p, workspace_id) and p.get("tab_id"):
+            counts[p["tab_id"]] = counts.get(p["tab_id"], 0) + 1
+    return sorted((t, n) for t, n in counts.items() if n > MAX_PANES_PER_TAB)
+
+def crowded_note(workspace_id=None):
+    """One warning line per crowded tab, or '' when every tab is within the cap."""
+    lines = [
+        f"WARN: tab {t} holds {n} panes (cap {MAX_PANES_PER_TAB}). Live panes stay in place; "
+        f"respawn with `/lead <commands>` to re-place them across tabs."
+        for t, n in crowded_tabs(workspace_id)
+    ]
+    return "\n".join(lines)
+
 def generate_leader_prompt(workspace_id=None, leader_pane_id=None):
     """
     Scans and auto-names all worker panes in the current workspace (every tab),
@@ -613,23 +640,125 @@ def generate_leader_prompt(workspace_id=None, leader_pane_id=None):
     leader_name = f"{space_tag}-opus-leader"
     directives = load_lead_skill_directives()
 
+    crowded = crowded_note(workspace_id)
+    crowded_md = f"\n\n{crowded}" if crowded else ""
+
     prompt = f"""# Swarm Leader: {leader_name} [Workspace: {workspace_id or 'current'} | Space: {space_tag.upper()}]
 You lead ONLY these worker panes in this workspace (all tabs):
-{roster_md}
+{roster_md}{crowded_md}
 
 {directives}"""
     return prompt
 
+def split_pane(pane_id, direction, cwd):
+    """Splits pane_id and returns the new pane's ID, or None."""
+    out, err, rc = run_cmd([
+        "herdr", "pane", "split",
+        "--pane", pane_id,
+        "--direction", direction,
+        "--ratio", "0.5",
+        "--cwd", cwd,
+        "--no-focus",
+    ])
+    if rc != 0:
+        print(f"WARN: failed to split pane {pane_id} {direction}: {err}", file=sys.stderr)
+        return None
+    try:
+        return json.loads(out).get("result", {}).get("pane", {}).get("pane_id")
+    except Exception:
+        return None
+
+def stack_right(leader_pane, count, cwd):
+    """Leader keeps the left half; count workers stack top-to-bottom on the right half."""
+    first = split_pane(leader_pane, "right", cwd)
+    if not first:
+        return []
+    panes = [first]
+    current = first
+    for i in range(count - 1):
+        remaining = count - i
+        out, err, rc = run_cmd([
+            "herdr", "pane", "split",
+            "--pane", current,
+            "--direction", "down",
+            "--ratio", f"{1.0 / remaining:.3f}",
+            "--cwd", cwd,
+            "--no-focus",
+        ])
+        if rc != 0:
+            print(f"WARN: failed to split pane {current} down: {err}", file=sys.stderr)
+            break
+        try:
+            new_pid = json.loads(out).get("result", {}).get("pane", {}).get("pane_id")
+        except Exception:
+            new_pid = None
+        if not new_pid:
+            break
+        panes.append(new_pid)
+        current = new_pid
+    return panes
+
+def grid_2x2(root_pane, count, cwd):
+    """Fills a fresh tab with up to 4 panes as a 2x2 grid; returns them TL, TR, BL, BR."""
+    panes = [root_pane]
+    if count >= 2:
+        tr = split_pane(root_pane, "right", cwd)
+        if tr:
+            panes.append(tr)
+    if count >= 3:
+        bl = split_pane(root_pane, "down", cwd)
+        if bl:
+            panes.append(bl)
+    if count >= 4 and len(panes) >= 2:
+        br = split_pane(panes[1], "down", cwd)
+        if br:
+            panes.append(br)
+    return panes
+
+def swarm_tab_label(space_tag, n):
+    return f"{space_tag}-swarm-{n}"
+
+def close_swarm_tabs(workspace_id, space_tag):
+    """Closes overflow tabs an earlier --spawn created (label <space_tag>-swarm-<n>) in this workspace."""
+    out, _, rc = run_cmd(["herdr", "tab", "list", "--workspace", workspace_id])
+    if rc != 0:
+        return
+    try:
+        tabs = json.loads(out).get("result", {}).get("tabs", [])
+    except Exception:
+        return
+    prefix = f"{space_tag}-swarm-"
+    for t in tabs:
+        label = (t.get("label") or "")
+        if label.startswith(prefix) and t.get("tab_id"):
+            run_cmd(["herdr", "tab", "close", t["tab_id"]])
+
+def create_swarm_tab(workspace_id, label, cwd):
+    """Creates a background tab; returns its root pane ID, or None."""
+    out, err, rc = run_cmd([
+        "herdr", "tab", "create",
+        "--workspace", workspace_id,
+        "--cwd", cwd,
+        "--label", label,
+        "--no-focus",
+    ])
+    if rc != 0:
+        print(f"WARN: failed to create tab {label}: {err}", file=sys.stderr)
+        return None
+    try:
+        return json.loads(out).get("result", {}).get("root_pane", {}).get("pane_id")
+    except Exception:
+        return None
+
 def spawn_workers(agent_commands):
     """
-    Dynamically partitions the tab and spawns worker panes.
-    - Caller pane (leader) stays on the left half (50% width).
-    - If any non-leader panes already exist in the leader's tab, they are closed first to ensure a clean layout.
-      Panes in the workspace's other tabs are kept and join the roster.
-    - Right half is dynamically split into N vertical slots for the N agent commands.
-    - Executes each agent command in its assigned pane via `herdr pane run`.
-    - Auto-names the leader (<space_tag>-opus-leader) and worker panes (<space_tag>-<model>-<n>).
-    - Prints the live leader prompt with worker capacity table and orchestrator directives.
+    Partitions the workspace and spawns worker panes, at most MAX_PANES_PER_TAB panes per tab.
+    - Leader tab: leader on the left half, the first MAX_PANES_PER_TAB - 1 workers stacked on the right.
+    - Every further MAX_PANES_PER_TAB workers get a new background tab <space_tag>-swarm-<n> (n from 2),
+      laid out as a 2x2 grid, in the leader's working directory.
+    - Clean slate: non-leader panes in the leader's tab and earlier <space_tag>-swarm-* tabs are closed first.
+      Other tabs in the workspace are untouched.
+    - Runs each agent command in its pane via `herdr pane run`, auto-names every pane, and prints the leader prompt.
     """
     caller_pane = get_current_pane()
     current_tab = get_current_tab()
@@ -638,77 +767,58 @@ def spawn_workers(agent_commands):
         print("ERR: cannot determine current Herdr pane or tab. Ensure this is run inside a Herdr pane.", file=sys.stderr)
         sys.exit(1)
 
-    space_tag = get_space_tag(tab_id=current_tab, ws_id=current_ws)
+    num_workers = len(agent_commands)
+    if num_workers == 0:
+        print("ERR: no worker commands provided to spawn.", file=sys.stderr)
+        sys.exit(1)
 
-    # 1. Close any existing non-leader panes in the leader's tab for a clean slate (other tabs untouched)
+    space_tag = get_space_tag(tab_id=current_tab, ws_id=current_ws)
+    cwd = os.getcwd()
+
+    # 1. Clean slate: the leader tab's other panes, and overflow tabs from an earlier spawn
     pane_out, _, rc = run_cmd(["herdr", "pane", "list"])
     if rc == 0:
         try:
-            all_panes = json.loads(pane_out).get("result", {}).get("panes", [])
-            for p in all_panes:
+            for p in json.loads(pane_out).get("result", {}).get("panes", []):
                 pid = p.get("pane_id")
                 if p.get("tab_id") == current_tab and pid and pid != caller_pane:
                     run_cmd(["herdr", "pane", "close", pid])
         except Exception:
             pass
+    if current_ws:
+        close_swarm_tabs(current_ws, space_tag)
 
     # Rename leader pane
     leader_name = f"{space_tag}-opus-leader"
     run_cmd(["herdr", "pane", "rename", caller_pane, leader_name])
     run_cmd(["herdr", "agent", "rename", caller_pane, leader_name])
 
-    num_workers = len(agent_commands)
-    if num_workers == 0:
-        print("ERR: no worker commands provided to spawn.", file=sys.stderr)
+    # 2. Leader tab: leader left, up to MAX_PANES_PER_TAB - 1 workers stacked right
+    in_leader_tab = min(num_workers, MAX_PANES_PER_TAB - 1)
+    panes = stack_right(caller_pane, in_leader_tab, cwd)
+    if not panes:
+        print("ERR: failed to split right from leader.", file=sys.stderr)
         sys.exit(1)
 
-    # 2. Split caller_pane right with ratio 0.5 (left half = leader, right half = workers)
-    out, err, rc = run_cmd([
-        "herdr", "pane", "split",
-        "--pane", caller_pane,
-        "--direction", "right",
-        "--ratio", "0.5",
-        "--no-focus",
-    ])
-    if rc != 0:
-        print(f"ERR: failed to split right from leader: {err}", file=sys.stderr)
-        sys.exit(1)
-
-    try:
-        first_worker = json.loads(out).get("result", {}).get("pane", {}).get("pane_id")
-    except Exception:
-        first_worker = None
-
-    if not first_worker:
-        print(f"ERR: failed to parse new pane ID from split output: {out}", file=sys.stderr)
-        sys.exit(1)
-
-    panes = [first_worker]
-    current_to_split = first_worker
-
-    # 3. Subdivide right half into num_workers vertical slots
-    for i in range(num_workers - 1):
-        remaining = num_workers - i
-        ratio = 1.0 / remaining
-        out, err, rc = run_cmd([
-            "herdr", "pane", "split",
-            "--pane", current_to_split,
-            "--direction", "down",
-            "--ratio", f"{ratio:.3f}",
-            "--no-focus",
-        ])
-        if rc != 0:
-            print(f"WARN: failed to split pane {current_to_split} down: {err}", file=sys.stderr)
+    # 3. Overflow: MAX_PANES_PER_TAB workers per new tab, 2x2 grid
+    remaining = num_workers - in_leader_tab
+    tab_n = 2
+    while remaining > 0:
+        if not current_ws:
+            print(f"WARN: workspace unknown; {remaining} worker(s) not spawned.", file=sys.stderr)
             break
-        try:
-            new_pid = json.loads(out).get("result", {}).get("pane", {}).get("pane_id")
-            if new_pid:
-                panes.append(new_pid)
-                current_to_split = new_pid
-        except Exception:
+        chunk = min(remaining, MAX_PANES_PER_TAB)
+        root = create_swarm_tab(current_ws, swarm_tab_label(space_tag, tab_n), cwd)
+        if not root:
+            print(f"WARN: {remaining} worker(s) not spawned.", file=sys.stderr)
             break
+        panes.extend(grid_2x2(root, chunk, cwd))
+        remaining -= chunk
+        tab_n += 1
 
     # 4. Run each command in its target pane
+    if len(panes) < num_workers:
+        print(f"WARN: {num_workers - len(panes)} command(s) had no pane: {agent_commands[len(panes):]}", file=sys.stderr)
     for pid, cmd in zip(panes, agent_commands):
         run_cmd(["herdr", "pane", "run", pid, cmd])
 
@@ -832,6 +942,11 @@ def main():
             return
 
         print(f"{name:<17} {pane_id:<6} {role_tag:<14} {status:<8} {usage_str:<21} {limit_str:<8} {verdict}")
+
+    if not target:
+        crowded = crowded_note(current_ws)
+        if crowded:
+            print(crowded)
 
 if __name__ == "__main__":
     main()

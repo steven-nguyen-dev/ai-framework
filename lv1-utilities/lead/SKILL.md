@@ -1,7 +1,7 @@
 ---
 name: lead
 description: Nominate this agent as the Herdr swarm leader for its current workspace. Use on /lead.
-version: 1.13.2
+version: 1.14.0
 disable-model-invocation: true
 ---
 
@@ -23,19 +23,20 @@ Orchestrates worker panes across every tab of the active Herdr workspace (`$HERD
 
 1. **If invoked with a list of child agent commands** (e.g. `/lead clan, cus, agg, agr`):
    Run `pane-limits --spawn <commands...>` (e.g. `pane-limits --spawn clan,cus,agg,agr`).
-   This automatically cleans any stale non-leader panes in the leader's tab (other tabs keep theirs), splits that tab's layout (leader on left half, $N$ workers stacked on right half), launches each agent command in its assigned pane, auto-names the panes, and prints the live worker table.
+   This clears the leader's tab and any `<space>-swarm-<n>` tabs from an earlier spawn (other tabs keep theirs), then places workers at most 4 panes to a tab: the leader's tab holds the leader (left half) and 3 workers stacked on the right; every further 4 workers get a new background tab `<space>-swarm-<n>`, laid out as a 2x2 grid in the leader's working directory. It launches each agent command in its pane, auto-names the panes, and prints the live worker table.
 2. **If invoked with no arguments** (bare `/lead`):
    Run `pane-limits --init-leader` to claim leadership, auto-name workers across `$HERDR_WORKSPACE_ID`, and retrieve capacity.
    - If worker panes already exist: Print the returned worker table and ask the user for the objective.
    - If no worker panes exist yet: Prompt the user to supply the agent commands they want to spawn:
      > No workers detected in this workspace. To spawn a swarm team, specify the commands you want:
      > `/lead clan, cus, agg, agr` (or any custom combination of agents)
-3. Lead only worker panes in `$HERDR_WORKSPACE_ID`, whichever tab holds them; leave panes in other workspaces to their own sessions. One leader per workspace. Every pane in the workspace shares one coordinator session (`swarm:ws-<workspace>:`), resolved from Herdr without environment variable injection.
-4. **On each new objective, open a run** with `swarm-coordinator.start_run()` before the first `delegate`. Task ids restart at `R<run>-T1`; the log `session_log()` returns starts empty. A follow-up on the same objective stays in the current run.
+3. **A tab over the cap** — `pane-limits` prints `WARN: tab <id> holds N panes (cap 4)`. Tell the user and leave those live panes in place: Herdr's `pane move` can kill the agent inside the moved pane ([herdrdev/herdr#4864](https://github.com/herdrdev/herdr/issues/4864)). `/lead <commands>` re-places a swarm across tabs.
+4. Lead only worker panes in `$HERDR_WORKSPACE_ID`, whichever tab holds them; leave panes in other workspaces to their own sessions. One leader per workspace. Every pane in the workspace shares one coordinator session (`swarm:ws-<workspace>:`), resolved from Herdr without environment variable injection.
+5. **On each new objective, open a run** with `swarm-coordinator.start_run()` before the first `delegate`. Task ids restart at `R<run>-T1`; the log `session_log()` returns starts empty. A follow-up on the same objective stays in the current run.
    - `open_tasks` non-empty — the previous run left delegates with no `complete`. List them to the user. They keep their ids; a late `complete` still lands on its own run.
-5. **Settle the deliverable folder** (see Inputs) before the first `delegate`.
+6. **Settle the deliverable folder** (see Inputs) before the first `delegate`.
 
-**Completion:** the leader prints the active worker table with pane IDs, models, categories, and token limits, then awaits the objective; once it arrives, `start_run()` has returned the new run number and the deliverable folder is named.
+**Completion:** the leader prints the active worker table with pane IDs, models, categories, and token limits, and names every tab over the cap, then awaits the objective; once it arrives, `start_run()` has returned the new run number and the deliverable folder is named.
 
 ### Step 2 — Size and assign tasks by category
 
@@ -171,6 +172,7 @@ Clearing context:
 - Implementation code is never written by the leader; all work is delegated.
 - Every brief goes to its category: smart-agent, power-worker, general-worker or quick-worker.
 - Swarm pane count remains fixed with sequential queueing instead of ad-hoc splitting.
+- After `--spawn`, no tab holds more than 4 panes; a tab already over the cap is reported to the user, and its live panes stay in place.
 - The token limit is treated as a pre-dispatch target — clear when `current + predicted > limit` (700K big pool, 210K default), done before the next instruction rather than after a finished task.
 - Inter-agent payloads travel through `put`/`get`; `.scratchpads/` is never created.
 - Every new objective opens a run with `start_run()` before its first `delegate`; leftover `open_tasks` are reported, not re-delegated.
