@@ -65,6 +65,14 @@ BLOCKED = [
     ("env grep", "env | grep ADMIN"),
     ("printenv dump", "printenv | grep -i token"),
     ("ps environment", "ps eww -ax | grep testbed"),
+    # local mock server data
+    ("cat mock data", "cat ~/.local/share/lv1-testbed/amazon/stores.json"),
+    ("write mock data", "echo '{}' > $HOME/.local/share/lv1-testbed/amazon/stores.json"),
+    ("rm mock data", "rm -rf /Users/x/.local/share/lv1-testbed"),
+    ("glob mock data", "ls ~/.local/share/lv1-*/"),
+    ("glob share segment", "cat ~/.local/s*/lv1*/x.json"),
+    ("cd share", "cd ~/.local/share && ls"),
+    ("grep mock data", "grep -r sku ~/.local/share"),
     # engine
     ("cli run", "cd ~/Projects/lv1-servers/testbed-dev && python3 suite/cli.py run --target amazon"),
     ("cli mocks push", "python3 suite/cli.py mocks push amazon"),
@@ -92,6 +100,7 @@ ALLOWED = [
     ("webpack config", "node webpack.config.js"),
     ("mcp json", "cat .mcp.json"),
     ("lv1-mcp repo", "ls ~/Projects/ai-framework/lv1-mcp/testbed"),
+    ("local bin", "ls ~/.local/bin"),
     ("set -e", "set -euo pipefail; echo hi"),
     ("env prefix", "env FOO=1 python3 -c 'print(1)'"),
     ("ps aux", "ps aux | grep python"),
@@ -135,6 +144,7 @@ class GuardTable(unittest.TestCase):
             "curl $BASE/amazon/__testbed/stores": "stores_get",
             "curl $BASE/api/lease": "lease_status",
             "cat ~/.mcp/.testbed.env": "never returns the values",
+            "cat ~/.local/share/lv1-testbed/a.json": "stores_put",
         }
         for cmd, tool in cases.items():
             with self.subTest(cmd=cmd):

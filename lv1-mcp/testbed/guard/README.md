@@ -1,7 +1,7 @@
 # testbed guard
 
-A Claude Code `PreToolUse` hook on `Bash`. It keeps agents off the mock server, the testbed engine
-and MCP secrets, so the `testbed` MCP is their only route to them. When it denies a command, the
+A Claude Code `PreToolUse` hook on `Bash`. It keeps agents off the mock server, its local data
+(`~/.local/share/lv1-testbed`), the testbed engine and MCP secrets, so the `testbed` MCP is their only route to them. When it denies a command, the
 reason names the MCP tool to use instead.
 
 ## What it blocks
@@ -9,7 +9,8 @@ reason names the MCP tool to use instead.
 | Category | Matches |
 | --- | --- |
 | Mock server | `concavoi`, ports `2300x` / `2310x`, `/api/content`, `/api/mocks`, `/api/lease`, `/api/servers`, `__testbed`, `/log/data` |
-| Secrets | `X-Auth-Token`, `ADMIN_PASSWORD`, `PATH_KEY`, `TESTBED_API_TOKEN`, `TESTBED_PATH_KEY`, `lv1-testbed`, `testbed.env`, any `.mcp` path, `~/.config` aimed at `lv1*` or globbed, globs on home dot-dirs, grep over a directory holding `~/.mcp` or `~/.config/lv1-testbed`, environment dumps (`env`, `printenv`, `set`, `export -p` at the end of a command or before a pipe), `ps` with `e`, `launchctl getenv` |
+| Secrets | `X-Auth-Token`, `ADMIN_PASSWORD`, `PATH_KEY`, `TESTBED_API_TOKEN`, `TESTBED_PATH_KEY`, `lv1-testbed`, `testbed.env`, any `.mcp` path, `~/.config` aimed at `lv1*` or globbed, globs on home dot-dirs, grep over a directory holding `~/.mcp`, `~/.config/lv1-testbed` or `~/.local/share/lv1-testbed`, environment dumps (`env`, `printenv`, `set`, `export -p` at the end of a command or before a pipe), `ps` with `e`, `launchctl getenv` |
+| Mock server data | `~/.local/share/lv1-testbed`, and `~/.local`, `~/.local/share` bare or globbed (writing the data bypasses the API) |
 | Engine | `cli.py`, `suite.cli`, `-m cli`, `testbed_client`, `commands.sync` |
 
 Each rule is checked against the raw command and against forms an evasion would hide behind:
@@ -23,8 +24,8 @@ any existing file named in a command that also runs an interpreter (`python`, `b
 
 ## What it allows
 
-- Edit/Write/Read tool calls (not matched; `permissions.deny` covers `~/.mcp/**` and
-  `~/.config/lv1-testbed/**`).
+- Edit/Write/Read tool calls (not matched; `permissions.deny` covers `~/.mcp/**`,
+  `~/.config/lv1-testbed/**` and `~/.local/share/lv1-testbed/**`).
 - `git` with a known subcommand: the commit message, `--grep`, `-S`/`-G` text and file names such
   as `suite/cli.py` are not scanned, since git runs none of them.
 - `grep` / `rg` / `git grep`: the pattern is not scanned, so you can search the repos for the host

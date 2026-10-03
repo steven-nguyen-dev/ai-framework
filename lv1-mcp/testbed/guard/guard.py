@@ -19,7 +19,8 @@ import sys
 
 HOME = os.path.expanduser("~")
 PROJECTS = os.path.join(HOME, "Projects")
-SECRET_DIRS = (os.path.join(HOME, ".mcp"), os.path.join(HOME, ".config", "lv1-testbed"))
+SECRET_DIRS = (os.path.join(HOME, ".mcp"), os.path.join(HOME, ".config", "lv1-testbed"),
+               os.path.join(HOME, ".local", "share", "lv1-testbed"))
 MAX_SCRIPT_BYTES = 512 * 1024
 SCRIPT_DEPTH = 2
 
@@ -36,6 +37,10 @@ SERVER_HINT = (
     f"Use {MCP}s instead: `mocks_diff`, `mocks_push`, `mocks_rollback`, `mocks_status` (mock content), "
     "`stores_get`, `stores_put`, `reset`, `call_log`, `lease_status` (mock runtime), "
     "`run_start` (live runs)."
+)
+DATA_HINT = (
+    "~/.local/share/lv1-testbed is the local mock server's data; writing it bypasses the API. "
+    f"Change mock content with {MCP} `mocks_push` and runtime state with `stores_put` / `reset`."
 )
 EDIT_HINT = "Edit suite and mock files with the Edit/Write tools, then push them with `mocks_push`."
 
@@ -102,6 +107,7 @@ RULES = [
     Rule("mock call log", r"/log/data\b", f"Use {MCP} `call_log`."),
     Rule("testbed secret", r"x-auth-token|admin_password|path_key|testbed_api_token", SECRET_HINT,
          compact=True),
+    Rule("mock server data", r"\.local/share/lv1[-_]?testbed", DATA_HINT, compact=True),
     Rule("testbed secret file", r"lv1[-_]?testbed|testbed\.env", SECRET_HINT, compact=True),
     Rule("MCP secrets dir", r"\.mcp(?![\w.-])", SECRET_HINT),
     Rule("environment dump", r"(^|[|;&(]\s*|\s)(printenv|env|set|export\s+-p|declare\s+-[px]+|compgen\s+-[ve])\s*($|[|;&>)])",
@@ -164,12 +170,24 @@ def _views(text):
     return views
 
 
+# Parent dirs of a testbed dir: (pattern, child names that may follow it without a match).
+_PARENTS = (
+    (r"\.config", ()),
+    (r"\.local/share", ()),
+    (r"\.local", ("bin", "lib", "state", "share")),
+)
+
+
 def _config_violation(text):
-    """Flags ~/.config paths aimed at lv1-testbed, or globbed so they could be."""
-    for m in re.finditer(r"(?<![\w-])\.config(?=[/\s'\";|&)]|$)(/[^\s'\";|&)]*)?", text):
-        seg = (m.group(1) or "/").lstrip("/").split("/")[0]
-        if not seg or seg.lower().startswith("lv1") or re.search(r"[*?\[{$]", seg):
-            return True
+    """Flags ~/.config, ~/.local and ~/.local/share paths aimed at lv1-testbed, or globbed so they could be."""
+    for parent, free in _PARENTS:
+        pattern = r"(?<![\w-])" + parent + r"(?=[/\s'\";|&)]|$)(/[^\s'\";|&)]*)?"
+        for m in re.finditer(pattern, text):
+            seg = (m.group(1) or "/").lstrip("/").split("/")[0]
+            if seg in free:
+                continue
+            if not seg or seg.lower().startswith("lv1") or re.search(r"[*?\[{$]", seg):
+                return True
     return bool(re.search(r"(~|\$\{?HOME\}?|/Users/[^/\s]+)/\.[^/\s]*[*?\[]", text))
 
 
@@ -185,7 +203,7 @@ def _scan_text(text, skip=()):
                     hint = _engine_hint(view) if rule.name == "testbed engine" else _server_hint(view)
                 return rule.name, hint
         if not compact and _config_violation(view):
-            return "testbed secret dir", SECRET_HINT
+            return "testbed secret or data dir", SECRET_HINT + " " + DATA_HINT
     return None
 
 
