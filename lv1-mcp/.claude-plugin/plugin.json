@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "lv1-mcps",
-  "version": "1.0.9",
-  "description": "Local stdio MCP servers for the AI-First Framework: jira-reader, kibana-explorer, wiki, drive, and swarm-coordinator.",
+  "version": "1.0.10",
+  "description": "Local stdio MCP servers for the AI-First Framework: jira-reader, kibana-explorer, wiki, drive, swarm-coordinator, and testbed.",
   "author": {
     "name": "Steven Nguyen"
   },
@@ -35,6 +35,12 @@
       "command": "bash",
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/coordinator/launch.sh"
+      ]
+    },
+    "testbed": {
+      "command": "bash",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/testbed/launch.sh"
       ]
     }
   }
