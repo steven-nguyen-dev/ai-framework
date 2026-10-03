@@ -22,7 +22,7 @@ RESUME_ATTEMPTS = 3
 MAX_RETRY_WAIT_S = 60
 # Cloudflare in front of the portal answers 403 "error code: 1010" to Python's default
 # `Python-urllib/x.y` User-Agent.
-USER_AGENT = "lv1-testbed-mcp/1.0"
+USER_AGENT = "testbed-mcp/1.0"
 LOOPBACK_HOSTS = ("127.0.0.1", "::1", "localhost")
 
 

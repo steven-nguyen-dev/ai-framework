@@ -38,7 +38,7 @@ This plugin is registered with Claude Code and Google Antigravity via `.claude-p
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "lv1-mcps",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "mcpServers": {
     "jira-reader": { "command": "python3", "args": ["${CLAUDE_PLUGIN_ROOT}/jira-reader/server.py"] },
     "kibana-explorer": { "command": "bash", "args": ["${CLAUDE_PLUGIN_ROOT}/kibana-explorer/launch.sh"] },

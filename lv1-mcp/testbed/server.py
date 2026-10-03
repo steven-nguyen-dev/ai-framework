@@ -133,7 +133,7 @@ async def run_result(run_id: str) -> dict[str, Any]:
 
 @mcp.tool()
 async def run_list(limit: int = 20) -> dict[str, Any]:
-    """Lists registry runs, newest first."""
+    """Lists live runs, newest first."""
     return await _call(tools.run_list, limit)
 
 

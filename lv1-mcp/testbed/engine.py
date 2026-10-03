@@ -1,7 +1,10 @@
-"""Drives testbed-dev's suite engine (`suite/cli.py`) offline, and live runs in the background with a run registry.
+"""Drives testbed-dev's suite engine (`suite/cli.py`) offline, and live runs in the background.
 
-A live run is started through ``sh -c`` so its exit code lands in the registry even when this MCP
-server restarts mid-run. Registry layout: ``<data_dir>/runs/<run_id>/{run.json,output.log,exit_code}``.
+A live run is started through ``sh -c`` so its exit code is recorded even when this MCP server
+restarts mid-run. The engine creates the run folder itself (``<results_root>/<mock>/<suite>/run-*``)
+only after it starts, so a run's record sits beside it as three hidden files in the results root:
+``.mcp-<run_id>.json`` (run_id, pid, target, args, start time), ``.mcp-<run_id>.log`` (engine output)
+and ``.mcp-<run_id>.exit`` (exit code). The run folder is read from the engine's ``results:`` line.
 """
 
 from __future__ import annotations
@@ -84,10 +87,11 @@ def run_offline(config: Config, args: list[str]) -> dict[str, Any]:
 
 # ---- live runs ----
 
-def _record_path(config: Config, run_id: str) -> Path:
+def _record_base(config: Config, run_id: str) -> str:
+    """Returns the path prefix of a run's record files, ``<results_root>/.mcp-<run_id>``."""
     if not re.fullmatch(r"[A-Za-z0-9-]{1,64}", run_id):
         raise ValidationError("bad run_id: %r" % run_id)
-    return config.runs_dir / run_id
+    return str(config.results_root / (".mcp-" + run_id))
 
 
 def _alive(pid: int) -> bool:
@@ -106,21 +110,17 @@ def _alive(pid: int) -> bool:
 
 
 def load_run(config: Config, run_id: str) -> dict[str, Any]:
-    folder = _record_path(config, run_id)
+    base = _record_base(config, run_id)
     try:
-        record = json.loads((folder / "run.json").read_text())
+        record = json.loads(Path(base + ".json").read_text())
     except (OSError, ValueError):
-        raise NotFoundError("no run %s in the registry" % run_id, run_id=run_id) from None
-    exit_file = folder / "exit_code"
-    exit_code = None
-    if exit_file.exists():
-        try:
-            exit_code = int(exit_file.read_text().strip())
-        except ValueError:
-            exit_code = None
-    output = _read_output(folder)
+        raise NotFoundError("no run %s under %s" % (run_id, config.results_root), run_id=run_id) from None
+    try:
+        exit_code = int(Path(base + ".exit").read_text().strip())
+    except (OSError, ValueError):
+        exit_code = None
     if not record.get("run_dir"):
-        match = _RUN_DIR_LINE.search(output)
+        match = _RUN_DIR_LINE.search(_read_output(base))
         if match:
             record["run_dir"] = match.group(1)
     if exit_code is not None:
@@ -132,28 +132,27 @@ def load_run(config: Config, run_id: str) -> dict[str, Any]:
     return record
 
 
-def _read_output(folder: Path) -> str:
+def _read_output(base: str) -> str:
     try:
-        return (folder / "output.log").read_text(errors="replace")
+        return Path(base + ".log").read_text(errors="replace")
     except OSError:
         return ""
 
 
 def output_tail(config: Config, run_id: str, lines: int = 40) -> str:
-    text = _read_output(_record_path(config, run_id))
+    text = _read_output(_record_base(config, run_id))
     return mask("\n".join(text.splitlines()[-lines:]), config.secrets)
 
 
 def list_runs(config: Config) -> list[dict[str, Any]]:
-    if not config.runs_dir.is_dir():
+    if not config.results_root.is_dir():
         return []
     runs = []
-    for folder in sorted(config.runs_dir.iterdir(), reverse=True):
-        if (folder / "run.json").exists():
-            try:
-                runs.append(load_run(config, folder.name))
-            except NotFoundError:
-                continue
+    for record in sorted(config.results_root.glob(".mcp-*.json"), reverse=True):
+        try:
+            runs.append(load_run(config, record.name[len(".mcp-"):-len(".json")]))
+        except (NotFoundError, ValidationError):
+            continue
     return runs
 
 
@@ -162,21 +161,21 @@ def active_run(config: Config) -> dict[str, Any] | None:
 
 
 def start_run(config: Config, args: list[str], target: str) -> dict[str, Any]:
-    """Starts ``cli.py <args>`` detached with the secrets injected; returns the registry record."""
+    """Starts ``cli.py <args>`` detached with the secrets injected; returns the run record."""
     python, cli = _engine(config)
     run_id = datetime.now().strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:6]
-    folder = _record_path(config, run_id)
-    folder.mkdir(parents=True, mode=0o700)
+    base = _record_base(config, run_id)
+    config.results_root.mkdir(parents=True, mode=0o700, exist_ok=True)
     argv = [str(python), str(cli), *args]
     # The shell outlives this server: it records the engine's exit code for run_status.
-    script = '"$@" > "$0/output.log" 2>&1; echo $? > "$0/exit_code"'
-    process = subprocess.Popen(["sh", "-c", script, str(folder), *argv], cwd=str(config.testbed_dev),
+    script = '"$@" > "$0.log" 2>&1; echo $? > "$0.exit"'
+    process = subprocess.Popen(["sh", "-c", script, base, *argv], cwd=str(config.testbed_dev),
                                env=child_env(config, live=True), stdin=subprocess.DEVNULL,
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                start_new_session=True)
     record = {"run_id": run_id, "target": target, "args": args, "pid": process.pid,
               "started": now_iso(), "run_dir": None}
-    (folder / "run.json").write_text(json.dumps(record, indent=2))
+    Path(base + ".json").write_text(json.dumps(record, indent=2))
     return record
 
 

@@ -179,7 +179,7 @@ class Base(unittest.TestCase):
         (root / "testbed-dev" / "suite" / "cli.py").write_text("")
         os.environ["FAKE_RESULTS"] = str(self.tmp / "results")
         self.config = Config(host=self.portal.url, token=TOKEN, path_key=PATH_KEY, servers_root=root,
-                             jpluger_root=self.tmp / "jp", data_dir=self.tmp / "data")
+                             jpluger_root=self.tmp / "jp", results_root=self.tmp / "results")
 
     def assertNoSecret(self, result):
         text = json.dumps(result)

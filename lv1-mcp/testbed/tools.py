@@ -43,7 +43,7 @@ def _lease(config: Config) -> dict[str, Any]:
 
 
 def _refuse_if_busy(config: Config, action: str) -> None:
-    """Raises Busy when a registry run is active or anyone holds the portal lease."""
+    """Raises Busy when a live run is active or anyone holds the portal lease."""
     active = engine.active_run(config)
     if active:
         raise Busy("%s refused: run %s is active (%s)" % (action, active["run_id"], active["target"]),

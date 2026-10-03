@@ -9,7 +9,7 @@ from pathlib import Path
 DEFAULT_HOST = "https://test.concavoi.com"
 DEFAULT_SERVERS_ROOT = Path.home() / "Projects" / "lv1-servers"
 DEFAULT_JPLUGER_ROOT = Path.home() / "Projects" / "jpluger-family" / "one" / "JPluger"
-DEFAULT_DATA = Path.home() / ".local" / "share" / "lv1-testbed-mcp"
+DEFAULT_RESULTS = Path.home() / ".local" / "share" / "lv1-testbed-dev" / "results"
 
 
 @dataclass(frozen=True)
@@ -20,7 +20,7 @@ class Config:
     path_key: str
     servers_root: Path
     jpluger_root: Path
-    data_dir: Path
+    results_root: Path
 
     @property
     def testbed_dev(self) -> Path:
@@ -39,10 +39,6 @@ class Config:
         return self.testbed_dev / ".venv" / "bin" / "python"
 
     @property
-    def runs_dir(self) -> Path:
-        return self.data_dir / "runs"
-
-    @property
     def secrets(self) -> tuple[str, ...]:
         return tuple(s for s in (self.token, self.path_key) if s)
 
@@ -54,7 +50,7 @@ class Config:
             "path_key_set": bool(self.path_key),
             "servers_root": str(self.servers_root),
             "jpluger_root": str(self.jpluger_root),
-            "data_dir": str(self.data_dir),
+            "results_root": str(self.results_root),
         }
 
 
@@ -66,11 +62,19 @@ def load_config(env: dict[str, str] | None = None) -> Config:
         value = env.get(name, "").strip()
         return Path(value).expanduser() if value else default
 
+    # Same resolution as the engine (suite/runfolder/runinfo.py results_root).
+    if env.get("TESTBED_RESULTS", "").strip():
+        results = Path(env["TESTBED_RESULTS"].strip()).expanduser()
+    elif env.get("TESTBED_DEV_DATA", "").strip():
+        results = Path(env["TESTBED_DEV_DATA"].strip()).expanduser() / "results"
+    else:
+        results = DEFAULT_RESULTS
+
     return Config(
         host=(env.get("TESTBED_HOST", "").strip() or DEFAULT_HOST).rstrip("/"),
         token=env.get("TESTBED_API_TOKEN", ""),
         path_key=env.get("TESTBED_PATH_KEY", ""),
         servers_root=path("LV1_SERVERS_ROOT", DEFAULT_SERVERS_ROOT),
         jpluger_root=path("JPLUGER_ROOT", DEFAULT_JPLUGER_ROOT),
-        data_dir=path("TESTBED_MCP_DATA", DEFAULT_DATA),
+        results_root=results.absolute(),
     )

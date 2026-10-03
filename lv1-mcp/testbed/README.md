@@ -15,13 +15,13 @@ TESTBED_API_TOKEN=<admin password>
 TESTBED_PATH_KEY=<app route path key>
 ```
 
-The server reads only these variables. Optional overrides: `LV1_SERVERS_ROOT` (default `~/Projects/lv1-servers`), `JPLUGER_ROOT` (default `~/Projects/jpluger-family/one/JPluger`), `TESTBED_MCP_DATA` (default `~/.local/share/lv1-testbed-mcp`).
+The server reads only these variables. Optional overrides: `LV1_SERVERS_ROOT` (default `~/Projects/lv1-servers`), `JPLUGER_ROOT` (default `~/Projects/jpluger-family/one/JPluger`), `TESTBED_RESULTS` (default `~/.local/share/lv1-testbed-dev/results`, resolved as the engine does).
 
 - No tool returns `TESTBED_API_TOKEN` or `TESTBED_PATH_KEY`. Every string a tool returns has both masked, along with `/k/<key>/` URL segments and secret headers.
 - Offline engine calls (`suite_*`) run with no secrets. `run_start` gives the engine the two values as `ADMIN_PASSWORD` and `PATH_KEY`, the names `cli.py` reads.
 
 ### Virtual Environment & Execution
-On first run, the launcher creates its venv at `~/.local/share/lv1-testbed-mcp/venv` and installs `requirements.txt`. The engine runs in its own venv, `testbed-dev/.venv`.
+On first run, the launcher creates its venv at `testbed/.venv` (gitignored) and installs `requirements.txt`. The engine runs in its own venv, `testbed-dev/.venv`.
 
 ```bash
 bash launch.sh              # stdio MCP server
@@ -55,9 +55,9 @@ python3 -m unittest testbed/test_server.py   # from lv1-mcp/; fake portal on 127
 | `run_start` | `target`, `cases?`, `markers?`, `fast` | Starts a live run in the background and returns `run_id`. Refused while a run is active or the lease is held. |
 | `run_status` | `run_id`, `tail` | Gives the state (`running`, `finished` or `lost`), exit code, run folder, summary and output tail. |
 | `run_result` | `run_id` | Gives the per-case verdict table, summary, run folder and `run.json`. |
-| `run_list` | `limit` | Lists registry runs, newest first. |
+| `run_list` | `limit` | Lists live runs, newest first. |
 | `run_stop` | `run_id` | Sends SIGTERM to a live run; the engine then releases the lease. |
 
 Paths are relative to `testbed-dev/` unless absolute. Engine exit codes: 0 pass, 1 usage or validation error, 2 failure, 3 blocked (lease held or preflight failed; nothing fired).
 
-The run registry lives at `~/.local/share/lv1-testbed-mcp/runs/<run_id>/` (`run.json`, `output.log`, `exit_code`). Each run starts under `sh -c`, which records the exit code, so a run's status survives a restart of this server.
+A live run's record sits in the results root as `.mcp-<run_id>.json`, `.mcp-<run_id>.log` and `.mcp-<run_id>.exit`, because the engine creates the run folder itself only after it starts. Each run starts under `sh -c`, which records the exit code, so a run's status survives a restart of this server.
