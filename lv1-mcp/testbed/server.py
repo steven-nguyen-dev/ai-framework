@@ -89,25 +89,25 @@ async def call_log(mock: str, after_seq: int | None = None, since: str | None = 
 
 @mcp.tool()
 async def suite_validate(items: list[str]) -> dict[str, Any]:
-    """Validates case files or suite folders (schema, registry, references). Paths relative to testbed-dev."""
+    """Validates case files or suite folders (schema, registry, references). Paths: relative to testbed-dev (`suites/...`), relative to the lv1-servers root (`testbed-dev/suites/...`) or absolute inside testbed-dev; anything resolving outside testbed-dev is rejected."""
     return await _call(tools.suite_validate, items)
 
 
 @mcp.tool()
 async def suite_lint(suite_dirs: list[str]) -> dict[str, Any]:
-    """Checks suite folders against the five-type layout (suite/LAYOUT.md)."""
+    """Checks suite folders against the five-type layout (suite/LAYOUT.md). Paths: relative to testbed-dev (`suites/...`), relative to the lv1-servers root (`testbed-dev/suites/...`) or absolute inside testbed-dev; anything resolving outside testbed-dev is rejected."""
     return await _call(tools.suite_lint, suite_dirs)
 
 
 @mcp.tool()
 async def suite_list(items: list[str], markers: str | None = None) -> dict[str, Any]:
-    """Lists cases (id, reqs, title, stage, skip reason) of case files or suite folders; `markers` filters by REQ[,REQ]."""
+    """Lists cases (id, reqs, title, stage, skip reason) of case files or suite folders; `markers` filters by REQ[,REQ]. Paths: relative to testbed-dev (`suites/...`), relative to the lv1-servers root (`testbed-dev/suites/...`) or absolute inside testbed-dev; anything resolving outside testbed-dev is rejected."""
     return await _call(tools.suite_list, items, markers)
 
 
 @mcp.tool()
 async def suite_judge(case_file: str, run_dir: str, cases: list[str] | None = None) -> dict[str, Any]:
-    """Re-judges a case file against an existing run folder offline. Writes nothing into the folder."""
+    """Re-judges a case file against an existing run folder offline. Writes nothing into the folder. `case_file`: relative to testbed-dev (`suites/...`), relative to the lv1-servers root (`testbed-dev/suites/...`) or absolute inside testbed-dev; anything resolving outside testbed-dev is rejected. `run_dir` is an absolute run folder (it lives outside testbed-dev)."""
     return await _call(tools.suite_judge, case_file, run_dir, cases)
 
 
@@ -115,7 +115,7 @@ async def suite_judge(case_file: str, run_dir: str, cases: list[str] | None = No
 
 @mcp.tool()
 async def run_start(target: str, cases: list[str] | None = None, markers: str | None = None, fast: bool = False) -> dict[str, Any]:
-    """Starts a live suite run in the background and returns its run_id. Refused while a run is active or the lease is held."""
+    """Starts a live suite run in the background and returns its run_id. Refused while a run is active or the lease is held. `target`: relative to testbed-dev (`suites/...`), relative to the lv1-servers root (`testbed-dev/suites/...`) or absolute inside testbed-dev; anything resolving outside testbed-dev is rejected."""
     return await _call(tools.run_start, target, cases, markers, fast)
 
 

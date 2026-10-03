@@ -174,7 +174,7 @@ def suite_list(config: Config, items: list[str] | str, markers: str | None = Non
 
 @_envelope
 def suite_judge(config: Config, case_file: str, run_dir: str, cases: list[str] | None = None) -> dict[str, Any]:
-    args = [engine.resolve(config, case_file), *(cases or []), "--judge", engine.resolve(config, run_dir)]
+    args = [engine.resolve(config, case_file), *(cases or []), "--judge", engine.resolve(config, run_dir, contained=False)]
     return _offline(config, args)
 
 

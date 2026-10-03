@@ -37,14 +37,25 @@ def _engine(config: Config) -> tuple[Path, Path]:
     return python, cli
 
 
-def resolve(config: Config, item: str) -> str:
-    """Returns ``item`` as an absolute path when it names an existing file or folder (relative to testbed-dev)."""
+def resolve(config: Config, item: str, contained: bool = True) -> str:
+    """Returns ``item`` as an absolute path of an existing file or folder.
+
+    Accepts a path relative to testbed-dev, relative to the lv1-servers root (``testbed-dev/...``) or absolute.
+    With ``contained``, a path resolving outside testbed-dev (``..``, symlinks included) is rejected; run
+    folders live in the data directory, so the judge's ``run_dir`` passes ``contained=False``.
+    """
     path = Path(item).expanduser()
-    if not path.is_absolute():
-        path = config.testbed_dev / path
-    if not path.exists():
-        raise NotFoundError("no such file or folder: %s" % item, path=str(path))
-    return str(path.resolve())
+    if path.is_absolute():
+        candidates = [path]
+    else:
+        candidates = [config.testbed_dev / path, config.servers_root / path]
+    found = next((c for c in candidates if c.exists()), None)
+    if found is None:
+        raise NotFoundError("no such file or folder: %s" % item, path=str(candidates[0]))
+    found = found.resolve()
+    if contained and not found.is_relative_to(config.testbed_dev.resolve()):
+        raise ValidationError("path resolves outside testbed-dev: %s" % item)
+    return str(found)
 
 
 def child_env(config: Config, live: bool) -> dict[str, str]:

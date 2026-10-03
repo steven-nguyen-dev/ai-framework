@@ -264,6 +264,27 @@ class EngineTest(Base):
         self.assertTrue(r["ok"] and r["passed"], r)
         self.assertIn("admin=unset key=unset token=unset", r["output"])
 
+    def test_paths_accept_testbed_dev_relative_repo_relative_and_absolute(self):
+        suite = self.config.testbed_dev / "suites" / "external" / "fake" / "v1"
+        for item in ("suites/external/fake/v1/a.case.yaml", "testbed-dev/suites/external/fake/v1/a.case.yaml",
+                     str(suite / "a.case.yaml")):
+            r = tools.suite_validate(self.config, [item])
+            self.assertTrue(r["ok"] and r["passed"], (item, r))
+
+    def test_paths_resolving_outside_testbed_dev_are_rejected(self):
+        outside = self.tmp / "outside.yaml"
+        outside.write_text("x: 1\n")
+        for item in (str(outside), "testbed-dev/../cloud-servers", "suites/../../../outside.yaml"):
+            r = tools.suite_validate(self.config, [item])
+            self.assertEqual(r["error"]["code"], "validation", (item, r))
+        r = tools.run_start(self.config, str(outside))
+        self.assertEqual(r["error"]["code"], "validation", r)
+        self.assertEqual(tools.run_list(self.config)["runs"], [])
+
+    def test_judge_run_dir_may_live_outside_testbed_dev(self):
+        r = tools.suite_judge(self.config, "testbed-dev/suites/external/fake/v1/a.case.yaml", str(self.tmp))
+        self.assertNotEqual(r.get("error", {}).get("code"), "validation", r)
+
     def test_run_start_injects_secrets_masks_output_and_reports_result(self):
         r = tools.run_start(self.config, "suites/external/fake/v1/a.case.yaml")
         self.assertTrue(r["ok"], r)
